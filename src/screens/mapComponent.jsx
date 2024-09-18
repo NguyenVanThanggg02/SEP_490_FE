@@ -21,7 +21,7 @@ const libraries = ["places"]; // Nơi bạn cần để sử dụng Autocomplete
 
 const MapComponent = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Thay thế bằng API key của bạn
+    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY",
     libraries,
   });
 
