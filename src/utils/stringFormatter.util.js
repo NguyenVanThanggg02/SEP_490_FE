@@ -2,9 +2,6 @@
  *
  * @param {text} text
  * @returns domain from text (that only allows letters, numbers, and underscores)
- * Example:
- * - Input: Xin chào, tôi là developer!
- * - Output: xin_chao_toi_la_developer
  */
 export const textToDomain = (text) => {
   // REGEX only allows letters, numbers, and underscores
