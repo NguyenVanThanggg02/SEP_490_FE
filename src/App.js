@@ -1,25 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import Header from "./components/Header";
+import BookingDetails from "./screens/BookingDetails";
+import MapComponent from "./screens/mapComponent";
+import RegisterForm from "./screens/RegisterForm";
+import HostProfile from "./screens/HostProfile";
+import Comment from "./screens/Comment";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          chia routes vao day
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <Comment></Comment>;
 }
 
 export default App;
