@@ -1,12 +1,15 @@
 import React from "react";
 import "../style/Header.css";
 import Logo from "../assets/logo.png";
+import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <div className="airbnb-listing d-flex">
       <header className="header">
         <div className="logo">
-          <img src={Logo} />
+          <Link to={"/"}>
+            <img src={Logo} />
+          </Link>
         </div>
       </header>
 
