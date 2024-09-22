@@ -6,6 +6,7 @@ import {
   Marker,
   Autocomplete,
 } from "@react-google-maps/api";
+import LoginForm from "./LoginForm";
 
 const mapContainerStyle = {
   width: "100%",
@@ -17,7 +18,7 @@ const center = {
   lng: 106.6297,
 };
 
-const libraries = ["places"]; // Nơi bạn cần để sử dụng Autocomplete
+const libraries = ["places"];
 
 const MapComponent = () => {
   const { isLoaded } = useLoadScript({
@@ -52,6 +53,7 @@ const MapComponent = () => {
 
   return (
     <div>
+      <LoginForm></LoginForm>
       <Autocomplete
         onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
         onPlaceChanged={handlePlaceSelect}
