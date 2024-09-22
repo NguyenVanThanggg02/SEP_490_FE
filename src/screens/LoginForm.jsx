@@ -1,5 +1,6 @@
 import React from "react";
 import "../style/login.css";
+import { Link } from "react-router-dom";
 
 const LoginForm = () => {
   return (
@@ -11,7 +12,6 @@ const LoginForm = () => {
           experience.
         </span>
       </div>
-
       <div className="input_container">
         <label className="input_label" htmlFor="email_field">
           Email
@@ -23,7 +23,6 @@ const LoginForm = () => {
           id="email_field"
         />
       </div>
-
       <div className="input_container">
         <label className="input_label" htmlFor="password_field">
           Password
@@ -35,12 +34,19 @@ const LoginForm = () => {
           id="password_field"
         />
       </div>
-
       <button title="Sign In" type="submit" className="sign-in_btn">
-        <span>Sign In</span>
+        <span>Đăng nhập</span>
       </button>
-
-      <p className="note">Terms of use & Conditions</p>
+      <div>
+        <Link to={"/register"} className="text-danger text-opacity-75">
+          Tôi chưa có tài khoản ...
+        </Link>
+      </div>
+      <div>
+        <Link to={"/forgot"} className="text-danger text-opacity-75">
+          Tôi quên mật khẩu
+        </Link>
+      </div>
     </form>
   );
 };

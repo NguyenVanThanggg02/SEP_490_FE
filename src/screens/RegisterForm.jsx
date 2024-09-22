@@ -60,8 +60,8 @@ const RegisterForm = () => {
         />
       </div>
 
-      <button type="submit" className="sign-up_btn">
-        <span>Sign Up</span>
+      <button title="Sign In" type="submit" className="sign-in_btn">
+        <span>Đăng ký</span>
       </button>
     </form>
   );

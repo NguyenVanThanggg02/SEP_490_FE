@@ -16,6 +16,7 @@ import WifiIcon from "@mui/icons-material/Wifi";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
+import Comment from "./Comment";
 
 function BookingDetails() {
   return (
@@ -112,6 +113,9 @@ function BookingDetails() {
             </Typography>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Comment />
       </Grid>
     </Grid>
   );
