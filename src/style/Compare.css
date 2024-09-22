@@ -1,0 +1,101 @@
+.comparison-table-v2 {
+  width: 80%;
+  margin: 0 auto; /* Center the table horizontally */
+}
+
+.zui-wrapper {
+  overflow-x: auto; /* Allow horizontal scrolling if necessary */
+  width: 100%;
+}
+
+.zui-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 0;
+  width: 100%;
+  table-layout: fixed; /* Ensures equal column width */
+}
+
+.zui-table thead th,
+.zui-table tbody td {
+  width: calc(100% / 3); /* Make columns occupy equal width */
+  text-align: center; /* Center text within each cell */
+}
+
+.zui-table thead th {
+  padding: 15px 20px;
+  vertical-align: top;
+}
+
+.zui-table tbody td {
+  color: #333;
+  font-size: 16px;
+  padding: 15px 20px;
+  white-space: normal;
+  vertical-align: top;
+}
+
+.zui-table .zui-sticky-col {
+  left: 0;
+  position: sticky;
+  top: auto;
+  font-weight: 700;
+  background-color: #FFFFFF;
+  box-shadow: inset -15px 0 10px -7px rgba(0,0,0,0.15);
+  text-align: left;
+  width: auto; /* Sticky column adapts to content */
+}
+
+tr:nth-child(even) {
+  background-color: #F3F3F3; /* Striped rows */
+}
+
+.product-img {
+  height: auto;
+  width: 150px;
+}
+
+.product-link {
+  color: #0371BD;
+  text-decoration: none;
+}
+
+th:not(:first-child),
+td:not(:first-child) {
+  border-left: 1px solid lightgrey;
+}
+
+.svg-inline--fa {
+  display: inline-block;
+  font-family: "Font Awesome 5 Pro";
+  font-weight: 500;
+  font-size: 23px;
+  padding-right: 5px;
+}
+
+.fa-check-circle {
+  color: #028845;
+}
+
+.fa-plus-circle {
+  color: #2275D3;
+}
+
+.fa-times-circle {
+  color: gray;
+}
+
+/* Phone */
+@media screen and (max-width: 768px) {
+  .zui-table thead th,
+  .zui-table tbody td {
+    font-size: 14px;
+  }
+  .product-img {
+    width: 100px;
+  }
+  .instruction {
+    display: block;
+  }
+}
