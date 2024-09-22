@@ -1,14 +1,14 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import BookingDetails from "./screens/BookingDetails";
-import MapComponent from "./screens/mapComponent";
 import RegisterForm from "./screens/RegisterForm";
 import HostProfile from "./screens/HostProfile";
-import Comment from "./screens/Comment";
 import Home from "@mui/icons-material/Home";
 import LoginForm from "./screens/LoginForm";
+import ChangePass from "./screens/ChangePass";
+import ResetPass from "./screens/ResetPass";
+import Forgot_Pass from "./screens/Forgot_Pass";
 
 function App() {
   return (
@@ -19,6 +19,9 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/host_profile" element={<HostProfile />} />
+        <Route path="/chang_pass" element={<ChangePass />} />
+        <Route path="/reset_pass/:id/:token" element={<ResetPass />} />
+        <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/:id" element={<BookingDetails />} />
       </Routes>
     </BrowserRouter>

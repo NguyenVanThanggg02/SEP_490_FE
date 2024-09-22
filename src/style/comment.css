@@ -248,7 +248,6 @@
 /* From Uiverse.io by elijahgummer */
 .radio {
   display: flex;
-  justify-content: center;
   gap: 10px;
 }
 
