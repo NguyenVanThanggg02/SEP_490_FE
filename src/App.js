@@ -5,9 +5,10 @@ import BookingDetails from "./screens/BookingDetails";
 import MapComponent from "./screens/mapComponent";
 import RegisterForm from "./screens/RegisterForm";
 import HostProfile from "./screens/HostProfile";
+import Comment from "./screens/Comment";
 
 function App() {
-  return <BookingDetails></BookingDetails>;
+  return <Comment></Comment>;
 }
 
 export default App;
