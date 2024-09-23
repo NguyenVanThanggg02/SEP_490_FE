@@ -6,6 +6,23 @@ import { Breadcrumb, Container, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 const Forgot_Pass = () => {
+  const [gmail, setGmail] = useState();
+  const nav = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:9999/users/forgot-password", { gmail })
+      .then((res) => {
+        if (res.data.Status === "Success") {
+          toast.success("Thành Công");
+          nav.push("/login");
+        }
+      })
+      .catch((err) => {
+        toast.error(err.response.data.Error);
+      });
+  };
   return (
     <Container fluid>
       <Row className="mt-2 ml-2">
@@ -16,7 +33,7 @@ const Forgot_Pass = () => {
       </Row>
       <div className="form-container">
         <div className="logo-container">Quên mật khẩu</div>
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -24,7 +41,7 @@ const Forgot_Pass = () => {
               id="email"
               name="email"
               placeholder="Nhập email xác nhận"
-              //   onChange={(e) => setGmail(e.target.value)}
+              onChange={(e) => setGmail(e.target.value)}
               required
             />
           </div>
