@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../style/comment.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { SendArrowUpFill } from "react-bootstrap-icons";
+
 
 const Comment = () => {
   const [showReply, setShowReply] = useState(false); // state để điều khiển việc hiển thị hộp phản hồi
@@ -109,7 +112,10 @@ const Comment = () => {
           {showReply && (
             <div className="reply-box">
               <textarea placeholder="Reply comment..."></textarea>
-              <button className="send-reply">Send</button>
+              <div className="send-reply">
+                <SendArrowUpFill />
+              </div>
+
             </div>
           )}
         </div>
@@ -256,7 +262,10 @@ const Comment = () => {
                 </svg>
               </button>
             </div>
-            <button style={{ marginLeft: "auto", marginRight: "30px" }}>Send</button>
+            <div style={{ marginLeft: "auto", marginRight: "30px", color: "blue" }}>
+              <SendArrowUpFill style={{ fontSize: "25px" }} />
+
+            </div>
           </div>
         </div>
       </div>

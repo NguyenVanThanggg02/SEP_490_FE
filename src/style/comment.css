@@ -418,5 +418,10 @@
 
 .reply-box .send-reply {
   margin-left: 10px; /* Khoảng cách giữa textarea và nút gửi */
-  padding: 10px 15px; /* Padding cho nút gửi */
+  padding: 15px 20px; /* Tăng padding cho nút gửi */
+  color: #1717ec;
+  font-size: 25px; /* Tăng kích thước chữ */
+  border: none; /* Bỏ border nếu có */
+  border-radius: 5px; /* Thêm bo góc nếu muốn */
+  cursor: pointer; /* Thay đổi con trỏ khi hover */
 }
