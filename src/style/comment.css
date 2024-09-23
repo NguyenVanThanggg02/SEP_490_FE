@@ -370,3 +370,58 @@
 .radio input:checked ~ label svg {
   fill: #ffa723;
 }
+
+.radio {
+  display: flex;
+  flex-direction: row-reverse; /* Đảo ngược thứ tự hiển thị */
+  margin-right:  50000px;
+}
+
+.radio input {
+  display: none; /* Ẩn radio buttons */
+}
+
+.reply-button {
+  width: 90px; /* Điều chỉnh chiều rộng */
+  padding: 10px 15px; /* Thêm padding để tạo khoảng cách */
+  font-size: 14px; /* Kích thước chữ */
+  color: rgb(14, 13, 13); /* Màu chữ */
+  border: none; /* Không có đường viền */
+  border-radius: 5px; /* Bo góc */
+  transition: text-decoration 0.3s; /* Hiệu ứng chuyển đổi */
+}
+
+.reply-button:hover {
+  text-decoration: underline; /* Gạch chân khi hover */
+}
+
+.radio label {
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.reply-box {
+  width: 100%; /* Chiều rộng cố định đầy màn hình */
+  display: flex; /* Sử dụng flexbox để căn chỉnh */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  max-width: 1750px; /* Giới hạn chiều rộng tối đa */
+}
+
+.reply-box textarea {
+  width: 100%; /* Chiều rộng ô textarea đầy */
+  height: 100px; /* Chiều cao ô textarea (có thể điều chỉnh) */
+  border: 1px solid #ccc; /* Đường viền */
+  border-radius: 5px; /* Bo góc */
+  padding: 10px; /* Padding bên trong */
+  resize: none; /* Không cho phép kéo để thay đổi kích thước */
+}
+
+.reply-box .send-reply {
+  margin-left: 10px; /* Khoảng cách giữa textarea và nút gửi */
+  padding: 15px 20px; /* Tăng padding cho nút gửi */
+  color: #1717ec;
+  font-size: 25px; /* Tăng kích thước chữ */
+  border: none; /* Bỏ border nếu có */
+  border-radius: 5px; /* Thêm bo góc nếu muốn */
+  cursor: pointer; /* Thay đổi con trỏ khi hover */
+}
