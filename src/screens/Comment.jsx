@@ -95,7 +95,7 @@ const Comment = () => {
       <div className="text-box">
         <div className="box-container">
           <textarea placeholder="Reply"></textarea>
-          <div>
+          <div style={{display:'flex'}}>
             <div className="formatting">
               <button type="button">
                 <svg
@@ -239,6 +239,7 @@ const Comment = () => {
                 </svg>
               </button>
             </div>
+            <button>Send</button>
           </div>
         </div>
       </div>
