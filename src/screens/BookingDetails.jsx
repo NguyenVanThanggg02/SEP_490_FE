@@ -17,11 +17,13 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import Comment from "./Comment";
+import { useParams } from "react-router-dom";
 
 function BookingDetails() {
+  const { id } = useParams();
   return (
     <Grid container spacing={3} style={{ padding: "20px" }}>
-      {/* Thông tin về giá và ngày đặt */}
+      {id}
       <Grid item xs={12} md={5}>
         <Card style={{ padding: "20px" }}>
           <CardContent>
