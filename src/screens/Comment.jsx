@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "../style/comment.css";
 
 const Comment = () => {
+  const [showReply, setShowReply] = useState(false); // state để điều khiển việc hiển thị hộp phản hồi
+
+  const toggleReply = () => {
+    setShowReply(!showReply); // chuyển đổi trạng thái hiển thị
+  };
+
   return (
     <div className="card">
       <span className="title">Comments</span>
@@ -27,6 +33,7 @@ const Comment = () => {
           <hr />
           <span>14</span>
         </div>
+
         <div className="comment-container">
           <div className="user">
             <div className="user-pic">
@@ -58,9 +65,10 @@ const Comment = () => {
               <p>Wednesday, March 13th at 2:45pm</p>
             </div>
           </div>
-          <div className="rating" style={{marginTop:'-15px'}}>
+
+          <div className="rating" style={{ marginTop: "-15px" }}>
             <div className="radio">
-              {[5 ,4 ,3 ,2, 1].map((value) => (
+              {[5, 4, 3, 2, 1].map((value) => (
                 <React.Fragment key={value}>
                   <input
                     value={value}
@@ -84,18 +92,34 @@ const Comment = () => {
               ))}
             </div>
           </div>
+
           <p className="comment-content">
             I've been using this product for a few days now and I'm really
             impressed! The interface is intuitive and easy to use, and the
             features are exactly what I need to streamline my workflow.
           </p>
+
+          {/* Nút phản hồi */}
+          <button className="reply-button" onClick={toggleReply}>
+            Phản hồi
+          </button>
+
+
+          {/* Hiển thị hộp phản hồi khi nhấn nút */}
+          {showReply && (
+            <div className="reply-box">
+              <textarea placeholder="Reply comment..."></textarea>
+              <button className="send-reply">Send</button>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* Phần bình luận mới */}
       <div className="text-box">
         <div className="box-container">
-          <textarea placeholder="Reply"></textarea>
-          <div style={{display:'flex'}}>
+          <textarea placeholder=" Comment ....."></textarea>
+          <div style={{ display: "flex" }}>
             <div className="formatting">
               <button type="button">
                 <svg
@@ -113,13 +137,6 @@ const Comment = () => {
                     d="M5 6C5 4.58579 5 3.87868 5.43934 3.43934C5.87868 3 6.58579 3 8 3H12.5789C15.0206 3 17 5.01472 17 7.5C17 9.98528 15.0206 12 12.5789 12H5V6Z"
                     clipRule="evenodd"
                     fillRule="evenodd"
-                  ></path>
-                  <path
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    strokeWidth="2.5"
-                    stroke="#707277"
-                    d="M12.4286 12H13.6667C16.0599 12 18 14.0147 18 16.5C18 18.9853 16.0599 21 13.6667 21H8C6.58579 21 5.87868 21 5.43934 20.5607C5 20.1213 5 19.4142 5 18V12"
                   ></path>
                 </svg>
               </button>
@@ -239,7 +256,7 @@ const Comment = () => {
                 </svg>
               </button>
             </div>
-            <button style={{ marginLeft: "auto" }}>Send</button>
+            <button style={{ marginLeft: "auto", marginRight: "30px" }}>Send</button>
           </div>
         </div>
       </div>
