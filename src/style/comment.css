@@ -370,3 +370,18 @@
 .radio input:checked ~ label svg {
   fill: #ffa723;
 }
+
+.radio {
+  display: flex;
+  flex-direction: row-reverse; /* Đảo ngược thứ tự hiển thị */
+  margin-right:  50000px;
+}
+
+.radio input {
+  display: none; /* Ẩn radio buttons */
+}
+
+.radio label {
+  cursor: pointer;
+  margin-left: 5px;
+}

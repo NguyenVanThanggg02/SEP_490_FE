@@ -60,7 +60,7 @@ const Comment = () => {
           </div>
           <div className="rating" style={{marginTop:'-15px'}}>
             <div className="radio">
-              {[1, 2, 3, 4, 5].map((value) => (
+              {[5 ,4 ,3 ,2, 1].map((value) => (
                 <React.Fragment key={value}>
                   <input
                     value={value}
@@ -239,7 +239,7 @@ const Comment = () => {
                 </svg>
               </button>
             </div>
-            <button>Send</button>
+            <button style={{ marginLeft: "auto" }}>Send</button>
           </div>
         </div>
       </div>
