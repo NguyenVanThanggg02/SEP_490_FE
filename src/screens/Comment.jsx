@@ -103,9 +103,9 @@ const Comment = () => {
           </p>
 
           {/* Nút phản hồi */}
-          <button className="reply-button" onClick={toggleReply}>
+          <div className="reply-button" onClick={toggleReply}>
             Phản hồi
-          </button>
+          </div>
 
 
           {/* Hiển thị hộp phản hồi khi nhấn nút */}

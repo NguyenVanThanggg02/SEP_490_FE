@@ -22,10 +22,10 @@ const Header = () => {
         <div className="">
           <input
             type="text"
-            placeholder="Nhận phòng"
+            placeholder="Địa điểm"
             className="search-input"
           />
-          <input type="text" placeholder="Trả phòng" className="search-input" />
+          <input type="text" placeholder="Trả địa điểm" className="search-input" />
           <input type="text" placeholder="Khách" className="search-input" />
           <button className="search-btn">Tìm kiếm</button>
         </div>
