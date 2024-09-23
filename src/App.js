@@ -10,6 +10,7 @@ import ChangePass from "./screens/ChangePass";
 import ResetPass from "./screens/ResetPass";
 import Forgot_Pass from "./screens/Forgot_Pass";
 import Home from "./screens/Home";
+import Comment from "./screens/Comment";
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/reset_pass/:id/:token" element={<ResetPass />} />
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
+        <Route path="/comment" element={<Comment />} />
       </Routes>
     </BrowserRouter>
   );
