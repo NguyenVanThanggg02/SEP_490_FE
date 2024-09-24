@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Box,
 } from "@mui/material";
 import HotTubIcon from "@mui/icons-material/HotTub";
 import WifiIcon from "@mui/icons-material/Wifi";
@@ -17,7 +18,7 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import Comment from "./Comment";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function BookingDetails() {
   const { id } = useParams();
@@ -109,11 +110,24 @@ function BookingDetails() {
       <Grid item xs={12}>
         <Card>
           <CardContent>
-            <Typography variant="h6">Chủ nhà: Patinee</Typography>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Typography variant="h6">Chủ nhà: Patinee</Typography>
+              <Link
+                to="/mess"
+                state={{ id }} // Truyền userId qua state
+              >
+                <Button sx={{ backgroundColor: 'black', color: 'white' }}>
+                  Nhắn tin cho chủ nhà
+                </Button>
+              </Link>
+
+            </Box>
+
             <Typography variant="body2" color="textSecondary">
               7 tháng kinh nghiệm đón tiếp khách
             </Typography>
           </CardContent>
+
         </Card>
       </Grid>
       <Grid item xs={12}>
