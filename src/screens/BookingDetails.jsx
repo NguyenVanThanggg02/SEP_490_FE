@@ -114,7 +114,7 @@ function BookingDetails() {
               <Typography variant="h6">Chủ nhà: Patinee</Typography>
               <Link
                 to="/mess"
-                state={{ id }} // Truyền userId qua state
+                state={{ id }} 
               >
                 <Button sx={{ backgroundColor: 'black', color: 'white' }}>
                   Nhắn tin cho chủ nhà
