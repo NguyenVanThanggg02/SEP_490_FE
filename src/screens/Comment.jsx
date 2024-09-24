@@ -11,7 +11,7 @@ import {
   TrashFill,
 } from "react-bootstrap-icons";
 
-const Comment = ({ selectedBlogId }) => {
+const Comment = () => {
   const { id } = useParams();
   const [listComments, setListComments] = useState([]);
   const [text, setText] = useState("");
@@ -64,15 +64,13 @@ const Comment = ({ selectedBlogId }) => {
         });
     }
   };
-  console.log(selectedBlogId);
   const handleCreate = (e) => {
     e.preventDefault();
     axios
       .post("http://localhost:9999/reviews", {
         text: text,
         userId: userId,
-        productId: id,
-        blogId: selectedBlogId,
+        spaceId: id,
       })
 
       .then((response) => {
