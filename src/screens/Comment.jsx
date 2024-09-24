@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import "../style/comment.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SendArrowUpFill } from "react-bootstrap-icons";
-
+import { useParams } from "react-router";
 
 const Comment = () => {
-  const [showReply, setShowReply] = useState(false); // state để điều khiển việc hiển thị hộp phản hồi
+  const { id } = useParams();
+  const [listComments, setListComments] = useState([]);
+  const [text, setText] = useState("");
+  const [editComment, setEditComment] = useState("");
+
+  const [showReply, setShowReply] = useState(false); 
 
   const toggleReply = () => {
-    setShowReply(!showReply); // chuyển đổi trạng thái hiển thị
+    setShowReply(!showReply); 
   };
 
   return (
