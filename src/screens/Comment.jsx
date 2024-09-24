@@ -105,20 +105,19 @@ const Comment = () => {
           </div>
 
           <div className="comment-wrapper">
-  {isEditing ? (
-    <>
-      <textarea
-        value={commentContent}
-        onChange={(e) => setCommentContent(e.target.value)}
-        style={{ width: '100%', height: '100px', fontSize: '16px' }} // Điều chỉnh kích thước và font-size
-      />
-      {/* Nút Lưu chỉ hiển thị khi đang chỉnh sửa */}
-      <button onClick={() => setIsEditing(false)}>Lưu</button>
-    </>
-  ) : (
-    <p className="comment-content">{commentContent}</p>
-  )}
-
+            {isEditing ? (
+              <>
+                <textarea
+                  value={commentContent}
+                  onChange={(e) => setCommentContent(e.target.value)}
+                  style={{ width: '100%', height: '100px', fontSize: '16px' }} // Điều chỉnh kích thước và font-size
+                />
+                {/* Nút Lưu chỉ hiển thị khi đang chỉnh sửa */}
+                <button onClick={() => setIsEditing(false)}>Lưu</button>
+              </>
+            ) : (
+              <p className="comment-content">{commentContent}</p>
+            )}
 
             <div className="options-menu">
               <div className="vertical-dots" onClick={toggleOptions}>
