@@ -1,11 +1,11 @@
-import { Button, IconButton, TextField } from '@mui/material'
+import { Button, InputAdornment, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import CloseIcon from '@mui/icons-material/Close';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import SendIcon from '@mui/icons-material/Send';
 
 
 const Message = () => {
@@ -44,18 +44,59 @@ const Message = () => {
 
     const drawerContent = () => (
         <Box
-            sx={{ width: 400, padding: "0 20px" }} // You can adjust the width as needed
-            role="presentation"
+    sx={{
+        width: 400,
+        padding: "20px",
+        backgroundColor: "#FFFFFF", // Màu nền trắng
+        borderRadius: "10px", // Bo tròn các góc
+        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)", // Thêm bóng
+        textAlign: "center", // Căn giữa văn bản
+    }}
+    role="presentation"
+>
+    <h2 className="pt-4 pb-3" style={{ fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}>
+        Đặt phòng, đặt chỗ
+    </h2>
+    <img
+        src={space.images[0]}
+        alt=""
+        style={{
+            width: "100%",
+            height: "auto",
+            objectFit: "cover",
+            borderRadius: "10px", // Bo tròn hình ảnh
+        }}
+    />
+    <h4 style={{ marginTop: "15px", marginBottom: "10px" }}>{space.name}</h4>
+    <p style={{ fontSize: "13px", color: "#555" }}>{space.description}</p>
+    <h4 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "15px", fontWeight: "bold" }}>
+        Giá phòng
+        <span style={{ fontWeight: "bold", color: "#333" }}>{space.pricePerHour}/giờ</span>
+    </h4>
+    <Link to={`/spaces/${id}`} style={{ textDecoration: "none", color: "black" }}>
+        <Button
+            variant="outlined"
+            sx={{
+                backgroundColor: 'white',
+                color: 'black',
+                display: 'block',
+                margin: '0 auto',
+                fontSize: "18px",
+                padding: "10px 20px",
+                width: "100%",
+                border: '1px solid black', // Đặt viền màu đen
+                borderRadius: '5px', // Bo tròn nút
+                marginTop: "20px",
+                '&:hover': {
+                    backgroundColor: '#F7F7F7', // Màu nền khi hover
+                },
+            }}
         >
-            <h2 className="text-center pt-4 pb-3">Đặt phòng , đặt chỗ</h2>
-            <img src={space.images[0]} alt=""
-                style={{ width: "100%", height: "auto", objectFit: "cover" }}
-            />
-            <h4>{space.name}</h4>
-            <h4>{space.pricePerHour}/giờ</h4>
+            Yêu cầu đặt phòng
+        </Button>
+    </Link>
+</Box>
 
-
-        </Box>
     );
 
     return (
@@ -83,7 +124,7 @@ const Message = () => {
                 </Col>
                 <Col md={9} style={{ border: "solid 2px #ECECEC", height: "88vh", position: "relative" }}>
                     <Row className='pt-4 pb-4 ' style={{ borderBottom: "solid 2px #ECECEC" }}>
-                        <Col md={10} className="d-flex align-items-center ps-5" >
+                        <Col md={9} className="d-flex align-items-center ps-5" >
 
                             <div style={{ display: 'flex' }}>
                                 <img
@@ -100,8 +141,8 @@ const Message = () => {
                             </div>
                             <h3 style={{ margin: 0 }}>Tên space</h3>
                         </Col>
-                        <Col md={2}>
-                            <Button variant='contained' color='#ECECEC' onClick={toggleDrawer(true)}>Hiển thị thông tin đặt phòng </Button>
+                        <Col md={3} className="text-end">
+                            <Button variant='contained' color='#ECECEC' onClick={toggleDrawer(true)}>Hiển thị thông tin  phòng </Button>
                         </Col>
                     </Row>
 
@@ -185,7 +226,18 @@ const Message = () => {
                                 label="Nhập tin nhắn"
                                 variant="outlined"
                                 fullWidth
+
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <SendIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+
                             />
+
+
                         </Col>
                     </Row>
                 </Col>
