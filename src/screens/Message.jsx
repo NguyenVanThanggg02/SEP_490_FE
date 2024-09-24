@@ -1,13 +1,39 @@
 import { Button, IconButton, TextField } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CloseIcon from '@mui/icons-material/Close';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 
 const Message = () => {
     const [openDrawer, setOpenDrawer] = React.useState(false);
+    const location = useLocation();
+    const [space, setSpace] = useState({});
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { id } = location.state || {}; // Lấy id từ state
+
+    const fetchSpaceById = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:9999/spaces/${id}`);
+            setSpace(response.data);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false); // Tắt trạng thái loading dù thành công hay thất bại
+        }
+    };
+
+    // Gọi API khi component được render
+    useEffect(() => {
+        fetchSpaceById(id);
+    }, [id]);
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -18,14 +44,17 @@ const Message = () => {
 
     const drawerContent = () => (
         <Box
-            sx={{ width: 300 }} // You can adjust the width as needed
+            sx={{ width: 400, padding: "0 20px" }} // You can adjust the width as needed
             role="presentation"
         >
-            <IconButton onClick={toggleDrawer(false)} style={{ marginLeft: 'auto' }}>
-                <CloseIcon />
-            </IconButton>
-            <h4>Đặt phòng , đặt chỗ</h4>
-            <p>Chi tiết về phòng sẽ hiển thị ở đây...</p>
+            <h2 className="text-center pt-4 pb-3">Đặt phòng , đặt chỗ</h2>
+            <img src={space.images[0]} alt=""
+                style={{ width: "100%", height: "auto", objectFit: "cover" }}
+            />
+            <h4>{space.name}</h4>
+            <h4>{space.pricePerHour}/giờ</h4>
+
+
         </Box>
     );
 
@@ -38,7 +67,7 @@ const Message = () => {
                     <Button variant="outlined" size="small" className='me-4 rounded-5  pt-2 pb-1 px-3 mb-4'>Chưa đọc</Button>
                     <Row style={{ height: "13%" }}>
                         <Row style={{ margin: "0 auto", width: "90%", backgroundColor: "whitesmoke", borderRadius: "10px" }} >
-                            <Col md={3} style={{ border: "solid 2px red", padding: "10px 5px" }}>
+                            <Col md={3} style={{ padding: "10px 5px" }}>
                                 <img
                                     src="https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg"
                                     alt="avatarSpaceOwner"
@@ -76,7 +105,7 @@ const Message = () => {
                         </Col>
                     </Row>
 
-                     <p className="text-center"><b>Hôm nay</b></p>               
+                    <p className="text-center"><b>Hôm nay</b></p>
                     <Row style={{}}>
                         {/* Tin nhắn của mình */}
                         <Col md={12} className="d-flex mb-3">
@@ -84,7 +113,7 @@ const Message = () => {
                             <div className='d-flex pe-5' style={{ alignItems: "flex-start", flexDirection: "column", marginLeft: 'auto' }}>
                                 {/* Tên và thời gian */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '98%' }}>
-                                    <p style={{ marginLeft: 'auto',marginBottom:0 }}>thời gian nhắn </p>
+                                    <p style={{ marginLeft: 'auto', marginBottom: 0 }}>thời gian nhắn </p>
                                 </div>
                                 {/* Tin nhắn đáp */}
                                 <div style={{
@@ -161,8 +190,8 @@ const Message = () => {
                     </Row>
                 </Col>
             </Row>
-                        {/* Drawer */}
-                        <Drawer
+            {/* Drawer */}
+            <Drawer
                 anchor="right"
                 open={openDrawer}
                 onClose={toggleDrawer(false)}
