@@ -19,6 +19,7 @@ const Comment = () => {
   const [editComment, setEditComment] = useState("");
   const username = localStorage.getItem("username");
   const fullname = localStorage.getItem("fullname");
+  const userId = localStorage.getItem("userId");
 
   const [selectedComment, setSelectedComment] = useState(null);
   const [updateInput, setUpdateInput] = useState(false);
@@ -35,11 +36,6 @@ const Comment = () => {
 
     return formattedDate;
   };
-
-  const token = localStorage.getItem("accessToken");
-  console.log(token);
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  const userId = payload.user.id;
 
   useEffect(() => {
     axios

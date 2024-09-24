@@ -33,6 +33,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("username", username); // Lưu tên người dùng vào localStorage
       localStorage.setItem("fullname", fullname); // Lưu tên người dùng vào localStorage
+      localStorage.setItem("userId", id); // Lưu tên người dùng vào localStorage
 
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Login successful!");
