@@ -36,7 +36,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Login successful!");
-      nav("/register");
+      nav("/");
     } catch (error) {
       setError(error.response.data.error);
       toast.error("Username or password is incorrect");

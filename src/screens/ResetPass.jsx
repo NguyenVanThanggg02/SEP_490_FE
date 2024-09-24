@@ -9,13 +9,15 @@ const ResetPass = () => {
   const { id, token } = useParams();
   const nav = useNavigate();
   const handleSubmit = (e) => {
-    e.prevenDefault();
+    e.preventDefault()
     axios
       .post(`http://localhost:9999/users/reset-password/${id}/${token}`, {
         password,
       })
       .then((res) => {
         if (res.data.Status === "Success") {
+          console.log('success');
+          
           toast.success("Thành Công");
           nav("/login");
         }

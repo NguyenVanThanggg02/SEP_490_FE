@@ -17,22 +17,33 @@ const ChangePass = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [reNewPass, setReNewPass] = useState("");
+  const [username, setUsername] = useState("");
   const nav = useNavigate();
 
   const handleUpdate = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
+    console.log(token);
 
     if (!token) {
       toast.error("Token không tồn tại. Vui lòng đăng nhập lại!");
       nav("/login");
       return;
     }
-
     const payload = JSON.parse(atob(token.split(".")[1]));
-    const username = payload.username;
+    const id = payload.user.id;
+    console.log(id);
     
+    axios
+      .get(`http://localhost:9999/users/${id}`)
+      .then((response) => {
+        setUsername(response.data.username);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     console.log(username);
-    
+
     if (!username) {
       toast.error("Không thể lấy thông tin người dùng.");
       return;

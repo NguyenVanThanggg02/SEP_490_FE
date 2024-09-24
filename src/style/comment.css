@@ -112,7 +112,7 @@
 .comment-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
   padding: 0;
   margin: 0;
 }
@@ -174,17 +174,13 @@
   color: #5f6064;
 }
 
-.comment-content {
-  /* Các thuộc tính hiện tại của comment-content */
-  margin: 5px; /* Bỏ khoảng cách mặc định */
-}
 .text-box {
   width: 100%;
   height: fit-content;
   background-color: #f1f1f1;
   padding: 8px;
-  border-bottom-left-radius:7px;
-  border-bottom-right-radius:7px
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px
 }
 
 .text-box .box-container {
@@ -249,18 +245,20 @@
     opacity: 0;
   }
 }
+
 /* From Uiverse.io by elijahgummer */
 .radio {
   display: flex;
   gap: 10px;
+  flex-direction: row-reverse;
 }
 
-.radio > input {
+.radio>input {
   position: absolute;
   appearance: none;
 }
 
-.radio > label {
+.radio>label {
   cursor: pointer;
   font-size: 30px;
   position: relative;
@@ -268,13 +266,13 @@
   transition: transform 0.3s ease;
 }
 
-.radio > label > svg {
+.radio>label>svg {
   fill: #666;
   transition: fill 0.3s ease;
 }
 
-.radio > label::before,
-.radio > label::after {
+.radio>label::before,
+.radio>label::after {
   content: "";
   position: absolute;
   width: 6px;
@@ -287,51 +285,53 @@
   animation: particle-explosion 1s ease-out;
 }
 
-.radio > label::before {
+.radio>label::before {
   top: -15px;
   left: 50%;
   transform: translateX(-50%) scale(0);
 }
 
-.radio > label::after {
+.radio>label::after {
   bottom: -15px;
   left: 50%;
   transform: translateX(-50%) scale(0);
 }
 
-.radio > label:hover::before,
-.radio > label:hover::after {
+.radio>label:hover::before,
+.radio>label:hover::after {
   opacity: 1;
   transform: translateX(-50%) scale(1.5);
 }
 
-.radio > label:hover {
+.radio>label:hover {
   transform: scale(1.2);
   animation: pulse 0.6s infinite alternate;
 }
 
 /* Star glow and animation on hover */
-.radio > label:hover > svg {
+.radio>label:hover>svg {
   fill: #ff9e0b;
   filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
   animation: shimmer 1s ease infinite alternate;
 }
 
-.radio > input:checked + label > svg {
+.radio>input:checked+label>svg {
   fill: #ff9e0b;
   filter: drop-shadow(0 0 15px rgba(255, 158, 11, 0.9));
   animation: pulse 0.8s infinite alternate;
 }
 
-.radio > input:checked + label ~ label > svg,
-.radio > input:checked + label > svg {
-  fill: #ff9e0b; /* Highlight the stars */
+.radio>input:checked+label~label>svg,
+.radio>input:checked+label>svg {
+  fill: #ff9e0b;
+  /* Highlight the stars */
 }
 
 @keyframes pulse {
   0% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(1.1);
   }
@@ -342,10 +342,12 @@
     opacity: 0;
     transform: scale(0.5);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.2);
   }
+
   100% {
     opacity: 0;
     transform: scale(0.5);
@@ -356,138 +358,72 @@
   0% {
     filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
   }
+
   100% {
     filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
   }
 }
 
-.radio > input:checked + label:hover,
-.radio > input:checked + label:hover ~ label {
-  fill: #e58e09;
-}
-
-.radio > label:hover,
-.radio > label:hover ~ label {
-  fill: #ff9e0b;
-}
-
-.radio input:checked ~ label svg {
-  fill: #ffa723;
-}
-
-.radio input {
-  display: none; 
-}
-
 .reply-button {
-  margin-left: 100px; /* Đẩy nút sang bên phải */
-  width: 90px; 
-  padding: 10px 15px; 
-  font-size: 14px; 
-  color: rgb(14, 13, 13); 
-  border: none; 
-  border-radius: 5px;
-  transition: text-decoration 0.3s;
-}
-
-
-.reply-button:hover {
-  text-decoration: underline; 
-}
-
-.radio label {
   cursor: pointer;
-  margin-left: 5px;
-}
-
-.reply-box {
-  width: 100%; 
-  display: flex; 
-  align-items: center; 
-  max-width: 1750px; 
-}
- 
-.reply-box textarea {
-  width: 100%; 
-  height: 100px; 
-  border: 1px solid #ccc; 
-  border-radius: 5px; 
-  padding: 10px; 
-  resize: none; 
-}
-
-.reply-box .send-reply {
-  margin-left: 10px; 
-  padding: 15px 20px; 
-  color: #1717ec;
-  font-size: 25px; 
-  border: none;
-  border-radius: 5px; 
-  cursor: pointer; 
-}
-
-.options-menu {
-  position: relative; /* Để dropdown có thể được định vị tương đối */
-}
-
-.options-menu div {
-  cursor: pointer; /* Thay đổi con trỏ thành pointer để người dùng biết đây là nút có thể nhấn */
-  text-decoration: none; /* Đảm bảo không có gạch chân mặc định */
-}
-
-.options-menu div:hover {
-  text-decoration: underline; /* Thêm gạch chân khi hover */
-}
-
-.options-dropdown {
-  position: absolute; /* Đặt vị trí tuyệt đối để menu nằm ngay bên dưới dấu "..." */
-  top: 100%; /* Đưa menu xuống dưới dấu "..." */
-  left: 0; /* Đảm bảo menu nằm căn trái */
-  border: 1px solid #ccc; /* Thêm viền cho menu */
-  z-index: 1000; /* Đảm bảo menu luôn nằm trên các phần tử khác */
-  border: none; /* Loại bỏ viền */
-  background: none; /* Loại bỏ màu nền */
-}
-
-.icon-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100px; /* Chỉnh độ rộng theo ý bạn */
-}
-
-
-.icon-container div {
-  flex: 1;
-  text-align: center;
-}
-
-.icon-container svg {
-  cursor: pointer; /* Thay đổi con trỏ thành pointer để người dùng biết đây là nút có thể nhấn */
-}
-
-.comment-wrapper {
-  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử nằm ngang */
-  align-items: center; /* Căn chỉnh theo chiều dọc để đảm bảo chúng nằm giữa nhau */
-}
-
-
-.options-menu {
-  position: relative; /* Đặt vị trí tương đối để các phần tử con có thể sử dụng vị trí tuyệt đối */
-  cursor: pointer; /* Thêm con trỏ tay khi di chuột vào */
+  /* Thay đổi con trỏ thành tay khi di chuột */
+  text-decoration: none;
+  /* Không có gạch chân mặc định */
   margin-left: 50px;
 }
 
-
-.vertical-dots {
-  display: flex;
-  flex-direction: column; /* Xếp dấu chấm theo chiều dọc */
-  align-items: center; /* Căn giữa theo chiều ngang */
-  cursor: pointer; /* Con trỏ khi hover */
+.reply-button:hover {
+  text-decoration: underline;
+  /* Gạch chân khi di chuột vào */
+}
+.comment {
+  margin-bottom: 15px; /* Khoảng cách giữa comment và phần Form */
 }
 
-.vertical-dots span {
-  font-size: 20px; /* Kích thước dấu chấm */
-  font-weight: bold; /* Làm đậm dấu chấm */
-  line-height: 0.4; /* Giảm khoảng cách giữa các dấu chấm */
+.comment form {
+  margin-top: 10px; /* Khoảng cách phía trên Form */
+}
+
+.comment-container {
+  display: flex;
+  flex-direction: column; /* Đảm bảo các phần tử con được sắp xếp dọc */
+  margin-bottom: 15px;    /* Khoảng cách giữa các comment */
+}
+
+.comment-content {
+  margin-bottom: 10px;    /* Khoảng cách giữa comment và Form */
+}
+
+form {
+  display: flex;
+  flex-direction: row;     /* Để các phần trong Form nằm ngang */
+  margin-top: 10px;
+}
+
+.comment-container {
+  display: flex;
+  flex-direction: column;  /* Căn theo chiều dọc */
+  margin-bottom: 20px;     /* Khoảng cách giữa các phần tử */
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;  /* Đánh giá sao và comment nằm trên nhau */
+  margin-bottom: 15px;     /* Khoảng cách giữa phần đánh giá và form */
+}
+
+.stars {
+  margin-bottom: 10px;     /* Khoảng cách giữa ngôi sao và nội dung comment */
+}
+
+form {
+  display: flex;
+  flex-direction: row;      /* Các phần trong form nằm ngang */
+  margin-top: 10px;
+}
+
+.large-textarea {
+  height: 70px; /* Height */
+  width: 100%; /* Set width to 100% to span available space */
+  max-width: 600px; /* Optional max width */
 }

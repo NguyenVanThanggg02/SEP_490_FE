@@ -23,10 +23,9 @@ function App() {
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/host_profile" element={<HostProfile />} />
         <Route path="/chang_pass" element={<ChangePass />} />
-        <Route path="/reset_pass/:id/:token" element={<ResetPass />} />
+        <Route path="/reset-password/:id/:token" element={<ResetPass />} />
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
-        <Route path="/comment" element={<Comment />} />
       </Routes>
     </BrowserRouter>
   );
