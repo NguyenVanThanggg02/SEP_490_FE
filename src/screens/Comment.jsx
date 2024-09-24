@@ -15,10 +15,11 @@ const Comment = () => {
   const { id } = useParams();
   const [listComments, setListComments] = useState([]);
   const [text, setText] = useState("");
+  const [rating, setRating] = useState(0);
   const [editComment, setEditComment] = useState("");
   const username = localStorage.getItem("username");
   const fullname = localStorage.getItem("fullname");
-  const userId = localStorage.getItem("userId");
+
   const [selectedComment, setSelectedComment] = useState(null);
   const [updateInput, setUpdateInput] = useState(false);
   const [selectedCommentIndex, setSelectedCommentIndex] = useState(null);
@@ -34,6 +35,11 @@ const Comment = () => {
 
     return formattedDate;
   };
+
+  const token = localStorage.getItem("accessToken");
+  console.log(token);
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  const userId = payload.user.id;
 
   useEffect(() => {
     axios
@@ -69,8 +75,9 @@ const Comment = () => {
     axios
       .post("http://localhost:9999/reviews", {
         text: text,
-        userId: userId,
+        rating: rating,
         spaceId: id,
+        userId: userId,
       })
 
       .then((response) => {
@@ -84,6 +91,7 @@ const Comment = () => {
             {
               _id: newCommentId,
               userId: { fullname: fullname },
+              rating:rating,
               text: text,
               createdAt: time,
             },
@@ -91,6 +99,7 @@ const Comment = () => {
           ]);
           toast.success("Comment created successfully");
           setText("");
+          setRating(0)
           console.log(response.data);
         } else {
           console.log("Comment thất bại");
@@ -147,16 +156,17 @@ const Comment = () => {
     <div class="card">
       <span class="title">Bình luận</span>
       {username && (
-        <div
+        <Row
           style={{
             border: "solid #CCC 1px",
             margin: "20px",
+            display: "flex",
             boxShadow: "5px 10px 10px 5px #C0C0C0",
             height: "85px",
             borderRadius: "20px",
           }}
         >
-          <Col>
+          <Col md={10}>
             <Form className="d-flex align-items-center mt-4">
               <Image
                 src="https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg"
@@ -177,20 +187,54 @@ const Comment = () => {
                   onChange={(e) => setText(e.target.value)}
                 />
               </Form.Group>
-              <div style={{ marginRight: "15px" }}>
-                {username && (
-                  <Button
-                    type="submit"
-                    style={{ backgroundColor: "#D3D3D3", border: "none" }}
-                    onClick={handleCreate}
-                  >
-                    <SendFill style={{ fontSize: "20px", color: "#696969" }} />
-                  </Button>
-                )}
-              </div>
             </Form>
           </Col>
-        </div>
+          <Col md={1} className="d-flex align-items-center">
+            <div className="rating" style={{ marginTop: "-15px" }}>
+              <div className="radio">
+                {[5,4,3,2,1].map((value) => (
+                  <React.Fragment key={value}>
+                    <input
+                      value={value}
+                      name="rating"
+                      type="radio"
+                      id={`rating-${value}`}
+                      checked={rating === value}
+                      onChange={() => setRating(value)} 
+                    />
+                    <label
+                      title={`${value} star${value > 1 ? "s" : ""}`}
+                      htmlFor={`rating-${value}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="13px"
+                        viewBox="0 0 576 512"
+                      >
+                        <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
+                      </svg>
+                    </label>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </Col>
+          <Col
+            md={1}
+            className="d-flex align-items-center justify-content-end"
+            style={{ marginLeft: "auto" }}
+          >
+            {username && (
+              <Button
+                type="submit"
+                style={{ backgroundColor: "#D3D3D3", border: "none" }}
+                onClick={handleCreate}
+              >
+                <SendFill style={{ fontSize: "20px", color: "#696969" }} />
+              </Button>
+            )}
+          </Col>
+        </Row>
       )}
       {listComments.map((c, index) => (
         <div class="comments" key={index}>
@@ -298,7 +342,10 @@ const Comment = () => {
                   </Row>
                 ) : (
                   <div>
-                    <div className="rating" style={{ marginBottom:'5px', marginLeft:'14px' }}>
+                    <div
+                      className="rating"
+                      style={{ marginBottom: "5px", marginLeft: "14px" }}
+                    >
                       <div className="radio">
                         {[5, 4, 3, 2, 1].map((value) => (
                           <React.Fragment key={value}>
@@ -318,7 +365,7 @@ const Comment = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 height="13px"
                                 viewBox="0 0 576 512"
-                                fill={c.rating >= value ? "#FFD700" : "#e4e5e9"} 
+                                fill={c.rating >= value ? "#FFD700" : "#e4e5e9"}
                               >
                                 <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"></path>
                               </svg>
