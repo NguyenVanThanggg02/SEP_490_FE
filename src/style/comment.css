@@ -425,3 +425,69 @@
   border-radius: 5px; 
   cursor: pointer; 
 }
+
+.options-menu {
+  position: relative; /* Để dropdown có thể được định vị tương đối */
+}
+
+.options-menu div {
+  cursor: pointer; /* Thay đổi con trỏ thành pointer để người dùng biết đây là nút có thể nhấn */
+  text-decoration: none; /* Đảm bảo không có gạch chân mặc định */
+}
+
+.options-menu div:hover {
+  text-decoration: underline; /* Thêm gạch chân khi hover */
+}
+
+.options-dropdown {
+  position: absolute; /* Đặt vị trí tuyệt đối để menu nằm ngay bên dưới dấu "..." */
+  top: 100%; /* Đưa menu xuống dưới dấu "..." */
+  left: 0; /* Đảm bảo menu nằm căn trái */
+  border: 1px solid #ccc; /* Thêm viền cho menu */
+  z-index: 1000; /* Đảm bảo menu luôn nằm trên các phần tử khác */
+  border: none; /* Loại bỏ viền */
+  background: none; /* Loại bỏ màu nền */
+}
+
+.icon-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px; /* Chỉnh độ rộng theo ý bạn */
+}
+
+
+.icon-container div {
+  flex: 1;
+  text-align: center;
+}
+
+.icon-container svg {
+  cursor: pointer; /* Thay đổi con trỏ thành pointer để người dùng biết đây là nút có thể nhấn */
+}
+
+.comment-wrapper {
+  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử nằm ngang */
+  align-items: center; /* Căn chỉnh theo chiều dọc để đảm bảo chúng nằm giữa nhau */
+}
+
+
+.options-menu {
+  position: relative; /* Đặt vị trí tương đối để các phần tử con có thể sử dụng vị trí tuyệt đối */
+  cursor: pointer; /* Thêm con trỏ tay khi di chuột vào */
+  margin-left: 50px;
+}
+
+
+.vertical-dots {
+  display: flex;
+  flex-direction: column; /* Xếp dấu chấm theo chiều dọc */
+  align-items: center; /* Căn giữa theo chiều ngang */
+  cursor: pointer; /* Con trỏ khi hover */
+}
+
+.vertical-dots span {
+  font-size: 20px; /* Kích thước dấu chấm */
+  font-weight: bold; /* Làm đậm dấu chấm */
+  line-height: 0.4; /* Giảm khoảng cách giữa các dấu chấm */
+}

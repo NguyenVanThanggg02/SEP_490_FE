@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import "../style/comment.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SendArrowUpFill } from "react-bootstrap-icons";
+import { PenFill, SendArrowUpFill, Trash3Fill } from "react-bootstrap-icons";
 
 
 const Comment = () => {
   const [showReply, setShowReply] = useState(false); // state để điều khiển việc hiển thị hộp phản hồi
+  const [showOptions, setShowOptions] = useState(false);
 
   const toggleReply = () => {
     setShowReply(!showReply); // chuyển đổi trạng thái hiển thị
+  };
+  const toggleOptions = () => {
+    setShowOptions(!showOptions);
   };
 
   return (
@@ -96,11 +100,32 @@ const Comment = () => {
             </div>
           </div>
 
-          <p className="comment-content">
-            I've been using this product for a few days now and I'm really
-            impressed! The interface is intuitive and easy to use, and the
-            features are exactly what I need to streamline my workflow.
-          </p>
+          <div className="comment-wrapper">
+            <p className="comment-content">
+              I've been using this product for a few days now and I'm really
+              impressed! The interface is intuitive and easy to use, and the
+              features are exactly what I need to streamline my workflow.
+            </p>
+            <div className="options-menu">
+              <div className="vertical-dots" onClick={toggleOptions}>
+                <span>.</span>
+                <span>.</span>
+                <span>.</span>
+              </div>
+
+              {showOptions && (
+                <div className="options-dropdown">
+                  <ul>
+                    <li className="icon-container">
+                      <div><PenFill /></div>
+                      <div><Trash3Fill /></div>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+
 
           {/* Nút phản hồi */}
           <div className="reply-button" onClick={toggleReply}>
