@@ -1,3 +1,4 @@
+
 .comparison-table-v2 {
   width: 80%;
   margin: 0 auto; /* Center the table horizontally */
@@ -86,7 +87,6 @@ td:not(:first-child) {
   color: gray;
 }
 
-/* Phone */
 @media screen and (max-width: 768px) {
   .zui-table thead th,
   .zui-table tbody td {
