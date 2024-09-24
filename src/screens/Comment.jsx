@@ -7,6 +7,10 @@ import { PenFill, SendArrowUpFill, Trash3Fill } from "react-bootstrap-icons";
 const Comment = () => {
   const [showReply, setShowReply] = useState(false); // state để điều khiển việc hiển thị hộp phản hồi
   const [showOptions, setShowOptions] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Kiểm soát chế độ chỉnh sửa
+  const [commentContent, setCommentContent] = useState(
+    "I've been using this product for a few days now and I'm really impressed!"
+  ); // Lưu trữ nội dung bình luận
 
   const toggleReply = () => {
     setShowReply(!showReply); // chuyển đổi trạng thái hiển thị
@@ -101,11 +105,21 @@ const Comment = () => {
           </div>
 
           <div className="comment-wrapper">
-            <p className="comment-content">
-              I've been using this product for a few days now and I'm really
-              impressed! The interface is intuitive and easy to use, and the
-              features are exactly what I need to streamline my workflow.
-            </p>
+  {isEditing ? (
+    <>
+      <textarea
+        value={commentContent}
+        onChange={(e) => setCommentContent(e.target.value)}
+        style={{ width: '100%', height: '100px', fontSize: '16px' }} // Điều chỉnh kích thước và font-size
+      />
+      {/* Nút Lưu chỉ hiển thị khi đang chỉnh sửa */}
+      <button onClick={() => setIsEditing(false)}>Lưu</button>
+    </>
+  ) : (
+    <p className="comment-content">{commentContent}</p>
+  )}
+
+
             <div className="options-menu">
               <div className="vertical-dots" onClick={toggleOptions}>
                 <span>.</span>
@@ -117,7 +131,8 @@ const Comment = () => {
                 <div className="options-dropdown">
                   <ul>
                     <li className="icon-container">
-                      <div><PenFill /></div>
+                      <div><PenFill onClick={() => setIsEditing(true)} /></div>
+
                       <div><Trash3Fill /></div>
                     </li>
                   </ul>
