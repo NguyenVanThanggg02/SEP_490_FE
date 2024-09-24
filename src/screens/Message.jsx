@@ -15,6 +15,7 @@ const Message = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const { id } = location.state || {}; // Lấy id từ state
+console.log(id);
 
     const fetchSpaceById = async (id) => {
         try {
@@ -99,6 +100,8 @@ const Message = () => {
 
     );
 
+    console.log(space);
+
     return (
         <Container fluid>
             <Row>
@@ -109,11 +112,35 @@ const Message = () => {
                     <Row style={{ height: "13%" }}>
                         <Row style={{ margin: "0 auto", width: "90%", backgroundColor: "whitesmoke", borderRadius: "10px" }} >
                             <Col md={3} style={{ padding: "10px 5px" }}>
+                            <div style={{ position: "relative", width: "60px", height: "60px" }}>
+                                {/* space image */}
                                 <img
-                                    src="https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg"
-                                    alt="avatarSpaceOwner"
-                                    style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                    src={space.images[0]}
+                                    alt="background"
+                                    style={{
+                                        objectFit: "cover",
+                                        width: "60px",
+                                        height: "60px",
+                                        borderRadius: "12px",
+                                    }}
                                 />
+                                {/* user Avatar  */}
+                                <img
+                                    src={space.images[1]}
+                                    alt="avatar"
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "-10px",
+                                        left: "70%",
+                                        transform: "translateX(-50%)",
+                                        objectFit: "cover",
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "50%",
+                                        border: "2px solid white",
+                                    }}
+                                />
+                            </div>
                             </Col>
                             <Col md={9}>
                                 <h4>Tên Space Owner</h4>
@@ -178,7 +205,7 @@ const Message = () => {
                         <Col md={12} className="d-flex mb-3 ps-5">
                             {/* Avatar */}
                             <img
-                                src="https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg"
+                                src={space.images[0]}
                                 alt="avatar"
                                 style={{
                                     objectFit: "cover",
