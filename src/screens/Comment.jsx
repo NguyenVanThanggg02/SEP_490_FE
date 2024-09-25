@@ -464,7 +464,7 @@ const Comment = () => {
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     style={{ flexGrow: 1, marginRight: '10px' }}
-                    className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhập phản hồii
+                    className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhập 
                     
 
                   />
