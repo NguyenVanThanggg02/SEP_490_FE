@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    //asdhsdssdfđfs
     <div className="airbnb-listing d-flex">
       <header className="header">
         <div className="logo">
