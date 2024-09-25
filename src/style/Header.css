@@ -5,34 +5,14 @@ body {
   background-color: #fff;
 }
 
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ddd;
-}
-
-.navbar .logo {
-  display: flex;
-  align-items: center;
-}
-
 .navbar .logo img {
   height: 200px;
   width: 250px;
-  margin-right: 10px;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
 }
 
 .search-container {
   display: flex;
+  width: 80%;
   align-items: center;
   background-color: #fff;
   border-radius: 50px;
@@ -41,7 +21,7 @@ body {
 }
 
 .search-item {
-  margin: 0 15px;
+  margin: 0 25px;
   position: relative;
   display: flex;
   flex-direction: column;
