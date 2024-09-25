@@ -4,6 +4,7 @@ import Logo from "../assets/logo.png";
 import { Col, Row } from "react-bootstrap";
 import MenuUser from "./Menu";
 import AccountMenu from "./Menu";
+import { Link } from "react-router-dom";
 
 const Header = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
@@ -11,7 +12,9 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
       <Col md={2}>
         <div className="navbar">
           <div className="logo">
-            <img src={Logo} height="100" width="100" alt="logo" />
+            <Link to={"/"}>
+              <img src={Logo} height="100" width="100" alt="logo" />
+            </Link>
           </div>
         </div>
       </Col>

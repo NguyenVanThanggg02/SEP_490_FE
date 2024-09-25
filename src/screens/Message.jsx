@@ -12,9 +12,9 @@ const Message = () => {
   const location = useLocation();
   const [space, setSpace] = useState({});
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { id } = location.state || {}; // Lấy id từ state
+  const { id } = location.state; // Lấy id từ state
   // const {id} = useParams()
   const userId = localStorage.getItem("userId");
 
@@ -55,8 +55,8 @@ const Message = () => {
       axios
         .get(`http://localhost:9999/message/${userId}/${receiverId}/${id}`)
         .then((res) => {
-          console.log(res.data);
-          setMessage(res.data);
+          console.log(res.data.data);
+          setMessage(res.data.data.messageContent);
         })
         .catch((err) => {
           console.log(err.message);
@@ -66,7 +66,7 @@ const Message = () => {
 
   useEffect(() => {
     fetchSpaceById(id);
-  }, []);
+  }, [id]);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -378,7 +378,7 @@ const Message = () => {
                 id="outlined-basic"
                 label="Nhập tin nhắn"
                 variant="outlined"
-                // value={message}
+                value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 fullWidth
                 InputProps={{
