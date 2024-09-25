@@ -1,61 +1,77 @@
-.header {
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}
+
+.navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 20px;
-  background-color: white;
   border-bottom: 1px solid #ddd;
 }
 
-.logo img {
-  width: 100px;
-} 
-
-.user-options {
+.navbar .logo {
   display: flex;
-  gap: 10px;
+  align-items: center;
 }
 
-.user-options button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
+.navbar .logo img {
+  height: 200px;
+  width: 250px;
+  margin-right: 10px;
 }
+
 .search-bar {
   display: flex;
-  gap: 10px;
-  margin: 20px 0;
-  background-color: #f7f7f7;
-  padding: 15px;
-  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.search-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
-
-.search-btn {
-  padding: 10px 20px;
-  background-color: #ff385c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.filter-bar {
+.search-container {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 50px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px;
 }
 
-.filter-bar button {
-  background-color: white;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 8px;
+.search-item {
+  margin: 0 15px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.search-item span {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.search-item input {
+  width: 120px;
+  padding: 5px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.search-button {
+  background-color: #ff5a5f;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
