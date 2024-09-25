@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function BookingDetails() {
   const { id } = useParams();
@@ -151,6 +151,11 @@ function BookingDetails() {
                 <Typography variant="h6">
                   Chủ nhà: {spaceData.host?.name || "Unknown"}
                 </Typography>
+                <Link to="/mess" state={{ id }}>
+                  <Button sx={{ backgroundColor: "black", color: "white" }}>
+                    Nhắn tin cho chủ nhà
+                  </Button>
+                </Link>
                 <Typography variant="body2" color="textSecondary">
                   {spaceData.host?.experience} tháng kinh nghiệm đón tiếp khách
                 </Typography>

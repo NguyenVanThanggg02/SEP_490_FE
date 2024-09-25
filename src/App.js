@@ -9,6 +9,8 @@ import LoginForm from "./screens/LoginForm";
 import ChangePass from "./screens/ChangePass";
 import ResetPass from "./screens/ResetPass";
 import Forgot_Pass from "./screens/Forgot_Pass";
+import Message from "./screens/Message";
+
 import Home from "./screens/Home";
 import { useEffect, useState } from "react";
 function App() {
@@ -37,6 +39,8 @@ function App() {
         <Route path="/chang_pass" element={<ChangePass />} />
         <Route path="/reset-password/:id/:token" element={<ResetPass />} />
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
+        {/* <Route path="/:id" element={<BookingDetails />} /> */}
+        <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
       </Routes>
     </BrowserRouter>
