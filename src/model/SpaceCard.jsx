@@ -22,7 +22,7 @@ function SpaceCard({ space }) {
               <img
                 className="d-block w-100"
                 src={img}
-                alt={`Slide ${index + 1}`}
+                alt={`Ảnh slide ${index + 1}`}
                 height="180"
               />
             </Carousel.Item>
@@ -32,7 +32,7 @@ function SpaceCard({ space }) {
             <img
               className="d-block w-100"
               src="default-image-url.png"
-              alt="Default Image"
+              alt="Ảnh mặc định"
               height="180"
             />
           </Carousel.Item>
@@ -42,17 +42,15 @@ function SpaceCard({ space }) {
         <Card.Title style={{ fontSize: "16px", fontWeight: "bold" }}>
           {space.name}
         </Card.Title>
+
         <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-          {space.description}
+          Địa điểm: {space.location}
         </Card.Text>
         <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-          Location: {space.location}
+          Giá mỗi giờ: {space.pricePerHour} VND
         </Card.Text>
         <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-          Price per Hour: {space.pricePerHour} VND
-        </Card.Text>
-        <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-          Status: {space.status}
+          Trạng thái: {space.status}
         </Card.Text>
       </Card.Body>
     </Card>
