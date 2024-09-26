@@ -37,18 +37,18 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const storedUsername = localStorage.getItem("username");
+      const storedUsername = localStorage.getItem("userId");
       if (storedUsername) {
         fetchUserData(storedUsername);
       }
     }
   }, [isLoggedIn]);
 
-  const fetchUserData = async (username) => {
+  const fetchUserData = async (userId) => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `http://localhost:9999/users/${username}`,
+        `http://localhost:9999/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
