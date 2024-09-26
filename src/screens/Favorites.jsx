@@ -5,7 +5,7 @@ import { Trash } from "react-bootstrap-icons";
 import "../style/Favorites.css";
 
 const Favorites = () => {
-  // Hardcoded list of favorite products
+  // Hardcoded list
   const [listFavorites, setListFavorites] = useState([
     {
       _id: "1",
