@@ -14,9 +14,10 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     const form = formRef.current;
-    const username = form.elements["input-name"].value;
-    const password = form.elements["password_field"].value;
+    const username = form.elements["email_field"].value; // Sử dụng id đúng
+    const password = form.elements["password_field"].value; // Sử dụng id đúng
 
     const data = { username, password };
 
@@ -31,16 +32,28 @@ const LoginForm = ({ setIsLoggedIn }) => {
         res.data;
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("username", username); // Lưu tên người dùng vào localStorage
-      localStorage.setItem("fullname", fullname); // Lưu tên người dùng vào localStorage
-      localStorage.setItem("userId", id); // Lưu tên người dùng vào localStorage
+      localStorage.setItem("username", username);
+      localStorage.setItem("fullname", fullname);
+      localStorage.setItem("userId", id);
 
       localStorage.setItem("isLoggedIn", "true");
-      toast.success("Login successful!");
+      toast.success("Đăng nhập thành công!");
+      setIsLoggedIn(true);
       nav("/");
     } catch (error) {
-      setError(error.response.data.error);
-      toast.error("Username or password is incorrect");
+      if (error.response) {
+        if (error.response.status === 403) {
+          toast.error("Người dùng bị cấm!");
+        } else {
+          setError(error.response.data.error || "Đăng nhập không thành công!");
+          toast.error(
+            error.response.data.error ||
+              "Tên người dùng hoặc mật khẩu không chính xác!"
+          );
+        }
+      } else {
+        toast.error("Đã xảy ra lỗi không xác định!");
+      }
     }
   };
 
