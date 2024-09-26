@@ -1,68 +1,164 @@
-import React from "react";
+import React, { useState } from "react";
 import "../style/login.css";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import logo from "../assets/logo.png";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterForm = () => {
+  const navigate = useNavigate(); // Hook to navigate after successful registration
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const { username, email, password, confirmPassword } = formData;
+
+    if (password !== confirmPassword) {
+      toast.error("Mật khẩu không khớp!");
+      return;
+    }
+
+    // Tạo đối tượng FormData
+    const formDataToSend = new FormData();
+    formDataToSend.append("username", username);
+    formDataToSend.append("gmail", email);
+    formDataToSend.append("password", password);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:9999/users/register",
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const { accessToken } = res.data;
+      localStorage.setItem("accessToken", accessToken);
+
+      toast.success(
+        "Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập..."
+      );
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        toast.error("Tên người dùng hoặc email đã tồn tại!");
+      } else if (error.response && error.response.data) {
+        toast.error(error.response.data.error || "Đăng ký không thành công!");
+      } else {
+        toast.error("Đã xảy ra lỗi không xác định!");
+      }
+    }
+  };
+
   return (
-    <form className="form_container">
+    <form className="form_container" onSubmit={handleRegister}>
+      <ToastContainer />
+      <div
+        className="logo_container d-flex justify-content-center"
+        style={{ width: "100%" }}
+      >
+        <img
+          src={logo}
+          height={80}
+          alt="logo"
+          style={{ objectFit: "contain" }}
+        />
+      </div>
       <div className="title_container">
-        <p className="title">Create an Account</p>
+        <p className="title">Đăng kí tài khoản với thông tin của bạn</p>
         <span className="subtitle">
-          Get started with our app, just create an account and enjoy the
-          experience.
+          Bắt đầu với ứng dụng của chúng tôi, chỉ cần tạo một tài khoản và
+          thưởng thức trải nghiệm.
         </span>
       </div>
-
       <div className="input_container">
-        <label className="input_label" htmlFor="username_field">
-          Username
+        <label className="input_label" htmlFor="username">
+          Tên người dùng
         </label>
         <input
           type="text"
-          id="username_field"
-          placeholder="Your Username"
+          id="username"
+          value={formData.username}
+          onChange={handleChange}
+          placeholder="Tên người dùng của bạn"
           className="input_field"
+          required
         />
       </div>
-
       <div className="input_container">
-        <label className="input_label" htmlFor="email_field">
+        <label className="input_label" htmlFor="email">
           Email
         </label>
         <input
           type="email"
-          id="email_field"
+          id="email"
+          value={formData.email}
+          onChange={handleChange}
           placeholder="name@mail.com"
           className="input_field"
+          required
         />
       </div>
-
       <div className="input_container">
-        <label className="input_label" htmlFor="password_field">
-          Password
+        <label className="input_label" htmlFor="password">
+          Mật khẩu
         </label>
         <input
           type="password"
-          id="password_field"
-          placeholder="Password"
+          id="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Mật khẩu"
           className="input_field"
+          required
         />
       </div>
-
       <div className="input_container">
-        <label className="input_label" htmlFor="confirm_password_field">
-          Confirm Password
+        <label className="input_label" htmlFor="confirmPassword">
+          Xác nhận mật khẩu
         </label>
         <input
           type="password"
-          id="confirm_password_field"
-          placeholder="Confirm Password"
+          id="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="Xác nhận mật khẩu"
           className="input_field"
+          required
         />
       </div>
-
-      <button title="Sign In" type="submit" className="sign-in_btn">
+      <button title="Đăng ký" type="submit" className="sign-in_btn">
         <span>Đăng ký</span>
       </button>
+      <div>
+        <div>
+          <Link to="/login" className="text-danger text-opacity-75">
+            Tôi đã có tài khoản ...
+          </Link>
+        </div>
+      </div>
     </form>
   );
 };
