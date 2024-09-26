@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
-import BookingDetails from "./screens/BookingDetails";
+import SpaceDetails from "./screens/SpaceDetails";
 import RegisterForm from "./screens/RegisterForm";
 import HostProfile from "./screens/HostProfile";
 

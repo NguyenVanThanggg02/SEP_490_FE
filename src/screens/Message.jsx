@@ -250,7 +250,7 @@ const Message = () => {
                   }}
                 />
               </div>
-              <h3 style={{ margin: 0 }}>Tên space</h3>
+              <h3 style={{ margin: 0 }}>Tên spacee</h3>
             </Col>
             <Col md={3} className="text-end">
               <Button
