@@ -463,8 +463,8 @@ const Comment = () => {
                     placeholder="Nhập phản hồi..."
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
-                    style={{ flexGrow: 1, marginRight: '10px' }}
-                    className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhậpp 
+                    style={{ flexGrow: 1, marginRight: '11px' }}
+                    className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhập 
                     
 
                   />
