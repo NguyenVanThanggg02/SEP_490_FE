@@ -1,18 +1,20 @@
 import { Button, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
+import ListMessageWithOwner from "./ListMessageWithOwner";
 
 const Message = () => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const location = useLocation();
   const [space, setSpace] = useState({});
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState([]);
+  const [messageList, setMessageList] = useState([]);
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const { id } = location.state; // Lấy id từ state
   // const {id} = useParams()
@@ -33,6 +35,16 @@ const Message = () => {
       alert("Vui lòng nhập nội dung tin nhắn");
       return;
     }
+    const newMessage = {
+      userId: {
+        _id: userId,
+      },
+      receiverId: space.userId,
+      messageContent: message,
+      spaceId: id,
+      createdAt: new Date().toISOString(),
+    };
+
     try {
       await axios.post(`http://localhost:9999/message`, {
         userId: localStorage.getItem("userId"),
@@ -40,7 +52,8 @@ const Message = () => {
         messageContent: message,
         spaceId: id,
       });
-      alert("Gửi tin nhắn thành công");
+
+      setMessageList((prevMessages) => [...prevMessages, newMessage]);
       setMessage("");
     } catch (err) {
       alert("Gửi tin nhắn thất bại");
@@ -50,13 +63,10 @@ const Message = () => {
   useEffect(() => {
     if (space.userId) {
       const receiverId = space.userId;
-      console.log(receiverId);
-
       axios
         .get(`http://localhost:9999/message/${userId}/${receiverId}/${id}`)
         .then((res) => {
-          console.log(res.data.data);
-          setMessage(res.data.data.messageContent);
+          setMessageList(res.data.data);
         })
         .catch((err) => {
           console.log(err.message);
@@ -153,77 +163,13 @@ const Message = () => {
   );
 
   return (
-    <Container fluid>
+    <Container fluid style={{ height: "100vh" }}>
       <Row>
-        <Col md={3} style={{ border: "solid 2px #ECECEC", height: "88vh" }}>
-          <h4 className="pt-4">Tin nhắn</h4>
-          <Button
-            variant="contained"
-            size="small"
-            className="me-4 rounded-5 pt-2 pb-1 px-3 mb-4"
-          >
-            Tất cả
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            className="me-4 rounded-5  pt-2 pb-1 px-3 mb-4"
-          >
-            Chưa đọc
-          </Button>
-          <Row style={{ height: "13%" }}>
-            <Row
-              style={{
-                margin: "0 auto",
-                width: "90%",
-                backgroundColor: "whitesmoke",
-                borderRadius: "10px",
-              }}
-            >
-              <Col md={3} style={{ padding: "10px 5px" }}>
-                <div
-                  style={{
-                    position: "relative",
-                    width: "60px",
-                    height: "60px",
-                  }}
-                >
-                  {/* space image */}
-                  <img
-                    src={space.images[0]}
-                    alt="background"
-                    style={{
-                      objectFit: "cover",
-                      width: "60px",
-                      height: "60px",
-                      borderRadius: "12px",
-                    }}
-                  />
-                  {/* user Avatar  */}
-                  <img
-                    src={space.images[1]}
-                    alt="avatar"
-                    style={{
-                      position: "absolute",
-                      bottom: "-10px",
-                      left: "70%",
-                      transform: "translateX(-50%)",
-                      objectFit: "cover",
-                      width: "50px",
-                      height: "50px",
-                      borderRadius: "50%",
-                      border: "2px solid white",
-                    }}
-                  />
-                </div>
-              </Col>
-              <Col md={9}>
-                <h4>Tên Space Owner</h4>
-                <p>thời gian</p>
-              </Col>
-            </Row>
-          </Row>
-        </Col>
+      <Col md={3}>
+      <ListMessageWithOwner/>
+      </Col>
+
+        {/* cột hiển thị tin nhắn */}
         <Col
           md={9}
           style={{
@@ -239,8 +185,7 @@ const Message = () => {
             <Col md={9} className="d-flex align-items-center ps-5">
               <div style={{ display: "flex" }}>
                 <img
-                  src="https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg"
-                  alt="avatarSpaceOwner2"
+                  src={space.images[0]}
                   style={{
                     objectFit: "cover",
                     width: "40px",
@@ -250,7 +195,7 @@ const Message = () => {
                   }}
                 />
               </div>
-              <h3 style={{ margin: 0 }}>Tên space</h3>
+              <h5>{space.name}</h5>
             </Col>
             <Col md={3} className="text-end">
               <Button
@@ -266,106 +211,110 @@ const Message = () => {
           <p className="text-center">
             <b>Hôm nay</b>
           </p>
-          <Row style={{}}>
-            {/* Tin nhắn của mình */}
-            <Col md={12} className="d-flex mb-3">
-              <div
-                className="d-flex pe-5"
-                style={{
-                  alignItems: "flex-start",
-                  flexDirection: "column",
-                  marginLeft: "auto",
-                }}
-              >
-                {/* Tên và thời gian */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "98%",
-                  }}
-                >
-                  <p style={{ marginLeft: "auto", marginBottom: 0 }}>
-                    thời gian nhắn{" "}
-                  </p>
-                </div>
-                {/* Tin nhắn đáp */}
-                <div
-                  style={{
-                    backgroundColor: "#f1f1f1",
-                    borderRadius: "20px",
-                    padding: "10px 15px",
-                    maxWidth: "600px",
-                    display: "flex",
-                    height: "70px",
-                  }}
-                >
-                  <p style={{ margin: 0 }}>
-                    T là người thuê đây chúng tôi có thể giúp bạn giải đáp thắc
-                    mắc của mình khônggg
-                  </p>
-                </div>
-              </div>
-            </Col>
-          </Row>
 
-          {/* Chat Messages */}
-          <Row style={{ paddingBottom: "60px" }}>
-            {/* Tin nhắn */}
-            <Col md={12} className="d-flex mb-3 ps-5">
-              {/* Avatar */}
-              <img
-                src={space.images[0]}
-                alt="avatar"
-                style={{
-                  objectFit: "cover",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  marginRight: "10px",
-                }}
-              />
-              <div
-                className="d-flex"
-                style={{ alignItems: "flex-start", flexDirection: "column" }}
-              >
-                {/* Tên và thời gian */}
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <p style={{ margin: 0 }}>
-                    <b>Tên Space Owner</b>{" "}
-                    <span className="ps-2">thời gian nhắn</span>
-                  </p>
-                </div>
-                {/* Tin nhắn đáp */}
-                <div
-                  style={{
-                    backgroundColor: "#f1f1f1",
-                    borderRadius: "20px",
-                    padding: "10px 15px",
-                    maxWidth: "600px",
-                    display: "flex",
-                    height: "80px",
-                  }}
-                >
-                  <p style={{ margin: 0 }}>
-                    Xinaaaaaaaaaaaaaaaaaaaaaaaaaaaaa chào Toàn... chúng tôi có
-                    thể giúp bạn giải đáp thắc mắc của mình khônggg?
-                  </p>
-                </div>
-              </div>
-            </Col>
-          </Row>
-
-          {/* input Messages */}
           <Row
             style={{
-              position: "absolute",
+              height: "calc(100% - 140px)",
+              overflowY: "auto",
+              paddingBottom: "60px",
+            }}
+          >
+            <Col md={12} className="d-flex flex-column">
+              {/* Tin nhắn của mình */}
+              <div className="d-flex mb-3">
+                <div
+                  className="d-flex pe-5"
+                  style={{
+                    alignItems: "flex-start",
+                    flexDirection: "column",
+                    marginLeft: "auto",
+                  }}
+                >
+                  {/* Tin nhắn đáp */}
+                  {messageList.map((msg, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        backgroundColor: "#f1f1f1",
+                        borderRadius: "20px",
+                        padding: "10px 15px",
+                        maxWidth: "600px",
+                        display: "flex",
+                        height: "auto",
+                      }}
+                    >
+                      <p style={{ margin: 0 }}>{msg.messageContent}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Chat Messages */}
+              <Row style={{ paddingBottom: "60px" }}>
+                <Col md={12} className="d-flex mb-3 ps-5">
+                  {/* Avatar */}
+                  <img
+                    src={space.images[0]}
+                    alt="avatar"
+                    style={{
+                      objectFit: "cover",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      marginRight: "10px",
+                    }}
+                  />
+                  <div
+                    className="d-flex"
+                    style={{
+                      alignItems: "flex-start",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {/* Tên và thời gian */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <p style={{ margin: 0 }}>
+                        <b>{space.name}</b>{" "}
+                        <span className="ps-2">thời gian nhắn</span>
+                      </p>
+                    </div>
+                    {/* Tin nhắn đáp */}
+                    <div
+                      style={{
+                        backgroundColor: "#f1f1f1",
+                        borderRadius: "20px",
+                        padding: "10px 15px",
+                        maxWidth: "600px",
+                        display: "flex",
+                        height: "80px",
+                      }}
+                    >
+                      <p style={{ margin: 0 }}>
+                        Xinaaaaaaaaaaaaaaaaaaaaaaaaaaaaa chào Toàn... chúng tôi
+                        có thể giúp bạn giải đáp thắc mắc của mình khônggg?
+                      </p>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          {/* Input Messages */}
+          <Row
+            style={{
+              position: "sticky",
               bottom: 0,
               left: 0,
               width: "100%",
+              backgroundColor: "white", // Màu nền để nổi bật ô input
               padding: "10px",
+              zIndex: 1, // Đảm bảo ô input luôn ở trên cùng
             }}
           >
             <p className="text-center">
@@ -381,6 +330,11 @@ const Message = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 fullWidth
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSendMessage();
+                  }
+                }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
