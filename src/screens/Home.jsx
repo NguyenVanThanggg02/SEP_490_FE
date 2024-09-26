@@ -12,7 +12,8 @@ const Home = () => {
     axios
       .get("http://localhost:9999/spaces")
       .then((response) => {
-        setSpaces(response.data);
+        const filterItems = filterSapces(response.data);
+        setSpaces(filterItems);
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
@@ -22,7 +23,9 @@ const Home = () => {
   const handleCardClick = (id) => {
     navigate(`/spaces/${id}`);
   };
-
+  const filterSapces = (spaces) => {
+    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+  };
   return (
     <Container>
       <Row>
