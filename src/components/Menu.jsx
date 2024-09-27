@@ -37,18 +37,18 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const storedUsername = localStorage.getItem("username");
+      const storedUsername = localStorage.getItem("userId");
       if (storedUsername) {
         fetchUserData(storedUsername);
       }
     }
   }, [isLoggedIn]);
 
-  const fetchUserData = async (username) => {
+  const fetchUserData = async (userId) => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `http://localhost:9999/users/${username}`,
+        `http://localhost:9999/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -114,6 +114,14 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
       [e.target.name]: e.target.value,
     });
   };
+  const handleFavorites = () => {
+    handleClose();
+    navigate("/favorites");
+  };
+  const handleChangePass = () => {
+    handleClose();
+    navigate("/chang_pass");
+  };
 
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
@@ -167,6 +175,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         {isLoggedIn ? (
           <>
             <MenuItem onClick={handleProfileOpen}>Thông tin cá nhân</MenuItem>
+            <MenuItem onClick={handleFavorites}>Danh sách yêu thích</MenuItem>
+            <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
             <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
           </>
         ) : (

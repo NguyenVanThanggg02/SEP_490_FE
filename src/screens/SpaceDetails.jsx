@@ -11,18 +11,34 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  IconButton,
+  
   CardMedia,
+  Container,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
 import { Link, useParams } from "react-router-dom";
+import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
+
 
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleClickOpen = (image) => {
+    setSelectedImage(image);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedImage(null);
+  };
+
 
   useEffect(() => {
     const fetchSpaceData = async () => {
@@ -52,23 +68,38 @@ function SpaceDetails() {
   const images = spaceData?.images || [];
 
   return (
-    <Grid container spacing={3} style={{ padding: "20px" }}>
+    <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
           <Grid item xs={12}>
-            <Typography variant="h6">{spaceData.name}</Typography>
-            <Grid container spacing={2}>
+            <Typography variant="h4" className="pb-5">{spaceData.name}</Typography>
+            <Grid container spacing={2}  >
               {images.length > 0 ? (
-                images.map((imageUrl, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <CardMedia
-                      component="img"
-                      image={imageUrl}
-                      alt={`Space Image ${index + 1}`}
-                      style={{ width: "100%", height: "auto" }}
-                    />
-                  </Grid>
-                ))
+                 <div>
+                 <ImageList cols={3} >
+                   {images.map((item) => (
+                     <ImageListItem key={item} onClick={() => handleClickOpen(item)}>
+                       <img
+                         src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                         alt={item.title}
+                         loading="lazy"
+                       />
+                     </ImageListItem>
+                   ))}
+                 </ImageList>
+           
+                 <Dialog open={open} onClose={handleClose} maxWidth="md">
+                   <DialogContent>
+                     {selectedImage && (
+                       <img
+                         src={selectedImage}
+                         alt="Chi tiết ảnh"
+                         style={{ width: '100%', height: 'auto' }}
+                       />
+                     )}
+                   </DialogContent>
+                 </Dialog>
+               </div>
               ) : (
                 <Typography variant="body2">No images available</Typography>
               )}
@@ -167,7 +198,7 @@ function SpaceDetails() {
           </Grid>
         </>
       )}
-    </Grid>
+    </Container>
   );
 }
 
