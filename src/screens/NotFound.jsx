@@ -3,8 +3,8 @@ import "../style/notfound.css";
 const NotFound = () => {
   return (
     <div className="container">
-      <div className="error-code">404 ERROR</div>
-      <div className="error-message">Sorry, the page not found</div>
+      <div className="error-code" style={{color: "#4aa3df"}}>404 ERROR</div>
+      <div className="error-message" style={{color: "#4aa3df"}}>Sorry, the page not found</div>
       <div className="error-image">
         <img
           alt="A cartoonish document with X eyes and a tongue sticking out, representing a 404 error"
