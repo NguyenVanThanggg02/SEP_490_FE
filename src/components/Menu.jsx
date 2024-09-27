@@ -106,6 +106,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/favorites");
   };
+  //update
   const handleChangePass = () => {
     handleClose();
     navigate("/chang_pass");
