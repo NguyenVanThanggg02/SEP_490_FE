@@ -450,84 +450,84 @@ const Comment = () => {
                   </div>
                 )}
 
-              <div className="comment-container">
+                <div className="comment-container">
 
-                <p>{c.commentText}</p>
+                  <p>{c.commentText}</p>
+                </div>
+
+                {/* Form nhập phản hồi nằm dưới phần đánh giá và comment */}
+                {replyingTo === c._id && (
+                  <Form style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                    <Form.Control
+                      type="text"
+                      placeholder="Nhập phản hồi..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      style={{ flexGrow: 1, marginRight: '10px' }}
+                      className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhập 
+
+
+                    />
+                    <Button onClick={() => handleReply(c._id)} style={{ padding: '8px 12px' }}>
+                      <SendFill />
+                    </Button>
+                  </Form>
+                )}
               </div>
 
-              {/* Form nhập phản hồi nằm dưới phần đánh giá và comment */}
-              {replyingTo === c._id && (
-                <Form style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
-                  <Form.Control
-                    type="text"
-                    placeholder="Nhập phản hồi..."
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    style={{ flexGrow: 1, marginRight: '11px' }}
-                    className="large-textarea" // Áp dụng class mới để thay đổi kích thước ô nhập 
-                    
-
-                  />
-                  <Button onClick={() => handleReply(c._id)} style={{ padding: '8px 12px' }}>
-                    <SendFill />
-                  </Button>
-                </Form>
-              )}
-            </div>
 
 
-
-            <div style={{ marginLeft: "300px" }}>
-              {isCurrentUserComment(c.userId.fullname) && (
-                <>
-                  <Button
-                    style={{ border: "none", backgroundColor: "#FFFF" }}
-                    onClick={() => handleSelectComment(index)}
-                  >
-                    <ThreeDotsVertical style={{ color: "#777777" }} />
-                  </Button>
-                </>
-              )}
-              {isCurrentUserComment(c.userId.fullname) &&
-                selectedCommentIndex === index && (
+              <div style={{ marginLeft: "300px" }}>
+                {isCurrentUserComment(c.userId.fullname) && (
                   <>
                     <Button
-                      style={{
-                        border: "none",
-                        backgroundColor: "#FFFF",
-                        marginLeft: "10px",
-                      }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleDeleteComment(e, c._id);
-                      }}
+                      style={{ border: "none", backgroundColor: "#FFFF" }}
+                      onClick={() => handleSelectComment(index)}
                     >
-                      <TrashFill
-                        style={{ color: "#FF0000", fontSize: "20px" }}
-                      />
-                    </Button>
-                    <Button
-                      style={{
-                        border: "none",
-                        backgroundColor: "#FFFF",
-                        marginLeft: "10px",
-                      }}
-                      onClick={() => handleEditCmt(index, c.text)}
-                    >
-                      <PencilFill
-                        style={{ color: "#0066FF", fontSize: "20px" }}
-                      />
+                      <ThreeDotsVertical style={{ color: "#777777" }} />
                     </Button>
                   </>
                 )}
+                {isCurrentUserComment(c.userId.fullname) &&
+                  selectedCommentIndex === index && (
+                    <>
+                      <Button
+                        style={{
+                          border: "none",
+                          backgroundColor: "#FFFF",
+                          marginLeft: "10px",
+                        }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteComment(e, c._id);
+                        }}
+                      >
+                        <TrashFill
+                          style={{ color: "#FF0000", fontSize: "20px" }}
+                        />
+                      </Button>
+                      <Button
+                        style={{
+                          border: "none",
+                          backgroundColor: "#FFFF",
+                          marginLeft: "10px",
+                        }}
+                        onClick={() => handleEditCmt(index, c.text)}
+                      >
+                        <PencilFill
+                          style={{ color: "#0066FF", fontSize: "20px" }}
+                        />
+                      </Button>
+                    </>
+                  )}
+              </div>
             </div>
           </div>
         </div>
-        </div>
-  ))
-}
+      ))
+      }
     </div >
   );
 };
 
-export default Comment;
+export default Comment ;
