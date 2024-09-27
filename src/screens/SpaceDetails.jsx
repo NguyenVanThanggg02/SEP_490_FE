@@ -9,12 +9,12 @@ import {
   ListItemText,
   Divider,
   Container,
-  Box,
   FormControl,
-  TextField,
-  MenuItem,
   Select,
-  InputLabel
+  MenuItem,
+  InputLabel,
+  TextField,
+  Box,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
@@ -119,7 +119,7 @@ function SpaceDetails() {
                     <Typography variant="h6" className="py-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img
-                          src={spaceData.userId.avatar}
+                          src={spaceData.userId?.avatar}
                           alt="avatar"
                           style={{
                             objectFit: "cover",
@@ -129,7 +129,7 @@ function SpaceDetails() {
                             marginRight: "10px",
                           }}
                         />
-                        Chủ nhà: {spaceData.userId.username || "Unknown"}
+                        Chủ nhà: {spaceData.userId?.username || "Unknown"}
                       </div>
 
                       <Link to="/mess" state={{ id }} >
@@ -194,7 +194,7 @@ function SpaceDetails() {
                 </List>
               </Col>
               <Col item xs={12} md={4}>
-                <Box
+              <Box
                   sx={{
                     maxWidth: 350,
                     padding: 2,
