@@ -48,6 +48,7 @@ function Layout() {
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
+        <Route path="/notfound" element={<NotFound />} />
         <Route
           path="/admin"
           element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
