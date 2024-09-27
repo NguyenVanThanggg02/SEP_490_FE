@@ -49,7 +49,7 @@ const HeaderAdmin = ({ setIsLoggedIn, isLoggedIn }) => {
 
   const handleChangePass = () => {
     handleClose();
-    navigate("/chang_pass");
+    navigate("/changepassadm");
   };
 
   const handleClose = () => {

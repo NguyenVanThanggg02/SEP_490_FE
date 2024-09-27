@@ -15,6 +15,7 @@ import Home from "./screens/Home";
 import { useEffect, useState } from "react";
 import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
+import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,7 +27,7 @@ function Layout() {
       setIsLoggedIn(true);
     }
   }, []);
-  const shouldShowHeader = location.pathname !== "/notfound" && location.pathname !== "/admin";
+  const shouldShowHeader = location.pathname !== "/notfound" && location.pathname !== "/admin" && location.pathname !== "/changepassadm";
 
   return (
     <>
@@ -49,6 +50,7 @@ function Layout() {
         <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
         <Route path="/notfound" element={<NotFound />} />
+        <Route path="/changepassadm" element={<ChangePassAdmin />} />
         <Route
           path="/admin"
           element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
