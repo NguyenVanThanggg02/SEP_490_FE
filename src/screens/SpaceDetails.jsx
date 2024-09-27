@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Card,
-  CardContent,
   Typography,
-  Grid,
   Button,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
   Divider,
-
-  CardMedia,
   Container,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
 import { Link, useParams } from "react-router-dom";
 import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
+import { Row } from "react-bootstrap";
 
 
 function SpaceDetails() {
@@ -71,9 +67,9 @@ function SpaceDetails() {
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
-          <Grid item xs={12}>
+          <Container item xs={12}>
             <Typography variant="h4" className="pb-5">{spaceData.name}</Typography>
-            <Grid container spacing={2}  >
+            <Row container spacing={2}  >
               {images.length > 0 ? (
                 <div>
                   <ImageList cols={3} >
@@ -103,10 +99,10 @@ function SpaceDetails() {
               ) : (
                 <Typography variant="body2">No images available</Typography>
               )}
-            </Grid>
-          </Grid>
+            </Row>
+          </Container>
 
-          <Grid item xs={12} md={7}>
+          <Container fluid item xs={12} md={7}>
             <Typography variant="h6">
               Chỗ ở là bầu không khí và vị trí
             </Typography>
@@ -132,64 +128,56 @@ function SpaceDetails() {
                 </Typography>
               )}
             </List>
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <Card style={{ padding: "20px" }}>
-              <CardContent>
-                <Typography
-                  variant="h5"
-                  style={{ textDecoration: "line-through", color: "gray" }}
-                >
-                  ₫{spaceData.pricePerHour.toLocaleString()}
-                </Typography>
-                <Typography
-                  variant="h4"
-                  style={{ color: "#ff5a5f", fontWeight: "bold" }}
-                >
-                  ₫{(spaceData.pricePerHour * 0.8).toLocaleString()}{" "}
-                  {/* Example discount */}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {spaceData.location}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  Diện tích: {spaceData.area}
-                </Typography>
-                <Button variant="contained" color="primary" fullWidth>
-                  Đặt phòng
-                </Button>
-                <Typography
-                  variant="body2"
-                  style={{ color: "#ff5a5f", marginTop: "10px" }}
-                >
-                  Ưu đãi đặc biệt: tiết kiệm ₫
-                  {(spaceData.pricePerHour * 0.2).toLocaleString()}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          </Container>
+          <Container fluid item xs={12} md={5}>
+            <Typography
+              variant="h5"
+              style={{ textDecoration: "line-through", color: "gray" }}
+            >
+              ₫{spaceData.pricePerHour.toLocaleString()}
+            </Typography>
+            <Typography
+              variant="h4"
+              style={{ color: "#ff5a5f", fontWeight: "bold" }}
+            >
+              ₫{(spaceData.pricePerHour * 0.8).toLocaleString()}{" "}
+              {/* Example discount */}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              {spaceData.location}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              Diện tích: {spaceData.area}
+            </Typography>
+            <Button variant="contained" color="primary" fullWidth>
+              Đặt phòng
+            </Button>
+            <Typography
+              variant="body2"
+              style={{ color: "#ff5a5f", marginTop: "10px" }}
+            >
+              Ưu đãi đặc biệt: tiết kiệm ₫
+              {(spaceData.pricePerHour * 0.2).toLocaleString()}
+            </Typography>
+          </Container>
           {/* Display Images */}
 
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">
-                  Chủ nhà: {spaceData.host?.name || "Unknown"}
-                </Typography>
-                <Link to="/mess" state={{ id }}>
-                  <Button sx={{ backgroundColor: "black", color: "white" }}>
-                    Nhắn tin cho chủ nhà
-                  </Button>
-                </Link>
-                <Typography variant="body2" color="textSecondary">
-                  {spaceData.host?.experience} tháng kinh nghiệm đón tiếp khách
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
+          <Container item xs={12}>
+            <Typography variant="h6">
+              Chủ nhà: {spaceData.host?.name || "Unknown"}
+            </Typography>
+            <Link to="/mess" state={{ id }}>
+              <Button sx={{ backgroundColor: "black", color: "white" }}>
+                Nhắn tin cho chủ nhà
+              </Button>
+            </Link>
+            <Typography variant="body2" color="textSecondary">
+              {spaceData.host?.experience} tháng kinh nghiệm đón tiếp khách
+            </Typography>
+          </Container>
+          <Row item md={12}>
             <Comment />
-          </Grid>
+          </Row>
         </>
       )}
     </Container>
