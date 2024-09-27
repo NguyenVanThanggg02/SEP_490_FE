@@ -79,12 +79,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("fullname");
-    localStorage.removeItem("userId");
-    localStorage.setItem("isLoggedIn", "false");
+    localStorage.clear();
     handleClose();
   };
 
