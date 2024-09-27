@@ -10,6 +10,7 @@ import {
   Speedometer,
 } from "react-bootstrap-icons";
 import StatCards from "./Chart/StartCard";
+import HomeAdmin from "./HomeAdmin";
 const DashBoard = () => {
   return (
     <Tab.Container id="left-tabs-example" defaultActiveKey={"one"}>
@@ -52,7 +53,7 @@ const DashBoard = () => {
         <Col sm={9}>
           <Tab.Content>
             <Tab.Pane eventKey="one">
-              <h1>Home</h1>
+              <HomeAdmin/>
             </Tab.Pane>
             <Tab.Pane eventKey="two">
             <StatCards/>
