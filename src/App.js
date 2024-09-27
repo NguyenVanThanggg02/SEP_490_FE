@@ -13,6 +13,7 @@ import Message from "./screens/Message";
 
 import Home from "./screens/Home";
 import { useEffect, useState } from "react";
+import DashBoard from "./Admin/DashBoard";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
@@ -42,6 +43,12 @@ function App() {
         {/* <Route path="/:id" element={<BookingDetails />} /> */}
         <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
+        <Route
+            path="/dashboard"
+            element={
+                <DashBoard />
+            }
+          />
       </Routes>
     </BrowserRouter>
   );
