@@ -11,7 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  
+
   CardMedia,
   Container,
 } from "@mui/material";
@@ -75,31 +75,31 @@ function SpaceDetails() {
             <Typography variant="h4" className="pb-5">{spaceData.name}</Typography>
             <Grid container spacing={2}  >
               {images.length > 0 ? (
-                 <div>
-                 <ImageList cols={3} >
-                   {images.map((item) => (
-                     <ImageListItem key={item} onClick={() => handleClickOpen(item)}>
-                       <img
-                         src={`${item}?w=164&h=164&fit=crop&auto=format`}
-                         alt={item.title}
-                         loading="lazy"
-                       />
-                     </ImageListItem>
-                   ))}
-                 </ImageList>
-           
-                 <Dialog open={open} onClose={handleClose} maxWidth="md">
-                   <DialogContent>
-                     {selectedImage && (
-                       <img
-                         src={selectedImage}
-                         alt="Chi tiết ảnh"
-                         style={{ width: '100%', height: 'auto' }}
-                       />
-                     )}
-                   </DialogContent>
-                 </Dialog>
-               </div>
+                <div>
+                  <ImageList cols={3} >
+                    {images.map((item) => (
+                      <ImageListItem key={item} onClick={() => handleClickOpen(item)}>
+                        <img
+                          src={`${item}?w=164&h=164&fit=crop&auto=format`}
+                          alt={item.title}
+                          loading="lazy"
+                        />
+                      </ImageListItem>
+                    ))}
+                  </ImageList>
+
+                  <Dialog open={open} onClose={handleClose} maxWidth="md">
+                    <DialogContent>
+                      {selectedImage && (
+                        <img
+                          src={selectedImage}
+                          alt="Chi tiết ảnh"
+                          style={{ width: '100%', height: 'auto' }}
+                        />
+                      )}
+                    </DialogContent>
+                  </Dialog>
+                </div>
               ) : (
                 <Typography variant="body2">No images available</Typography>
               )}
@@ -107,37 +107,31 @@ function SpaceDetails() {
           </Grid>
 
           <Grid item xs={12} md={7}>
-            <Card style={{ padding: "20px" }}>
-              <CardContent>
-                <Typography variant="h6">
-                  Chỗ ở là bầu không khí và vị trí
+            <Typography variant="h6">
+              Chỗ ở là bầu không khí và vị trí
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              {spaceData.description}
+            </Typography>
+            <Divider />
+            <Typography variant="h6">Tiện nghi</Typography>
+            <List>
+              {appliances.length > 0 ? (
+                appliances.map((appliance) => (
+                  <ListItem key={appliance._id}>
+                    <ListItemIcon>
+                      {/* Replace with actual icon based on appliance data */}
+                      <AcUnitIcon /> {/* Example icon */}
+                    </ListItemIcon>
+                    <ListItemText primary={appliance.name} />
+                  </ListItem>
+                ))
+              ) : (
+                <Typography variant="body2">
+                  No appliances available
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {spaceData.description}
-                </Typography>
-              </CardContent>
-              <Divider />
-              <CardContent>
-                <Typography variant="h6">Tiện nghi</Typography>
-                <List>
-                  {appliances.length > 0 ? (
-                    appliances.map((appliance) => (
-                      <ListItem key={appliance._id}>
-                        <ListItemIcon>
-                          {/* Replace with actual icon based on appliance data */}
-                          <AcUnitIcon /> {/* Example icon */}
-                        </ListItemIcon>
-                        <ListItemText primary={appliance.name} />
-                      </ListItem>
-                    ))
-                  ) : (
-                    <Typography variant="body2">
-                      No appliances available
-                    </Typography>
-                  )}
-                </List>
-              </CardContent>
-            </Card>
+              )}
+            </List>
           </Grid>
           <Grid item xs={12} md={5}>
             <Card style={{ padding: "20px" }}>
