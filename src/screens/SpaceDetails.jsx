@@ -132,9 +132,21 @@ function SpaceDetails() {
                         Chủ nhà: {spaceData.userId?.username || "Unknown"}
                       </div>
 
-                      <Link to="/mess" state={{ id }} >
-                        <Button sx={{ backgroundColor: "black", color: "white" }}>
-                          Nhắn tin cho chủ nhà
+                      <Link to="/mess" state={{ id }}>
+                        <Button
+                          sx={{
+                            backgroundColor: '#f8f8f8', // Màu ban đầu (trắng)
+                            color: 'black',
+                            boxShadow: 'none',
+                            border: '1px solid #ccc', // Đường viền
+                            '&:hover': {
+                              backgroundColor: '#e0e0e0', // Màu nền khi hover
+                              boxShadow: 'none',
+                            },
+                          }}
+                        >
+                          <Typography variant="button"><b>Nhắn tin cho <br /> chủ không gian </b></Typography>
+
                         </Button>
                       </Link>
                     </Typography>
@@ -194,7 +206,7 @@ function SpaceDetails() {
                 </List>
               </Col>
               <Col item xs={12} md={4}>
-              <Box
+                <Box
                   sx={{
                     maxWidth: 350,
                     padding: 2,
@@ -205,7 +217,7 @@ function SpaceDetails() {
                   }}
                 >
                   {/* Giá theo đêm */}
-                  <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2,textAlign:"center" }}>
+                  <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2, textAlign: "center" }}>
                     {spaceData.pricePerHour} / giờ
                   </Typography>
 
@@ -238,31 +250,17 @@ function SpaceDetails() {
 
                   {/* Nút đặt phòng */}
                   <Button fullWidth variant="contained" sx={{ backgroundColor: '#F53D6B', color: '#fff', mb: 2 }}>
-                    Đặt phòng
+                    <Typography variant="button">Đặt phòng </Typography>
                   </Button>
 
-                  <Typography variant="body2" sx={{ textAlign: 'center', mb: 2 }}>
-                    Bạn vẫn chưa bị trừ tiền
-                  </Typography>
 
                   {/* Chi tiết giá */}
-                  <Divider sx={{ mb: 2 }} />
 
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography>฿432 x 5 đêm</Typography>
-                    <Typography>฿2.158</Typography>
-                  </Box>
-
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography>Phí dịch vụ Airbnb</Typography>
-                    <Typography>฿354</Typography>
-                  </Box>
-
-                  <Divider sx={{ mb: 2 }} />
+                  <Divider sx={{ mb: 2, bgcolor: "gray" }} />
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                    <Typography variant="body1">Tổng trước thuế</Typography>
-                    <Typography variant="body1">฿2.512</Typography>
+                    <Typography variant="body1">Tổng </Typography>
+                    <Typography variant="body1">....</Typography>
                   </Box>
                 </Box>
               </Col>
