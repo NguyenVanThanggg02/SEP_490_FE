@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Header from "./components/Header";
-import BookingDetails from "./screens/BookingDetails";
+import SpaceDetails from "./screens/SpaceDetails";
 import RegisterForm from "./screens/RegisterForm";
 import HostProfile from "./screens/HostProfile";
 
@@ -48,7 +48,7 @@ function Layout() {
         <Route path="/reset-password/:id/:token" element={<ResetPass />} />
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/mess" element={<Message />} />
-        <Route path="/spaces/:id" element={<BookingDetails />} />
+        <Route path="/spaces/:id" element={<SpaceDetails />} />
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/changepassadm" element={<ChangePassAdmin />} />
         <Route
