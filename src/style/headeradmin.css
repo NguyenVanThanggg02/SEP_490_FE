@@ -1,0 +1,75 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-bottom: 1px solid #e2e2e2;
+}
+
+.navbar .logo img {
+    height: 80px;
+    width: 80px;
+}
+.navbar .nav-links {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+.navbar .nav-links a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+}
+.navbar .search-bar {
+    flex-grow: 2;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.navbar .search-bar input {
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid #e2e2e2;
+    background-color: #f2f2f2;
+    font-size: 16px;
+}
+.navbar .icons {
+    display: flex;
+    align-items: center;
+}
+.navbar .icons .icon {
+    margin-left: 20px;
+    position: relative;
+}
+.navbar .icons .icon .badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+.navbar .profile {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+.navbar .profile .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: white;
+}
+.navbar .profile .dropdown {
+    margin-left: 10px;
+    font-size: 16px;
+    color: #0073e6;
+}

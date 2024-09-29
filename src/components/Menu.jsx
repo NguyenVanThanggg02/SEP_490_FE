@@ -79,12 +79,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("fullname");
-    localStorage.removeItem("userId");
-    localStorage.setItem("isLoggedIn", "false");
+    localStorage.clear();
     handleClose();
   };
 
@@ -113,6 +108,14 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+  const handleFavorites = () => {
+    handleClose();
+    navigate("/favorites");
+  };
+  const handleChangePass = () => {
+    handleClose();
+    navigate("/chang_pass");
   };
 
   const handleSave = async () => {
@@ -167,6 +170,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         {isLoggedIn ? (
           <>
             <MenuItem onClick={handleProfileOpen}>Thông tin cá nhân</MenuItem>
+            <MenuItem onClick={handleFavorites}>Danh sách yêu thích</MenuItem>
+            <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
             <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
           </>
         ) : (

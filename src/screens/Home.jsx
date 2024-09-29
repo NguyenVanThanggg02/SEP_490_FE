@@ -36,7 +36,7 @@ const Home = () => {
           {spaces.length > 0 ? (
             spaces.map((space) => (
               <div
-                className="col-lg-4 col-md-6 col-sm-12 mb-2"
+                className="col-lg-3 col-md-6 col-sm-12 mb-2"
                 key={space._id}
                 onClick={() => handleCardClick(space._id)}
               >
