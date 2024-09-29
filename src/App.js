@@ -12,6 +12,7 @@ import Message from "./screens/Message";
 import Favorites from "./screens/Favorites";
 import Home from "./screens/Home";
 import { useEffect, useState } from "react";
+import Contact from "./screens/Contact";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
@@ -42,6 +43,8 @@ function App() {
         <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<BookingDetails />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/contact" element={<Contact />} />
+
       </Routes>
     </BrowserRouter>
   );
