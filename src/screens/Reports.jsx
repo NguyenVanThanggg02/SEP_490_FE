@@ -1,13 +1,18 @@
 import { Dialog } from "primereact/dialog";
 import { Button, Col, Row } from "react-bootstrap";
 import { Trash, WalletFill, X } from "react-bootstrap-icons";
-import '../style/reports.css'
+import '../style/reports.css';
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";  
+
 const Reports = (props) => {
   const { visible, setVisible } = props;
   const [reasons, setReasons] = useState([]);
-console.log(reasons);
+  const [selectedReason, setSelectedReason] = useState(null); 
+  const userId = localStorage.getItem("userId");
+  const { id } = useParams();
 
   useEffect(() => {
     axios
@@ -16,18 +21,42 @@ console.log(reasons);
         setReasons(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching blogs:", error);
+        console.error("Error fetching reasons:", error);
       });
   }, []);
-  
+
+  const handleReport = () => {
+    if (!selectedReason) {
+      toast.error("Vui lòng chọn lý do báo cáo.");
+      return;
+    }
+    const reportData = {
+      userId: userId,
+      reasonId: selectedReason,
+      spaceId: id,
+    };
+    axios
+      .post("http://localhost:9999/reports", reportData)
+      .then((response) => {
+        toast.success("Báo cáo thành công");
+        setSelectedReason(null)
+        document.querySelectorAll('input[name="report"]').forEach(input => input.checked = false);
+
+      })
+      .catch((error) => {
+        toast.error("Hãy thử lại");
+        console.error({ error: error.message });
+      });
+  };
+
   const onHide = () => {
     setVisible(false);
   };
-  
+
   const dialogFooter = (
     <div style={{ margin: "20px" }}>
       <div style={{ display: "flex", justifyContent: "end" }}>
-        <Button className="btn btn-dark">
+        <Button className="btn btn-dark" onClick={handleReport}>
           Tiếp theo
         </Button>
       </div>
@@ -60,6 +89,7 @@ console.log(reasons);
                   name="report"
                   className="reportt"
                   value={r._id}
+                  onChange={() => setSelectedReason(r._id)} 
                 />
                 <label htmlFor={`option${index}`}>{r.text[0]}</label>
               </div>
