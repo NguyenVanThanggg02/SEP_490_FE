@@ -5,8 +5,8 @@ import '../style/reports.css';
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";  
-
+import { toast, ToastContainer } from "react-toastify";  
+import "react-toastify/dist/ReactToastify.css";
 const Reports = (props) => {
   const { visible, setVisible } = props;
   const [reasons, setReasons] = useState([]);
@@ -97,6 +97,7 @@ const Reports = (props) => {
           </div>
         </div>
       </Dialog>
+      <ToastContainer />
     </div>
   );
 };
