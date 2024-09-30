@@ -18,7 +18,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
     const form = formRef.current;
     const username = form.elements["email_field"].value; // Sử dụng id đúng
     const password = form.elements["password_field"].value; // Sử dụng id đúng
-
     const data = { username, password };
 
     try {
@@ -35,11 +34,16 @@ const LoginForm = ({ setIsLoggedIn }) => {
       localStorage.setItem("username", username);
       localStorage.setItem("fullname", fullname);
       localStorage.setItem("userId", id);
+      localStorage.setItem("role", role);
 
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Đăng nhập thành công!");
       setIsLoggedIn(true);
-      nav("/");
+      if(role == 1) {
+        nav("/admin");
+      }else{
+        nav("/");
+      }
     } catch (error) {
       if (error.response) {
         if (error.response.status === 403) {
