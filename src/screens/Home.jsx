@@ -12,7 +12,8 @@ const Home = () => {
     axios
       .get("http://localhost:9999/spaces")
       .then((response) => {
-        setSpaces(response.data);
+        const filterItems = filterSapces(response.data);
+        setSpaces(filterItems);
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
@@ -22,7 +23,9 @@ const Home = () => {
   const handleCardClick = (id) => {
     navigate(`/spaces/${id}`);
   };
-
+  const filterSapces = (spaces) => {
+    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+  };
   return (
     <Container>
       <Row>
@@ -30,7 +33,7 @@ const Home = () => {
       </Row>
       <Row>
         <div className="space-list row">
-          {spaces.length > 0 ? (
+          {/* {spaces.length > 0 ? (
             spaces.map((space) => (
               <div
                 className="col-lg-3 col-md-6 col-sm-12 mb-2"
@@ -40,6 +43,21 @@ const Home = () => {
                 <SpaceCard space={space} />
               </div>
             ))
+          ) : (
+            <p>No spaces available</p>
+          )} */}
+          {spaces.length > 0 ? (
+            spaces
+              .filter((space) => space.reportCount <= 3) 
+              .map((space) => (
+                <div
+                  className="col-lg-3 col-md-6 col-sm-12 mb-2"
+                  key={space._id}
+                  onClick={() => handleCardClick(space._id)}
+                >
+                  <SpaceCard space={space} />
+                </div>
+              ))
           ) : (
             <p>No spaces available</p>
           )}
