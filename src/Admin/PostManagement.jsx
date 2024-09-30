@@ -5,8 +5,7 @@ import axios from "axios";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
-  const [rules, setRules] = useState([]);
-
+  
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces")
@@ -15,18 +14,6 @@ const PostManagement = () => {
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:9999/rules")
-      .then((response) => {
-        console.log(response.data);
-        setRules(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching rules:", error);
       });
   }, []);
 
