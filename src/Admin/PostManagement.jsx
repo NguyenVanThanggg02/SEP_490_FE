@@ -1,39 +1,64 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Table, Button } from "react-bootstrap";
 import { Eye } from "react-bootstrap-icons";
+import axios from "axios";
+import CommunityStandards from "./CommunityStandards";
 
 const PostManagement = () => {
-  const [listPosts, setListPosts] = useState([
-    {
-      _id: "1",
-      img: "https://picsum.photos/200", // Link hình ảnh placeholder
-      spaceName: "Wedding A",
-      ownerName: "Nguyễn Văn A",
-      status: "Pending",
-    },
-    {
-      _id: "2",
-      img: "https://picsum.photos/200", // Link hình ảnh placeholder
-      spaceName: "Studio B",
-      ownerName: "Trần Thị B",
-      status: "Completed",
-    },
-  ]);
+  const [spaces, setSpaces] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [currentPostId, setCurrentPostId] = useState(null); // Thêm trạng thái cho postId hiện tại
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:9999/spaces")
+      .then((response) => {
+        setSpaces(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching spaces:", error);
+      });
+  }, []);
 
   const handleAccept = (postId) => {
-    setListPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post._id === postId ? { ...post, status: "Completed" } : post
-      )
-    );
+    const selectedSpace = spaces.find((space) => space._id === postId);
+
+    if (selectedSpace.censorship === "Chấp nhận") {
+      return;
+    }
+
+    axios
+      .put(`http://localhost:9999/spaces/update/${postId}`, { censorship: "Chấp nhận" })
+      .then((response) => {
+        setSpaces((prevSpaces) =>
+          prevSpaces.map((space) =>
+            space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating censorship:", error);
+      });
   };
 
-  const handleReject = (postId) => {
-    setListPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post._id === postId ? { ...post, status: "Cancel" } : post
-      )
-    );
+  const handleReject = (postId, communityStandardsId) => {
+    axios
+      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, { censorship: "Từ chối", communityStandardsId: communityStandardsId }) 
+      .then((response) => {
+        setSpaces((prevSpaces) =>
+          prevSpaces.map((space) =>
+            space._id === postId ? { ...space, censorship: "Từ chối" } : space
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating censorship:", error);
+      });
+  };
+
+  const openRejectDialog = (postId) => {
+    setCurrentPostId(postId); 
+    setVisible(true);
   };
 
   return (
@@ -49,29 +74,30 @@ const PostManagement = () => {
                 <th>Tên không gian</th>
                 <th>Tên chủ không gian</th>
                 <th>Chi tiết</th>
-                <th colSpan={2}>Trạng thái</th> 
+                <th colSpan={2}>Trạng thái</th>
               </tr>
             </thead>
-
             <tbody className="text-center">
-              {listPosts.map((post, index) => (
-                <tr key={post._id}>
+              {spaces.map((s, index) => (
+                <tr key={s._id}>
                   <td>{index + 1}</td>
                   <td>
                     <img
-                      src={post.img}
-                      alt={post.spaceName}
+                      src={s.images[0]}
+                      alt={s.name}
                       style={{ width: "100px", height: "100px" }}
                     />
                   </td>
-                  <td>{post.spaceName}</td>
-                  <td>{post.ownerName}</td>
-                  <td><Eye style={{color:'#3399FF', fontSize:'30px'}}/></td>
+                  <td>{s.name}</td>
+                  <td>{s.userId?.fullname || "Unknown"}</td>
+                  <td>
+                    <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
+                  </td>
                   <td>
                     <Button
                       variant="success"
-                      onClick={() => handleAccept(post._id)}
-                      disabled={post.status !== "Pending"}
+                      onClick={() => handleAccept(s._id)}
+                      disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
                     >
                       Chấp Nhận
                     </Button>
@@ -79,8 +105,8 @@ const PostManagement = () => {
                   <td>
                     <Button
                       variant="danger"
-                      onClick={() => handleReject(post._id)}
-                      disabled={post.status !== "Pending"}
+                      onClick={() => openRejectDialog(s._id)} 
+                      disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
                     >
                       Từ Chối
                     </Button>
@@ -91,6 +117,7 @@ const PostManagement = () => {
           </Table>
         </Col>
       </Row>
+      {visible && <CommunityStandards visible={visible} setVisible={setVisible} handleReject={handleReject} postId={currentPostId} />} 
     </Container>
   );
 };

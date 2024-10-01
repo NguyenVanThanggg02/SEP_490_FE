@@ -23,6 +23,8 @@ import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { FlagFill } from "react-bootstrap-icons";
+import Reports from "./Reports";
 
 
 function SpaceDetails() {
@@ -32,6 +34,7 @@ function SpaceDetails() {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [visible, setVisible] = useState(false);
 
   const handleClickOpen = (image) => {
     setSelectedImage(image);
@@ -67,7 +70,7 @@ function SpaceDetails() {
         ...prevSpace,
         favorite: response.data.favorite
       }));
-  
+
     } catch (error) {
       console.error("Error change favorite:", error);
     }
@@ -93,11 +96,11 @@ function SpaceDetails() {
           <Container fluid item xs={12}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
               <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
-              <div style={{cursor:"pointer",alignSelf: "flex-start"}} onClick={changeFavorite}>
+              <div style={{ cursor: "pointer", alignSelf: "flex-start" }} onClick={changeFavorite}>
                 {spaceData.favorite ? (
                   <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
                 ) : (
-                  <FavoriteBorderIcon style={{  fontSize: "40px" }} />
+                  <FavoriteBorderIcon style={{ fontSize: "40px" }} />
                 )}
               </div>
             </div>
@@ -106,9 +109,12 @@ function SpaceDetails() {
             <Row container spacing={2}  >
               {images.length > 0 ? (
                 <div>
-                  <ImageList cols={3} >
+                  <ImageList cols={3}>
                     {images.map((item) => (
-                      <ImageListItem key={item} onClick={() => handleClickOpen(item)}>
+                      <ImageListItem
+                        key={item}
+                        onClick={() => handleClickOpen(item)}
+                      >
                         <img
                           src={`${item}?w=164&h=164&fit=crop&auto=format`}
                           alt={item.title}
@@ -124,7 +130,7 @@ function SpaceDetails() {
                         <img
                           src={selectedImage}
                           alt="Chi tiết ảnh"
-                          style={{ width: '100%', height: 'auto' }}
+                          style={{ width: "100%", height: "auto" }}
                         />
                       )}
                     </DialogContent>
@@ -135,16 +141,32 @@ function SpaceDetails() {
               )}
             </Row>
           </Container>
-          <Container fluid >
+          <Container fluid>
             <Row>
               <Col item xs={12} md={8}>
                 <Typography variant="h5">
                   {spaceData.location}
-                  <p style={{ fontSize: "18px" }}>10 người  •  {spaceData.area} </p>
+                  <p style={{ fontSize: "18px" }}>
+                    10 người • {spaceData.area}{" "}
+                  </p>
                   <Row item md={12}>
-                    <Divider sx={{ bgcolor: "gray", margin: "20px auto", width: "97%" }} />
+                    <Divider
+                      sx={{
+                        bgcolor: "gray",
+                        margin: "20px auto",
+                        width: "97%",
+                      }}
+                    />
 
-                    <Typography variant="h6" className="py-1" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <Typography
+                      variant="h6"
+                      className="py-1"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <div style={{ display: "flex", alignItems: "center" }}>
                         <img
                           src={spaceData.userId?.avatar}
@@ -163,26 +185,37 @@ function SpaceDetails() {
                       <Link to="/mess" state={{ id }}>
                         <Button
                           sx={{
-                            backgroundColor: '#f8f8f8', // Màu ban đầu (trắng)
-                            color: 'black',
-                            boxShadow: 'none',
-                            border: '1px solid #ccc', // Đường viền
-                            '&:hover': {
-                              backgroundColor: '#e0e0e0', // Màu nền khi hover
-                              boxShadow: 'none',
+                            backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
+                            color: "black",
+                            boxShadow: "none",
+                            border: "1px solid #ccc", // Đường viền
+                            "&:hover": {
+                              backgroundColor: "#e0e0e0", // Màu nền khi hover
+                              boxShadow: "none",
                             },
                           }}
                         >
-                          <Typography variant="button"><b>Nhắn tin cho <br /> chủ không gian </b></Typography>
-
+                          <Typography variant="button">
+                            <b>
+                              Nhắn tin cho <br /> chủ không gian{" "}
+                            </b>
+                          </Typography>
                         </Button>
                       </Link>
                     </Typography>
 
-                    <Divider sx={{ bgcolor: "gray", margin: "20px auto", width: "97%" }} />
+                    <Divider
+                      sx={{
+                        bgcolor: "gray",
+                        margin: "20px auto",
+                        width: "97%",
+                      }}
+                    />
                   </Row>
                 </Typography>
-                <Typography variant="h5" className="pb-2">Mô tả không gian </Typography>
+                <Typography variant="h5" className="pb-2">
+                  Mô tả không gian{" "}
+                </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {spaceData.description}
                 </Typography>
@@ -207,30 +240,28 @@ function SpaceDetails() {
                 </List>
                 <Typography variant="h5">Nội quy</Typography>
                 <List>
-                  {
-                    spaceData.rulesId && spaceData.rulesId.length > 0 ? (
-                      spaceData.rulesId.map((ruleGroup) => (
-                        ruleGroup.rules && ruleGroup.rules.length > 0 ? (
-                          ruleGroup.rules.map((rule, index) => (
-                            <ListItem key={index}>
-                              <ListItemIcon>
-                                <AcUnitIcon /> {/* Example icon */}
-                              </ListItemIcon>
-                              <ListItemText primary={rule} />
-                            </ListItem>
-                          ))
-                        ) : (
-                          <ListItem key={ruleGroup._id}>
-                            <ListItemText primary="No rules available" />
+                  {spaceData.rulesId && spaceData.rulesId.length > 0 ? (
+                    spaceData.rulesId.map((ruleGroup) =>
+                      ruleGroup.rules && ruleGroup.rules.length > 0 ? (
+                        ruleGroup.rules.map((rule, index) => (
+                          <ListItem key={index}>
+                            <ListItemIcon>
+                              <AcUnitIcon /> {/* Example icon */}
+                            </ListItemIcon>
+                            <ListItemText primary={rule} />
                           </ListItem>
-                        )
-                      ))
-                    ) : (
-                      <ListItem>
-                        <ListItemText primary="No rule groups available" />
-                      </ListItem>
+                        ))
+                      ) : (
+                        <ListItem key={ruleGroup._id}>
+                          <ListItemText primary="No rules available" />
+                        </ListItem>
+                      )
                     )
-                  }
+                  ) : (
+                    <ListItem>
+                      <ListItemText primary="No rule groups available" />
+                    </ListItem>
+                  )}
                 </List>
               </Col>
               <Col item xs={12} md={4}>
@@ -240,17 +271,26 @@ function SpaceDetails() {
                     padding: 2,
                     boxShadow: 3,
                     borderRadius: 2,
-                    backgroundColor: '#fff',
-                    border: '1px solid #ddd'
+                    backgroundColor: "#fff",
+                    border: "1px solid #ddd",
                   }}
                 >
                   {/* Giá theo đêm */}
-                  <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2, textAlign: "center" }}>
+                  <Typography
+                    variant="h5"
+                    sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                  >
                     {spaceData.pricePerHour} / giờ
                   </Typography>
 
                   {/* Chọn ngày nhận và trả phòng */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 2,
+                    }}
+                  >
                     <TextField
                       label="Nhận phòng"
                       type="date"
@@ -277,31 +317,58 @@ function SpaceDetails() {
                   </FormControl>
 
                   {/* Nút đặt phòng */}
-                  <Button fullWidth variant="contained" sx={{ backgroundColor: '#F53D6B', color: '#fff', mb: 2 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
+                  >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
-
 
                   {/* Chi tiết giá */}
 
                   <Divider sx={{ mb: 2, bgcolor: "gray" }} />
 
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontWeight: "bold",
+                    }}
+                  >
                     <Typography variant="body1">Tổng </Typography>
                     <Typography variant="body1">....</Typography>
                   </Box>
                 </Box>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "20px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setVisible(true)}
+                >
+                  <FlagFill
+                    style={{
+                      color: "gray",
+                      marginRight: "15px",
+                      marginTop: "6px",
+                    }}
+                  />
+                  Báo cáo nhà/phòng cho thuê này
+                </div>
               </Col>
             </Row>
           </Container>
           {/* Display Images */}
-
 
           <Row item md={12}>
             <Comment />
           </Row>
         </>
       )}
+      {visible && <Reports visible={visible} setVisible={setVisible} />}
     </Container>
   );
 }

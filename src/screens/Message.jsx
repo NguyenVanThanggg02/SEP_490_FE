@@ -66,6 +66,7 @@ const Message = () => {
       axios
         .get(`http://localhost:9999/message/${userId}/${receiverId}/${id}`)
         .then((res) => {
+          console.log(res.data);
           setMessageList(res.data.data);
         })
         .catch((err) => {
