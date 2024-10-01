@@ -39,6 +39,7 @@ const Home = () => {
                 className="col-lg-3 col-md-6 col-sm-12 mb-2"
                 key={space._id}
                 onClick={() => handleCardClick(space._id)}
+
               >
                 <SpaceCard space={space} />
               </div>

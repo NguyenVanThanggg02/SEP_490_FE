@@ -21,6 +21,8 @@ import Comment from "./Comment";
 import { Link, useParams } from "react-router-dom";
 import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
 import { Col, Row } from "react-bootstrap";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { FlagFill } from "react-bootstrap-icons";
 import Reports from "./Reports";
 
@@ -60,6 +62,21 @@ function SpaceDetails() {
     fetchSpaceData();
   }, [id]);
 
+
+  const changeFavorite = async () => {
+    try {
+      const response = await axios.put(`http://localhost:9999/spaces/${id}/favorite`);
+      setSpaceData((prevSpace) => ({
+        ...prevSpace,
+        favorite: response.data.favorite
+      }));
+
+    } catch (error) {
+      console.error("Error change favorite:", error);
+    }
+  };
+
+
   if (loading) return <Typography variant="h6">Loading...</Typography>;
   if (error)
     return (
@@ -77,10 +94,19 @@ function SpaceDetails() {
       {spaceData && (
         <>
           <Container fluid item xs={12}>
-            <Typography variant="h4" className="pb-5">
-              {spaceData.name}
-            </Typography>
-            <Row container spacing={2}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
+              <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
+              <div style={{ cursor: "pointer", alignSelf: "flex-start" }} onClick={changeFavorite}>
+                {spaceData.favorite ? (
+                  <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
+                ) : (
+                  <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                )}
+              </div>
+            </div>
+
+
+            <Row container spacing={2}  >
               {images.length > 0 ? (
                 <div>
                   <ImageList cols={3}>
