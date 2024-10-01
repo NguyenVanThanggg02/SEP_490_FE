@@ -1,13 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import { Carousel, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import axios from "axios";
+
 
 function SpaceCard({ space }) {
+  const [favorite, setFavorite] = useState(space.favorite);
+
+  const changeFavorite = async (event) => {
+    event.stopPropagation()
+
+    try {
+      const response = await axios.put(`http://localhost:9999/spaces/${space._id}/favorite`);
+      setFavorite(response.data.favorite);
+    } catch (error) {
+      console.error("Error change favorite:", error);
+    }
+  };
+
+
   return (
-    <Card style={{ width: "18rem", border: "none", borderRadius: "15px" }}>
+    <Card style={{ width: "18rem", border: "none", borderRadius: "15px", position: "relative" }}>
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1,
+          cursor: "pointer",
+        }}
+        onClick={changeFavorite}
+      >
+        {/* Hiển thị icon dựa trên trạng thái favorite */}
+        {favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
+      </div>
       <Carousel
         interval={null}
-        controls={true}
+        controls={false}
         indicators={true}
         prevIcon={
           <span aria-hidden="true" className="carousel-control-prev-icon" />
@@ -25,6 +56,7 @@ function SpaceCard({ space }) {
                 alt={`Ảnh slide ${index + 1}`}
                 height="180"
               />
+
             </Carousel.Item>
           ))
         ) : (

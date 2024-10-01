@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../style/Header.css";
 import Logo from "../assets/logo.png";
 import { Col, Row } from "react-bootstrap";
-import MenuUser from "./Menu";
 import AccountMenu from "./Menu";
 import { Link } from "react-router-dom";
 

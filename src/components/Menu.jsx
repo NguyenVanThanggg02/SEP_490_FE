@@ -119,16 +119,11 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   };
 
   const handleSave = async () => {
-    const accessToken = localStorage.getItem("accessToken");
+    const userId = localStorage.getItem("userId");
     try {
       await axios.put(
-        `http://localhost:9999/users/${userInfo.username}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `http://localhost:9999/users/${userId}`,
+        formData
       );
       setUserInfo((prev) => ({ ...prev, ...formData }));
       setEditMode(false);

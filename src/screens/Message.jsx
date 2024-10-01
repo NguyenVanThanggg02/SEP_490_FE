@@ -62,7 +62,7 @@ const Message = () => {
 
   useEffect(() => {
     if (space.userId) {
-      const receiverId = space.userId;
+      const receiverId = space.userId._id;
       axios
         .get(`http://localhost:9999/message/${userId}/${receiverId}/${id}`)
         .then((res) => {
