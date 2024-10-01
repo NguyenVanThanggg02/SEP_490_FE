@@ -19,7 +19,7 @@ const DashBoard = () => {
           sm={2}
           style={{ backgroundColor: "#23282d", height: "100vh"}}
         >
-          <Nav variant="pills" className="flex-column">
+          <Nav variant="pills" className="flex-column mt-3">
             <Nav.Item>
               <Nav.Link eventKey="one" style={{ color: "white" }}>
                 <HouseGearFill style={{fontSize:'25px'}} /> Trang chủ
