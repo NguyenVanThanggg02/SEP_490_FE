@@ -12,14 +12,16 @@ export const Favorites = () => {
     axios
       .get("http://localhost:9999/spaces/favorite")
       .then((response) => {
-        setSpaceFavos(response.data);
-
+        const filterItems = filterSapces(response.data);
+        setSpaceFavos(filterItems);
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
       });
   }, []);
-
+  const filterSapces = (spaces) => {
+    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+  };
   const changeFavorite = async (spaceId, event) => {
     event.stopPropagation()
     try {
