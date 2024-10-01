@@ -72,7 +72,7 @@ export const Favorites = () => {
                     title="image spaceF"
                   />
                   <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                    <Typography gutterBottom variant="h6"  component="div">
                       {spaceF.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
