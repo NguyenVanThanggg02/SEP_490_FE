@@ -93,7 +93,7 @@ function SpaceDetails() {
           <Container fluid item xs={12}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
               <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
-              <div  onClick={changeFavorite}>
+              <div style={{cursor:"pointer"}} onClick={changeFavorite}>
                 {spaceData.favorite ? (
                   <FavoriteIcon style={{ color: "#FF385C", alignSelf: "flex-start", fontSize: "40px" }} />
                 ) : (
