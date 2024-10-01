@@ -23,7 +23,7 @@ import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { FlagFill } from "react-bootstrap-icons";
+import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 
 
@@ -94,18 +94,21 @@ function SpaceDetails() {
       {spaceData && (
         <>
           <Container fluid item xs={12}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
-              <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
-              <div style={{ cursor: "pointer", alignSelf: "flex-start" }} onClick={changeFavorite}>
-                {spaceData.favorite ? (
-                  <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
-                ) : (
-                  <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                )}
-              </div>
-            </div>
-
-
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
+             <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
+             <div style={{ display: "flex", alignItems: "center", cursor: "pointer", alignSelf: "flex-start" }}>
+               <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                 {spaceData.favorite ? (
+                 <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
+                 ) : (
+                <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                 )}
+               </div>
+             <div>
+             <PlusCircle style={{ color: "blue", fontSize: '33px' }} />So sánh
+          </div>
+        </div>
+        </div>
             <Row container spacing={2}  >
               {images.length > 0 ? (
                 <div>
