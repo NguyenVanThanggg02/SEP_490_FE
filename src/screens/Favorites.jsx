@@ -30,7 +30,7 @@ export const Favorites = () => {
         )
       );
       const updatedSpacesResponse = await axios.get("http://localhost:9999/spaces/favorite");
-      setSpaceFavos(updatedSpacesResponse.data); // Cập nhật lại danh sách yêu thích
+      setSpaceFavos(updatedSpacesResponse.data); 
 
     } catch (error) {
       console.error("Error change favorite:", error);
