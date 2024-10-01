@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Table, Button } from "react-bootstrap";
 import { Eye } from "react-bootstrap-icons";
 import axios from "axios";
+import CommunityStandards from "./CommunityStandards";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
-  
+  const [visible, setVisible] = useState(false);
+  const [currentPostId, setCurrentPostId] = useState(null); // Thêm trạng thái cho postId hiện tại
+
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces")
@@ -38,15 +41,9 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = (postId) => {
-    const selectedSpace = spaces.find((space) => space._id === postId);
-
-    if (selectedSpace.censorship === "Chấp nhận") {
-      return;
-    }
-
+  const handleReject = (postId, communityStandardsId) => {
     axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, { censorship: "Từ chối" })
+      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, { censorship: "Từ chối", communityStandardsId: communityStandardsId }) 
       .then((response) => {
         setSpaces((prevSpaces) =>
           prevSpaces.map((space) =>
@@ -58,6 +55,12 @@ const PostManagement = () => {
         console.error("Error updating censorship:", error);
       });
   };
+
+  const openRejectDialog = (postId) => {
+    setCurrentPostId(postId); 
+    setVisible(true);
+  };
+
   return (
     <Container fluid>
       <Row className="ml-1 mb-4 mt-4"></Row>
@@ -94,7 +97,7 @@ const PostManagement = () => {
                     <Button
                       variant="success"
                       onClick={() => handleAccept(s._id)}
-                      disabled={s.censorship === "Chấp nhận"}
+                      disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
                     >
                       Chấp Nhận
                     </Button>
@@ -102,7 +105,7 @@ const PostManagement = () => {
                   <td>
                     <Button
                       variant="danger"
-                      onClick={() => handleReject(s._id)}
+                      onClick={() => openRejectDialog(s._id)} 
                       disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
                     >
                       Từ Chối
@@ -114,6 +117,7 @@ const PostManagement = () => {
           </Table>
         </Col>
       </Row>
+      {visible && <CommunityStandards visible={visible} setVisible={setVisible} handleReject={handleReject} postId={currentPostId} />} 
     </Container>
   );
 };
