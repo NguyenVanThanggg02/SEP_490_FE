@@ -1,126 +1,102 @@
-import { Dialog } from "primereact/dialog";
-import { useState } from "react";
-import { Col, Row } from "react-bootstrap";
-import { Trash } from "react-bootstrap-icons";
-import "../style/Favorites.css";
+import { Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Col, Container, Row } from 'react-bootstrap'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+export const Favorites = () => {
+  const [spaceFavo, setSpaceFavos] = useState([]);
 
-const Favorites = () => {
-  // Hardcoded list of favorite products
-  const [listFavorites, setListFavorites] = useState([
-    {
-      _id: "1",
-      productId: {
-        _id: "101",
-        name: "Product 1",
-        image: [
-          "https://via.placeholder.com/100", // Placeholder image
-        ],
-      },
-      categoryId: {
-        name: "Category 1",
-      },
-    },
-    {
-      _id: "2",
-      productId: {
-        _id: "102",
-        name: "Product 2",
-        image: [
-          "https://via.placeholder.com/100", // Placeholder image
-        ],
-      },
-      categoryId: {
-        name: "Category 2",
-      },
-    },
-  ]);
+  useEffect(() => {
+    axios
+      .get("http://localhost:9999/spaces/favorite")
+      .then((response) => {
+        const filterItems = filterSapces(response.data);
+        setSpaceFavos(filterItems);
+      })
+      .catch((error) => {
+        console.error("Error fetching spaces:", error);
+      });
+  }, []);
+  const filterSapces = (spaces) => {
+    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+  };
+  const changeFavorite = async (spaceId, event) => {
+    event.stopPropagation()
+    try {
+      const response = await axios.put(`http://localhost:9999/spaces/${spaceId}/favorite`);
+      setSpaceFavos(prevSpaces =>
+        prevSpaces.map(space =>
+          space._id === spaceId ? { ...space, favorite: response.data.favorite } : space
+        )
+      );
+      const updatedSpacesResponse = await axios.get("http://localhost:9999/spaces/favorite");
+      setSpaceFavos(updatedSpacesResponse.data); 
 
-  // Mock delete handler
-  const handleDeleteFavorite = (id) => {
-    setListFavorites(listFavorites.filter((f) => f.productId._id !== id));
+    } catch (error) {
+      console.error("Error change favorite:", error);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleCardClick = (id) => {
+    navigate(`/spaces/${id}`);
   };
 
   return (
-    <div>
-      <Dialog
-        visible={true} // Set visible to true for testing
-        onHide={() => {}} // Empty function to close the dialog
-        className="bg-light dialogForm"
-        style={{ width: "70vw" }}
-        modal
-        header={
-          <div
-            className="custom-dialog-header"
-            style={{ textAlign: "center", marginTop: "20px" }}
-          >
-            <h4> Favorite Products</h4>
-          </div>
-        }
-      >
-        {listFavorites.length === 0 ? (
-          <div className="text-center mt-3">No favorite products.</div>
-        ) : (
-          <div className="bg-light p-1" style={{ margin: "25px" }}>
-            <div style={{ margin: "40px" }}>
-              <Row>
-                <Col className="text-center ">
-                  <div className="table-responsive">
-                    <table className="table table-condensed">
-                      <thead>
-                        <tr>
-                          <th style={{ width: "15%" }}>Image</th>
-                          <th style={{ width: "35%" }}>Product</th>
-                          <th style={{ width: "20%" }}>Category</th>
-                          <th style={{ width: "15%" }}>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {listFavorites.map((f, index) => (
-                          <tr key={f._id}>
-                            <td
-                              style={{ display: "flex", textAlign: "center" }}
-                            >
-                              <img
-                                src={f.productId.image[0]}
-                                alt="image"
-                                style={{
-                                  width: "100px",
-                                  height: "auto",
-                                  verticalAlign: "middle",
-                                }}
-                              />
-                            </td>
-                            <td style={{ verticalAlign: "middle" }}>
-                              {f.productId.name}
-                            </td>
-                            <td style={{ verticalAlign: "middle" }}>
-                              {f.categoryId.name}
-                            </td>
-                            <td style={{ verticalAlign: "middle" }}>
-                              <Trash
-                                style={{
-                                  color: "red",
-                                  fontSize: "25px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  handleDeleteFavorite(f.productId._id)
-                                }
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+    <Container fluid>
+      <Row>
+        <Col md={7}>
+          <Row>
+            {spaceFavo.map((spaceF, index) => (
+              <Col md={4}>
+                <Card style={{ position: "relative" }} key={index}
+                  onClick={() => handleCardClick(spaceF._id)}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      zIndex: 1,
+                      cursor: "pointer",
+                    }}
+                    onClick={(event) => changeFavorite(spaceF._id, event)}
+                  >
+                    {/* Hiển thị icon dựa trên trạng thái liked */}
+                    {spaceF.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
                   </div>
-                </Col>
-              </Row>
-            </div>
-          </div>
-        )}
-      </Dialog>
-    </div>
-  );
-};
+                  <CardMedia
+                    sx={{ height: 250 }}
+                    image={spaceF.images[0]}
+                    title="image spaceF"
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {spaceF.name}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                      {spaceF.pricePerHour} VND / hour
+                    </Typography>
+                  </CardContent>
+                </Card>
 
-export default Favorites;
+
+              </Col>
+            ))}
+
+          </Row>
+        </Col>
+        <Col md={5}>
+          <img src="https://preview.redd.it/google-maps-never-ceases-to-amaze-me-v0-0r498ftiaouc1.jpeg?width=1290&format=pjpg&auto=webp&s=2eacadf939a50eb88a6100ddf389d22980ad3d3d"
+            alt="map"
+            style={{ width: "100%" }} />
+        </Col>
+      </Row>
+    </Container>
+  )
+}
+export default Favorites
+

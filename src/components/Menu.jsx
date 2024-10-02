@@ -79,12 +79,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("fullname");
-    localStorage.removeItem("userId");
-    localStorage.setItem("isLoggedIn", "false");
+    localStorage.clear();
     handleClose();
   };
 
@@ -124,16 +119,11 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   };
 
   const handleSave = async () => {
-    const accessToken = localStorage.getItem("accessToken");
+    const userId = localStorage.getItem("userId");
     try {
       await axios.put(
-        `http://localhost:9999/users/${userInfo.username}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `http://localhost:9999/users/${userId}`,
+        formData
       );
       setUserInfo((prev) => ({ ...prev, ...formData }));
       setEditMode(false);
