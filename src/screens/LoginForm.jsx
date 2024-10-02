@@ -14,19 +14,16 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const form = formRef.current;
     const username = form.elements["email_field"].value; // Sử dụng id đúng
     const password = form.elements["password_field"].value; // Sử dụng id đúng
     const data = { username, password };
-
     try {
       const res = await axios.post("http://localhost:9999/users/login", data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
       const {
         accessToken,
         refreshToken,
@@ -46,10 +43,15 @@ const LoginForm = ({ setIsLoggedIn }) => {
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Đăng nhập thành công!");
       setIsLoggedIn(true);
-      if (role == 1) {
+
+      if (role === 1) {
         nav("/admin");
       } else {
-        //nav("/");
+        if (firstLogin === true) {
+          nav("/userneed");
+          return;
+        }
+        nav("/");
       }
     } catch (error) {
       if (error.response) {
@@ -67,7 +69,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
       }
     }
   };
-
   return (
     <Container>
       <Row
