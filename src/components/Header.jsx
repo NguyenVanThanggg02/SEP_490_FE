@@ -12,7 +12,7 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
         <div className="navbar">
           <div className="logo">
             <Link to={"/"}>
-              <img src={Logo} height="100" width="100" alt="logo" />
+              <img src={Logo} style={{height:'150px', width:'150px'}} alt="logo" />
             </Link>
           </div>
         </div>
