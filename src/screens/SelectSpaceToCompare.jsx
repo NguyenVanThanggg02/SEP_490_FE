@@ -12,8 +12,10 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const SelectSpaceToCompare = (props) => {
-  const { visibleCompare, setVisibleCompare, position } = props;
+  const { visibleCompare, setVisibleCompare, id, onValueChange  } = props;
   const [spaces, setSpaces] = useState([]);
+  const [selectedSpace, setSelectedSpace] = useState(null);
+  console.log(selectedSpace);
 
   useEffect(() => {
     axios
@@ -27,68 +29,54 @@ const SelectSpaceToCompare = (props) => {
       });
   }, []);
   const filterSapces = (spaces) => {
-    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+    return spaces.filter(
+      (spaces) => spaces.censorship === "Chấp nhận" && spaces._id !== id
+    );
   };
   const onHide = () => {
     setVisibleCompare(false);
   };
 
-  const dialogFooter = (
-    <div style={{ margin: "20px" }}>
-      <div style={{ display: "flex", justifyContent: "end" }}>
-        <Button className="btn btn-dark">
-          <Link style={{color:'white', textDecoration:'none'}} to={"/compare"}>Tiếp theo</Link>
-        </Button>
-      </div>
-    </div>
-  );
+  const sendValueToParent = () => {
+    onValueChange(String(selectedSpace)); 
+    console.log(onValueChange(selectedSpace));
+    
+  };
+
+  const handleSpaceSelect = (space) => {
+    setSelectedSpace(space);
+    sendValueToParent();
+  };
 
   return (
     <div>
       <Dialog
         visible={visibleCompare}
         onHide={onHide}
-        footer={dialogFooter}
         className="bg-light dialogForm"
-        style={{ width: "40vw" }}
-        position={position}
+        style={{ width: "60vw" }}
         modal
       >
         <Row style={{ margin: "20px" }}>
-          <Col md={6}>
-            <Card style={{ position: "relative" }}>
-              <CardMedia
-                sx={{ height: 250 }}
-                image="https://thietkenoithat.com/Portals/0/xNews/uploads/2022/10/11/thiet-ke-van-phong-hien-dai(1)_1.jpg"
-                title="image spaceF"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  abc
-                </Typography>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  abf
-                </Typography>
-              </CardContent>
-            </Card>
-          </Col>
-          <Col md={6}>
-            <Card style={{ position: "relative" }}>
-              <CardMedia
-                sx={{ height: 250 }}
-                image="https://thietkenoithat.com/Portals/0/xNews/uploads/2022/10/11/thiet-ke-van-phong-hien-dai(1)_1.jpg"
-                title="image spaceF"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  abc
-                </Typography>
-                <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                  abf
-                </Typography>
-              </CardContent>
-            </Card>
-          </Col>
+          {spaces.map((s) => (
+            <Col md={4}>
+              <Card
+                style={{ position: "relative" }}
+                onClick={() => handleSpaceSelect(s._id)}
+              >
+                <CardMedia
+                  sx={{ height: 250 }}
+                  image={s.images[0]}
+                  title="image spaceF"
+                />
+                <CardContent>
+                  <Typography variant="p" sx={{ color: "text.secondary" }}>
+                    {s.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Col>
+          ))}
         </Row>
       </Dialog>
     </div>

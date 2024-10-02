@@ -15,6 +15,10 @@ import {
   InputLabel,
   TextField,
   Box,
+  Drawer,
+  Card,
+  CardContent,
+  CardMedia,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
@@ -25,8 +29,8 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
+import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
-
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -35,8 +39,15 @@ function SpaceDetails() {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
-  const [position, setPosition] = useState('center');
+  const [valueFromChild, setValueFromChild] = useState('');
+
+  console.log(valueFromChild);
+
+  const handleValueChange = (newValue) => {
+    setValueFromChild(newValue);
+  };
 
   const handleClickOpen = (image) => {
     setSelectedImage(image);
@@ -84,15 +95,64 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  console.log(spaceData.rulesId);
   // Ensure spaceData and its properties are properly initialized
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
 
-  const show = (position) => {
-    setPosition(position);
-    setVisibleCompare(true);
-};
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpenDrawer(open);
+  };
+
+  const drawerContent = () => (
+    <Row style={{ margin: "20px"}}>
+      <Col md={6}>
+        <Card style={{ position: "relative" }}>
+          <CardMedia
+            sx={{ height: 250 }}
+            image={spaceData.images[0]}
+            title="image spaceF"
+            style={{objectFit:'cover'}}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {spaceData.name}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Col>
+      <Col
+        md={6}
+        style={{ textAlign: "center", position: "relative" }}
+        onClick={() => {
+          setVisibleCompare(true);
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100px",
+            height: "100px",
+            border: "2px dashed gray",
+            position: "relative",
+            margin: "auto",
+            marginTop: "90px",
+          }}
+        >
+          <AddIcon style={{ fontSize: "40px", color: "gray" }} />
+        </div>
+        <div style={{ marginTop: "10px" }}>Thêm địa điểm</div>
+      </Col>
+    </Row>
+  );
+
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
@@ -126,11 +186,7 @@ function SpaceDetails() {
                     <FavoriteBorderIcon style={{ fontSize: "40px" }} />
                   )}
                 </div>
-                <div
-                  onClick={() => {
-                    show("bottom");
-                  }}
-                >
+                <div onClick={toggleDrawer(true)}>
                   <PlusCircle style={{ color: "blue", fontSize: "33px" }} />
                   So sánh
                 </div>
@@ -399,11 +455,22 @@ function SpaceDetails() {
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
+      <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
+          '& .MuiDrawer-paper': {
+            width: '50vw',  
+            left: '25vw',   
+            right: 'auto',
+          }, zIndex: 1000
+        }}>
+        {drawerContent()}
+      </Drawer>
       {visibleCompare && (
         <SelectSpaceToCompare
           visibleCompare={visibleCompare}
           setVisibleCompare={setVisibleCompare}
-          position={position}
+          sx={{ zIndex: 1500 }}
+          id={id}
+          onValueChange={handleValueChange}
         />
       )}
     </Container>
