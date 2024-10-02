@@ -19,13 +19,13 @@ import {
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
 import { Link, useParams } from "react-router-dom";
-import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
+import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
-
+import SelectSpaceToCompare from "./SelectSpaceToCompare";
 
 function SpaceDetails() {
   const { id } = useParams();
@@ -35,6 +35,8 @@ function SpaceDetails() {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [visibleCompare, setVisibleCompare] = useState(false);
+  const [position, setPosition] = useState('center');
 
   const handleClickOpen = (image) => {
     setSelectedImage(image);
@@ -45,7 +47,6 @@ function SpaceDetails() {
     setOpen(false);
     setSelectedImage(null);
   };
-
 
   useEffect(() => {
     const fetchSpaceData = async () => {
@@ -62,20 +63,19 @@ function SpaceDetails() {
     fetchSpaceData();
   }, [id]);
 
-
   const changeFavorite = async () => {
     try {
-      const response = await axios.put(`http://localhost:9999/spaces/${id}/favorite`);
+      const response = await axios.put(
+        `http://localhost:9999/spaces/${id}/favorite`
+      );
       setSpaceData((prevSpace) => ({
         ...prevSpace,
-        favorite: response.data.favorite
+        favorite: response.data.favorite,
       }));
-
     } catch (error) {
       console.error("Error change favorite:", error);
     }
   };
-
 
   if (loading) return <Typography variant="h6">Loading...</Typography>;
   if (error)
@@ -84,32 +84,59 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  console.log(spaceData.rulesId)
+  console.log(spaceData.rulesId);
   // Ensure spaceData and its properties are properly initialized
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
 
+  const show = (position) => {
+    setPosition(position);
+    setVisibleCompare(true);
+};
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
           <Container fluid item xs={12}>
-           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
-             <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
-             <div style={{ display: "flex", alignItems: "center", cursor: "pointer", alignSelf: "flex-start" }}>
-               <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                 {spaceData.favorite ? (
-                 <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
-                 ) : (
-                <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                 )}
-               </div>
-             <div>
-             <PlusCircle style={{ color: "blue", fontSize: '33px' }} />So sánh
-          </div>
-        </div>
-        </div>
-            <Row container spacing={2}  >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignSelf: "flex-start",
+              }}
+            >
+              <Typography variant="h4" className="pb-4">
+                {spaceData.name}
+              </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  alignSelf: "flex-start",
+                }}
+              >
+                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                  {spaceData.favorite ? (
+                    <FavoriteIcon
+                      style={{ color: "#FF385C", fontSize: "40px" }}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                  )}
+                </div>
+                <div
+                  onClick={() => {
+                    show("bottom");
+                  }}
+                >
+                  <PlusCircle style={{ color: "blue", fontSize: "33px" }} />
+                  So sánh
+                </div>
+              </div>
+            </div>
+            <Row container spacing={2}>
               {images.length > 0 ? (
                 <div>
                   <ImageList cols={3}>
@@ -372,6 +399,13 @@ function SpaceDetails() {
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
+      {visibleCompare && (
+        <SelectSpaceToCompare
+          visibleCompare={visibleCompare}
+          setVisibleCompare={setVisibleCompare}
+          position={position}
+        />
+      )}
     </Container>
   );
 }
