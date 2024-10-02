@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Send from "../model/Button/Send";
+import Alert from "@mui/material/Alert";
+import CheckIcon from "@mui/icons-material/Check";
 import "../style/UserNeedsForm.css";
+import { useNavigate } from "react-router-dom";
+import "../style/list.css";
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
     goals: "",
   });
+  const nav = useNavigate();
   const [productOptions, setProductOptions] = useState([]);
-  const [userId, setUserId] = useState(null); // Lưu trữ userId
+  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -34,7 +38,6 @@ const UserNeedsForm = () => {
         setLoadingProducts(false);
       }
     };
-
     fetchProducts();
   }, []);
 
@@ -56,18 +59,15 @@ const UserNeedsForm = () => {
     setLoading(true);
     setError(null);
     setSuccess(false);
-
     if (!userId) {
       setError("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.");
       setLoading(false);
       return;
     }
-
     try {
       console.log("Sending data:", {
         ...needs,
       });
-
       const response = await axios.post(
         `http://localhost:9999/userNeed/${userId}/needs`,
         {
@@ -81,6 +81,7 @@ const UserNeedsForm = () => {
       );
       if (response.status === 200) {
         setSuccess(true);
+        nav("/");
         setNeeds({ productPreferences: [], goals: "" });
       }
     } catch (err) {
@@ -98,27 +99,28 @@ const UserNeedsForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <h3>Chọn sở thích sản phẩm:</h3>
-        {productOptions.length > 0 ? (
-          productOptions.map((option, index) => (
-            <div key={index}>
-              <label>
+        <h3>Bạn đang quan tâm đến không gian nào?</h3>
+        <div id="checklist">
+          {productOptions.length > 0 ? (
+            productOptions.map((option, index) => (
+              <div key={index}>
                 <input
                   type="checkbox"
                   value={option.name}
                   checked={needs.productPreferences.includes(option.name)}
                   onChange={handleCheckboxChange}
+                  id={`checklist-${index}`} // Thêm ID cho từng checkbox
                 />
-                {option.name}
-              </label>
-            </div>
-          ))
-        ) : (
-          <p>Không có sản phẩm nào để chọn.</p>
-        )}
+                <label htmlFor={`checklist-${index}`}>{option.name}</label>
+              </div>
+            ))
+          ) : (
+            <p>Không có sản phẩm nào để chọn.</p>
+          )}
+        </div>
       </div>
       <div>
-        <label>Mục tiêu cá nhân</label>
+        <label>Mong muốn của bạn</label>
         <input
           type="text"
           name="goals"
@@ -126,9 +128,18 @@ const UserNeedsForm = () => {
           onChange={handleInputChange}
         />
       </div>
-      <button type="submit">{loading ? "Đang gửi..." : "Gửi"} </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>Gửi thành công!</p>}
+      <button type="submit" className="btn btn-primary mb-2">
+        {loading ? "Đang gửi..." : "Gửi"}
+      </button>
+
+      {success && (
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          Gửi thành công!
+        </Alert>
+      )}
+
+      {/* Hiển thị thông báo lỗi */}
+      {error && <Alert severity="error">{error}</Alert>}
     </form>
   );
 };
