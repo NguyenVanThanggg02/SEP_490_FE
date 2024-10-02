@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
+import Favorites from "./screens/Favorites";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -49,6 +50,12 @@ function Layout() {
         <Route path="/forgot_pass" element={<Forgot_Pass />} />
         <Route path="/mess" element={<Message />} />
         <Route path="/spaces/:id" element={<SpaceDetails />} />
+        <Route path="/notfound" element={<NotFound />} />
+        <Route path="/changepassadm" element={<ChangePassAdmin />} />
+        <Route
+          path="/admin"
+          element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
+        />
       </Routes>
     </>
   );
