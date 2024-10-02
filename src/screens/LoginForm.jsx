@@ -27,22 +27,29 @@ const LoginForm = ({ setIsLoggedIn }) => {
         },
       });
 
-      const { accessToken, refreshToken, username, id, fullname, role } =
-        res.data;
+      const {
+        accessToken,
+        refreshToken,
+        username,
+        id,
+        fullname,
+        role,
+        firstLogin,
+      } = res.data;
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("username", username);
       localStorage.setItem("fullname", fullname);
       localStorage.setItem("userId", id);
       localStorage.setItem("role", role);
-
+      localStorage.setItem("firstLogin", firstLogin);
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Đăng nhập thành công!");
       setIsLoggedIn(true);
-      if(role == 1) {
+      if (role == 1) {
         nav("/admin");
-      }else{
-        nav("/");
+      } else {
+        //nav("/");
       }
     } catch (error) {
       if (error.response) {

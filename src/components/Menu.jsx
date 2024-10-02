@@ -56,6 +56,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
+      console.log(userInfo);
+
       setFormData({
         fullname: response.data.fullname,
         gmail: response.data.gmail,
@@ -121,15 +123,11 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleSave = async () => {
     const accessToken = localStorage.getItem("accessToken");
     try {
-      await axios.put(
-        `http://localhost:9999/users/${userInfo.username}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axios.put(`http://localhost:9999/users/${userInfo._id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       setUserInfo((prev) => ({ ...prev, ...formData }));
       setEditMode(false);
       toast.success("Cập nhật thông tin thành công!");
