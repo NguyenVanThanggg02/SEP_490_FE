@@ -3,12 +3,12 @@ import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
 import { Box, CardContent, Typography } from '@mui/material';
 
 
-export const AddSpacePageFirst = () => {
+export const AddSpacePageAppliances = () => {
     return (
         <Container fluid >
             <Row className="pb-5">
                 <Col>
-                    <h1 className="text-center">Chọn thể loại không gian của bạn </h1>
+                    <h1 className="text-center">Chọn các tiện ích có trong  không gian của bạn </h1>
                 </Col>
             </Row>
             <Row className="d-flex justify-content-center align-items-center" >
@@ -61,4 +61,4 @@ export const AddSpacePageFirst = () => {
     )
 }
 
-export default AddSpacePageFirst
+export default AddSpacePageAppliances
