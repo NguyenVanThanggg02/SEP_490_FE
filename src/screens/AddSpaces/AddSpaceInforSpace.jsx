@@ -1,6 +1,6 @@
 import React from 'react'
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import { Divider, TextField, Typography } from '@mui/material';
+import { Box, Divider, TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { Textarea } from 'react-bootstrap-icons';
 const AddSpaceInforSpace = () => {
@@ -18,10 +18,9 @@ const AddSpaceInforSpace = () => {
                             <TextField
                                 label="Tên không gian "
                                 id="outlined-size-normal"
-                                defaultValue="Normal"
                                 variant="outlined"
+                                fullWidth  // Chiếm toàn bộ chiều rộng
                                 required
-
                             />
                         </Col>
                         <Col md={6}>
@@ -52,7 +51,7 @@ const AddSpaceInforSpace = () => {
                     </Row>
                     {/*hàng 2 */}
                     <Row className='pb-5'>
-                        <Col md={6}>
+                        <Col md={6} className="pt-2">
                             <TextField
                                 label="Mô tả"
                                 multiline
@@ -66,20 +65,81 @@ const AddSpaceInforSpace = () => {
                         <Col md={6}>
                             <Row>
                                 <Typography variant="h6">Quy định</Typography>
-                                <Col md={4}>
-                                    <div style={{ border: "1px solid black", padding: "20px" }}>
-                                        Icon
-                                    </div>
+                                <Col md={3}>
+                                    <Tooltip title="Cấm dùng thuốc lá " arrow>
+                                        <Box
+                                            sx={{
+                                                border: '2px dashed grey',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '50px',
+                                                width: '80px',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            Icon
+                                        </Box>
+
+                                    </Tooltip>
                                 </Col>
-                                <Col md={4}>
-                                    <div style={{ border: "1px solid black", padding: "20px" }}>
-                                        Icon
-                                    </div>
+                                <Col md={3}>
+                                    <Tooltip title="Cấm dùng thuốc lá " arrow>
+                                        <Box
+                                            sx={{
+                                                border: '2px dashed grey',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '50px',
+                                                width: '80px',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            Icon
+                                        </Box>
+
+                                    </Tooltip>
                                 </Col>
-                                <Col md={4}>
-                                    <div style={{ border: "1px solid black", padding: "20px" }}>
-                                        Icon
-                                    </div>
+                                <Col md={3}>
+                                    <Tooltip title="Cấm dùng thuốc lá " arrow>
+                                        <Box
+                                            sx={{
+                                                border: '2px dashed grey',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '50px',
+                                                width: '80px',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            Icon
+                                        </Box>
+
+                                    </Tooltip>
+                                </Col>
+                                <Col md={3}>
+                                    <Tooltip title="Cấm dùng thuốc lá " arrow>
+                                        <Box
+                                            sx={{
+                                                border: '2px dashed grey',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '50px',
+                                                width: '80px',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            Icon
+                                        </Box>
+
+                                    </Tooltip>
                                 </Col>
                             </Row>
                         </Col>
@@ -87,10 +147,23 @@ const AddSpaceInforSpace = () => {
                     {/*hàng 3 */}
                     <Row>
                         <Col md={2}>
-                            <div style={{ border: "1px dashed gray", textAlign: "center" }}>
-                                <AddPhotoAlternateIcon />
-                                <Typography variant="body2">Thêm ảnh</Typography>
-                            </div>
+                            <Box
+                                sx={{
+                                    border: '2px dashed grey',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    height: '100px',
+                                    width: '150px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                <AddPhotoAlternateIcon sx={{ fontSize: 40, color: 'grey' }} />
+                                <Typography variant="body1" color="grey">
+                                    Thêm ảnh
+                                </Typography>
+                            </Box>
                         </Col>
                         <Col md={10}>
                         </Col>
