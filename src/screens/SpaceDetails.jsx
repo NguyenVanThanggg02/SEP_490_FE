@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -42,7 +42,8 @@ function SpaceDetails() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState('');
-
+  const [compare, setCompare] = useState({});
+  const nav = useNavigate()
   console.log(valueFromChild);
 
   const handleValueChange = (newValue) => {
@@ -73,6 +74,22 @@ function SpaceDetails() {
 
     fetchSpaceData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchSpaceDataToCompare = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9999/spaces/${valueFromChild}`);
+        console.log(response.data);
+        setCompare(response.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSpaceDataToCompare();
+  }, [valueFromChild]);
+
 
   const changeFavorite = async () => {
     try {
@@ -108,16 +125,18 @@ function SpaceDetails() {
     }
     setOpenDrawer(open);
   };
-
+  const handleCompare = () =>{
+    nav('/compare', { state: { id, valueFromChild } });
+  }
   const drawerContent = () => (
-    <Row style={{ margin: "20px"}}>
-      <Col md={6}>
+    <Row style={{ margin: "20px" }}>
+      <Col md={5}>
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
             image={spaceData.images[0]}
             title="image spaceF"
-            style={{objectFit:'cover'}}
+            style={{ objectFit: 'cover' }}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
@@ -126,32 +145,72 @@ function SpaceDetails() {
           </CardContent>
         </Card>
       </Col>
-      <Col
-        md={6}
-        style={{ textAlign: "center", position: "relative" }}
-        onClick={() => {
-          setVisibleCompare(true);
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100px",
-            height: "100px",
-            border: "2px dashed gray",
-            position: "relative",
-            margin: "auto",
-            marginTop: "90px",
+      {compare && compare.name ? (
+        <Col md={5}>
+          <Card style={{ position: "relative" }}>
+            <CardMedia
+              sx={{ height: 250 }}
+              image={compare.images[0]} 
+              title="image spaceCompare"
+              style={{ objectFit: 'cover' }}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {compare.name}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Col>
+      ) : (
+        <Col
+          md={5}
+          style={{ textAlign: "center", position: "relative" }}
+          onClick={() => {
+            setVisibleCompare(true);
           }}
         >
-          <AddIcon style={{ fontSize: "40px", color: "gray" }} />
-        </div>
-        <div style={{ marginTop: "10px" }}>Thêm địa điểm</div>
-      </Col>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100px",
+              height: "100px",
+              border: "2px dashed gray",
+              position: "relative",
+              margin: "auto",
+              marginTop: "90px",
+            }}
+          >
+            <AddIcon style={{ fontSize: "40px", color: "gray" }} />
+          </div>
+          <div style={{ marginTop: "10px" }}>Thêm địa điểm</div>
+        </Col>
+      )}
+      <Col
+          md={2}
+          style={{ textAlign: "center", position: "relative" }}
+          onClick={handleCompare}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100px",
+              height: "100px",
+              position: "relative",
+              margin: "auto",
+              marginTop: "90px",
+            }}
+          >
+            <Button>So sánh</Button>
+          </div>
+          
+        </Col>
     </Row>
   );
+  
 
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>

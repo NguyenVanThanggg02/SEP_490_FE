@@ -37,15 +37,10 @@ const SelectSpaceToCompare = (props) => {
     setVisibleCompare(false);
   };
 
-  const sendValueToParent = () => {
-    onValueChange(String(selectedSpace)); 
-    console.log(onValueChange(selectedSpace));
-    
-  };
-
   const handleSpaceSelect = (space) => {
-    setSelectedSpace(space);
-    sendValueToParent();
+    setSelectedSpace(space); 
+    onValueChange(space); 
+    onHide()
   };
 
   return (

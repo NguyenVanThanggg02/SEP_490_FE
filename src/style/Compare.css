@@ -99,3 +99,10 @@
       display: block;
     }
   }
+  .comparison-title {
+    text-align: center; /* Căn giữa tiêu đề */
+    margin-bottom: 20px; /* Thêm khoảng cách dưới tiêu đề nếu cần */
+    font-size: 24px; /* Cỡ chữ */
+    font-weight: bold; /* Đậm chữ */
+  }
+  
