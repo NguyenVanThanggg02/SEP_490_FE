@@ -17,6 +17,8 @@ import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 import Favorites from "./screens/Favorites";
+import AddSpacePageFirst from "./screens/AddSpaces/AddSpacePageFirst";
+import AllAdd from "./screens/AddSpaces/AllAdd";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -52,6 +54,8 @@ function Layout() {
         <Route path="/spaces/:id" element={<SpaceDetails />} />
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/changepassadm" element={<ChangePassAdmin />} />
+        <Route path="/addfirst" element={<AddSpacePageFirst />} />
+        <Route path="/alladd" element={<AllAdd />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route
           path="/admin"
