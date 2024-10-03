@@ -126,6 +126,9 @@ function SpaceDetails() {
     setOpenDrawer(open);
   };
   const handleCompare = () =>{
+    if(valueFromChild == ""){
+      return
+    }
     nav('/compare', { state: { id, valueFromChild } });
   }
   const handleDeleteIdSoToCompare =() =>{
