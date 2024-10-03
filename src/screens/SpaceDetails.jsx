@@ -128,34 +128,37 @@ function SpaceDetails() {
   const handleCompare = () =>{
     nav('/compare', { state: { id, valueFromChild } });
   }
+  const handleDeleteIdSoToCompare =() =>{
+    setValueFromChild('');
+  }
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
-      <Col md={5}>
+      <Col md={6}>
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
             image={spaceData.images[0]}
             title="image spaceF"
-            style={{ objectFit: 'cover' }}
+            style={{ objectFit: "cover" }}
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
+            <Typography gutterBottom variant="h6" component="div">
               {spaceData.name}
             </Typography>
           </CardContent>
         </Card>
       </Col>
       {compare && compare.name ? (
-        <Col md={5}>
+        <Col md={6}>
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare.images[0]} 
+              image={compare.images[0]}
               title="image spaceCompare"
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
             />
             <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+              <Typography gutterBottom variant="h6" component="div">
                 {compare.name}
               </Typography>
             </CardContent>
@@ -163,7 +166,7 @@ function SpaceDetails() {
         </Col>
       ) : (
         <Col
-          md={5}
+          md={6}
           style={{ textAlign: "center", position: "relative" }}
           onClick={() => {
             setVisibleCompare(true);
@@ -188,26 +191,41 @@ function SpaceDetails() {
         </Col>
       )}
       <Col
-          md={2}
+        md={6}
+        style={{ textAlign: "center", position: "relative" }}
+        onClick={handleCompare}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            margin: "10px auto",
+          }}
+        >
+          <Button className="btn btn-success">So sánh</Button>
+        </div>
+      </Col>
+      {valueFromChild != "" && (
+        <Col
+          md={6}
           style={{ textAlign: "center", position: "relative" }}
-          onClick={handleCompare}
+          onClick={handleDeleteIdSoToCompare}
         >
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              width: "100px",
-              height: "100px",
               position: "relative",
-              margin: "auto",
-              marginTop: "90px",
+              margin: "10px auto",
             }}
           >
-            <Button>So sánh</Button>
+            <Button className="btn btn-danger">Xoá</Button>
           </div>
-          
         </Col>
+      )}
     </Row>
   );
   
