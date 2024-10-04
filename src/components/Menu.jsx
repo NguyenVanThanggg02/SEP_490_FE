@@ -177,96 +177,204 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         )}
       </Menu>
 
-      <Dialog open={openProfileModal} onClose={handleProfileClose}>
-        <DialogTitle>Thông tin chi tiết</DialogTitle>
-        <ToastContainer />
-        <DialogContent>
-          {userInfo ? (
-            <div>
-              <TextField
-                label="Họ và tên"
-                name="fullname"
-                value={formData.fullname}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Email"
-                name="gmail"
-                value={formData.gmail}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <FormControl fullWidth margin="normal" disabled={!editMode}>
-                <InputLabel>Giới tính</InputLabel>
-                <Select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="Male">Nam</MenuItem>
-                  <MenuItem value="Female">Nữ</MenuItem>
-                  <MenuItem value="">Chưa xác định</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                label="Ngày sinh"
-                name="birthday"
-                type="date"
-                value={formData.birthday}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <TextField
-                label="Số điện thoại"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Địa chỉ"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-            </div>
-          ) : (
-            <Typography>Đang tải...</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          {editMode ? (
-            <>
-              <Button onClick={handleSave} color="primary">
-                Lưu
-              </Button>
-              <Button onClick={() => setEditMode(false)} color="secondary">
-                Hủy
-              </Button>
-            </>
-          ) : (
-            <Button onClick={() => setEditMode(true)} color="primary">
-              Chỉnh sửa
-            </Button>
-          )}
-          <Button onClick={handleProfileClose}>Đóng</Button>
-        </DialogActions>
-      </Dialog>
+      <Dialog 
+  open={openProfileModal} 
+  onClose={handleProfileClose} 
+  style={{ 
+    minWidth: '500px', 
+    borderRadius: '12px',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)' 
+  }}
+>
+  <DialogTitle 
+    style={{ 
+      textAlign: 'center', 
+      fontWeight: 'bold', 
+      fontSize: '24px', 
+      color: '#3f51b5',
+      paddingBottom: '8px',
+      borderBottom: '1px solid #e0e0e0',
+    }}
+  >
+    Thông tin chi tiết
+  </DialogTitle>
+  <ToastContainer />
+  <DialogContent 
+    style={{ 
+      padding: '24px', 
+      backgroundColor: '#fafafa', 
+    }}
+  >
+    {userInfo ? (
+      <div>
+        <TextField
+          label="Họ và tên"
+          name="fullname"
+          value={formData.fullname}
+          onChange={handleInputChange}
+          disabled={!editMode}
+          fullWidth
+          margin="normal"
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        />
+        <TextField
+          label="Email"
+          name="gmail"
+          value={formData.gmail}
+          onChange={handleInputChange}
+          disabled={!editMode}
+          fullWidth
+          margin="normal"
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        />
+        <FormControl 
+          fullWidth 
+          margin="normal" 
+          disabled={!editMode} 
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        >
+          <InputLabel>Giới tính</InputLabel>
+          <Select
+            name="gender"
+            value={formData.gender}
+            onChange={handleInputChange}
+            style={{ padding: '10px', borderRadius: '4px' }}
+          >
+            <MenuItem value="Male">Nam</MenuItem>
+            <MenuItem value="Female">Nữ</MenuItem>
+            <MenuItem value="">Chưa xác định</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Ngày sinh"
+          name="birthday"
+          type="date"
+          value={formData.birthday}
+          onChange={handleInputChange}
+          disabled={!editMode}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        />
+        <TextField
+          label="Số điện thoại"
+          name="phone"
+          value={formData.phone}
+          onChange={handleInputChange}
+          disabled={!editMode}
+          fullWidth
+          margin="normal"
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        />
+        <TextField
+          label="Địa chỉ"
+          name="address"
+          value={formData.address}
+          onChange={handleInputChange}
+          disabled={!editMode}
+          fullWidth
+          margin="normal"
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: '#ffffff', 
+            borderRadius: '8px',
+          }}
+        />
+      </div>
+    ) : (
+      <Typography>Đang tải...</Typography>
+    )}
+  </DialogContent>
+  <DialogActions 
+    style={{ 
+      justifyContent: 'space-between', 
+      padding: '16px', 
+      borderTop: '1px solid #e0e0e0',
+      backgroundColor: '#f5f5f5',
+    }}
+  >
+    {editMode ? (
+      <>
+        <Button 
+          onClick={handleSave} 
+          color="primary" 
+          style={{ 
+            backgroundColor: '#3f51b5', 
+            color: '#ffffff', 
+            borderRadius: '8px',
+            padding: '8px 16px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
+        >
+          Lưu
+        </Button>
+        <Button 
+          onClick={() => setEditMode(false)} 
+          color="secondary" 
+          style={{ 
+            backgroundColor: '#f44336', 
+            color: '#ffffff', 
+            borderRadius: '8px',
+            padding: '8px 16px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          }}
+        >
+          Hủy
+        </Button>
+      </>
+    ) : (
+      <Button 
+        onClick={() => setEditMode(true)} 
+        color="primary" 
+        style={{ 
+          backgroundColor: '#3f51b5', 
+          color: '#ffffff', 
+          borderRadius: '8px',
+          padding: '8px 16px',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}
+      >
+        Chỉnh sửa
+      </Button>
+    )}
+    <Button 
+      onClick={handleProfileClose}
+      style={{ 
+        backgroundColor: '#9e9e9e', 
+        color: '#ffffff', 
+        borderRadius: '8px',
+        padding: '8px 16px',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+      }}
+    >
+      Đóng
+    </Button>
+  </DialogActions>
+</Dialog>
+
     </React.Fragment>
   );
 };

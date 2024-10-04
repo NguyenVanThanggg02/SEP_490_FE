@@ -15,11 +15,7 @@ import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 import Favorites from "./screens/Favorites";
-<<<<<<< HEAD
-import Contact from "./screens/Contact";
-=======
 import Compare from "./screens/Compare";
->>>>>>> 4cda24f2dc64366032a1761b37c7d64a4dad4bc3
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,12 +52,7 @@ function Layout() {
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/changepassadm" element={<ChangePassAdmin />} />
         <Route path="/favorites" element={<Favorites />} />
-<<<<<<< HEAD
-        <Route path="/contact" element={<Contact />} />
-
-=======
         <Route path="/compare" element={<Compare />} />
->>>>>>> 4cda24f2dc64366032a1761b37c7d64a4dad4bc3
         <Route
           path="/admin"
           element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
