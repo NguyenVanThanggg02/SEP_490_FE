@@ -13,6 +13,7 @@ const steps = ['Chọn thể loại', 'Chọn tiện ích', 'Vị trí', 'Thông
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // State để lưu categoryId
 
   const handleNext = () => {
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
@@ -29,9 +30,9 @@ export default function AddSpaceFlow() {
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
-        return <AddSpaceCategories />;
+        return <AddSpaceCategories setSelectedCategoryId={setSelectedCategoryId} />;
       case 1:
-        return <AddSpacePageAppliances />;
+        return <AddSpacePageAppliances categoryId={selectedCategoryId} />;
       case 2:
         return <AddSpaceLocation />;
       case 3:
