@@ -3,12 +3,13 @@ import { Col, Container, Row, Table, Button } from "react-bootstrap";
 import { Eye } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
+import { Link } from "react-router-dom";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [currentPostId, setCurrentPostId] = useState(null); // Thêm trạng thái cho postId hiện tại
-
+  const [currentPostId, setCurrentPostId] = useState(null); 
+  
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces")
@@ -91,13 +92,18 @@ const PostManagement = () => {
                   <td>{s.name}</td>
                   <td>{s.userId?.fullname || "Unknown"}</td>
                   <td>
-                    <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
+                  <Link to={'/detail-admin'} state={{ id: s._id }}>
+                  <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
+                    </Link>
                   </td>
                   <td>
                     <Button
                       variant="success"
                       onClick={() => handleAccept(s._id)}
-                      disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
+                      disabled={
+                        s.censorship === "Chấp nhận" ||
+                        s.censorship === "Từ chối"
+                      }
                     >
                       Chấp Nhận
                     </Button>
@@ -105,8 +111,11 @@ const PostManagement = () => {
                   <td>
                     <Button
                       variant="danger"
-                      onClick={() => openRejectDialog(s._id)} 
-                      disabled={s.censorship === "Chấp nhận" || s.censorship === "Từ chối"}
+                      onClick={() => openRejectDialog(s._id)}
+                      disabled={
+                        s.censorship === "Chấp nhận" ||
+                        s.censorship === "Từ chối"
+                      }
                     >
                       Từ Chối
                     </Button>
@@ -117,7 +126,14 @@ const PostManagement = () => {
           </Table>
         </Col>
       </Row>
-      {visible && <CommunityStandards visible={visible} setVisible={setVisible} handleReject={handleReject} postId={currentPostId} />} 
+      {visible && (
+        <CommunityStandards
+          visible={visible}
+          setVisible={setVisible}
+          handleReject={handleReject}
+          postId={currentPostId}
+        />
+      )}
     </Container>
   );
 };

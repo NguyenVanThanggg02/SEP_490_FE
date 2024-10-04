@@ -1,0 +1,14 @@
+.horizontal-table {
+    width: 100%;
+  }
+  
+  .horizontal-table th,
+  .horizontal-table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+  
+  .horizontal-table th {
+    width: 150px;
+  }
+  
