@@ -15,18 +15,22 @@ import {
   InputLabel,
   TextField,
   Box,
+  Drawer,
+  Card,
+  CardContent,
+  CardMedia,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
-import { Link, useParams } from "react-router-dom";
-import { ImageList, ImageListItem, Dialog, DialogContent } from '@mui/material';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { FlagFill } from "react-bootstrap-icons";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
-
-
+import AddIcon from "@mui/icons-material/Add";
+import SelectSpaceToCompare from "./SelectSpaceToCompare";
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -35,6 +39,16 @@ function SpaceDetails() {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [visibleCompare, setVisibleCompare] = useState(false);
+  const [valueFromChild, setValueFromChild] = useState('');
+  const [compare, setCompare] = useState({});
+  const nav = useNavigate()
+  console.log(valueFromChild);
+
+  const handleValueChange = (newValue) => {
+    setValueFromChild(newValue);
+  };
 
   const handleClickOpen = (image) => {
     setSelectedImage(image);
@@ -45,7 +59,6 @@ function SpaceDetails() {
     setOpen(false);
     setSelectedImage(null);
   };
-
 
   useEffect(() => {
     const fetchSpaceData = async () => {
@@ -62,20 +75,35 @@ function SpaceDetails() {
     fetchSpaceData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchSpaceDataToCompare = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9999/spaces/${valueFromChild}`);
+        console.log(response.data);
+        setCompare(response.data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSpaceDataToCompare();
+  }, [valueFromChild]);
+
 
   const changeFavorite = async () => {
     try {
-      const response = await axios.put(`http://localhost:9999/spaces/${id}/favorite`);
+      const response = await axios.put(
+        `http://localhost:9999/spaces/${id}/favorite`
+      );
       setSpaceData((prevSpace) => ({
         ...prevSpace,
-        favorite: response.data.favorite
+        favorite: response.data.favorite,
       }));
-
     } catch (error) {
       console.error("Error change favorite:", error);
     }
   };
-
 
   if (loading) return <Typography variant="h6">Loading...</Typography>;
   if (error)
@@ -84,29 +112,167 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  console.log(spaceData.rulesId)
   // Ensure spaceData and its properties are properly initialized
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpenDrawer(open);
+  };
+  const handleCompare = () =>{
+    if(valueFromChild == ""){
+      return
+    }
+    nav('/compare', { state: { id, valueFromChild } });
+  }
+  const handleDeleteIdSoToCompare =() =>{
+    setValueFromChild('');
+  }
+  const drawerContent = () => (
+    <Row style={{ margin: "20px" }}>
+      <Col md={6}>
+        <Card style={{ position: "relative" }}>
+          <CardMedia
+            sx={{ height: 250 }}
+            image={spaceData.images[0]}
+            title="image spaceF"
+            style={{ objectFit: "cover" }}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="div">
+              {spaceData.name}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Col>
+      {compare && compare.name ? (
+        <Col md={6}>
+          <Card style={{ position: "relative" }}>
+            <CardMedia
+              sx={{ height: 250 }}
+              image={compare.images[0]}
+              title="image spaceCompare"
+              style={{ objectFit: "cover" }}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h6" component="div">
+                {compare.name}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Col>
+      ) : (
+        <Col
+          md={6}
+          style={{ textAlign: "center", position: "relative" }}
+          onClick={() => {
+            setVisibleCompare(true);
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100px",
+              height: "100px",
+              border: "2px dashed gray",
+              position: "relative",
+              margin: "auto",
+              marginTop: "90px",
+            }}
+          >
+            <AddIcon style={{ fontSize: "40px", color: "gray" }} />
+          </div>
+          <div style={{ marginTop: "10px" }}>Thêm địa điểm</div>
+        </Col>
+      )}
+      <Col
+        md={6}
+        style={{ textAlign: "center", position: "relative" }}
+        onClick={handleCompare}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+            margin: "10px auto",
+          }}
+        >
+          <Button className="btn btn-success">So sánh</Button>
+        </div>
+      </Col>
+      {valueFromChild != "" && (
+        <Col
+          md={6}
+          style={{ textAlign: "center", position: "relative" }}
+          onClick={handleDeleteIdSoToCompare}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              position: "relative",
+              margin: "10px auto",
+            }}
+          >
+            <Button className="btn btn-danger">Xoá</Button>
+          </div>
+        </Col>
+      )}
+    </Row>
+  );
+  
 
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
           <Container fluid item xs={12}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "flex-start" }}>
-              <Typography variant="h4" className="pb-4">{spaceData.name}</Typography>
-              <div style={{ cursor: "pointer", alignSelf: "flex-start" }} onClick={changeFavorite}>
-                {spaceData.favorite ? (
-                  <FavoriteIcon style={{ color: "#FF385C", fontSize: "40px" }} />
-                ) : (
-                  <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignSelf: "flex-start",
+              }}
+            >
+              <Typography variant="h4" className="pb-4">
+                {spaceData.name}
+              </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  alignSelf: "flex-start",
+                }}
+              >
+                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                  {spaceData.favorite ? (
+                    <FavoriteIcon
+                      style={{ color: "#FF385C", fontSize: "40px" }}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                  )}
+                </div>
+                <div onClick={toggleDrawer(true)}>
+                  <PlusCircle style={{ color: "blue", fontSize: "33px" }} />
+                  So sánh
+                </div>
               </div>
             </div>
-
-
-            <Row container spacing={2}  >
+            <Row container spacing={2}>
               {images.length > 0 ? (
                 <div>
                   <ImageList cols={3}>
@@ -369,6 +535,24 @@ function SpaceDetails() {
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
+      <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
+          '& .MuiDrawer-paper': {
+            width: '50vw',  
+            left: '25vw',   
+            right: 'auto',
+          }, zIndex: 1000
+        }}>
+        {drawerContent()}
+      </Drawer>
+      {visibleCompare && (
+        <SelectSpaceToCompare
+          visibleCompare={visibleCompare}
+          setVisibleCompare={setVisibleCompare}
+          sx={{ zIndex: 1500 }}
+          id={id}
+          onValueChange={handleValueChange}
+        />
+      )}
     </Container>
   );
 }
