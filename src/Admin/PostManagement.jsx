@@ -104,7 +104,7 @@ const PostManagement = () => {
                         <img
                           src={s.images[0]}
                           alt={s.name}
-                          style={{ width: "100px", height: "100px" }}
+                          style={{ width: "100px", height: "150px",width:'150px' }}
                         />
                       </td>
                       <td>{s.name}</td>

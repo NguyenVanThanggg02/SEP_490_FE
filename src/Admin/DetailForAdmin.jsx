@@ -72,7 +72,7 @@ const DetailForAdmin = ({ id, onBack }) => {
                               src={imgUrl}
                               alt={`Space image ${index + 1}`}
                               fluid
-                              style={{ maxWidth: "200px", padding: "10px" }}
+                              style={{ maxWidth: "200px", padding: "10px", height:'150px' }}
                             />
                           ))}
                     </Image.PreviewGroup>
