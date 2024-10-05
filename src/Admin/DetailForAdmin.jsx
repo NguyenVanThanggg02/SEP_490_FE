@@ -1,7 +1,15 @@
 import { Box } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row, Table, Button, Modal } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row,
+  Table,
+  Button,
+  Modal,
+  ProgressBar,
+} from "react-bootstrap";
 import { Image } from "antd";
 
 const DetailForAdmin = ({ id, onBack }) => {
@@ -9,6 +17,7 @@ const DetailForAdmin = ({ id, onBack }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAllImages, setShowAllImages] = useState(false);
+  const now = 60;
 
   useEffect(() => {
     const fetchSpaceData = async () => {
@@ -41,9 +50,11 @@ const DetailForAdmin = ({ id, onBack }) => {
   }
 
   return (
-    <Container >
-      <Button className="btn btn-success m-3" onClick={onBack}>Quay lại</Button>
-      <Box style={{display:'flex', justifyContent:'center'}}>
+    <Container>
+      <Button className="btn btn-success m-3" onClick={onBack}>
+        Quay lại
+      </Button>
+      <Box style={{ display: "flex", justifyContent: "center" }}>
         <Row style={{ width: "100%" }}>
           <Col md={12}>
             <Table bordered hover className="horizontal-table">
@@ -95,6 +106,12 @@ const DetailForAdmin = ({ id, onBack }) => {
               </tbody>
             </Table>
           </Col>
+          <ProgressBar
+            style={{ padding: "0" }}
+            variant="info"
+            now={now}
+            label={`${now}%`}
+          />
         </Row>
       </Box>
       <Modal show={showAllImages} onHide={handleCloseModal} size="lg">
