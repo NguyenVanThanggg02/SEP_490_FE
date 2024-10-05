@@ -2,9 +2,14 @@ import { Box } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Table, Button, Modal } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
+import "../style/detailForAdmin.css";
 import { Image } from "antd";
+import Zoom from "react-medium-image-zoom";
 
-const DetailForAdmin = ({ id, onBack }) => {
+const DeFAd = () => {
+  const location = useLocation();
+  const { id } = location.state;
   const [space, setSpace] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,6 +37,7 @@ const DetailForAdmin = ({ id, onBack }) => {
   const handleCloseModal = () => {
     setShowAllImages(false);
   };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -41,9 +47,8 @@ const DetailForAdmin = ({ id, onBack }) => {
   }
 
   return (
-    <Container >
-      <Button className="btn btn-success m-3" onClick={onBack}>Quay lại</Button>
-      <Box style={{display:'flex', justifyContent:'center'}}>
+    <Container>
+      <Box>
         <Row style={{ width: "100%" }}>
           <Col md={12}>
             <Table bordered hover className="horizontal-table">
@@ -97,6 +102,7 @@ const DetailForAdmin = ({ id, onBack }) => {
           </Col>
         </Row>
       </Box>
+
       <Modal show={showAllImages} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Tất cả ảnh</Modal.Title>
@@ -125,4 +131,4 @@ const DetailForAdmin = ({ id, onBack }) => {
   );
 };
 
-export default DetailForAdmin;
+export default DeFAd;
