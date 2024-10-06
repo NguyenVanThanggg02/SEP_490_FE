@@ -22,6 +22,9 @@ import { useEffect, useState } from "react";
 import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
+import Favorites from "./screens/Favorites";
+import Compare from "./screens/Compare";
+import DetailForAdmin from "./Admin/DetailForAdmin";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,6 +64,9 @@ function Layout() {
         <Route path="/spaces/:id" element={<SpaceDetails />} />
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/changepassadm" element={<ChangePassAdmin />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/detail-admin" element={<DetailForAdmin />} />
         <Route
           path="/admin"
           element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

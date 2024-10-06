@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
-import "../style/UserNeedsForm.css";
+//import "../style/UserNeedsForm.css";
 import { useNavigate } from "react-router-dom";
-import "../style/list.css";
+//import "../style/list.css";
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
@@ -105,6 +105,7 @@ const UserNeedsForm = () => {
             productOptions.map((option, index) => (
               <div key={index}>
                 <input
+                  className="btn btn-primary"
                   type="checkbox"
                   value={option.name}
                   checked={needs.productPreferences.includes(option.name)}
@@ -122,6 +123,7 @@ const UserNeedsForm = () => {
       <div>
         <label>Mong muốn của bạn</label>
         <input
+          className="btn btn-primary"
           type="text"
           name="goals"
           value={needs.goals}

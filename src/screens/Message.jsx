@@ -56,7 +56,7 @@ const Message = () => {
       setMessageList((prevMessages) => [...prevMessages, newMessage]);
       setMessage("");
     } catch (err) {
-      alert("Gửi tin nhắn thất bại");
+      console.log("Gửi tin nhắn thất bại");
     }
   };
 

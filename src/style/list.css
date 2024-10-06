@@ -11,19 +11,20 @@
   position: relative;
   box-shadow: 0 10px 30px rgba(65, 72, 86, 0.05);
 
-  align-items: center;
-  justify-content: center;
+  display: grid; /* Sử dụng grid layout */
+  grid-template-columns: repeat(2, 1fr); /* Chia thành 2 cột */
+  gap: 15px; /* Khoảng cách giữa các mục */
+  padding: 20px; /* Thêm padding */
 }
 
 #checklist label {
   color: var(--text);
   position: relative;
   cursor: pointer;
-  display: grid;
+  display: flex; /* Đặt thành flex để dễ căn chỉnh */
   align-items: center;
   width: fit-content;
   transition: color 0.3s ease;
-  margin-right: 20px;
 }
 
 #checklist label::before,
@@ -46,7 +47,6 @@
   width: 4px;
   top: 8px;
   left: -25px;
-  border-radius: 50%;
 }
 
 #checklist input[type="checkbox"] {
@@ -62,7 +62,6 @@
   background: var(--background);
   display: grid;
   align-items: center;
-  margin-right: 20px;
 }
 
 #checklist input[type="checkbox"]::before,

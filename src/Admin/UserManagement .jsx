@@ -68,7 +68,7 @@ const UserManagement = () => {
                 <th>Số điện thoại</th>
                 <th>Gmail</th>
                 <th>Tên tài khoản</th>
-                <th>IsBan</th>
+                {/* <th>IsBan</th> */}
                 <th>Hành động</th>
               </tr>
             </thead>
@@ -84,7 +84,7 @@ const UserManagement = () => {
                   <td>{u.phone}</td>
                   <td>{u.gmail}</td>
                   <td>{u.username}</td>
-                  <td>{u.isBan ? "True" : "False"}</td>
+                  {/* <td>{u.isBan ? "True" : "False"}</td> */}
                   <td>
                     <Button
                       variant={u.isBan ? "success" : "danger"}

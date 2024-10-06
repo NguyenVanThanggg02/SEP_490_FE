@@ -33,16 +33,32 @@ const Home = () => {
       </Row>
       <Row>
         <div className="space-list row">
-          {spaces.length > 0 ? (
+          {/* {spaces.length > 0 ? (
             spaces.map((space) => (
               <div
                 className="col-lg-3 col-md-6 col-sm-12 mb-2"
                 key={space._id}
                 onClick={() => handleCardClick(space._id)}
+
               >
                 <SpaceCard space={space} />
               </div>
             ))
+          ) : (
+            <p>No spaces available</p>
+          )} */}
+          {spaces.length > 0 ? (
+            spaces
+              .filter((space) => space.reportCount <= 3) 
+              .map((space) => (
+                <div
+                  className="col-lg-3 col-md-6 col-sm-12 mb-2"
+                  key={space._id}
+                  onClick={() => handleCardClick(space._id)}
+                >
+                  <SpaceCard space={space} />
+                </div>
+              ))
           ) : (
             <p>No spaces available</p>
           )}
