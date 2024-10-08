@@ -49,6 +49,7 @@ export const AddSpaceCategories = () => {
                         {categories.map((category) => {
                             const Icon = MuiIcons[category.iconName];
                             const isSelected = selectedCategoryId === category._id; 
+                            
 
                             return (
                                 <Col md={3} className="pb-5" key={category._id}>
@@ -59,7 +60,7 @@ export const AddSpaceCategories = () => {
                                     >
                                         <Card.Body>
                                             <Box sx={{ fontSize: '2rem' }}>
-                                                {Icon ? <Icon /> : null} {/* Render icon dynamically */}
+                                                {Icon ? <Icon  /> : null} {/* Render icon dynamically */}
                                             </Box>
                                             <Card.Title style={{ fontSize: "1rem" }}>{category.name}</Card.Title>
                                         </Card.Body>
