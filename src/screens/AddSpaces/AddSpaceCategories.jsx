@@ -9,7 +9,7 @@ import { SpaceContext } from '../../Context/SpaceContext ';
 export const AddSpaceCategories = () => {
     const [categories, setCategories] = useState([]);
     // const [selectedCategoryId, setSelectedCategoryIdState] = useState(null); 
-    const { selectedCategoryId, setSelectedCategoryId } = useContext(SpaceContext); // Sử dụng context để lưu categoryId
+    const { selectedCategoryId, setSelectedCategoryId ,setSelectedAppliances  } = useContext(SpaceContext); // Sử dụng context để lưu categoryId
 
 
     useEffect(() => {
@@ -27,10 +27,13 @@ export const AddSpaceCategories = () => {
         // Nếu category được chọn là category hiện tại, bỏ chọn
         if (selectedCategoryId === cateid) {
             setSelectedCategoryId(null); // Bỏ chọn category
+            setSelectedAppliances([]); // Xóa appliances đã chọn
         } else {
             setSelectedCategoryId(cateid); // Chọn category mới
+            setSelectedAppliances([]); // Xóa appliances đã chọn khi chọn category mới
         }
     }
+
 
 
     return (

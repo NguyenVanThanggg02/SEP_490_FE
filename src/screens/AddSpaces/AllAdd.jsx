@@ -19,13 +19,13 @@ export default function AddSpaceFlow() {
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
-    await addAppliances();
+    const applianceId = await addAppliances();
 
     
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
-      appliancesId: selectedApplianceId,
+      appliancesId: applianceId,
       location,
       ...spaceInfo,
     };
