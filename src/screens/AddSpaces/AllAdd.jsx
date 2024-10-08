@@ -19,6 +19,9 @@ export default function AddSpaceFlow() {
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
+    await addAppliances();
+
+    
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
@@ -39,14 +42,14 @@ export default function AddSpaceFlow() {
 
   const addAppliances = async () => {
 
-    const appliancesToAdd =  {
+    const appliancesToAdd = {
       name: "",
       appliances: selectedAppliances,
       categoryId: selectedCategoryId,
     };
 
     console.log(appliancesToAdd);
-    
+
 
     try {
       const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
@@ -57,6 +60,7 @@ export default function AddSpaceFlow() {
         setSelectedApplianceId(newApplianceId);
 
         console.log('New appliance added with ID:', newApplianceId);
+        return newApplianceId
       } else {
         console.error('Failed to add appliance:', response.data.message);
       }
@@ -75,9 +79,6 @@ export default function AddSpaceFlow() {
       return;
     }
 
-    if (activeStep === 1) {
-      await addAppliances();
-    }
 
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
   };
@@ -124,10 +125,13 @@ export default function AddSpaceFlow() {
       }}>
         <Stepper nonLinear activeStep={activeStep}>
           {steps.map((label, index) => (
-            <Step key={label}>
-              <StepButton onClick={() => setActiveStep(index)}>
-                {label}
-              </StepButton>
+            <Step key={label} completed={index < activeStep}>
+              {/* Chỉ hiển thị StepButton cho bước hiện tại hoặc bước đã hoàn thành */}
+              {index <= activeStep && (
+                <StepButton onClick={() => setActiveStep(index)}>
+                  {label}
+                </StepButton>
+              )}
             </Step>
           ))}
         </Stepper>
