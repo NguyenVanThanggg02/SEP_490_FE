@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -9,15 +9,79 @@ import AddSpaceCategories from "./AddSpaceCategories";
 import AddSpaceLocation from "./AddSpaceLocation";
 import AddSpaceInforSpace from "./AddSpaceInforSpace";
 import AddSpacePageAppliances from "./AddSpacePageAppliances";
+import { SpaceContext } from '../../Context/SpaceContext ';
+import axios from 'axios';
 const steps = ['Chọn thể loại', 'Chọn tiện ích', 'Vị trí', 'Thông tin chi tiết'];
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // State để lưu categoryId
+  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedAppliances, setSelectedApplianceId } = useContext(SpaceContext);
+  const userId = localStorage.getItem('userId');
 
-  const handleNext = () => {
+  const handleFinish = async () => {
+    const spaceData = {
+      userId: userId,
+      categoriesId: selectedCategoryId,
+      appliancesId: selectedApplianceId,
+      location,
+      ...spaceInfo,
+    };
+
+    try {
+      const response = await axios.post('http://localhost:9999/spaces', spaceData);
+      console.log('Thêm không gian thành công:', response.data);
+      alert('Thêm không gian thành công!');
+    } catch (error) {
+      console.error('Lỗi khi thêm không gian:', error);
+      alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
+    }
+  };
+
+  const addAppliances = async () => {
+
+    const appliancesToAdd =  {
+      name: "",
+      appliances: selectedAppliances,
+      categoryId: selectedCategoryId,
+    };
+
+    console.log(appliancesToAdd);
+    
+
+    try {
+      const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
+      if (response.data.success) {
+        const newApplianceId = response.data.appliance._id;
+        console.log(response.data);
+
+        setSelectedApplianceId(newApplianceId);
+
+        console.log('New appliance added with ID:', newApplianceId);
+      } else {
+        console.error('Failed to add appliance:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error adding appliance:', error);
+    }
+
+
+  };
+
+  console.log("ap id" + selectedApplianceId);
+
+  const handleNext = async () => {
+    if (activeStep === 0 && !selectedCategoryId) {
+      alert("Bạn cần chọn thể loại trước khi tiếp tục.");
+      return;
+    }
+
+    if (activeStep === 1) {
+      await addAppliances();
+    }
+
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
   };
+
 
   const handleBack = () => {
     setActiveStep(prevStep => Math.max(prevStep - 1, 0));
@@ -30,7 +94,7 @@ export default function AddSpaceFlow() {
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
-        return <AddSpaceCategories setSelectedCategoryId={setSelectedCategoryId} />;
+        return <AddSpaceCategories />;
       case 1:
         return <AddSpacePageAppliances categoryId={selectedCategoryId} />;
       case 2:
@@ -49,12 +113,12 @@ export default function AddSpaceFlow() {
       </Box>
 
       <Box sx={{
-        width: '100%', 
-        position: 'fixed', 
-        bottom: 0, 
-        left: 0, 
-        backgroundColor: 'white', 
-        zIndex: 1000, 
+        width: '100%',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        backgroundColor: 'white',
+        zIndex: 1000,
         padding: '10px',
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)'
       }}>
@@ -77,9 +141,15 @@ export default function AddSpaceFlow() {
             Back
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
-          <Button onClick={handleNext} sx={{ mr: 1 }}>
-            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-          </Button>
+          {activeStep === steps.length - 1 ? (
+            <Button onClick={handleFinish}>
+              Finish
+            </Button>
+          ) : (
+            <Button onClick={handleNext}>
+              Next
+            </Button>
+          )}
         </Box>
       </Box>
     </Box>
