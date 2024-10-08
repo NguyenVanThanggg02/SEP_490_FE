@@ -48,10 +48,10 @@ export const Favorites = () => {
   return (
     <Container fluid>
       <Row>
-        <Col md={7}>
+        <Col md={10}>
           <Row>
             {spaceFavo.map((spaceF, index) => (
-              <Col md={4}>
+              <Col md={4} className='mb-4'>
                 <Card style={{ position: "relative" }} key={index}
                   onClick={() => handleCardClick(spaceF._id)}
                 >
@@ -89,11 +89,11 @@ export const Favorites = () => {
 
           </Row>
         </Col>
-        <Col md={5}>
+        {/* <Col md={5}>
           <img src="https://preview.redd.it/google-maps-never-ceases-to-amaze-me-v0-0r498ftiaouc1.jpeg?width=1290&format=pjpg&auto=webp&s=2eacadf939a50eb88a6100ddf389d22980ad3d3d"
             alt="map"
             style={{ width: "100%" }} />
-        </Col>
+        </Col> */}
       </Row>
     </Container>
   )

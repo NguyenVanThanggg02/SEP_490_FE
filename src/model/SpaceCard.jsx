@@ -22,7 +22,7 @@ function SpaceCard({ space }) {
 
 
   return (
-    <Card style={{ width: "18rem", border: "none", borderRadius: "15px", position: "relative" }}>
+    <Card style={{ width: "18rem", border: "none", borderRadius: "15px", position: "relative", height:'350px' }}>
       <div
         style={{
           position: "absolute",
@@ -55,6 +55,7 @@ function SpaceCard({ space }) {
                 src={img}
                 alt={`Ảnh slide ${index + 1}`}
                 height="180"
+                style={{borderTopLeftRadius:'15px', borderTopRightRadius:'15px'}}
               />
 
             </Carousel.Item>
