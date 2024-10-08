@@ -123,18 +123,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     try {
-<<<<<<< HEAD
-      await axios.put(`http://localhost:9999/users/${userInfo._id}`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-=======
-      await axios.put(
-        `http://localhost:9999/users/${userId}`,
-        formData
-      );
->>>>>>> 5bc74151b0f5697d305dc30a1e4d8d1e4f18a6d1
+      await axios.put(`http://localhost:9999/users/${userId}`, formData);
       setUserInfo((prev) => ({ ...prev, ...formData }));
       setEditMode(false);
       toast.success("Cập nhật thông tin thành công!");
