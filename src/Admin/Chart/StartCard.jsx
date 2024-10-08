@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Small } from "../Chart/Typography";
 import axios from "axios";
+import TopSpace from "../TopSpace";
+import StatCards2 from "./StatCards2";
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
@@ -141,6 +143,8 @@ const StatCards = (props) => {
           </StyledCard>
         </Grid>
       ))}
+      <TopSpace/>
+      <StatCards2/>
     </Grid>
   );
 };
