@@ -1,0 +1,10 @@
+.slider img {
+    height: 700px;
+    max-width: 97%; /* Giới hạn chiều ngang */
+    margin: 0 auto; /* Căn giữa hình ảnh nếu cần */
+    margin-bottom: 100px;
+}
+
+.slide {
+    padding-bottom: 20px;
+}
