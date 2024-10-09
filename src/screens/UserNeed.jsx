@@ -2,9 +2,20 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import CheckIcon from "@mui/icons-material/Check";
-//import "../style/UserNeedsForm.css";
 import { useNavigate } from "react-router-dom";
-//import "../style/list.css";
+import { Row } from "react-bootstrap";
+import {
+  Box,
+  Card,
+  Grid,
+  CardContent,
+  Typography,
+  Button,
+  Container,
+  TextField,
+} from "@mui/material";
+import * as MuiIcons from "@mui/icons-material";
+import "../style/h3.css";
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
@@ -17,6 +28,7 @@ const UserNeedsForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [allSelected, setAllSelected] = useState(false);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -41,12 +53,29 @@ const UserNeedsForm = () => {
     fetchProducts();
   }, []);
 
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    const updatedPreferences = checked
-      ? [...needs.productPreferences, value]
-      : needs.productPreferences.filter((pref) => pref !== value);
-    setNeeds({ ...needs, productPreferences: updatedPreferences });
+  const handleCategoryClick = (categoryId) => {
+    setNeeds((prevNeeds) => {
+      const isAlreadySelected =
+        prevNeeds.productPreferences.includes(categoryId);
+      const newPreferences = isAlreadySelected
+        ? prevNeeds.productPreferences.filter((id) => id !== categoryId)
+        : [...prevNeeds.productPreferences, categoryId];
+
+      return { ...prevNeeds, productPreferences: newPreferences };
+    });
+  };
+
+  const handleCheckAll = () => {
+    if (allSelected) {
+      setNeeds((prevNeeds) => ({ ...prevNeeds, productPreferences: [] }));
+    } else {
+      const allCategoryIds = productOptions.map((category) => category._id);
+      setNeeds((prevNeeds) => ({
+        ...prevNeeds,
+        productPreferences: allCategoryIds,
+      }));
+    }
+    setAllSelected(!allSelected);
   };
 
   const handleInputChange = (e) => {
@@ -97,42 +126,80 @@ const UserNeedsForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="container">
       <div>
-        <h3>Bạn đang quan tâm đến không gian nào?</h3>
-        <div id="checklist">
-          {productOptions.length > 0 ? (
-            productOptions.map((option, index) => (
-              <div key={index}>
-                <input
-                  className="btn btn-primary"
-                  type="checkbox"
-                  value={option.name}
-                  checked={needs.productPreferences.includes(option.name)}
-                  onChange={handleCheckboxChange}
-                  id={`checklist-${index}`} // Thêm ID cho từng checkbox
-                />
-                <label htmlFor={`checklist-${index}`}>{option.name}</label>
-              </div>
-            ))
-          ) : (
-            <p>Không có sản phẩm nào để chọn.</p>
-          )}
-        </div>
+        <Row>
+          <h3 className="heading">Bạn đang quan tâm đến không gian nào?</h3>
+        </Row>
+        <Button
+          variant="contained"
+          color={allSelected ? "secondary" : "primary"}
+          onClick={handleCheckAll}
+          sx={{ mb: 2 }}
+        >
+          {allSelected ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+        </Button>
       </div>
       <div>
-        <label>Mong muốn của bạn</label>
-        <input
-          className="btn btn-primary"
-          type="text"
+        {productOptions.length > 0 ? (
+          <Grid container spacing={2}>
+            {productOptions.map((category) => {
+              const Icon = MuiIcons[category.iconName];
+              const isSelected = needs.productPreferences.includes(
+                category._id
+              );
+
+              return (
+                <Grid item xs={12} sm={3} md={3} key={category._id}>
+                  <Card
+                    className={`text-center add-space ${
+                      isSelected ? "selected" : ""
+                    }`}
+                    sx={{
+                      cursor: "pointer",
+                      boxShadow: isSelected
+                        ? "0 0 10px rgba(0, 123, 255, 0.5)"
+                        : "none",
+                      backgroundColor: isSelected
+                        ? "rgba(0, 123, 255, 0.1)"
+                        : "white",
+                      border: isSelected
+                        ? "2px solid #007bff"
+                        : "1px solid rgba(0, 0, 0, 0.125)",
+                      transition: "all 0.3s ease",
+                    }}
+                    onClick={() => handleCategoryClick(category._id)}
+                  >
+                    <CardContent>
+                      <Box sx={{ fontSize: "2rem" }}>
+                        {Icon ? <Icon /> : null}
+                      </Box>
+                      <Typography variant="h6">{category.name}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        ) : (
+          <p>Không có sản phẩm nào để chọn.</p>
+        )}
+      </div>
+
+      <div>
+        <label className="mb-2"> Có điều gì khiến bạn bận tâm?</label>
+        <TextField
+          label="Điều bạn cần nói....."
           name="goals"
           value={needs.goals}
           onChange={handleInputChange}
+          sx={{ width: "100%" }}
         />
       </div>
-      <button type="submit" className="btn btn-primary mb-2">
+
+      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
         {loading ? "Đang gửi..." : "Gửi"}
-      </button>
+      </Button>
 
       {success && (
         <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
@@ -140,7 +207,6 @@ const UserNeedsForm = () => {
         </Alert>
       )}
 
-      {/* Hiển thị thông báo lỗi */}
       {error && <Alert severity="error">{error}</Alert>}
     </form>
   );
