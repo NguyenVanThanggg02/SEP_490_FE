@@ -51,8 +51,8 @@ export const Favorites = () => {
         <Col md={10}>
           <Row>
             {spaceFavo.map((spaceF, index) => (
-              <Col md={4} className='mb-4'>
-                <Card style={{ position: "relative" }} key={index}
+              <Col md={4}>
+                <Card style={{ position: "relative",height:"100%" }} key={index}
                   onClick={() => handleCardClick(spaceF._id)}
                 >
                   <div
@@ -74,7 +74,7 @@ export const Favorites = () => {
                     title="image spaceF"
                   />
                   <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
+                    <Typography gutterBottom variant="h5"  component="div">
                       {spaceF.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
