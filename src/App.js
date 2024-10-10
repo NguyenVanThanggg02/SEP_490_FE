@@ -17,6 +17,10 @@ import DashBoard from "./Admin/DashBoard";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 import Favorites from "./screens/Favorites";
+import AddSpaceCategories from "./screens/AddSpaces/AddSpaceCategories";
+import AddSpaceLocation from "./screens/AddSpaces/AddSpaceLocation";
+import AddSpaceInforSpace from "./screens/AddSpaces/AddSpaceInforSpace";
+import AllAdd from "./screens/AddSpaces/AllAdd";
 import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 
@@ -54,6 +58,10 @@ function Layout() {
         <Route path="/spaces/:id" element={<SpaceDetails />} />
         <Route path="/notfound" element={<NotFound />} />
         <Route path="/changepassadm" element={<ChangePassAdmin />} />
+        <Route path="/addfirst" element={<AddSpaceCategories />} />
+        <Route path="/addloca" element={<AddSpaceLocation />} />
+        <Route path="/addinfor" element={<AddSpaceInforSpace />} />
+        <Route path="/alladd" element={<AllAdd />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/compare" element={<Compare />} />
         <Route path="/detail-admin" element={<DetailForAdmin />} />

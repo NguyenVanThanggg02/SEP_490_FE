@@ -1,0 +1,18 @@
+.add-space {
+    color: rgb(202, 202, 202); /* Màu chữ mặc định */
+    transition: color 0.3s, border-color 0.3s; /* Hiệu ứng chuyển màu và viền */
+    cursor: pointer; /* Thay đổi con trỏ chuột khi hover */
+    box-shadow: none; /* Bỏ shadow cho card */
+    height: 100%; /* Đảm bảo card có chiều cao đầy đủ */
+    border: 2px solid rgb(218, 218, 218); /* Viền xám khi chưa chọn */
+}
+
+.add-space:hover {
+    color: black; /* Màu chữ khi hover */
+    border-color: black; /* Viền đen khi hover */
+}
+
+.add-space.selected {
+    color: black; /* Màu chữ khi được chọn */
+    border-color: #1976D2; /* Viền màu #1976D2 khi được chọn */
+}
