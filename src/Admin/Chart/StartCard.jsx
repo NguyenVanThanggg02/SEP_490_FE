@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Small } from "../Chart/Typography";
 import axios from "axios";
+import TopSpace from "../TopSpace";
+import StatCards2 from "./StatCards2";
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
@@ -123,11 +125,10 @@ const StatCards = (props) => {
 
   return (
     <Grid container spacing={3} sx={{ mt: "24px" }}>
-      {cardList.map((item, index) => (
         <Grid item xs={12} md={6} key={index}>
           <StyledCard elevation={6}>
             <ContentBox>
-              <i className={item.icon} style={{ fontSize: "2.5rem" }}></i>
+              <i style={{ fontSize: "2.5rem" }}></i>
               <Box ml="12px">
                 <Small>abc</Small>
                 <Heading>22</Heading>
@@ -140,7 +141,8 @@ const StatCards = (props) => {
             </Tooltip>
           </StyledCard>
         </Grid>
-      ))}
+      <TopSpace/>
+      <StatCards2/>
     </Grid>
   );
 };

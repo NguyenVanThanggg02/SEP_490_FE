@@ -185,7 +185,7 @@ const Comment = () => {
               </Form.Group>
             </Form>
           </Col>
-          <Col md={1} className="d-flex align-items-center">
+          {/* <Col md={1} className="d-flex align-items-center">
             <div className="rating" style={{ marginTop: "-15px" }}>
               <div className="radio">
                 {[5,4,3,2,1].map((value) => (
@@ -214,7 +214,7 @@ const Comment = () => {
                 ))}
               </div>
             </div>
-          </Col>
+          </Col> */}
           <Col
             md={1}
             className="d-flex align-items-center justify-content-end"
@@ -342,7 +342,7 @@ const Comment = () => {
                       className="rating"
                       style={{ marginBottom: "5px", marginLeft: "14px" }}
                     >
-                      <div className="radio">
+                      {/* <div className="radio">
                         {[5, 4, 3, 2, 1].map((value) => (
                           <React.Fragment key={value}>
                             <input
@@ -368,7 +368,7 @@ const Comment = () => {
                             </label>
                           </React.Fragment>
                         ))}
-                      </div>
+                      </div> */}
                     </div>
                     <div
                       className="bg-light"
