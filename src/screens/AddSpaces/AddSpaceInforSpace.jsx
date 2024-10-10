@@ -1,18 +1,38 @@
-import React, { useContext } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
-import { Box, Divider, TextField, Tooltip, Typography } from '@mui/material';
+import React, { useContext,useState } from 'react';
+import { Container, Row, Col,  } from 'react-bootstrap';
+import { Box,  TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { SpaceContext } from '../../Context/SpaceContext ';
 
 const AddSpaceInforSpace = () => {
     const { spaceInfo, setSpaceInfo } = useContext(SpaceContext); // Sử dụng context
+    const [errorMessage, setErrorMessage] = useState('');
+    const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
+
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value,type  } = e.target;
         setSpaceInfo(prev => ({
             ...prev,
             [name]: value
         }));
+          // Kiểm tra giá trị nhập vào khi người dùng thay đổi
+          if (value.trim() === '') {
+            setErrors(prev => ({
+                ...prev,
+                [name]: 'Trường này không được bỏ trống',
+            }));
+        } else if (type === 'number' && parseFloat(value) < 0) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: 'Giá trị không được âm',
+            }));
+        } else {
+            setErrors(prev => ({
+                ...prev,
+                [name]: '',
+            }));
+        }
     };
 
     const handleRuleSelect = (ruleId) => {
@@ -20,6 +40,28 @@ const AddSpaceInforSpace = () => {
             ...prev,
             rulesId: ruleId
         }));
+    };
+
+    const handleBlur = (e) => {
+        const { name, value, type } = e.target;
+
+        // Kiểm tra lại khi rời khỏi input
+        if (value.trim() === '') {
+            setErrors(prev => ({
+                ...prev,
+                [name]: 'Trường này không được bỏ trống',
+            }));
+        } else if (type === 'number' && parseFloat(value) < 0) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: 'Giá trị không được âm',
+            }));
+        } else {
+            setErrors(prev => ({
+                ...prev,
+                [name]: '',
+            }));
+        }
     };
 
     return (
@@ -41,6 +83,9 @@ const AddSpaceInforSpace = () => {
                                 required
                                 value={spaceInfo.name}
                                 onChange={handleInputChange} // Cập nhật khi người dùng nhập
+                                onBlur={handleBlur}
+                                error={!!errors.name} // Hiển thị lỗi nếu có
+                                helperText={errors.name}
                             />
                         </Col>
                         <Col md={6}>
@@ -54,6 +99,15 @@ const AddSpaceInforSpace = () => {
                                         required
                                         value={spaceInfo.pricePerHour}
                                         onChange={handleInputChange} // Cập nhật khi người dùng nhập
+                                        onBlur={handleBlur}
+                                        error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
+                                        helperText={errors.pricePerHour}
+                                        onKeyDown={(e) => {
+                                            // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
+                                            if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== ".") {
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     />
                                 </Col>
                                 <Col md={6}>
@@ -65,6 +119,15 @@ const AddSpaceInforSpace = () => {
                                         required
                                         value={spaceInfo.area}
                                         onChange={handleInputChange} // Cập nhật khi người dùng nhập
+                                        onBlur={handleBlur}
+                                        error={!!errors.area} // Hiển thị lỗi nếu có
+                                        helperText={errors.area}
+                                        onKeyDown={(e) => {
+                                            // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
+                                            if (!/[0-9]/.test(e.key) && e.key !== "Backspace" && e.key !== "Delete" && e.key !== ".") {
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     />
                                 </Col>
                             </Row>
@@ -84,6 +147,9 @@ const AddSpaceInforSpace = () => {
                                 required
                                 value={spaceInfo.description}
                                 onChange={handleInputChange} // Cập nhật khi người dùng nhập
+                                onBlur={handleBlur}
+                                error={!!errors.description} // Hiển thị lỗi nếu có
+                                helperText={errors.description}
                             />
                         </Col>
                         <Col md={6}>

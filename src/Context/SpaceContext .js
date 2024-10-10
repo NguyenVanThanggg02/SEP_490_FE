@@ -13,9 +13,9 @@ export const SpaceProvider = ({ children }) => {
   const [spaceInfo, setSpaceInfo] = useState({
     name: '',
     description: '',
-    area: 0,
+    area: '',
     rulesId: null,
-    pricePerHour: 0
+    pricePerHour: ''
   });
 
   return (

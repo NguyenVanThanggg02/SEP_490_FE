@@ -4,24 +4,38 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import AddSpaceCategories from "./AddSpaceCategories";
 import AddSpaceLocation from "./AddSpaceLocation";
 import AddSpaceInforSpace from "./AddSpaceInforSpace";
 import AddSpacePageAppliances from "./AddSpacePageAppliances";
 import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
+import StepConnector from '@mui/material/StepConnector';  // Import StepConnector
+import { styled } from '@mui/material/styles';  // Import styled from MUI
+
 const steps = ['Chọn thể loại', 'Chọn tiện ích', 'Vị trí', 'Thông tin chi tiết'];
+
+const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
+  [`& .${StepConnector.line}`]: {
+    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+    borderTopWidth: 3,
+    borderRadius: 1,
+  },
+  [`& .${StepConnector.lineCompleted}`]: {
+    borderColor: 'green',  // Màu xanh khi hoàn thành
+  }
+}));
+
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedAppliances, setSelectedApplianceId } = useContext(SpaceContext);
+  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
     const applianceId = await addAppliances();
 
-    
+
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
@@ -74,12 +88,6 @@ export default function AddSpaceFlow() {
   console.log("ap id" + selectedApplianceId);
 
   const handleNext = async () => {
-    if (activeStep === 0 && !selectedCategoryId) {
-      alert("Bạn cần chọn thể loại trước khi tiếp tục.");
-      return;
-    }
-
-
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
   };
 
@@ -88,9 +96,7 @@ export default function AddSpaceFlow() {
     setActiveStep(prevStep => Math.max(prevStep - 1, 0));
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
+
 
   const renderStepContent = (step) => {
     switch (step) {
@@ -106,6 +112,12 @@ export default function AddSpaceFlow() {
         return 'Unknown step';
     }
   };
+
+  const isNextDisabled = 
+  (activeStep === 0 && !selectedCategoryId) || 
+  (activeStep === 1 && selectedAppliances.length === 0);
+
+
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -123,7 +135,10 @@ export default function AddSpaceFlow() {
         padding: '10px',
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)'
       }}>
-        <Stepper nonLinear activeStep={activeStep}>
+        <Stepper nonLinear
+         activeStep={activeStep}
+         connector={<CustomStepConnector />}  
+         >
           {steps.map((label, index) => (
             <Step key={label} completed={index < activeStep}>
               {/* Chỉ hiển thị StepButton cho bước hiện tại hoặc bước đã hoàn thành */}
@@ -142,16 +157,25 @@ export default function AddSpaceFlow() {
             onClick={handleBack}
             sx={{ mr: 1 }}
           >
-            Back
+            Quay lại
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
           {activeStep === steps.length - 1 ? (
             <Button onClick={handleFinish}>
-              Finish
+              Hoàn thành
             </Button>
           ) : (
-            <Button onClick={handleNext}>
-              Next
+            <Button
+              onClick={handleNext}
+              disabled={isNextDisabled}
+              sx={{
+                cursor: isNextDisabled ? 'not-allowed' : 'pointer', 
+                opacity: isNextDisabled ? 0.5 : 1, 
+              }}
+              variant="contained"
+
+            >
+              Tiếp tục
             </Button>
           )}
         </Box>
