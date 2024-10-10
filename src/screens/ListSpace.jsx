@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { Search } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import { Paginator } from "primereact/paginator"; 
+import { Paginator } from "primereact/paginator";
 import "primereact/resources/themes/saga-blue/theme.css";
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
@@ -23,8 +23,7 @@ const ListSpace = () => {
   const [rows, setRows] = useState(12);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const productsOnPage = listSpace.slice(first, first + rows); 
-
+  const productsOnPage = listSpace.slice(first, first + rows);
 
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
@@ -86,7 +85,7 @@ const ListSpace = () => {
     if (selectedCateId !== "0") {
       const selectedBrand = categories.find((b) => b._id === selectedCateId);
       setSelectedCate(selectedBrand);
-      getSpaceByCate(selectedCateId); 
+      getSpaceByCate(selectedCateId);
     } else {
       setSelectedCate(null);
       loadData();
@@ -105,7 +104,6 @@ const ListSpace = () => {
       }
       setListSpace(response.data);
       setNoResult(true);
-
     } catch (error) {
       alert("Lỗi khi gọi API lấy danh sách sản phẩm theo cate ", error);
     }
@@ -170,7 +168,7 @@ const ListSpace = () => {
           </FormSelect>
         </Col>
       </Row>
-      <Row style={{paddingTop:'20px'}}>
+      <Row style={{ paddingTop: "20px" }}>
         {noResult ? (
           <Col style={{ textAlign: "center" }}>
             <h6 style={{ margin: "20px" }}>Không có sản phẩm nào !!!</h6>
@@ -180,11 +178,14 @@ const ListSpace = () => {
             <Col key={l._id} md={3} sm={6} xs={12} className="mb-4">
               <Card
                 style={{
-                  width: "18rem",
+                  width: "100%",
                   border: "none",
                   borderRadius: "15px",
+                  overflow: "hidden",
+                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.1)", // Soft shadow for a cozy effect
                   position: "relative",
-                  height: "370px",
+                  height: "400px",
+                  backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                 }}
               >
                 <div
@@ -220,10 +221,13 @@ const ListSpace = () => {
                           className="d-block w-100"
                           src={img}
                           alt={`Ảnh slide ${index + 1}`}
-                          height="180"
+                          height="270"
                           style={{
+                            objectFit: "cover",
                             borderTopLeftRadius: "15px",
                             borderTopRightRadius: "15px",
+                            borderBottomLeftRadius: "15px",
+                            borderBottomRightRadius: "15px",
                           }}
                         />
                       </Carousel.Item>
@@ -234,24 +238,26 @@ const ListSpace = () => {
                         className="d-block w-100"
                         src="default-image-url.png"
                         alt="Ảnh mặc định"
-                        height="180"
+                        height="220"
                       />
                     </Carousel.Item>
                   )}
                 </Carousel>
-                <Card.Body style={{ padding: "10px" }}>
-                  <Card.Title style={{ fontSize: "16px", fontWeight: "bold" }}>
+                <Card.Body style={{ marginTop: "-25px" }}>
+                  <Card.Title
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      color: "#2d2d2d",
+                    }}
+                  >
                     {l.name}
                   </Card.Title>
-
                   <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
                     Địa điểm: {l.location}
                   </Card.Text>
-                  <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-                    Giá mỗi giờ: {l.pricePerHour} VND
-                  </Card.Text>
-                  <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-                    Trạng thái: {l.status}
+                  <Card.Text style={{ fontSize: "14px", color: "#2d2d2d" }}>
+                    <h6> Trạng thái: {l.status}</h6>
                   </Card.Text>
                 </Card.Body>
               </Card>
