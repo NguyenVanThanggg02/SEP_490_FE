@@ -27,7 +27,6 @@ const Similar = ({ spaceData }) => {
       className="similarproduct mb-4"
       fluid
       style={{
-        border: "solid #CCC 1px",
         boxShadow: "5px 10px 10px 5px #C0C0C0",
         borderRadius: "20px",
         marginTop: "20px",
