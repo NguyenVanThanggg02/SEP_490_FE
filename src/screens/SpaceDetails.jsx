@@ -31,6 +31,7 @@ import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
+import Similar from "./Similar";
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -553,6 +554,7 @@ function SpaceDetails() {
           onValueChange={handleValueChange}
         />
       )}
+      <Similar spaceData={spaceData} />
     </Container>
   );
 }
