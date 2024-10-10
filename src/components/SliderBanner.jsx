@@ -6,7 +6,6 @@ import banner2 from "../assets/images/banner2.png";
 import banner3 from "../assets/images/banner3.png";
 import banner4 from "../assets/images/banner4.png";
 const SliderBanner = () => {
-  //a
   return (
     <Carousel>
       <Carousel.Item className="slider">
