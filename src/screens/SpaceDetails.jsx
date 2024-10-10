@@ -18,6 +18,7 @@ import {
   Drawer,
   Card,
   CardContent,
+  Grid,
   CardMedia,
 } from "@mui/material";
 import AcUnitIcon from "@mui/icons-material/AcUnit";
@@ -27,6 +28,8 @@ import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Image } from 'antd';
+
 import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
@@ -43,7 +46,12 @@ function SpaceDetails() {
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
+  const [openGallery, setOpenGallery] = useState(false);
+
+
   const nav = useNavigate()
+
+
   console.log(valueFromChild);
 
   const handleValueChange = (newValue) => {
@@ -105,13 +113,25 @@ function SpaceDetails() {
     }
   };
 
-  if (loading) return <Typography variant="h6">Loading...</Typography>;
+  const handleOpenGallery = () => {
+    setOpenGallery(true);
+  };
+
+  const handleCloseGallery = () => {
+    setOpenGallery(false);
+  };
+
+  if (loading) return <Typography variant="h6">Đang tải...</Typography>;
   if (error)
     return (
       <Typography variant="h6" color="error">
         Error loading data.
       </Typography>
     );
+  const mainImage = spaceData.images[0];
+  const otherImages = spaceData.images.slice(1, 5); // Lấy 4 hình ảnh tiếp theo
+
+
   // Ensure spaceData and its properties are properly initialized
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
@@ -125,15 +145,16 @@ function SpaceDetails() {
     }
     setOpenDrawer(open);
   };
-  const handleCompare = () =>{
-    if(valueFromChild == ""){
+  const handleCompare = () => {
+    if (valueFromChild == "") {
       return
     }
     nav('/compare', { state: { id, valueFromChild } });
   }
-  const handleDeleteIdSoToCompare =() =>{
+  const handleDeleteIdSoToCompare = () => {
     setValueFromChild('');
   }
+
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -230,82 +251,93 @@ function SpaceDetails() {
         </Col>
       )}
     </Row>
+
   );
-  
+
+
 
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
-          <Container fluid item xs={12}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                alignSelf: "flex-start",
-              }}
-            >
-              <Typography variant="h4" className="pb-4">
-                {spaceData.name}
-              </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  alignSelf: "flex-start",
-                }}
-              >
-                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                  {spaceData.favorite ? (
-                    <FavoriteIcon
-                      style={{ color: "#FF385C", fontSize: "40px" }}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                  )}
-                </div>
-                <div onClick={toggleDrawer(true)}>
-                  <PlusCircle style={{ color: "blue", fontSize: "33px" }} />
-                  So sánh
-                </div>
-              </div>
-            </div>
-            <Row container spacing={2}>
-              {images.length > 0 ? (
-                <div>
-                  <ImageList cols={3}>
-                    {images.map((item) => (
-                      <ImageListItem
-                        key={item}
-                        onClick={() => handleClickOpen(item)}
-                      >
-                        <img
-                          src={`${item}?w=164&h=164&fit=crop&auto=format`}
-                          alt={item.title}
-                          loading="lazy"
-                        />
-                      </ImageListItem>
-                    ))}
-                  </ImageList>
-
-                  <Dialog open={open} onClose={handleClose} maxWidth="md">
-                    <DialogContent>
-                      {selectedImage && (
-                        <img
-                          src={selectedImage}
-                          alt="Chi tiết ảnh"
-                          style={{ width: "100%", height: "auto" }}
-                        />
-                      )}
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              ) : (
-                <Typography variant="body2">No images available</Typography>
+          <Container>
+            <Grid container spacing={0.8} style={{ position: "relative", marginBottom: "20px" }}>
+              <Grid item xs={12} md={6}>
+                {mainImage && (
+                  <img
+                    src={`${mainImage}`}
+                    alt="Hình chính"
+                    style={{ width: "100%", height: "405px", borderRadius: "3px", objectFit: "cover" }}
+                    onClick={handleOpenGallery}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={0.8}>
+                  {otherImages.map((item) => (
+                    <Grid item xs={6} key={item}>
+                      <img
+                        src={`${item}`}
+                        alt={item}
+                        style={{ width: "100%", height: "200px", borderRadius: "3px", objectFit: "cover" }}
+                        loading="lazy"
+                        onClick={handleOpenGallery}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+              {images.length > 4 && (
+                <Grid container justifyContent="flex-end" style={{ position: "absolute", top: "89%", right: "1%" }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleOpenGallery}
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      borderColor: "white",
+                    }}
+                  >
+                    Xem toàn bộ ảnh ({images.length})
+                  </Button>
+                </Grid>
               )}
-            </Row>
+            </Grid>
+
+            <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="xl" PaperProps={{
+              style: {
+                width: "80%",
+                maxWidth: "none",
+                zIndex: 1, // z-index cao hơn cho preview
+                position: "absolute"
+              },
+            }}>
+              <DialogContent style={{ padding: "10px 10px" }}>
+                <Image.PreviewGroup
+                  preview={{
+                    onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+                  }}
+                  style={{
+                    zIndex: 2, // z-index cao hơn cho preview
+                    position: "absolute", // Sử dụng relative để giữ vị trí cho preview
+                  }}
+                >
+                  <Grid container spacing={0.4}>
+                    {images.map((item) => (
+                      <Grid item xs={6} sm={6} key={item}>
+                        <Image
+                          src={`${item}`}
+                          alt={item}
+                          loading="lazy"
+                          style={{ width: "100%", height: "400px", borderRadius: "3px", objectFit: "cover" }}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Image.PreviewGroup>
+              </DialogContent>
+
+            </Dialog>
           </Container>
           <Container fluid>
             <Row>
@@ -536,12 +568,12 @@ function SpaceDetails() {
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
       <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
-          '& .MuiDrawer-paper': {
-            width: '50vw',  
-            left: '25vw',   
-            right: 'auto',
-          }, zIndex: 1000
-        }}>
+        '& .MuiDrawer-paper': {
+          width: '50vw',
+          left: '25vw',
+          right: 'auto',
+        }, zIndex: 1000
+      }}>
         {drawerContent()}
       </Drawer>
       {visibleCompare && (
