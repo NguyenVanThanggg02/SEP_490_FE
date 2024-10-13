@@ -46,13 +46,13 @@ export const Favorites = () => {
   };
 
   return (
-    <Container fluid>
+    <Container >
       <Row>
-        <Col md={10}>
+        <Col md={12}>
           <Row>
             {spaceFavo.map((spaceF, index) => (
-              <Col md={4}>
-                <Card style={{ position: "relative",height:"100%" }} key={index}
+              <Col md={3}>
+                <div style={{ position: "relative",height:"100%" }} key={index}
                   onClick={() => handleCardClick(spaceF._id)}
                 >
                   <div
@@ -65,15 +65,21 @@ export const Favorites = () => {
                     }}
                     onClick={(event) => changeFavorite(spaceF._id, event)}
                   >
-                    {/* Hiển thị icon dựa trên trạng thái liked */}
                     {spaceF.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
                   </div>
                   <CardMedia
                     sx={{ height: 250 }}
                     image={spaceF.images[0]}
                     title="image spaceF"
+                    style={{
+                      objectFit: "cover",
+                      borderTopLeftRadius: "15px",
+                      borderTopRightRadius: "15px",
+                      borderBottomLeftRadius: "15px",
+                      borderBottomRightRadius: "15px",
+                    }}
                   />
-                  <CardContent>
+                  <CardContent style={{padding:'20px 0'}}>
                     <Typography gutterBottom variant="h5"  component="div">
                       {spaceF.name}
                     </Typography>
@@ -81,19 +87,12 @@ export const Favorites = () => {
                       {spaceF.pricePerHour} VND / hour
                     </Typography>
                   </CardContent>
-                </Card>
-
-
+                </div>
               </Col>
             ))}
 
           </Row>
         </Col>
-        {/* <Col md={5}>
-          <img src="https://preview.redd.it/google-maps-never-ceases-to-amaze-me-v0-0r498ftiaouc1.jpeg?width=1290&format=pjpg&auto=webp&s=2eacadf939a50eb88a6100ddf389d22980ad3d3d"
-            alt="map"
-            style={{ width: "100%" }} />
-        </Col> */}
       </Row>
     </Container>
   )
