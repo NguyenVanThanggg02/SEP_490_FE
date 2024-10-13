@@ -29,6 +29,7 @@ import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
+import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,7 +60,7 @@ function Layout() {
       )}
       <main>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Landing isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
           <Route
             path="/login"
             element={
@@ -83,6 +84,7 @@ function Layout() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
+          <Route path="/alladd" element={<AddSpaceFlow />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

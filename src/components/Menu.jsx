@@ -18,6 +18,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { ArrowRepeat, BoxArrowInRight, Heart, PersonVcard } from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -163,10 +164,24 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
       >
         {isLoggedIn ? (
           <>
-            <MenuItem onClick={handleProfileOpen}>Thông tin cá nhân</MenuItem>
-            <MenuItem onClick={handleFavorites}>Danh sách yêu thích</MenuItem>
-            <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
-            <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+            <MenuItem onClick={handleProfileOpen}>
+              <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
+              Thông tin cá nhân
+            </MenuItem>
+            <MenuItem onClick={handleFavorites}>
+              <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
+              Danh sách yêu thích
+            </MenuItem>
+            <MenuItem onClick={handleChangePass}>
+              <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
+              Thay đổi mật khẩu
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <BoxArrowInRight
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Đăng xuất
+            </MenuItem>
           </>
         ) : (
           <>

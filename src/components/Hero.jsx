@@ -1,6 +1,15 @@
 import React from "react";
 import "../style/hero.css";
-const Hero = () => {
+import { useNavigate } from "react-router-dom";
+const Hero = ({ isLoggedIn }) => {
+  const nav = useNavigate();
+  const handleClick = () => {
+    if (isLoggedIn) {
+      nav("/list_space");
+    } else {
+      nav("/login");
+    }
+  };
   return (
     <div className="containers">
       <div className="text-content">
@@ -12,7 +21,11 @@ const Hero = () => {
           và linh hoạt. Từ hội nghị, tiệc cưới đến các buổi gặp mặt riêng tư,
           chúng tôi mang đến Lựa Chọn Đa Dạng
         </p>
-        <button>ĐĂNG KÝ NGAY!</button>
+        {isLoggedIn ? (
+          <button onClick={handleClick}>Xem Ngay</button>
+        ) : (
+          <button onClick={handleClick}>ĐĂNG KÝ NGAY!</button>
+        )}
       </div>
       <div className="image-content">
         <img

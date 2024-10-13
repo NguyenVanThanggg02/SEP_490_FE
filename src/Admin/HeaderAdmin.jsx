@@ -6,7 +6,7 @@ import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const HeaderAdmin = ({ setIsLoggedIn, isLoggedIn }) => {
+const HeaderAdmin = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const HeaderAdmin = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   useEffect(() => {
     if (isLoggedIn) {
       const storedUsername = localStorage.getItem("userId");
@@ -45,6 +45,7 @@ const HeaderAdmin = ({ setIsLoggedIn, isLoggedIn }) => {
     setIsLoggedIn(false);
     localStorage.clear();
     handleClose();
+    navigate('/login')
   };
 
   const handleChangePass = () => {
