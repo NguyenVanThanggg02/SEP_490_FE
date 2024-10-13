@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Row } from "react-bootstrap";
-import {
-  Box,
-  Card,
-  Grid,
-  CardContent,
-  Typography,
-  TextField,
-} from "@mui/material";
+import { Grid, TextField } from "@mui/material";
 import * as MuiIcons from "@mui/icons-material";
-import "../style/h3.css";
-import { Button, Alert, toaster, Pane, Spinner } from "evergreen-ui";
-
+import { Button, Pane, Spinner, toaster } from "evergreen-ui";
+import { Tag } from "antd";
+import "../style/UserNeedsForm.css";
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
@@ -40,7 +32,7 @@ const UserNeedsForm = () => {
       try {
         const response = await axios.get("http://localhost:9999/categories");
         if (response.status === 200) {
-          setProductOptions(response.data);
+          setProductOptions(response.data); // Đổ dữ liệu thật từ API
         }
       } catch (err) {
         setError("Lỗi khi tải sản phẩm. Vui lòng thử lại.");
@@ -64,10 +56,10 @@ const UserNeedsForm = () => {
   };
 
   const handleCheckAll = () => {
+    const allCategoryIds = productOptions.map((category) => category._id);
     if (allSelected) {
       setNeeds((prevNeeds) => ({ ...prevNeeds, productPreferences: [] }));
     } else {
-      const allCategoryIds = productOptions.map((category) => category._id);
       setNeeds((prevNeeds) => ({
         ...prevNeeds,
         productPreferences: allCategoryIds,
@@ -92,9 +84,6 @@ const UserNeedsForm = () => {
       return;
     }
     try {
-      console.log("Sending data:", {
-        ...needs,
-      });
       const response = await axios.post(
         `http://localhost:9999/userNeed/${userId}/needs`,
         {
@@ -110,15 +99,18 @@ const UserNeedsForm = () => {
         setSuccess(true);
         nav("/");
         setNeeds({ productPreferences: [], goals: "" });
+        setAllSelected(false); // Reset the select all state
       }
     } catch (err) {
-      setError("Đã xảy ra lỗi khi gửi thông tin. Vui lòng thử lại.");
+      const errorMsg =
+        err.response?.data?.message ||
+        "Đã xảy ra lỗi khi gửi thông tin. Vui lòng thử lại.";
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  // useEffect for notifications
   useEffect(() => {
     if (success) {
       toaster.success("Gửi thông tin thành công!!!");
@@ -142,83 +134,57 @@ const UserNeedsForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="container">
-      <div>
-        <Row>
-          <h3 className="heading">Bạn đang quan tâm đến không gian nào?</h3>
-        </Row>
+      <div className="center-container">
+        <h3 className="heading">Bạn đang quan tâm đến không gian nào?</h3>
         <Button
+          className="button"
           variant="contained"
           intent={allSelected ? "danger" : "success"}
           onClick={handleCheckAll}
           sx={{ mb: 2 }}
+          type="button"
         >
           {allSelected ? "Bỏ chọn tất cả" : "Chọn tất cả"}
         </Button>
       </div>
-      <div>
-        {productOptions.length > 0 ? (
-          <Grid container spacing={2}>
-            {productOptions.map((category) => {
-              const Icon = MuiIcons[category.iconName];
-              const isSelected = needs.productPreferences.includes(
-                category._id
-              );
 
-              return (
-                <Grid item xs={12} sm={3} md={3} key={category._id}>
-                  <Card
-                    className={`text-center add-space ${
-                      isSelected ? "selected" : ""
-                    }`}
-                    sx={{
-                      cursor: "pointer",
-                      boxShadow: isSelected
-                        ? "0 0 10px rgba(0, 123, 255, 0.5)"
-                        : "none",
-                      backgroundColor: isSelected
-                        ? "rgba(0, 123, 255, 0.1)"
-                        : "white",
-                      border: isSelected
-                        ? "2px solid #007bff"
-                        : "1px solid rgba(0, 0, 0, 0.125)",
-                      transition: "all 0.3s ease",
-                    }}
-                    onClick={() => handleCategoryClick(category._id)}
-                  >
-                    <CardContent>
-                      <Box sx={{ fontSize: "2rem" }}>
-                        {Icon ? <Icon /> : null}
-                      </Box>
-                      <Typography variant="h6">{category.name}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
-        ) : (
-          <p>Không có sản phẩm nào để chọn.</p>
-        )}
+      <div>
+        <Grid container justifyContent="center" spacing={3} sx={{ mb: 3 }}>
+          {productOptions.map((category) => {
+            const Icon = MuiIcons[category.iconName];
+            const isSelected = needs.productPreferences.includes(category._id);
+            return (
+              <Grid item key={category._id} xs={12} sm={4} md={3}>
+                <Pane
+                  className={`grid-item ${isSelected ? "selected" : ""}`} // Sử dụng class CSS
+                  onClick={() => handleCategoryClick(category._id)}
+                >
+                  {Icon ? <Icon /> : null}
+                  <p>{category.name}</p>
+                </Pane>
+              </Grid>
+            );
+          })}
+        </Grid>
       </div>
 
       <div>
         <label className="mb-2">Có điều gì khiến bạn bận tâm?</label>
         <TextField
+          className="text-input"
           label="Điều bạn cần nói....."
           name="goals"
           value={needs.goals}
           onChange={handleInputChange}
-          sx={{ width: "100%" }}
         />
       </div>
 
       <Button
+        className="submit-btn mt-3"
         type="submit"
         variant="contained"
         intent="success"
-        marginRight={16}
-        sx={{ mt: 2 }}
-        disabled={loading} // Disable during submission
+        disabled={loading}
       >
         {loading ? "Đang gửi..." : "Gửi"}
       </Button>

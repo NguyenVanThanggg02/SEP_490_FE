@@ -1,0 +1,197 @@
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+header {
+  background-color: #00bfa5;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+header h1 {
+  margin: 0;
+  font-size: 36px;
+}
+.hero {
+  background: url("https://placehold.co/1920x600") no-repeat center center;
+  background-size: cover;
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+}
+.hero h2 {
+  font-size: 48px;
+  margin: 0 0 20px;
+}
+.hero p {
+  font-size: 20px;
+  margin: 0 0 40px;
+}
+.hero button {
+  background-color: #00bfa5;
+  border: none;
+  border-radius: 25px;
+  padding: 15px 30px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+.hero button:hover {
+  background-color: #009688;
+}
+.features {
+  padding: 60px 20px;
+  text-align: center;
+}
+.features h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+.features .feature-item {
+  display: inline-block;
+  width: 30%;
+  margin: 0 1.5%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.features .feature-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.features .feature-item i {
+  font-size: 40px;
+  color: #00bfa5;
+  margin-bottom: 20px;
+}
+.features .feature-item h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.features .feature-item p {
+  font-size: 16px;
+  color: #555;
+}
+.highlighted-spaces {
+  background-color: #333;
+  color: white;
+  padding: 60px 20px;
+  text-align: center;
+}
+.highlighted-spaces h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+.highlighted-spaces .space-item {
+  display: inline-block;
+  width: 30%;
+  margin: 0 1.5%;
+  background-color: #444;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.highlighted-spaces .space-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.highlighted-spaces .space-item img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.highlighted-spaces .space-item h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.highlighted-spaces .space-item p {
+  font-size: 16px;
+  color: #ccc;
+}
+.how-it-works {
+  background-color: #f1f1f1;
+  padding: 60px 20px;
+  text-align: center;
+}
+.how-it-works h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+.how-it-works .step {
+  display: inline-block;
+  width: 30%;
+  margin: 0 1.5%;
+  padding: 20px;
+}
+.how-it-works .step i {
+  font-size: 40px;
+  color: #00bfa5;
+  margin-bottom: 20px;
+}
+.how-it-works .step h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.how-it-works .step p {
+  font-size: 16px;
+  color: #555;
+}
+.testimonials {
+  padding: 60px 20px;
+  text-align: center;
+}
+.testimonials h2 {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+.testimonials .testimonial-item {
+  display: inline-block;
+  width: 30%;
+  margin: 0 1.5%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.testimonials .testimonial-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.testimonials .testimonial-item img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+.testimonials .testimonial-item h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.testimonials .testimonial-item p {
+  font-size: 16px;
+  color: #555;
+}
+footer {
+  background-color: #333;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+footer p {
+  margin: 0;
+  font-size: 14px;
+}
