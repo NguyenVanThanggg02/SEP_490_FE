@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
-import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
 import { Row } from "react-bootstrap";
 import {
@@ -10,12 +8,12 @@ import {
   Grid,
   CardContent,
   Typography,
-  Button,
-  Container,
   TextField,
 } from "@mui/material";
 import * as MuiIcons from "@mui/icons-material";
 import "../style/h3.css";
+import { Button, Alert, toaster, Pane, Spinner } from "evergreen-ui";
+
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
@@ -114,15 +112,32 @@ const UserNeedsForm = () => {
         setNeeds({ productPreferences: [], goals: "" });
       }
     } catch (err) {
-      console.error("Error occurred:", err);
       setError("Đã xảy ra lỗi khi gửi thông tin. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
   };
 
+  // useEffect for notifications
+  useEffect(() => {
+    if (success) {
+      toaster.success("Gửi thông tin thành công!!!");
+    } else if (error) {
+      toaster.danger(error);
+    }
+  }, [success, error]);
+
   if (loadingProducts) {
-    return <p>Đang tải danh sách sản phẩm...</p>;
+    return (
+      <Pane
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height={400}
+      >
+        <Spinner />
+      </Pane>
+    );
   }
 
   return (
@@ -133,7 +148,7 @@ const UserNeedsForm = () => {
         </Row>
         <Button
           variant="contained"
-          color={allSelected ? "secondary" : "primary"}
+          intent={allSelected ? "danger" : "success"}
           onClick={handleCheckAll}
           sx={{ mb: 2 }}
         >
@@ -187,7 +202,7 @@ const UserNeedsForm = () => {
       </div>
 
       <div>
-        <label className="mb-2"> Có điều gì khiến bạn bận tâm?</label>
+        <label className="mb-2">Có điều gì khiến bạn bận tâm?</label>
         <TextField
           label="Điều bạn cần nói....."
           name="goals"
@@ -197,17 +212,16 @@ const UserNeedsForm = () => {
         />
       </div>
 
-      <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        intent="success"
+        marginRight={16}
+        sx={{ mt: 2 }}
+        disabled={loading} // Disable during submission
+      >
         {loading ? "Đang gửi..." : "Gửi"}
       </Button>
-
-      {success && (
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-          Gửi thành công!
-        </Alert>
-      )}
-
-      {error && <Alert severity="error">{error}</Alert>}
     </form>
   );
 };
