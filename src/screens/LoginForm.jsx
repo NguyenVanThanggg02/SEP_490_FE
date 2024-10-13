@@ -14,34 +14,43 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const form = formRef.current;
     const username = form.elements["email_field"].value; // Sử dụng id đúng
     const password = form.elements["password_field"].value; // Sử dụng id đúng
     const data = { username, password };
-
     try {
       const res = await axios.post("http://localhost:9999/users/login", data, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
-      const { accessToken, refreshToken, username, id, fullname, role } =
-        res.data;
+      const {
+        accessToken,
+        refreshToken,
+        username,
+        id,
+        fullname,
+        role,
+        firstLogin,
+      } = res.data;
       localStorage.setItem("refreshToken", refreshToken);
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("username", username);
       localStorage.setItem("fullname", fullname);
       localStorage.setItem("userId", id);
       localStorage.setItem("role", role);
-
+      localStorage.setItem("firstLogin", firstLogin);
       localStorage.setItem("isLoggedIn", "true");
       toast.success("Đăng nhập thành công!");
       setIsLoggedIn(true);
-      if(role == 1) {
+
+      if (role === 1) {
         nav("/admin");
-      }else{
+      } else {
+        if (firstLogin === true) {
+          nav("/userneed");
+          return;
+        }
         nav("/");
       }
     } catch (error) {
@@ -60,12 +69,11 @@ const LoginForm = ({ setIsLoggedIn }) => {
       }
     }
   };
-
   return (
     <Container>
       <Row
         className="justify-content-center align-items-center"
-        style={{ height: "100vh" }}
+        // style={{ height: "100vh" }}
       >
         <Col xs={12} md={6}>
           <div>
