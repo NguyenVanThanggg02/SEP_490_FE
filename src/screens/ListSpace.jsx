@@ -243,23 +243,25 @@ const ListSpace = () => {
                     </Carousel.Item>
                   )}
                 </Carousel>
-                <Card.Body style={{ marginTop: "-25px" }}>
-                  <Card.Title
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      color: "#2d2d2d",
-                    }}
-                  >
-                    {l.name}
-                  </Card.Title>
-                  <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-                    Địa điểm: {l.location}
-                  </Card.Text>
-                  <Card.Text style={{ fontSize: "14px", color: "#2d2d2d" }}>
-                    <h6> Trạng thái: {l.status}</h6>
-                  </Card.Text>
-                </Card.Body>
+                <Link to={`/spaces/${l._id}`} style={{textDecoration:'none'}}>
+                  <Card.Body style={{ marginTop: "-25px" }}>
+                    <Card.Title
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        color: "#2d2d2d",
+                      }}
+                    >
+                      {l.name}
+                    </Card.Title>
+                    <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
+                      Địa điểm: {l.location}
+                    </Card.Text>
+                    <Card.Text style={{ fontSize: "14px", color: "#2d2d2d" }}>
+                      <h6> Trạng thái: {l.status}</h6>
+                    </Card.Text>
+                  </Card.Body>
+                </Link>
               </Card>
             </Col>
           ))
