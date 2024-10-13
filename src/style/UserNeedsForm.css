@@ -21,7 +21,7 @@
 }
 
 .button {
-  background-color: #00bfa5;
+  background-color: #090a0a;
   border: none;
   border-radius: 25px;
   padding: 10px 30px;
@@ -75,7 +75,7 @@
 }
 
 .submit-btn {
-  background-color: #00bfa5;
+  background-color: #0a0a0a;
   border: none;
   border-radius: 25px;
   padding: 10px 30px;
@@ -86,7 +86,7 @@
 }
 
 .submit-btn:hover {
-  background-color: #009688;
+  background-color: #090a0a;
 }
 
 .spinner-container {

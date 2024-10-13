@@ -135,7 +135,9 @@ const UserNeedsForm = () => {
   return (
     <form onSubmit={handleSubmit} className="container">
       <div className="center-container">
-        <h3 className="heading">Bạn đang quan tâm đến không gian nào?</h3>
+        <h3 className="heading">
+          Bạn đang tìm kiếm không gian lý tưởng nào cho sự kiện của mình?
+        </h3>
         <Button
           className="button"
           variant="contained"
@@ -168,14 +170,22 @@ const UserNeedsForm = () => {
         </Grid>
       </div>
 
-      <div>
-        <label className="mb-2">Có điều gì khiến bạn bận tâm?</label>
+      <div className="container-fluid d-flex flex-column align-items-center">
+        <label className="mb-2 text-center">
+          Có điều gì khiến bạn bận tâm?
+        </label>
         <TextField
           className="text-input"
           label="Điều bạn cần nói....."
           name="goals"
           value={needs.goals}
           onChange={handleInputChange}
+          InputProps={{
+            style: {
+              borderRadius: "25px",
+            },
+          }}
+          style={{ width: "100%" }}
         />
       </div>
 

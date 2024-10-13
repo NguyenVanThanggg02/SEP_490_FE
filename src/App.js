@@ -23,6 +23,7 @@ import Favorites from "./screens/Favorites";
 import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
+import Landing from "./screens/Landing";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -53,7 +54,7 @@ function Layout() {
       )}
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Landing />} />
           <Route
             path="/login"
             element={
