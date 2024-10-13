@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from "axios";
+import { priceFormatter } from "../utils/numberFormatter";
 
 
 function SpaceCard({ space }) {
@@ -22,7 +23,7 @@ function SpaceCard({ space }) {
 
 
   return (
-    <Card style={{ width: "18rem", border: "none", borderRadius: "15px", position: "relative" }}>
+    <Card style={{ width: "18rem", border: "none", borderRadius: "15px", position: "relative", height:'350px' }}>
       <div
         style={{
           position: "absolute",
@@ -55,6 +56,7 @@ function SpaceCard({ space }) {
                 src={img}
                 alt={`Ảnh slide ${index + 1}`}
                 height="180"
+                style={{borderTopLeftRadius:'15px', borderTopRightRadius:'15px'}}
               />
 
             </Carousel.Item>
@@ -79,7 +81,7 @@ function SpaceCard({ space }) {
           Địa điểm: {space.location}
         </Card.Text>
         <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-          Giá mỗi giờ: {space.pricePerHour} VND
+          Giá mỗi giờ: {priceFormatter(space.pricePerHour)} VND
         </Card.Text>
         <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
           Trạng thái: {space.status}

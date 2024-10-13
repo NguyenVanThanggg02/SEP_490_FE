@@ -20,10 +20,15 @@ import SpaceDetails from "./screens/SpaceDetails";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 import Favorites from "./screens/Favorites";
+import AddSpaceCategories from "./screens/AddSpaces/AddSpaceCategories";
+import AddSpaceLocation from "./screens/AddSpaces/AddSpaceLocation";
+import AddSpaceInforSpace from "./screens/AddSpaces/AddSpaceInforSpace";
+import AllAdd from "./screens/AddSpaces/AllAdd";
 import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
+import ListSpace from "./screens/ListSpace";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,6 +70,7 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
+          <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile" element={<HostProfile />} />
           <Route path="/chang_pass" element={<ChangePass />} />

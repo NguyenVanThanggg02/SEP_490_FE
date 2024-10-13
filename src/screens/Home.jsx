@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SpaceCard from "../model/SpaceCard";
 import { Col, Container, Row } from "react-bootstrap";
+import SliderBanner from "../components/SliderBanner";
 
 const Home = () => {
   const [spaces, setSpaces] = useState([]);
@@ -27,10 +28,9 @@ const Home = () => {
     return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
   };
   return (
-    <Container>
-      <Row>
-        <Col></Col>
-      </Row>
+    <Container fluid>
+      <SliderBanner />
+      <Container>
       <Row>
         <div className="space-list row">
           {/* {spaces.length > 0 ? (
@@ -64,6 +64,7 @@ const Home = () => {
           )}
         </div>
       </Row>
+      </Container>
     </Container>
   );
 };

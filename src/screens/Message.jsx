@@ -7,6 +7,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import ListMessageWithOwner from "./ListMessageWithOwner";
+import { priceFormatter } from "../utils/numberFormatter";
 
 const Message = () => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
@@ -132,7 +133,7 @@ const Message = () => {
       >
         Giá phòng
         <span style={{ fontWeight: "bold", color: "#333" }}>
-          {space.pricePerHour}/giờ
+          {priceFormatter(space.pricePerHour)}/giờ
         </span>
       </h4>
       <Link
