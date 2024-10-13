@@ -1,26 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import '../style/SpaceDetail.css'; // Đảm bảo đường dẫn đúng
 import {
-  Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Container,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
-  TextField,
-  Box,
-  Drawer,
-  Card,
-  CardContent,
-  Grid,
+  Typography, Button, List, ListItem, ListItemIcon, ListItemText, Divider, Container, FormControl, Select, MenuItem, InputLabel, TextField, Box, Drawer, Card, CardContent, Grid,
   CardMedia,
 } from "@mui/material";
+import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import Comment from "./Comment";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -73,6 +58,7 @@ function SpaceDetails() {
       try {
         const response = await axios.get(`http://localhost:9999/spaces/${id}`);
         setSpaceData(response.data);
+
       } catch (err) {
         setError(err);
       } finally {
@@ -308,20 +294,11 @@ function SpaceDetails() {
               style: {
                 width: "80%",
                 maxWidth: "none",
-                zIndex: 1, // z-index cao hơn cho preview
-                position: "absolute"
+
               },
             }}>
               <DialogContent style={{ padding: "10px 10px" }}>
-                <Image.PreviewGroup
-                  preview={{
-                    onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
-                  }}
-                  style={{
-                    zIndex: 2, // z-index cao hơn cho preview
-                    position: "absolute", // Sử dụng relative để giữ vị trí cho preview
-                  }}
-                >
+                <Image.PreviewGroup>
                   <Grid container spacing={0.4}>
                     {images.map((item) => (
                       <Grid item xs={6} sm={6} key={item}>
@@ -331,6 +308,7 @@ function SpaceDetails() {
                           loading="lazy"
                           style={{ width: "100%", height: "400px", borderRadius: "3px", objectFit: "cover" }}
                         />
+
                       </Grid>
                     ))}
                   </Grid>
@@ -377,8 +355,12 @@ function SpaceDetails() {
                             marginRight: "10px",
                           }}
                         />
-                        Chủ nhà: {spaceData.userId?.username || "Unknown"}
+                        <div style={{ lineHeight: "0.3" }}>
+                          <p style={{ color: "gray", fontSize: "14px" }}>Được đăng bởi:</p>
+                          {spaceData.userId?.username || "Unknown"}
+                        </div>
                       </div>
+
 
                       <Link to="/mess" state={{ id }}>
                         <Button
@@ -394,8 +376,8 @@ function SpaceDetails() {
                           }}
                         >
                           <Typography variant="button">
-                            <b>
-                              Nhắn tin cho <br /> chủ không gian{" "}
+                            <b style={{ fontSize: "12px" }}>
+                              Nhắn tin cho chủ không gian
                             </b>
                           </Typography>
                         </Button>
@@ -411,25 +393,117 @@ function SpaceDetails() {
                     />
                   </Row>
                 </Typography>
-                <Typography variant="h5" className="pb-2">
-                  Mô tả không gian{" "}
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Thông tin cơ bản
+                </Typography>
+                <Row>
+                  <Col md={6}>
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.AccessTime sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Giờ checkin/out tiêu chuẩn
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Check in sau 14:00 và check-out trước 12:00 ngày hôm sau
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", margin: "25px 0" }}>
+                      <MuiIcons.AlarmOn sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Cho phép đặt theo giờ
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Không gian  cho phép đặt theo giờ cho khách hàng có nhu cầu sử dụng trong thời gian ngắn
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.EventAvailable sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Khung giờ hỗ trợ checkin
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Hỗ trợ tất cả khung giờ
+
+                        </Typography>
+
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.EditCalendar sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Giờ checkin/out theo ngày
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Nhận phòng 9:00<br></br>
+                          Trả phòng trước 21:00
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", marginTop: "20px" }}>
+                      <MuiIcons.Key sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Hình thức checkin
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Tự checkin
+                        </Typography>
+
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Giới thiệu về không gian
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {spaceData.description}
                 </Typography>
-                <Divider />
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
                 <Typography variant="h6">Tiện nghi</Typography>
                 <List>
-                  {appliances.length > 0 ? (
-                    appliances.map((appliance) => (
-                      <ListItem key={appliance._id}>
-                        <ListItemIcon>
-                          {/* Replace with actual icon based on appliance data */}
-                          <AcUnitIcon /> {/* Example icon */}
-                        </ListItemIcon>
-                        <ListItemText primary={appliance.name} />
-                      </ListItem>
-                    ))
+                  {spaceData.appliancesId.appliances?.length > 0 ? (
+                    spaceData.appliancesId.appliances?.map((appliance) => {
+                      const IconAppliances = MuiIcons[appliance.iconName];
+                      return (
+                        <ListItem key={appliance._id}>
+                          <ListItemIcon>
+                            {IconAppliances ? <IconAppliances sx={{ color: "black" }} /> : null}
+                          </ListItemIcon>
+                          <ListItemText sx={{ color: "black", fontSize: "10px" }} primary={appliance.name} />
+                        </ListItem>
+                      )
+                    })
                   ) : (
                     <Typography variant="body2">
                       No appliances available
