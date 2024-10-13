@@ -21,6 +21,7 @@ import AddSpaceInforSpace from "./screens/AddSpaces/AddSpaceInforSpace";
 import AllAdd from "./screens/AddSpaces/AllAdd";
 import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
+import ListSpace from "./screens/ListSpace";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -63,6 +64,7 @@ function Layout() {
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/compare" element={<Compare />} />
         <Route path="/detail-admin" element={<DetailForAdmin />} />
+        <Route path="/list_space" element={<ListSpace />} />
         <Route
           path="/admin"
           element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

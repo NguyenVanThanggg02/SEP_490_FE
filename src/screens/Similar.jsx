@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { priceFormatter } from "../utils/numberFormatter";
 
 const Similar = ({ spaceData }) => {
   const [similarSpace, setSimilarSpace] = useState([]);
@@ -72,7 +73,7 @@ const Similar = ({ spaceData }) => {
                     <h6 style={{fontSize:'20px'}}>{s.name}</h6>
                   </div>
                   <div>
-                    <span style={{fontSize:'15px', fontWeight:'bold'}}> Giá mỗi giờ: {s.pricePerHour} VND </span>
+                    <span style={{fontSize:'15px', fontWeight:'bold'}}> Giá mỗi giờ: {priceFormatter(s.pricePerHour)} VND </span>
                   </div>
                 </div>
               </Link>
