@@ -20,7 +20,7 @@ const ListSpace = () => {
   const [noResult, setNoResult] = useState(false);
   const [selectedCate, setSelectedCate] = useState(null);
   const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(12);
+  const [rows, setRows] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
 
   const productsOnPage = listSpace.slice(first, first + rows);
@@ -176,13 +176,13 @@ const ListSpace = () => {
         ) : (
           productsOnPage.map((l) => (
             <Col key={l._id} md={3} sm={6} xs={12} className="mb-4">
-              <Card
+              <div
                 style={{
                   width: "100%",
                   border: "none",
                   borderRadius: "15px",
                   overflow: "hidden",
-                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.1)", // Soft shadow for a cozy effect
+                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                   position: "relative",
                   height: "400px",
                   backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
@@ -243,8 +243,8 @@ const ListSpace = () => {
                     </Carousel.Item>
                   )}
                 </Carousel>
-                <Link to={`/spaces/${l._id}`} style={{textDecoration:'none'}}>
-                  <Card.Body style={{ marginTop: "-25px" }}>
+                <Link to={`/spaces/${l._id}`} style={{textDecoration:'none', marginTop:'20px'}}>
+                  <Card.Body>
                     <Card.Title
                       style={{
                         fontSize: "18px",
@@ -257,12 +257,12 @@ const ListSpace = () => {
                     <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
                       Địa điểm: {l.location}
                     </Card.Text>
-                    <Card.Text style={{ fontSize: "14px", color: "#2d2d2d" }}>
-                      <h6> Trạng thái: {l.status}</h6>
+                    <Card.Text style={{ fontSize: "15px", color: "#2d2d2d", fontWeight:'bold' }}>
+                      <p> Trạng thái: {l.status}</p>
                     </Card.Text>
                   </Card.Body>
                 </Link>
-              </Card>
+              </div>
             </Col>
           ))
         )}
@@ -275,6 +275,7 @@ const ListSpace = () => {
         }}
       >
         <Paginator
+        style={{backgroundColor:'#f9f9f9'}}
           first={first}
           rows={rows}
           totalRecords={listSpace.length}

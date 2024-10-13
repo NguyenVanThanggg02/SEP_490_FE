@@ -5,10 +5,10 @@ import HotSpace from "../components/HotSpace";
 import HowWork from "../components/HowWork";
 import UserFeed from "../components/UserFeed";
 import "../style/landing.css";
-const Landing = () => {
+const Landing = ({isLoggedIn, setIsLoggedIn}) => {
   return (
     <div>
-      <Hero></Hero>
+      <Hero isLoggedIn={isLoggedIn}></Hero>
       <Features></Features>
       <HotSpace></HotSpace>
       <HowWork></HowWork>
