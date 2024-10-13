@@ -80,6 +80,14 @@
   font-weight: 600;
 }
 
+.title_container_bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .input_field {
   width: auto;
   height: 40px;
@@ -91,7 +99,12 @@
     drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
   transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
 }
-
+.titlesub {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212121;
+}
 .input_field:focus {
   border: 1px solid transparent;
   box-shadow: 0px 0px 0px 2px #242424;
