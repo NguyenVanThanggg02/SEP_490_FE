@@ -13,6 +13,9 @@ import { Search } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { Paginator } from "primereact/paginator";
 import "primereact/resources/themes/saga-blue/theme.css";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
   const [listSpace, setListSpace] = useState([]);
@@ -22,6 +25,7 @@ const ListSpace = () => {
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
+  const [spaceFavo, setSpaceFavos] = useState([]);
 
   const productsOnPage = listSpace.slice(first, first + rows);
 
@@ -91,7 +95,20 @@ const ListSpace = () => {
       loadData();
     }
   };
-
+  const changeFavorite = async (id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:9999/spaces/${id}/favorite`
+      );
+      setSpaceFavos((prevSpace) => ({
+        ...prevSpace,
+        favorite: response.data.favorite,
+      }));
+      loadData()
+    } catch (error) {
+      console.error("Error change favorite:", error);
+    }
+  };
   const getSpaceByCate = async (selectedCateId) => {
     try {
       let response;
@@ -116,14 +133,14 @@ const ListSpace = () => {
   return (
     <Container>
       <Row style={{ display: "flex" }}>
-        <Col md={6}>
+        <Col md={7} style={{ display: "flex" }}>
           <input
             type="text"
             placeholder="  Tìm kiếm...."
             onChange={(e) => setSearch(e.target.value)}
             style={{
               height: "50px",
-              width: "400px",
+              width: "600px",
               paddingLeft: "10px",
               border: "solid #CCC 1px",
               margin: "20px",
@@ -136,6 +153,7 @@ const ListSpace = () => {
             style={{
               marginLeft: "20px",
               height: "50px",
+              width: "150px",
               paddingLeft: "10px",
               border: "solid #3399FF 1px",
               margin: "20px",
@@ -146,7 +164,7 @@ const ListSpace = () => {
             <Search /> Tìm kiếm
           </Button>
         </Col>
-        <Col md={6}>
+        <Col md={5}>
           <FormSelect
             className="items_option"
             style={{
@@ -196,7 +214,10 @@ const ListSpace = () => {
                     zIndex: 1,
                     cursor: "pointer",
                   }}
-                ></div>
+                  onClick={()=>changeFavorite(l._id)}
+                >
+                {l.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
+                </div>
                 <Carousel
                   interval={null}
                   controls={false}
