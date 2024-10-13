@@ -57,6 +57,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
+      console.log(userInfo);
+
       setFormData({
         fullname: response.data.fullname,
         gmail: response.data.gmail,
@@ -122,10 +124,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      await axios.put(
-        `http://localhost:9999/users/${userId}`,
-        formData
-      );
+      await axios.put(`http://localhost:9999/users/${userId}`, formData);
       setUserInfo((prev) => ({ ...prev, ...formData }));
       setEditMode(false);
       toast.success("Cập nhật thông tin thành công!");
