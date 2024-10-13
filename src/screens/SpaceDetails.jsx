@@ -4,6 +4,17 @@ import '../style/SpaceDetail.css'; // Đảm bảo đường dẫn đúng
 import {
   Typography, Button, List, ListItem, ListItemIcon, ListItemText, Divider, Container, FormControl, Select, MenuItem, InputLabel, TextField, Box, Drawer, Card, CardContent, Grid,
   CardMedia,
+  AppBar,
+  Toolbar,
+  IconButton,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Chip,
+  Paper,
 } from "@mui/material";
 import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
 import AcUnitIcon from "@mui/icons-material/AcUnit";
@@ -15,7 +26,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
-import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
+import { ChevronLeft, ChevronRight, FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
@@ -32,6 +43,7 @@ function SpaceDetails() {
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
 
 
   const nav = useNavigate()
@@ -242,11 +254,81 @@ function SpaceDetails() {
 
 
 
+  const handlePrevMonth = () => {
+    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
+  };
+
+  const renderDaysInMonth = (month) => {
+    const date = new Date(2024, month);
+    const daysInMonth = new Date(2024, month + 1, 0).getDate();
+    const firstDay = new Date(2024, month, 1).getDay();
+
+    const days = [];
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<TableCell key={`empty-${i}`} className="inactive"></TableCell>);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(
+        <TableCell key={i} className={i === new Date().getDate() ? 'today' : ''}>
+          {i}
+        </TableCell>
+      );
+    }
+
+    return (
+      <>
+        <TableRow>
+          {days.slice(0, 7)}
+        </TableRow>
+        {days.slice(7).reduce((rows, day, index) => {
+          if (index % 7 === 0) rows.push([]);
+          rows[rows.length - 1].push(day);
+          return rows;
+        }, []).map((row, index) => (
+          <TableRow key={index}>
+            {row}
+          </TableRow>
+        ))}
+      </>
+    );
+  };
+
+  const renderTimeSlots = (title, selectedSlots) => (
+    <div className="time-section">
+      <Typography variant="h6">{title}</Typography>
+      <Grid container spacing={1} className="time-grid">
+        {[...Array(24)].map((_, index) => {
+          const time = index < 10 ? `0${index}:00` : `${index}:00`;
+          const isSelected = selectedSlots.includes(time);
+          return (
+            <Grid item key={index} xs={2}>
+              <Chip
+                label={time}
+                className={`time-slot ${isSelected ? 'selected' : ''}`}
+                onClick={() => { /* handle time slot click */ }}
+                color={isSelected ? 'primary' : 'default'}
+                variant={isSelected ? 'filled' : 'outlined'}
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </div>
+  );
+
+
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
           <Container>
+            <Typography variant="h6" sx={{ fontWeight: 500, fontSize: "26px", marginBottom: "15px" }}>
+              {spaceData.name}
+            </Typography>
             <Grid container spacing={0.8} style={{ position: "relative", marginBottom: "20px" }}>
               <Grid item xs={12} md={6}>
                 {mainImage && (
@@ -323,7 +405,7 @@ function SpaceDetails() {
                 <Typography variant="h5">
                   {spaceData.location}
                   <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}{" "}
+                    10 người • {spaceData.area}
                   </p>
                   <Row item md={12}>
                     <Divider
@@ -490,51 +572,115 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6">Tiện nghi</Typography>
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Tiện nghi</Typography>
+
                 <List>
                   {spaceData.appliancesId.appliances?.length > 0 ? (
-                    spaceData.appliancesId.appliances?.map((appliance) => {
-                      const IconAppliances = MuiIcons[appliance.iconName];
-                      return (
-                        <ListItem key={appliance._id}>
-                          <ListItemIcon>
-                            {IconAppliances ? <IconAppliances sx={{ color: "black" }} /> : null}
-                          </ListItemIcon>
-                          <ListItemText sx={{ color: "black", fontSize: "10px" }} primary={appliance.name} />
-                        </ListItem>
-                      )
-                    })
+                    <Grid container >
+                      {spaceData.appliancesId.appliances?.map((appliance) => {
+                        const IconAppliances = MuiIcons[appliance.iconName];
+                        return (
+                          <Grid item xs={6} key={appliance._id}> {/* Mỗi item chiếm 50% chiều rộng */}
+                            <ListItem>
+                              <ListItemIcon>
+                                {IconAppliances ? (
+                                  <IconAppliances sx={{ color: "black" }} />
+                                ) : null}
+                              </ListItemIcon>
+                              <ListItemText
+                                sx={{ color: "black", fontSize: "10px" }}
+                                primary={appliance.name}
+                              />
+                            </ListItem>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
                   ) : (
                     <Typography variant="body2">
                       No appliances available
                     </Typography>
                   )}
                 </List>
-                <Typography variant="h5">Nội quy</Typography>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Nội quy
+                </Typography>
                 <List>
                   {spaceData.rulesId && spaceData.rulesId.length > 0 ? (
-                    spaceData.rulesId.map((ruleGroup) =>
-                      ruleGroup.rules && ruleGroup.rules.length > 0 ? (
-                        ruleGroup.rules.map((rule, index) => (
-                          <ListItem key={index}>
-                            <ListItemIcon>
-                              <AcUnitIcon /> {/* Example icon */}
-                            </ListItemIcon>
-                            <ListItemText primary={rule} />
-                          </ListItem>
-                        ))
-                      ) : (
-                        <ListItem key={ruleGroup._id}>
-                          <ListItemText primary="No rules available" />
-                        </ListItem>
-                      )
-                    )
+                    <Grid container> {/* Giảm khoảng cách nếu cần */}
+                      {spaceData.rulesId.map((ruleGroup) =>
+                        ruleGroup.rules && ruleGroup.rules.length > 0 ? (
+                          ruleGroup.rules.map((rule, index) => (
+                            <Grid item xs={6} key={index}> {/* Mỗi item chiếm 50% chiều rộng */}
+                              <ListItem>
+                                <ListItemIcon>
+                                  <AcUnitIcon /> {/* Icon ví dụ */}
+                                </ListItemIcon>
+                                <ListItemText primary={rule} />
+                              </ListItem>
+                            </Grid>
+                          ))
+                        ) : (
+                          <Grid item xs={6} key={ruleGroup._id}>
+                            <ListItem>
+                              <ListItemText primary="No rules available" />
+                            </ListItem>
+                          </Grid>
+                        )
+                      )}
+                    </Grid>
                   ) : (
                     <ListItem>
                       <ListItemText primary="No rule groups available" />
                     </ListItem>
                   )}
                 </List>
+
+                {/* lịch */}
+
+                <div style={{ padding: '10px', fontFamily: 'Arial, sans-serif' }}>
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                    Lịch
+                  </Typography>
+                  <div className="calendar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '10px 0' }}>
+                    <IconButton onClick={handlePrevMonth} size="small">
+                      <ChevronLeft fontSize="small" />
+                    </IconButton>
+                    <Typography variant="h6" sx={{ fontSize: "18px" }}>{new Date(2024, currentMonth).toLocaleString('default', { month: 'long' })} 2024</Typography>
+                    <IconButton onClick={handleNextMonth} size="small">
+                      <ChevronRight fontSize="small" />
+                    </IconButton>
+                  </div>
+                  <TableContainer component={Paper} sx={{ maxWidth: '500px', margin: '0 auto' }}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }}>T2</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }}>T3</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }}>T4</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }}>T5</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }}>T6</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }} className="highlight">T7</TableCell>
+                          <TableCell sx={{ fontSize: "12px", padding: '6px' }} className="highlight">CN</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {renderDaysInMonth(currentMonth)}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  {renderTimeSlots('Giờ đến', ['09:00', '10:00', '17:00'])}
+                  {renderTimeSlots('Giờ đi', ['11:00', '12:00'])}
+                </div>
+
               </Col>
               <Col item xs={12} md={4}>
                 <Box
