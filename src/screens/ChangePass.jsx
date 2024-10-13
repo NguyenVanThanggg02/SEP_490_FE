@@ -32,7 +32,7 @@ const ChangePass = () => {
     const payload = JSON.parse(atob(token.split(".")[1]));
     const id = payload.user.id;
     console.log(id);
-    
+
     axios
       .get(`http://localhost:9999/users/${id}`)
       .then((response) => {

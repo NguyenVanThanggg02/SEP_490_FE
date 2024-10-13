@@ -58,17 +58,6 @@ const StatCards2 = () => {
   const textError = palette.error.main;
   const bgError = lighten(palette.error.main, 0.85);
 
-  useEffect(() => {
-    fetch("http://localhost:9999/payment/calculate-total-amount")
-      .then((resp) => resp.json())
-      .then((data) => {
-        console.log(data);
-        setTotalOrder(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, []);
 
   function formatCurrency(number) {
     // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
@@ -80,49 +69,24 @@ const StatCards2 = () => {
   }
 
   return (
-    <Grid container spacing={3} sx={{ mb: 3 }}>
-      {/* <Grid item xs={12} md={6}>
-        <Card elevation={3} sx={{ p: 2 }}>
+    <Grid container spacing={3} sx={{ mt: 1, ml:0.5}}>
+      <Grid item xs={12} md={6}>
+        <Card elevation={3} sx={{ p: 2 }} style={{height:'240px'}}>
           <ContentBox>
-            <FabIcon
-              size="medium"
-              sx={{ background: "rgba(9, 182, 109, 0.15)" }}
-            >
-              <Moving sx={{ color: "#08ad6c" }} />
-            </FabIcon>
-            <H3 textcolor={"#08ad6c"}>Active Users</H3>
+            <H3 textcolor={"#08ad6c"}>Tổng user</H3>
           </ContentBox>
-
           <ContentBox sx={{ pt: 2 }}>
             <H1>10.8k</H1>
-            <IconBox sx={{ background: "rgba(9, 182, 109, 0.15)" }}>
-              <Icon className="icon">expand_less</Icon>
-            </IconBox>
-            <Span textcolor={"#08ad6c"}>(+21%)</Span>
           </ContentBox>
         </Card>
-      </Grid> */}
-
-      <Grid item xs={12} md={12}>
-        <Card elevation={3} sx={{ p: 2 }} style={{ height: "336px" }}>
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Card elevation={3} sx={{ p: 2 }} style={{height:'240px'}}>
           <ContentBox>
-            <FabIcon
-              size="medium"
-              sx={{ background: bgError, overflow: "hidden" }}
-            >
-              <StarBorderIcon sx={{ color: textError }}>
-                star_outline
-              </StarBorderIcon>
-            </FabIcon>
-            <H3 textcolor={textError}>Tổng doanh thu</H3>
+            <H3 textcolor={"#08ad6c"}>Tổng user</H3>
           </ContentBox>
-
           <ContentBox sx={{ pt: 2 }}>
-            <H1>{formatCurrency(totalOrder.totalAmount) + " ₫"}</H1>
-            <IconBox sx={{ background: bgError }}>
-              <Icon className="icon">expand_less</Icon>
-            </IconBox>
-            <Span textcolor={textError}>(+21%)</Span>
+            <H1>10.8k</H1>
           </ContentBox>
         </Card>
       </Grid>
