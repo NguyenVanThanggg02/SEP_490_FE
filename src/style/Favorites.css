@@ -26,6 +26,8 @@
     max-width: calc(25% - 10px); /* Độ rộng tối đa của mỗi ảnh */
     text-align: center; /* Canh giữa nút span */
   }
+
+
   
   .image-item img {
     height: 100px;
@@ -49,3 +51,11 @@
     color: #fff; /* Màu chữ khi hover */
   }
   
+
+  .image-item2 {
+    position: relative;
+    margin-bottom: 10px; /* Khoảng cách giữa các hàng */
+    flex: 0 0 calc(25% - 10px); /* Độ rộng của mỗi ảnh (25% - khoảng cách giữa các ảnh) */
+    max-width: calc(25% - 10px); /* Độ rộng tối đa của mỗi ảnh */
+    text-align: center; /* Canh giữa nút span */
+  }
