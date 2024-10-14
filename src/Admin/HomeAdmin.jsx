@@ -3,6 +3,8 @@ import HeaderAdmin from "./HeaderAdmin";
 import { Col, Container, Row } from "react-bootstrap";
 import { Select } from "antd";
 import RevenueChart from "./Chart/RevenueChartByMonth";
+import "../style/Homeadmin.css";
+import RevenueChartByOrder from "./Chart/RevenueChartByOrder";
 
 const HomeAdmin = () => {
   const [month, setMonth] = useState(1);
@@ -39,42 +41,66 @@ const HomeAdmin = () => {
       <Row>
         <HeaderAdmin />
       </Row>
-      <Row className="mt-3">
-        <Col md={6}>
-        <RevenueChart />
-          <div className="d-flex align-items-center justify-content-center">
-            <h6 className="mb-0 me-2">Doanh thu theo tháng: </h6>
-            <Select
-              style={{ width: "100px" }}
-              defaultValue={month}
-              onChange={handleMonthChange}
-            >
-              {[...Array(12).keys()].map((index) => (
-                <Select.Option key={index + 1} value={index + 1}>
-                  {index + 1}
-                </Select.Option>
-              ))}
-            </Select>
+      <div className="container1 mt-5">
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card">
+              <div className="card-header">
+                Sale
+                <span className="float-end" style={{ color: "#007bff" }}>
+                  $613.200
+                </span>
+              </div>
+              <div className="card-body">
+                <p>January - June</p>
+                <div className="chart"><RevenueChartByOrder/></div>
+                <div className="stats">
+                  <div className="stat-item">
+                    <i className="fas fa-users"></i>
+                    <div className="value">44.725</div>
+                    <div className="change">
+                      (-12.4% <i className="fas fa-arrow-down"></i>)
+                    </div>
+                    <div>Customers</div>
+                  </div>
+                  <div className="stat-item">
+                    <i className="fas fa-shopping-cart"></i>
+                    <div className="value">385</div>
+                    <div className="change positive">
+                      (17.2% <i className="fas fa-arrow-up"></i>)
+                    </div>
+                    <div>Orders</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </Col>
-        <Col md={6}>
-        <RevenueChart />
-          <div className="d-flex align-items-center justify-content-center">
-            <h6 className="mb-0 me-2">Doanh thu theo năm: </h6>
-            <Select
-              style={{ width: "100px" }}
-              defaultValue={year}
-              onChange={handleYearChange}
-            >
-              {years.map((yearOption) => (
-                <Select.Option key={yearOption} value={yearOption}>
-                  {yearOption}
-                </Select.Option>
-              ))}
-            </Select>
+          <div className="col-md-6">
+            <div className="card traffic-card">
+              <div className="card-header">Traffic</div>
+              <div className="card-body">
+                <p>January 1- December 31</p>
+                <div className="traffic-chart"><RevenueChart /></div>
+              </div>
+
+            </div>
+            <div className="d-flex align-items-center justify-content-center">
+              <h6 className="mb-0 me-2">Doanh thu theo năm: </h6>
+              <Select
+                style={{ width: "100px" }}
+                defaultValue={year}
+                onChange={handleYearChange}
+              >
+                {years.map((yearOption) => (
+                  <Select.Option key={yearOption} value={yearOption}>
+                    {yearOption}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
           </div>
-        </Col>
-      </Row>
+        </div>
+      </div>
     </Container>
   );
 };
