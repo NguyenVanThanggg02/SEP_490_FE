@@ -8,8 +8,8 @@ export default function RevenueChart() {
     <BarChart
       xAxis={[{ scaleType: 'band', data: ['Tháng 1', 'Tháng 2'] }]}
       series={[{ data: [4, 3] }, { data: [1, 6] }, { data: [2, 1] }, { data: [2, 4] }]}
-      width={500}
-      height={300}
+      width={400}
+      height={150}
     />
 
 
