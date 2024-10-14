@@ -31,7 +31,7 @@ const ListSpace = () => {
   const [showAll, setShowAll] = useState(false);
   const [districts, setDistricts] = useState([]);
   const [districtSearch, setDistrictSearch] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false); // Thêm state này
+  const [showSuggestions, setShowSuggestions] = useState(false); 
 
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
@@ -139,7 +139,11 @@ const ListSpace = () => {
         response = await axios.get("http://localhost:9999/spaces");
       }
       setListSpace(response.data);
-      setNoResult(true);
+      if (response.data.length === 0) {
+        setNoResult(true);
+    } else {
+        setNoResult(false);
+    }
     } catch (error) {
       alert("Lỗi khi gọi API lấy danh sách sản phẩm theo cate ", error);
     }
@@ -152,11 +156,10 @@ const ListSpace = () => {
 
   // lấy thành phố
   useEffect(() => {
-    // Fetch districts from Open API
     const fetchDistricts = async () => {
       try {
         const response = await axios.get("https://provinces.open-api.vn/api/");
-        setDistricts(response.data); // Save districts to state
+        setDistricts(response.data); 
       } catch (error) {
         console.error("Error fetching districts:", error);
       }
@@ -182,21 +185,19 @@ const ListSpace = () => {
                     height: "50px",
                     border: "solid #CCC 1px",
                     borderRadius: "10px",
-                    width: "285px",
+                    width: "301px",
                   }}
                 ></input>
-                <Button
-                  onClick={handleSearch}
+                  <Search onClick={handleSearch}
                   style={{
                     height: "50px",
-                    border: "solid #3399FF 1px",
-                    borderRadius: "10px",
                     position: "absolute",
-                    right: "0.05%",
-                  }}
-                >
-                  <Search />
-                </Button>
+                    right: "5%",
+                    borderLeft: "1px solid #ddd",
+                    cursor:'pointer',
+                    paddingLeft: "11px",
+                    fontSize:'30px',
+                  }} />
               </div>
             </Col>
           </Row>
