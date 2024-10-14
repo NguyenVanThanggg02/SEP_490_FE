@@ -31,6 +31,8 @@ import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
+import Similar from "./Similar";
+import { priceFormatter } from "../utils/numberFormatter";
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -446,7 +448,7 @@ function SpaceDetails() {
                     variant="h5"
                     sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
                   >
-                    {spaceData.pricePerHour} / giờ
+                    {priceFormatter(spaceData.pricePerHour)} / giờ
                   </Typography>
 
                   {/* Chọn ngày nhận và trả phòng */}
@@ -553,6 +555,7 @@ function SpaceDetails() {
           onValueChange={handleValueChange}
         />
       )}
+      <Similar spaceData={spaceData} />
     </Container>
   );
 }
