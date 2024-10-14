@@ -1,7 +1,9 @@
-// import React from "react";
-// import { Container, Table } from "react-bootstrap";
-// import "../style/topSpace.css";
 import React from 'react';
+import HomeIcon from '@mui/icons-material/Home';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import TaskIcon from '@mui/icons-material/Task';
+import GroupIcon from '@mui/icons-material/Group';
+import SettingsIcon from '@mui/icons-material/Settings';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -10,41 +12,36 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "../style/AdminUpdate.css";
-const TopSpace = () => {
+const ProfileUpdate = () => {
   return (
-    // <Container className="topSpace">
-    //   <Table className="table-no-border">
-    //     <thead>
-    //       <div style={{ padding: "10px", fontWeight: "bold", color: "gray" }}>
-    //         Top Spaces
-    //       </div>
-    //       <tr className="text-center">
-    //         <th>Tên</th>
-    //         <th>hình ảnh</th>
-    //         <th>Địa chỉ</th>
-    //         <th>Số lượt book</th>
-    //         <th>Trạng thái</th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       <tr className="text-center">
-    //         <td>abc</td>
-    //         <td>abc</td>
-    //         <td>Hà Nội</td>
-    //         <td>10</td>
-    //         <td>Đang sử dụng</td>
-    //       </tr>
-    //       <tr className="text-center">
-    //         <td>abc</td>
-    //         <td>abc</td>
-    //         <td>Hà Nội</td>
-    //         <td>10</td>
-    //         <td>Đang sử dụng</td>
-    //       </tr>
-    //     </tbody>
-    //   </Table>
-    // </Container>
-    <div >
+    <div className="d-flex">
+      <div className="sidebar">
+        <a className="active" href="#">
+          <HomeIcon /> Trang chủ
+        </a>
+        <a href="#">
+          <DashboardIcon /> Dashboard
+        </a>
+        <a href="#">
+          <TaskIcon /> Quản lí bài đăng
+        </a>
+        <a href="#">
+          <GroupIcon /> Quản lí người dùng
+        </a>
+        <a href="#">
+          <SettingsIcon /> Cài đặt
+        </a>
+        {/* <div className="user-info">
+          <img
+            alt="User profile"
+            height="50"
+            src="https://storage.googleapis.com/a1aa/image/KNSF2wTSxMYnLVPhuWKwIb1EYPd7qoMmNrAb9kNYfon25XzJA.jpg"
+            width="50"
+          />
+          <p>Oliver Dani</p>
+        </div> */}
+      </div>
+
       <div className="content flex-grow-1">
         <div className="row">
           <div className="col-md-3">
@@ -234,4 +231,4 @@ const TopSpace = () => {
   );
 };
 
-export default TopSpace;
+export default ProfileUpdate;

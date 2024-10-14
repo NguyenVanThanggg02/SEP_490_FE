@@ -13,6 +13,9 @@ import { Search } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { Paginator } from "primereact/paginator";
 import "primereact/resources/themes/saga-blue/theme.css";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
   const [listSpace, setListSpace] = useState([]);
@@ -20,8 +23,9 @@ const ListSpace = () => {
   const [noResult, setNoResult] = useState(false);
   const [selectedCate, setSelectedCate] = useState(null);
   const [first, setFirst] = useState(0);
-  const [rows, setRows] = useState(12);
+  const [rows, setRows] = useState(8);
   const [currentPage, setCurrentPage] = useState(1);
+  const [spaceFavo, setSpaceFavos] = useState([]);
 
   const productsOnPage = listSpace.slice(first, first + rows);
 
@@ -91,7 +95,20 @@ const ListSpace = () => {
       loadData();
     }
   };
-
+  const changeFavorite = async (id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:9999/spaces/${id}/favorite`
+      );
+      setSpaceFavos((prevSpace) => ({
+        ...prevSpace,
+        favorite: response.data.favorite,
+      }));
+      loadData()
+    } catch (error) {
+      console.error("Error change favorite:", error);
+    }
+  };
   const getSpaceByCate = async (selectedCateId) => {
     try {
       let response;
@@ -116,14 +133,14 @@ const ListSpace = () => {
   return (
     <Container>
       <Row style={{ display: "flex" }}>
-        <Col md={6}>
+        <Col md={7} style={{ display: "flex" }}>
           <input
             type="text"
             placeholder="  Tìm kiếm...."
             onChange={(e) => setSearch(e.target.value)}
             style={{
               height: "50px",
-              width: "400px",
+              width: "600px",
               paddingLeft: "10px",
               border: "solid #CCC 1px",
               margin: "20px",
@@ -136,6 +153,7 @@ const ListSpace = () => {
             style={{
               marginLeft: "20px",
               height: "50px",
+              width: "150px",
               paddingLeft: "10px",
               border: "solid #3399FF 1px",
               margin: "20px",
@@ -146,7 +164,7 @@ const ListSpace = () => {
             <Search /> Tìm kiếm
           </Button>
         </Col>
-        <Col md={6}>
+        <Col md={5}>
           <FormSelect
             className="items_option"
             style={{
@@ -176,13 +194,13 @@ const ListSpace = () => {
         ) : (
           productsOnPage.map((l) => (
             <Col key={l._id} md={3} sm={6} xs={12} className="mb-4">
-              <Card
+              <div
                 style={{
                   width: "100%",
                   border: "none",
                   borderRadius: "15px",
                   overflow: "hidden",
-                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.1)", // Soft shadow for a cozy effect
+                  boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                   position: "relative",
                   height: "400px",
                   backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
@@ -196,7 +214,10 @@ const ListSpace = () => {
                     zIndex: 1,
                     cursor: "pointer",
                   }}
-                ></div>
+                  onClick={()=>changeFavorite(l._id)}
+                >
+                {l.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
+                </div>
                 <Carousel
                   interval={null}
                   controls={false}
@@ -243,24 +264,26 @@ const ListSpace = () => {
                     </Carousel.Item>
                   )}
                 </Carousel>
-                <Card.Body style={{ marginTop: "-25px" }}>
-                  <Card.Title
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      color: "#2d2d2d",
-                    }}
-                  >
-                    {l.name}
-                  </Card.Title>
-                  <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
-                    Địa điểm: {l.location}
-                  </Card.Text>
-                  <Card.Text style={{ fontSize: "14px", color: "#2d2d2d" }}>
-                    <h6> Trạng thái: {l.status}</h6>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+                <Link to={`/spaces/${l._id}`} style={{textDecoration:'none', marginTop:'20px'}}>
+                  <Card.Body>
+                    <Card.Title
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        color: "#2d2d2d",
+                      }}
+                    >
+                      {l.name}
+                    </Card.Title>
+                    <Card.Text style={{ fontSize: "14px", color: "#757575" }}>
+                      Địa điểm: {l.location}
+                    </Card.Text>
+                    <Card.Text style={{ fontSize: "15px", color: "#2d2d2d", fontWeight:'bold' }}>
+                      <p> Trạng thái: {l.status}</p>
+                    </Card.Text>
+                  </Card.Body>
+                </Link>
+              </div>
             </Col>
           ))
         )}
@@ -273,6 +296,7 @@ const ListSpace = () => {
         }}
       >
         <Paginator
+        style={{backgroundColor:'#f9f9f9'}}
           first={first}
           rows={rows}
           totalRecords={listSpace.length}

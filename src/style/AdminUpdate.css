@@ -1,0 +1,71 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+}
+.sidebar {
+    background-color: #212529;
+    height: 100vh;
+    padding-top: 20px;
+}
+.sidebar a {
+    color: #adb5bd;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+.sidebar a:hover, .sidebar a.active {
+    background-color: #0d6efd;
+    color: #fff;
+}
+.sidebar .user-info {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+.sidebar .user-info img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+.sidebar .user-info p {
+    color: #fff;
+    margin-top: 10px;
+}
+.content {
+    padding: 20px;
+}
+.card {
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.card-pink {
+    background-color: #ffe4e6;
+}
+.card-blue {
+    background-color: #e0f7fa;
+}
+.card-green {
+    background-color: #e8f5e9;
+}
+.card-purple {
+    background-color: #f3e5f5;
+}
+.task-table th, .task-table td {
+    vertical-align: middle;
+}
+.progress-bar {
+    height: 8px;
+    border-radius: 5px;
+}
+.progress-bar-orange {
+    background-color: #ffa726;
+}
+.progress-bar-blue {
+    background-color: #29b6f6;
+}
+.progress-bar-green {
+    background-color: #66bb6a;
+}
