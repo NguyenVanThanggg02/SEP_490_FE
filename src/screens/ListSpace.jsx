@@ -279,7 +279,7 @@ const handleAll = async () =>{
                 }}
                 onChange={handleChooseCate}
               >
-                <option value="0">Tất cả</option>
+                <option value="0">Tất cả địa điểm</option>
                 {categories.map((c) => (
                   <option key={c._id} value={c._id}>
                     {c.name}
