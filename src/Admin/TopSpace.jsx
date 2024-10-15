@@ -44,7 +44,6 @@ const TopSpace = () => {
     //     </tbody>
     //   </Table>
     // </Container>
-    <div >
       <div className="content flex-grow-1">
         <div className="row">
           <div className="col-md-3">
@@ -230,7 +229,6 @@ const TopSpace = () => {
           </table>
         </div>
       </div>
-    </div>
   );
 };
 

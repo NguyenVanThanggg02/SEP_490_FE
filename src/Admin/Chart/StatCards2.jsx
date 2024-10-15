@@ -10,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+
 const ContentBox = styled("div")(() => ({
   display: "flex",
   flexWrap: "wrap",
@@ -27,12 +28,14 @@ const H3 = styled("h3")(({ textcolor }) => ({
   color: textcolor,
   fontWeight: "500",
   marginLeft: "12px",
+  fontSize: "12px", // Giảm kích thước font cho tiêu đề
 }));
 
 const H1 = styled("h1")(({ theme }) => ({
   margin: 0,
   flexGrow: 1,
   color: theme.palette.text.secondary,
+  fontSize: "20px", // Giảm kích thước font cho số liệu
 }));
 
 const Span = styled("span")(({ textcolor }) => ({
@@ -58,9 +61,7 @@ const StatCards2 = () => {
   const textError = palette.error.main;
   const bgError = lighten(palette.error.main, 0.85);
 
-
   function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
       return number.toLocaleString("en-US", {
         currency: "VND",
@@ -69,23 +70,30 @@ const StatCards2 = () => {
   }
 
   return (
-    <Grid container spacing={3} sx={{ mt: 1, ml:0.5}}>
-      <Grid item xs={12} md={6}>
-        <Card elevation={3} sx={{ p: 2 }} style={{height:'240px'}}>
+    <Grid container spacing={3} sx={{ mt: 1, ml: 0.5 }}>
+      <Grid item xs={12} md={6} style={{ paddingLeft: '0px', paddingTop: '0px' }}>
+        <Card
+          elevation={3}
+          style={{ height: "150px", width: "150px" }} // Đặt chiều cao và chiều rộng thành hình vuông, không padding
+        >
           <ContentBox>
             <H3 textcolor={"#08ad6c"}>Tổng user</H3>
           </ContentBox>
-          <ContentBox sx={{ pt: 2 }}>
+          <ContentBox sx={{ pt: 1 }}>
             <H1>10.8k</H1>
           </ContentBox>
         </Card>
       </Grid>
-      <Grid item xs={12} md={6}>
-        <Card elevation={3} sx={{ p: 2 }} style={{height:'240px'}}>
+
+      <Grid item xs={12} md={6} style={{ paddingLeft: '0px', paddingTop: '0px' }}>
+        <Card
+          elevation={3}
+          style={{ height: "150px", width: "150px" }} // Đặt chiều cao và chiều rộng thành hình vuông, không padding
+        >
           <ContentBox>
             <H3 textcolor={"#08ad6c"}>Tổng user</H3>
           </ContentBox>
-          <ContentBox sx={{ pt: 2 }}>
+          <ContentBox sx={{ pt: 1 }}>
             <H1>10.8k</H1>
           </ContentBox>
         </Card>
@@ -95,3 +103,6 @@ const StatCards2 = () => {
 };
 
 export default StatCards2;
+
+
+

@@ -41,7 +41,6 @@ const ProfileUpdate = () => {
           <p>Oliver Dani</p>
         </div> */}
       </div>
-
       <div className="content flex-grow-1">
         <div className="row">
           <div className="col-md-3">

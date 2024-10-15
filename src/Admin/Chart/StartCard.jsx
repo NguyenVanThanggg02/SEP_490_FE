@@ -6,16 +6,22 @@ import { Small } from "../Chart/Typography";
 import axios from "axios";
 import TopSpace from "../TopSpace";
 import StatCards2 from "./StatCards2";
+
+// Styled Card component
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
-  flexWrap: "wrap",
+  flexWrap: "nowrap", // Không ngắt dòng, giúp các thẻ nằm trên một hàng
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "24px !important",
   background: theme.palette.background.paper,
-  [theme.breakpoints.down("sm")]: { padding: "16px !important" },
+  [theme.breakpoints.down("sm")]: { padding: "12px !important" },
+  width: "150px", // Đặt chiều rộng cố định
+  height: "150px", // Đặt chiều cao cố định để hình vuông
+  maxWidth: "150px", // Đảm bảo giới hạn kích thước tối đa
 }));
 
+
+// Content Box for styling card content
 const ContentBox = styled(Box)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
@@ -28,6 +34,7 @@ const ContentBox = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Heading component for card heading
 const Heading = styled("h6")(({ theme }) => ({
   margin: 0,
   marginTop: "4px",
@@ -43,18 +50,17 @@ const StatCards = (props) => {
   const [totalOfProducts, setTotalProducts] = useState(0);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
+
   const handleArrowClick = (index) => {
     console.log(index);
     navigate("/dashboard", { state: { selectedTab: index } });
   };
+
   useEffect(() => {
-    axios
-      .get("http://localhost:9999/users")
-      .then((response) => setUsers(response.data));
+    axios.get("http://localhost:9999/users").then((response) => setUsers(response.data));
   }, []);
 
   function formatCurrency(number) {
-    // Sử dụng hàm toLocaleString() để định dạng số thành chuỗi với ngăn cách hàng nghìn và mặc định là USD.
     if (typeof number === "number") {
       return number.toLocaleString("en-US", {
         currency: "VND",
@@ -72,6 +78,7 @@ const StatCards = (props) => {
         console.log(err.message);
       });
   }, []);
+
   useEffect(() => {
     fetch("http://localhost:9999/payment/totalproducts")
       .then((resp) => resp.json())
@@ -82,6 +89,7 @@ const StatCards = (props) => {
         console.log(err.message);
       });
   }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:9999/payment")
@@ -92,57 +100,62 @@ const StatCards = (props) => {
         console.error(error);
       });
   }, []);
+
   const cardList = [
     {
       name: "Tổng khách hàng",
       amount: `2 users`,
-      // amount: `${users.length} users`,
       icon: "pi pi-user",
       index: 0,
     },
     {
       name: "Tổng đơn hàng",
       amount: `2 Orders`,
-      // amount: `${order.length} Orders`,
       icon: "pi pi-shopping-cart",
       index: 3,
     },
     {
       name: "Doanh thu trong tuần",
-      amount: `4 " ₫"} `,
-      // amount: `${formatCurrency(sumWeekSale) + " ₫"} `,
+      amount: `4 ₫`,
       icon: "pi pi-money-bill",
       index: 0,
     },
     {
-      name: "Tổng sản phẩm đã bán ",
+      name: "Tổng sản phẩm đã bán",
       amount: `3 products`,
-      // amount: `${totalOfProducts} products`,
       icon: "pi pi-shopping-cart",
       index: 1,
     },
   ];
 
   return (
-    <Grid container spacing={3} sx={{ mt: "24px" }}>
-        <Grid item xs={12} md={6} key={index}>
-          <StyledCard elevation={6}>
-            <ContentBox>
-              <i style={{ fontSize: "2.5rem" }}></i>
-              <Box ml="12px">
-                <Small>abc</Small>
-                <Heading>22</Heading>
-              </Box>
-            </ContentBox>
-            <Tooltip title="View Details" placement="top">
-              <IconButton>
-                <ArrowRightAltIcon>arrow_right_alt</ArrowRightAltIcon>
-              </IconButton>
-            </Tooltip>
-          </StyledCard>
-        </Grid>
-      <TopSpace/>
-      <StatCards2/>
+    <Grid container spacing={1} sx={{ mt: "24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap" }}>
+      {/* Card 1 */}
+      <TopSpace />
+      <Grid item xs={12} sm={2} key={index}style={{marginLeft:'50px'}} >
+        <StyledCard elevation={6}>
+          <ContentBox>
+            <i style={{ fontSize: "2.5rem" }}></i>
+            <Box ml="12px">
+              <Small>abc</Small>
+              <Heading>22</Heading>
+            </Box>
+          </ContentBox>
+          <Tooltip title="View Details" placement="top">
+            <IconButton>
+              <ArrowRightAltIcon>arrow_right_alt</ArrowRightAltIcon>
+            </IconButton>
+          </Tooltip>
+        </StyledCard>
+      </Grid>
+
+      {/* Card 2 (StatCards2) */}
+      <Grid item xs={12} sm={8}>
+        <StatCards2 />
+      </Grid>
+
+      {/* Other Components */}
+      
     </Grid>
   );
 };
