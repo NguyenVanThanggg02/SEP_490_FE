@@ -32,6 +32,8 @@ const ListSpace = () => {
   const [districtSearch, setDistrictSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false); 
   const [, setSelectedCate] = useState(null);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
@@ -193,6 +195,8 @@ const ListSpace = () => {
       const response = await axios.get("http://localhost:9999/spaces/filter", {
         params: {
           location: districtSearch,
+          minPrice,
+          maxPrice,
         },
       });
       setListSpace(response.data);
@@ -237,32 +241,32 @@ const handleAll = async () =>{
                 ))}
               </div> */}
               <Col md={7} style={{ display: "flex" }}>
-              <div style={{ position: "relative" }}>
-                <input
-                  type="text"
-                  placeholder="  Tìm kiếm...."
-                  onChange={(e) => setSearch(e.target.value)}
-                  style={{
-                    height: "50px",
-                    border: "solid #CCC 1px",
-                    borderRadius: "10px",
-                    width: "276px",
-                  }}
-                ></input>
-                <Search
-                  onClick={handleSearch}
-                  style={{
-                    height: "50px",
-                    position: "absolute",
-                    right: "5%",
-                    borderLeft: "1px solid #ddd",
-                    cursor: "pointer",
-                    paddingLeft: "11px",
-                    fontSize: "30px",
-                  }}
-                />
-              </div>
-            </Col>
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="text"
+                    placeholder="  Tìm kiếm...."
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{
+                      height: "50px",
+                      border: "solid #CCC 1px",
+                      borderRadius: "10px",
+                      width: "276px",
+                    }}
+                  ></input>
+                  <Search
+                    onClick={handleSearch}
+                    style={{
+                      height: "50px",
+                      position: "absolute",
+                      right: "5%",
+                      borderLeft: "1px solid #ddd",
+                      cursor: "pointer",
+                      paddingLeft: "11px",
+                      fontSize: "30px",
+                    }}
+                  />
+                </div>
+              </Col>
               <FormSelect
                 className="items_option"
                 style={{
@@ -271,7 +275,7 @@ const handleAll = async () =>{
                   padding: "0px 5px 0 10px",
                   border: "solid #CCC 1px",
                   borderRadius: "10px",
-                  margin:'20px 0'
+                  margin: "20px 0",
                 }}
                 onChange={handleChooseCate}
               >
@@ -292,7 +296,7 @@ const handleAll = async () =>{
                         <input
                           type="checkbox"
                           value={name}
-                          onChange={(e) => handleChooseCate(e, name)}
+                          // onChange={(e) => handleChooseCate(e, name)}
                         />
                         {name}
                       </label>
@@ -301,18 +305,56 @@ const handleAll = async () =>{
                 </div>
               </div>
 
-              <div class="filter-section" style={{ borderBottom: "none" }}>
-                <div class="filter-section-title">Giá: </div>
-                <input
-                  type="text"
-                  placeholder=" Nhập giá"
+              <div className="filter-section" style={{border:'none'}}>
+                <div
+                  className="filter-section-title"
+                  style={{ marginRight: "10px" }}
+                >
+                  Giá:
+                </div>
+                <div
                   style={{
-                    height: "50px",
-                    border: "solid #CCC 1px",
-                    borderRadius: "10px",
-                    width: "280px",
+                    borderBottom: "none",
+                    display: "flex",
+                    alignItems: "center",
                   }}
-                ></input>
+                >
+                  <input
+                    type="text"
+                    placeholder="  Từ"
+                    value={minPrice}
+                    onChange={(e) => setMinPrice(e.target.value)}
+                    style={{
+                      height: "40px",
+                      border: "solid #CCC 1px",
+                      borderRadius: "10px",
+                      width: "117px",
+                      marginRight: "10px",
+                    }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="  Đến"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(e.target.value)}
+                    style={{
+                      height: "40px",
+                      border: "solid #CCC 1px",
+                      borderRadius: "10px",
+                      width: "117px",
+                    }}
+                  />
+                  <Search
+                    onClick={handleFilter}
+                    style={{
+                      height: "50px",
+                      cursor: "pointer",
+                      paddingLeft: "11px",
+                      fontSize: "30px",
+                    }}
+                  />
+                </div>
+
               </div>
 
               <div className="filter-section" style={{ borderBottom: "none" }}>
@@ -364,13 +406,13 @@ const handleAll = async () =>{
                   </div>
                 </div>
               </div>
-              <Button
+              {/* <Button
                 onClick={handleAll}
                 className="btn btn-success"
                 style={{ marginLeft: "30%" }}
               >
                 Xem tất cả
-              </Button>
+              </Button> */}
             </div>
           </Row>
         </Col>
