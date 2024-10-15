@@ -7,6 +7,7 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { Label } from '@mui/icons-material';
 
 
 
@@ -42,6 +43,11 @@ const AddSpaceInforSpace = () => {
         });
     };
 
+    const htmlToText = (html) => {
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = html;
+        return tempElement.innerText; // Trả về văn bản thuần
+    };
 
 
     // Hàm xử lý khi nhập vào custom rule
@@ -59,15 +65,15 @@ const AddSpaceInforSpace = () => {
 
             const response = await axios.post("http://localhost:9999/rules/addRule", data);
 
-                const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
+            const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
 
-                // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
-                setSpaceInfo(prev => ({
-                    ...prev,
-                    rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
-                }));
+            // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
+            setSpaceInfo(prev => ({
+                ...prev,
+                rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
+            }));
 
-                alert('Quy định được thêm thành công!');
+            alert('Quy định được thêm thành công!');
         } catch (error) {
             console.error('Error adding rule:', error);
         }
@@ -137,9 +143,10 @@ const AddSpaceInforSpace = () => {
             <Row className="d-flex justify-content-center align-items-center">
                 <Col md={6}>
                     <Row className='pb-5'>
-                        <Col md={6}>
+                        <Col md={12} className="pb-5">
+                        <Typography variant="h6"  style={{ fontWeight: 700,fontSize:"20px" }} >Đặt tên cho không gian của bạn <span style={{color:"red"}}>*</span></Typography>
+                        <Typography sx={{fontSize:"14px",padding:"10px 0"}}> Tên của không gian sẽ được hiển thị trên trang kết quả tìm kiếm và trang thông tin chi tiết của listing khi khách hàng xem</Typography>
                             <TextField
-                                label="Tên không gian"
                                 name="name"
                                 variant="outlined"
                                 fullWidth
@@ -200,19 +207,22 @@ const AddSpaceInforSpace = () => {
                     {/* Mô tả và quy định */}
                     <Row className='pb-5'>
                         <Col md={6} className="pt-2">
-                        <CKEditor
+                            <CKEditor
                                 editor={ClassicEditor}
                                 data={spaceInfo.description}
                                 onChange={(event, editor) => {
                                     const data = editor.getData();
+                                    const plainText = htmlToText(data); // Chuyển đổi sang văn bản thuần
                                     setSpaceInfo(prev => ({
                                         ...prev,
-                                        description: data
+                                        description: plainText // Lưu dữ liệu dưới dạng văn bản thuần
                                     }));
                                 }}
+
                                 config={{
                                     toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
                                 }}
+                                style={{ height: '400px' }}
                             />
                         </Col>
                         <Col md={6}>
