@@ -1,23 +1,86 @@
-import React, { useContext,useState } from 'react';
-import { Container, Row, Col,  } from 'react-bootstrap';
-import { Box,  TextField, Tooltip, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { Container, Row, Col, } from 'react-bootstrap';
+import { Box, Button, FormControlLabel, FormGroup, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { SpaceContext } from '../../Context/SpaceContext ';
+import axios from 'axios';
+import ReactQuill from 'react-quill';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+
+
 
 const AddSpaceInforSpace = () => {
-    const { spaceInfo, setSpaceInfo } = useContext(SpaceContext); // Sử dụng context
+    const { spaceInfo, setSpaceInfo } = useContext(SpaceContext);
     const [errorMessage, setErrorMessage] = useState('');
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
+    const [rules, setRules] = useState([]);
+    const [selectedRules, setSelectedRules] = useState([]);
+    const [customRule, setCustomRule] = useState('');
+
+    const rulesList = [
+        "Bảo quản thiết bị và cơ sở vật chất",
+        "Vệ sinh và ngăn nắp",
+        "Cấm mang theo vũ khí, chất cấm",
+        "Số lượng người không được vượt quá giới hạn",
+        "Mọi người vào đều phải được đăng ký trước",
+        "Tuân thủ giờ thuê, không ở quá giờ quy định",
+        "Không gây rối, xung đột với nhân viên và người khác"
+    ];
+
+
+    const handleToggleRule = (rule, checked) => {
+        setSelectedRules((prevSelectedRules) => {
+            if (checked) {
+                // Nếu switch được bật, thêm rule vào mảng
+                return [...prevSelectedRules, rule];
+            } else {
+                // Nếu switch bị tắt, loại bỏ rule khỏi mảng
+                return prevSelectedRules.filter(r => r !== rule);
+            }
+        });
+    };
+
+
+
+    // Hàm xử lý khi nhập vào custom rule
+    const handleCustomRuleChange = (event) => {
+        setCustomRule(event.target.value);
+    };
+
+    // Hàm gửi dữ liệu lên server
+    const handleSubmit = async () => {
+        try {
+            const data = {
+                selectedRules,
+                customRule: customRule ? customRule : null // Nếu có customRule thì gửi lên, không thì bỏ qua
+            };
+
+            const response = await axios.post("http://localhost:9999/rules/addRule", data);
+
+                const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
+
+                // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
+                setSpaceInfo(prev => ({
+                    ...prev,
+                    rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
+                }));
+
+                alert('Quy định được thêm thành công!');
+        } catch (error) {
+            console.error('Error adding rule:', error);
+        }
+    };
 
 
     const handleInputChange = (e) => {
-        const { name, value,type  } = e.target;
+        const { name, value, type } = e.target;
         setSpaceInfo(prev => ({
             ...prev,
             [name]: value
         }));
-          // Kiểm tra giá trị nhập vào khi người dùng thay đổi
-          if (value.trim() === '') {
+        if (value.trim() === '') {
             setErrors(prev => ({
                 ...prev,
                 [name]: 'Trường này không được bỏ trống',
@@ -137,44 +200,41 @@ const AddSpaceInforSpace = () => {
                     {/* Mô tả và quy định */}
                     <Row className='pb-5'>
                         <Col md={6} className="pt-2">
-                            <TextField
-                                label="Mô tả"
-                                name="description"
-                                multiline
-                                rows={4}
-                                variant="outlined"
-                                fullWidth
-                                required
-                                value={spaceInfo.description}
-                                onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                                onBlur={handleBlur}
-                                error={!!errors.description} // Hiển thị lỗi nếu có
-                                helperText={errors.description}
+                        <CKEditor
+                                editor={ClassicEditor}
+                                data={spaceInfo.description}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setSpaceInfo(prev => ({
+                                        ...prev,
+                                        description: data
+                                    }));
+                                }}
+                                config={{
+                                    toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+                                }}
                             />
                         </Col>
                         <Col md={6}>
                             <Row>
                                 <Typography variant="h6">Quy định</Typography>
-                                <Col md={3}>
-                                    <Tooltip title="Cấm dùng thuốc lá" arrow>
-                                        <Box
-                                            sx={{
-                                                border: '2px dashed grey',
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                height: '50px',
-                                                width: '80px',
-                                                cursor: 'pointer',
-                                            }}
-                                            onClick={() => handleRuleSelect(1)} // Chọn quy định 1
-                                        >
-                                            Icon
-                                        </Box>
-                                    </Tooltip>
-                                </Col>
-                                {/* Thêm các quy định khác tương tự */}
+                                <FormGroup>
+                                    {rulesList.map((rule) => (
+                                        <FormControlLabel
+                                            key={rule}
+                                            control={<Switch onChange={(e) => handleToggleRule(rule, e.target.checked)} />}
+                                            label={rule}
+                                        />
+                                    ))}
+                                    <TextField
+                                        id="outlined-basic"
+                                        label="Điền thêm quy định vào đây"
+                                        variant="outlined"
+                                        value={customRule}
+                                        onChange={handleCustomRuleChange}
+                                    />
+                                </FormGroup>
+                                <Button variant="contained" onClick={handleSubmit}>Lưu quy định</Button>
                             </Row>
                         </Col>
                     </Row>
@@ -202,7 +262,6 @@ const AddSpaceInforSpace = () => {
                             </Box>
                         </Col>
                         <Col md={10}>
-                            {/* Hiển thị danh sách ảnh đã tải lên (nếu có) */}
                         </Col>
                     </Row>
                 </Col>

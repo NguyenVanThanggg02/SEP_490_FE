@@ -46,7 +46,6 @@ export default function AddSpaceFlow() {
 
     try {
       const response = await axios.post('http://localhost:9999/spaces', spaceData);
-      console.log('Thêm không gian thành công:', response.data);
       alert('Thêm không gian thành công!');
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
@@ -62,18 +61,15 @@ export default function AddSpaceFlow() {
       categoryId: selectedCategoryId,
     };
 
-    console.log(appliancesToAdd);
 
 
     try {
       const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
       if (response.data.success) {
         const newApplianceId = response.data.appliance._id;
-        console.log(response.data);
 
         setSelectedApplianceId(newApplianceId);
 
-        console.log('New appliance added with ID:', newApplianceId);
         return newApplianceId
       } else {
         console.error('Failed to add appliance:', response.data.message);
@@ -85,7 +81,6 @@ export default function AddSpaceFlow() {
 
   };
 
-  console.log("ap id" + selectedApplianceId);
 
   const handleNext = async () => {
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));

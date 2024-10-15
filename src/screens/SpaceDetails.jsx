@@ -322,15 +322,31 @@ function SpaceDetails() {
     </div>
   );
 
-
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
           <Container>
-            <Typography variant="h6" sx={{ fontWeight: 500, fontSize: "26px", marginBottom: "15px" }}>
-              {spaceData.name}
-            </Typography>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: "26px" }}>
+                {spaceData.name}
+              </Typography>
+              <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                  {spaceData.favorite ? (
+                    <FavoriteIcon
+                      style={{ color: "#FF385C", fontSize: "40px" }}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                  )}
+                </div>
+                <div onClick={toggleDrawer(true)} style={{ display: "flex", alignItems: "center" }}>
+                  <PlusCircle style={{ color: "blue", fontSize: "33px", marginRight: "5px" }} />
+                  So sánh
+                </div>
+              </div>
+            </div>
             <Grid container spacing={0.8} style={{ position: "relative", marginBottom: "20px" }}>
               <Grid item xs={12} md={6}>
                 {mainImage && (
@@ -649,7 +665,7 @@ function SpaceDetails() {
                 {/* lịch */}
 
                 <div style={{ padding: '10px', fontFamily: 'Arial, sans-serif' }}>
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
                     Lịch
                   </Typography>
                   <div className="calendar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '10px 0' }}>
