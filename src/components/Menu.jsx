@@ -215,18 +215,22 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
                 fullWidth
                 margin="normal"
               />
-              <FormControl fullWidth margin="normal" disabled={!editMode}>
+            
+              <FormControl fullWidth margin="normal" disabled={!editMode} sx={{ marginBottom: 2 }}>
                 <InputLabel>Giới tính</InputLabel>
                 <Select
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
+                  label="Giới tính"
+                  fullWidth
                 >
                   <MenuItem value="Male">Nam</MenuItem>
                   <MenuItem value="Female">Nữ</MenuItem>
                   <MenuItem value="">Chưa xác định</MenuItem>
                 </Select>
               </FormControl>
+
               <TextField
                 label="Ngày sinh"
                 name="birthday"
