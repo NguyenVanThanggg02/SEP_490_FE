@@ -28,10 +28,10 @@ const ListSpace = () => {
   const [spaceFavo, setSpaceFavos] = useState([]);
   const [appliances, setAppliances] = useState([]);
   const productsOnPage = listSpace.slice(first, first + rows);
-  const [showAll, setShowAll] = useState(false);
   const [districts, setDistricts] = useState([]);
   const [districtSearch, setDistrictSearch] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false); 
+  const [, setSelectedCate] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
@@ -66,10 +66,6 @@ const ListSpace = () => {
   const applianceNames = appliances
     .map((item) => item.appliances.map((appliance) => appliance.name))
     .flat();
-  const displayedAppliances = showAll
-    ? applianceNames
-    : applianceNames.slice(0, 5);
-  console.log(applianceNames);
 
   const loadData = async () => {
     try {
@@ -78,7 +74,12 @@ const ListSpace = () => {
         response = await axios.get(
           `http://localhost:9999/spaces/search/${search}`
         );
-      } else {
+      }else if (filteredDistricts){
+         response = await axios.get("http://localhost:9999/spaces/filter", {
+          params: {
+            location: districtSearch,
+      }})}
+      else {
         response = await axios.get("http://localhost:9999/spaces");
       }
       const spaces = response.data;
@@ -103,17 +104,28 @@ const ListSpace = () => {
       loadData();
     }
   }, [search]);
-  const handleChooseCate = (e, category) => {
-    const selectedCateId = category._id;
-    const isChecked = e.target.checked;
+  
+  // const handleChooseCate = (e, category) => {
+  //   const selectedCateId = category._id;
+  //   const isChecked = e.target.checked;
 
-    if (isChecked) {
+  //   if (isChecked) {
+  //     getSpaceByCate(selectedCateId);
+  //   } else {
+  //     loadData();
+  //   }
+  // };
+  const handleChooseCate = (e) => {
+    const selectedCateId = e.target.value;
+    if (selectedCateId !== "0") {
+      const selectedBrand = categories.find((b) => b._id === selectedCateId);
+      setSelectedCate(selectedBrand);
       getSpaceByCate(selectedCateId);
     } else {
+      setSelectedCate(null);
       loadData();
     }
   };
-
   const changeFavorite = async (id) => {
     try {
       const response = await axios.put(
@@ -170,41 +182,44 @@ const ListSpace = () => {
   const filteredDistricts = districts.filter((district) =>
     district.name.toLowerCase().includes(districtSearch.toLowerCase())
   );
+
+// lọc theo thành phố 
+  const handleFilter = async () => {
+  try {
+    if (districtSearch.trim() === "") {
+      const response = await axios.get("http://localhost:9999/spaces");
+      setListSpace(response.data);
+    } else {
+      const response = await axios.get("http://localhost:9999/spaces/filter", {
+        params: {
+          location: districtSearch,
+        },
+      });
+      setListSpace(response.data);
+    }
+  } catch (error) {
+    console.error("Error fetching filtered spaces:", error);
+  }
+};
+
+const handleDistrictSelect = (districtName) => {
+  setDistrictSearch(districtName); 
+  setShowSuggestions(false); 
+  handleFilter(); 
+};
+
+const handleAll = async () =>{
+  const response = await axios.get("http://localhost:9999/spaces");
+  setListSpace(response.data);
+}
+
   return (
     <Container>
       <Row>
         <Col md={3}>
           <Row>
-            <Col md={7} style={{ display: "flex" }}>
-              <div style={{ position: "relative" }}>
-                <input
-                  type="text"
-                  placeholder="  Tìm kiếm...."
-                  onChange={(e) => setSearch(e.target.value)}
-                  style={{
-                    height: "50px",
-                    border: "solid #CCC 1px",
-                    borderRadius: "10px",
-                    width: "301px",
-                  }}
-                ></input>
-                  <Search onClick={handleSearch}
-                  style={{
-                    height: "50px",
-                    position: "absolute",
-                    right: "5%",
-                    borderLeft: "1px solid #ddd",
-                    cursor:'pointer',
-                    paddingLeft: "11px",
-                    fontSize:'30px',
-                  }} />
-              </div>
-            </Col>
-          </Row>
-
-          <Row>
             <div class="filter-container">
-              <div className="filter-section">
+              {/* <div className="filter-section">
                 <div className="filter-section-title">
                   Chọn theo thể loại không gian:
                 </div>
@@ -220,31 +235,73 @@ const ListSpace = () => {
                     </label>
                   </div>
                 ))}
+              </div> */}
+              <Col md={7} style={{ display: "flex" }}>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  placeholder="  Tìm kiếm...."
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={{
+                    height: "50px",
+                    border: "solid #CCC 1px",
+                    borderRadius: "10px",
+                    width: "276px",
+                  }}
+                ></input>
+                <Search
+                  onClick={handleSearch}
+                  style={{
+                    height: "50px",
+                    position: "absolute",
+                    right: "5%",
+                    borderLeft: "1px solid #ddd",
+                    cursor: "pointer",
+                    paddingLeft: "11px",
+                    fontSize: "30px",
+                  }}
+                />
               </div>
-
-              <div className="filter-section">
-                <div className="filter-section-title">Tiện nghi: </div>
-                {displayedAppliances.map((name, index) => (
-                  <div className="filter-item" key={index}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={name}
-                        onChange={(e) => handleChooseCate(e, name)}
-                      />
-                      {name}
-                    </label>
-                  </div>
+            </Col>
+              <FormSelect
+                className="items_option"
+                style={{
+                  height: "50px",
+                  width: "99%",
+                  padding: "0px 5px 0 10px",
+                  border: "solid #CCC 1px",
+                  borderRadius: "10px",
+                  margin:'20px 0'
+                }}
+                onChange={handleChooseCate}
+              >
+                <option value="0">Tất cả</option>
+                {categories.map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.name}
+                  </option>
                 ))}
+              </FormSelect>
 
-                <div className="show-more" onClick={() => setShowAll(!showAll)}>
-                  {showAll
-                    ? "Thu gọn"
-                    : `Hiển thị tất cả ${applianceNames.length} loại`}
+              <div className="custom-filter-section">
+                <div className="filter-section-title">Tiện nghi: </div>
+                <div className="custom-scrollable-filter">
+                  {applianceNames.map((name, index) => (
+                    <div className="custom-filter-item" key={index}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={name}
+                          onChange={(e) => handleChooseCate(e, name)}
+                        />
+                        {name}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div class="filter-section" style={{borderBottom:'none'}}>
+              <div class="filter-section" style={{ borderBottom: "none" }}>
                 <div class="filter-section-title">Giá: </div>
                 <input
                   type="text"
@@ -258,7 +315,7 @@ const ListSpace = () => {
                 ></input>
               </div>
 
-              <div className="filter-section" style={{borderBottom:'none'}}>
+              <div className="filter-section" style={{ borderBottom: "none" }}>
                 <div className="filter-section-title">Thành phố: </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div style={{ position: "relative" }}>
@@ -267,8 +324,8 @@ const ListSpace = () => {
                       placeholder=" Nhập quận...."
                       value={districtSearch}
                       onChange={(e) => setDistrictSearch(e.target.value)}
-                      onFocus={() => setShowSuggestions(true)} 
-                      onBlur={() => setShowSuggestions(false)} 
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setShowSuggestions(false)}
                       style={{
                         height: "50px",
                         border: "solid #CCC 1px",
@@ -276,39 +333,44 @@ const ListSpace = () => {
                         width: "285px",
                       }}
                     />
-                    {showSuggestions &&
-                      districtSearch && ( 
-                        <div
-                          style={{
-                            position: "absolute",
-                            zIndex: 1000,
-                            backgroundColor: "white",
-                            border: "1px solid #CCC",
-                            width: "285px",
-                            maxHeight: "200px",
-                            overflowY: "scroll",
-                          }}
-                        >
-                          {filteredDistricts.map((district) => (
-                            <div
-                              key={district.code}
-                              style={{
-                                padding: "5px",
-                                cursor: "pointer",
-                              }}
-                              onMouseDown={() => {
-                                setDistrictSearch(district.name);
-                                setShowSuggestions(false); // Ẩn gợi ý sau khi chọn
-                              }}
-                            >
-                              {district.name}
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                    {showSuggestions && districtSearch && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          zIndex: 1000,
+                          backgroundColor: "white",
+                          border: "1px solid #CCC",
+                          width: "285px",
+                          maxHeight: "200px",
+                          overflowY: "scroll",
+                        }}
+                      >
+                        {filteredDistricts.map((district) => (
+                          <div
+                            key={district.code}
+                            style={{
+                              padding: "5px",
+                              cursor: "pointer",
+                            }}
+                            onMouseDown={() =>
+                              handleDistrictSelect(district.name)
+                            }
+                          >
+                            {district.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
+              <Button
+                onClick={handleAll}
+                className="btn btn-success"
+                style={{ marginLeft: "30%" }}
+              >
+                Xem tất cả
+              </Button>
             </div>
           </Row>
         </Col>
