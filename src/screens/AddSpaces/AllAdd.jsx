@@ -145,7 +145,7 @@ export default function AddSpaceFlow() {
             </Step>
           ))}
         </Stepper>
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 1 }}>
           <Button
             color="inherit"
             disabled={activeStep === 0}

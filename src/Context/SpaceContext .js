@@ -15,7 +15,10 @@ export const SpaceProvider = ({ children }) => {
     description: '',
     area: '',
     rulesId: null,
-    pricePerHour: ''
+    pricePerHour: '',
+    pricePerDay: '',
+    pricePerWeek: '',
+    pricePerMonth: ''
   });
 
   return (

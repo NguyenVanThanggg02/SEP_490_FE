@@ -31,6 +31,7 @@
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "evergreen-ui": "^7.1.9",
+    "html-to-text": "^9.0.5",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.441.0",
     "primereact": "^10.8.3",

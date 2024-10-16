@@ -128,8 +128,8 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  const mainImage = spaceData.images[0];
-  const otherImages = spaceData.images.slice(1, 5); // Lấy 4 hình ảnh tiếp theo
+  const mainImage = spaceData?.images[0];
+  const otherImages = spaceData?.images.slice(1, 5); // Lấy 4 hình ảnh tiếp theo
 
 
   // Ensure spaceData and its properties are properly initialized
