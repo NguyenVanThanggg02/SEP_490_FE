@@ -18,7 +18,13 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { ArrowRepeat, BoxArrowInRight, Heart, PersonVcard } from "react-bootstrap-icons";
+import {
+  ArrowRepeat,
+  BoxArrowInRight,
+  Calendar2Check,
+  Heart,
+  PersonVcard,
+} from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -33,6 +39,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     phone: "",
     address: "",
   });
+  const role = localStorage.getItem("role");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -57,7 +64,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
-      console.log(userInfo);
+      console.log(userInfo.role);
 
       setFormData({
         fullname: response.data.fullname,
@@ -120,12 +127,17 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/chang_pass");
   };
+  const handleMannaPost = () => {
+    handleClose();
+    navigate("/manaspace");
+  };
 
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     try {
       await axios.put(`http://localhost:9999/users/${userId}`, formData);
       setUserInfo((prev) => ({ ...prev, ...formData }));
+
       setEditMode(false);
       toast.success("Cập nhật thông tin thành công!");
     } catch (error) {
@@ -176,6 +188,15 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
               Thay đổi mật khẩu
             </MenuItem>
+            {role === "2" && (
+              <MenuItem onClick={handleMannaPost}>
+                <Calendar2Check
+                  style={{ fontSize: "20px", marginRight: "10px" }}
+                />
+                Quản Lí Bài Đăng
+              </MenuItem>
+            )}
+
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight
                 style={{ fontSize: "20px", marginRight: "10px" }}
