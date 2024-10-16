@@ -172,8 +172,11 @@ const ListSpace = () => {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await axios.get("https://provinces.open-api.vn/api/");
-        setDistricts(response.data); 
+        const response = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
+        // https://provinces.open-api.vn/api/
+        setDistricts(response.data.data); 
+        console.log(districts);
+        
       } catch (error) {
         console.error("Error fetching districts:", error);
       }
@@ -185,13 +188,8 @@ const ListSpace = () => {
     district.name.toLowerCase().includes(districtSearch.toLowerCase())
   );
 
-// lọc theo thành phố 
   const handleFilter = async () => {
   try {
-    if (districtSearch.trim() === "") {
-      const response = await axios.get("http://localhost:9999/spaces");
-      setListSpace(response.data);
-    } else {
       const response = await axios.get("http://localhost:9999/spaces/filter", {
         params: {
           location: districtSearch,
@@ -200,7 +198,6 @@ const ListSpace = () => {
         },
       });
       setListSpace(response.data);
-    }
   } catch (error) {
     console.error("Error fetching filtered spaces:", error);
   }
@@ -211,6 +208,11 @@ const handleDistrictSelect = (districtName) => {
   setShowSuggestions(false); 
   handleFilter(); 
 };
+
+const handleAll = async () =>{
+  const response = await axios.get("http://localhost:9999/spaces");
+  setListSpace(response.data);
+}
 
   return (
     <Container>
@@ -401,7 +403,13 @@ const handleDistrictSelect = (districtName) => {
                   </div>
                 </div>
               </div>
-              
+              {/* <Button
+                onClick={handleAll}
+                className="btn btn-success"
+                style={{ marginLeft: "30%" }}
+              >
+                Xem tất cả
+              </Button> */}
             </div>
           </Row>
         </Col>
