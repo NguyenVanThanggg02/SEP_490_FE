@@ -212,11 +212,6 @@ const handleDistrictSelect = (districtName) => {
   handleFilter(); 
 };
 
-const handleAll = async () =>{
-  const response = await axios.get("http://localhost:9999/spaces");
-  setListSpace(response.data);
-}
-
   return (
     <Container>
       <Row>
@@ -406,13 +401,7 @@ const handleAll = async () =>{
                   </div>
                 </div>
               </div>
-              {/* <Button
-                onClick={handleAll}
-                className="btn btn-success"
-                style={{ marginLeft: "30%" }}
-              >
-                Xem tất cả
-              </Button> */}
+              
             </div>
           </Row>
         </Col>
