@@ -40,15 +40,15 @@
      padding: 8px 16px;
  }
 
- .table thead th {
+ .tablehistory thead th {
      border-bottom: 2px solid #dee2e6;
  }
 
- .table tbody tr {
+ .tablehistory tbody tr {
      background-color: #fff;
  }
 
- .table tbody tr td {
+ .tablehistory tbody tr td {
      border-top: none;
  }
 

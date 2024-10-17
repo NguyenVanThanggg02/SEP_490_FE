@@ -111,7 +111,7 @@ const RentalHistory = () => {
                                     <input type="text" className="form-control" placeholder="Search" />
                                 </div>
                             </div>
-                            <table className="table">
+                            <table className="table tablehistory">
                                 <thead>
                                     <tr>
                                         <th>Ảnh</th>
