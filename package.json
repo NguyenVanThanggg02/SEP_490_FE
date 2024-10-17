@@ -40,6 +40,7 @@
     "react-bootstrap-icons": "^1.11.4",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
+    "react-loader-spinner": "^6.1.6",
     "react-medium-image-zoom": "^5.2.10",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.26.1",

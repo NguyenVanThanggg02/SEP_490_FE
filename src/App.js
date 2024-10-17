@@ -30,6 +30,7 @@ import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
+import Footer from "./components/Footer";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,6 +51,7 @@ function Layout() {
     "/userneed",
     "/login",
     "/register",
+    "/alladd"
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 
@@ -91,6 +93,9 @@ function Layout() {
           />
         </Routes>
       </main>
+      {shouldShowHeader && (
+        <Footer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      )}
     </>
   );
 }

@@ -2,23 +2,23 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, } from 'react-bootstrap';
 import { Box, Button, FormControlLabel, FormGroup, InputAdornment, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Label } from '@mui/icons-material';
 import { htmlToText } from 'html-to-text';
+import Loading from "../../components/Loading";
+
 
 
 
 const AddSpaceInforSpace = () => {
-    const { spaceInfo, setSpaceInfo } = useContext(SpaceContext);
+    const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule } = useContext(SpaceContext);
     const [errorMessage, setErrorMessage] = useState('');
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
-    const [rules, setRules] = useState([]);
-    const [selectedRules, setSelectedRules] = useState([]);
-    const [customRule, setCustomRule] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [imagesPreview, setImagesPreview] = useState([]);
 
     const rulesList = [
         "Vệ sinh và ngăn nắp",
@@ -43,42 +43,10 @@ const AddSpaceInforSpace = () => {
         });
     };
 
-    // const htmlToText = (html) => {
-    //     const tempElement = document.createElement('div');
-    //     tempElement.innerHTML = html;
-    //     return tempElement.innerText; // Trả về văn bản thuần
-    // };
-
-
     // Hàm xử lý khi nhập vào custom rule
     const handleCustomRuleChange = (event) => {
         setCustomRule(event.target.value);
     };
-
-    // Hàm gửi dữ liệu lên server
-    const handleSubmit = async () => {
-        try {
-            const data = {
-                selectedRules,
-                customRule: customRule ? customRule : null // Nếu có customRule thì gửi lên, không thì bỏ qua
-            };
-
-            const response = await axios.post("http://localhost:9999/rules/addRule", data);
-
-            const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
-
-            // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
-            setSpaceInfo(prev => ({
-                ...prev,
-                rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
-            }));
-
-            alert('Quy định được thêm thành công!');
-        } catch (error) {
-            console.error('Error adding rule:', error);
-        }
-    };
-
 
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
@@ -133,16 +101,49 @@ const AddSpaceInforSpace = () => {
         }
     };
 
+    const handleFiles = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        let newImages = [];
+        let files = e.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            let formData = new FormData();
+            formData.append("file", files[i]);
+            formData.append("upload_preset", "img_space");
+
+            const response = await axios({
+                method: "post",
+                url: `https://api.cloudinary.com/v1_1/dakpa1ph2/image/upload/`,
+                data: formData,
+            });
+
+            if (response.status === 200) {
+                newImages.push(response.data.url);
+            } else {
+                console.log("Failed to upload image");
+            }
+        }
+        setIsLoading(false);
+        setImagesPreview((prev) => [...prev, ...newImages]);
+        setSpaceInfo((prevSpaceInfo) => ({
+            ...prevSpaceInfo, // Giữ nguyên các giá trị khác
+            images: newImages, // Cập nhật images
+        }));
+    };
+    const handleDeleteImage = async (imageUrl) => {
+
+    };
+
     return (
         <Container fluid >
             <Row className="pb-5">
-                <Col>
-                    <h1 className="text-center">Nhập thông tin chi tiết không gian của bạn</h1>
-                </Col>
+                <Typography variant='h4' fontWeight={700} className="text-center" >Nhập thông tin chi tiết không gian của bạn</Typography>
+
             </Row>
             <Row className="d-flex justify-content-center align-items-center">
                 <Col md={6}>
-                    <Row className='pb-5'>
+                    <Row className='pb-3'>
                         <Col md={12} className="pb-5">
                             <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px" }} >Đặt tên cho không gian của bạn <span style={{ color: "red" }}>*</span></Typography>
                             <Typography sx={{ fontSize: "14px", padding: "10px 0" }}> Tên của không gian sẽ hiển thị trên trang kết quả tìm kiếm và trang chi tiết listing khi khách hàng xem.</Typography>
@@ -160,7 +161,7 @@ const AddSpaceInforSpace = () => {
                         </Col>
                         <Col md={12}>
                             <Row>
-                                <Col md={12}>
+                                <Col md={12} className="pb-5">
                                     <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Giá không gian <span style={{ color: "red" }}>*</span></Typography>
                                     <Row>
                                         <Col md={3}>
@@ -258,7 +259,8 @@ const AddSpaceInforSpace = () => {
                                     </Row>
                                 </Col>
                                 <Col md={12}>
-                                    <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Diện tích <span style={{ color: "red" }}>*</span></Typography>
+                                    <Typography variant="h6"
+                                        style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Diện tích <span style={{ color: "red" }}>*</span></Typography>
                                     <TextField
                                         name="area"
                                         type="number"
@@ -286,12 +288,12 @@ const AddSpaceInforSpace = () => {
 
                     {/* Mô tả và quy định */}
                     <Row className='pb-5'>
-                        <Col md={12} className="pt-2 pb-5">
+                        <Col md={12} className="pb-5">
                             <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Mô tả</Typography>
                             <CKEditor
                                 editor={ClassicEditor}
                                 data={spaceInfo.description}
-                                error={!!errors.description} 
+                                error={!!errors.description}
                                 onChange={(event, editor) => {
                                     const data = editor.getData();
                                     const plainText = htmlToText(data); // Chuyển đổi sang văn bản thuần
@@ -323,41 +325,73 @@ const AddSpaceInforSpace = () => {
                                         />
                                     ))}
                                     <TextField
+                                        className="mt-3"
                                         id="outlined-basic"
                                         label="Điền thêm quy định vào đây"
                                         variant="outlined"
                                         value={customRule}
                                         onChange={handleCustomRuleChange}
+                                        helperText="Các quy định riêng lẻ có thể tách nhau bằng dấu ';'"
+                                        FormHelperTextProps={{
+                                            style: {
+                                                fontSize: '14px', // Kích thước chữ helperText
+                                            },
+                                        }}
+
                                     />
                                 </FormGroup>
-                                <Button variant="contained" onClick={handleSubmit}>Lưu quy định</Button>
                             </Row>
                         </Col>
                     </Row>
 
                     {/* Thêm ảnh */}
                     <Row>
-                        <Col md={3}>
-                            <Box
-                                sx={{
-                                    border: '2px dashed grey',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    height: '100px',
-                                    width: '150px',
-                                    cursor: 'pointer',
-                                }}
-                                onClick={() => alert('Chức năng tải ảnh chưa được triển khai!')}
-                            >
-                                <AddPhotoAlternateIcon sx={{ fontSize: 40, color: 'grey' }} />
-                                <Typography variant="body1" color="grey">
-                                    Thêm ảnh
-                                </Typography>
-                            </Box>
+                        <Col md={3} style={{ marginBottom: "200px" }}>
+                            {isLoading ? (
+                                <Loading />
+                            ) : (
+                                <Box
+                                    sx={{
+                                        border: '2px dashed grey',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        height: '100px',
+                                        width: '150px',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => document.getElementById('file').click()} // Kích hoạt input khi nhấn vào Box
+
+                                >
+                                    <input
+                                        onChange={handleFiles}
+                                        hidden
+                                        type="file"
+                                        id="file"
+                                        multiple
+                                    />
+                                    <AddPhotoAlternateIcon sx={{ fontSize: 40, color: 'grey' }} />
+                                    <Typography variant="body1" color="grey">
+                                        Thêm ảnh
+                                    </Typography>
+                                </Box>
+                            )}
                         </Col>
-                        <Col md={10}>
+                        <Col md={9}>
+                            {imagesPreview?.map((item, index) => (
+                                <Col md={3} key={index} className="image-item">
+                                    <div className="relative">
+                                        <img src={item} alt="preview" />
+                                        <span
+                                            title="Xóa"
+                                        // onClick={() => handleDeleteImage(item)}
+                                        >
+                                            <DeleteIcon />
+                                        </span>
+                                    </div>
+                                </Col>
+                            ))}
                         </Col>
                     </Row>
                 </Col>

@@ -18,8 +18,13 @@ export const SpaceProvider = ({ children }) => {
     pricePerHour: '',
     pricePerDay: '',
     pricePerWeek: '',
-    pricePerMonth: ''
+    pricePerMonth: '',
+    images: []
+
   });
+  const [rules, setRules] = useState([]);
+  const [selectedRules, setSelectedRules] = useState([]);
+  const [customRule, setCustomRule] = useState('');
 
   return (
     <SpaceContext.Provider value={{
@@ -32,7 +37,10 @@ export const SpaceProvider = ({ children }) => {
       location,
       setLocation,
       spaceInfo,
-      setSpaceInfo
+      setSpaceInfo,
+      rules, setRules,
+      selectedRules, setSelectedRules,
+      customRule, setCustomRule
     }}>
       {children}
     </SpaceContext.Provider>

@@ -9,9 +9,8 @@ import { Link } from "react-router-dom";
 
 const Header = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
-    <Row className="d-flex align-items-center justify-content-between" style={{borderBottom:"1px solid rgb(235, 235, 235)"}}>
+    <Row className="d-flex align-items-center justify-content-between headerr">
       <Col md={2}>
-        <div>
           <div className="logo">
             <Link to={"/"}>
               <img
@@ -21,7 +20,6 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
               />
             </Link>
           </div>
-        </div>
       </Col>
       <Col md={8}></Col>
       <Col md={2}>

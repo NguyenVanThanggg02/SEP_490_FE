@@ -8,7 +8,6 @@ import { SpaceContext } from '../../Context/SpaceContext ';
 
 export const AddSpacePageAppliances = ({ categoryId }) => {
     const [appliances, setAppliances] = useState({});
-    // const [selectedAppliances, setSelectedAppliances] = useState([]); 
     const { selectedAppliances, setSelectedAppliances, } = useContext(SpaceContext); // Sử dụng context
 
 

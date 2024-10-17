@@ -29,10 +29,11 @@ const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId } = useContext(SpaceContext);
+  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId, customRule, selectedRules, setSpaceInfo } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
+    addRules();
     const applianceId = await addAppliances();
 
 
@@ -61,8 +62,6 @@ export default function AddSpaceFlow() {
       categoryId: selectedCategoryId,
     };
 
-
-
     try {
       const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
       if (response.data.success) {
@@ -79,6 +78,35 @@ export default function AddSpaceFlow() {
     }
 
 
+  };
+
+
+  // Hàm gửi dữ liệu lên server
+  const addRules = async () => {
+    try {
+      const customRulesArray =
+        customRule.split(';').map(rule => rule.trim()).filter(rule => rule.length > 0)
+
+      const data = {
+        selectedRules,
+        customRules: customRulesArray, // Ensure customRules is an array of strings
+      };
+      console.log("Custom rules array:", customRulesArray);  // Kiểm tra sau khi tách
+
+
+      const response = await axios.post("http://localhost:9999/rules/addRule", data);
+
+      const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
+
+      // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
+      setSpaceInfo(prev => ({
+        ...prev,
+        rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
+      }));
+
+    } catch (error) {
+      console.error('Error adding rule:', error);
+    }
   };
 
 
@@ -108,9 +136,9 @@ export default function AddSpaceFlow() {
     }
   };
 
-  const isNextDisabled = 
-  (activeStep === 0 && !selectedCategoryId) || 
-  (activeStep === 1 && selectedAppliances.length === 0);
+  const isNextDisabled =
+    (activeStep === 0 && !selectedCategoryId) ||
+    (activeStep === 1 && selectedAppliances.length === 0);
 
 
 
@@ -131,9 +159,9 @@ export default function AddSpaceFlow() {
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)'
       }}>
         <Stepper nonLinear
-         activeStep={activeStep}
-         connector={<CustomStepConnector />}  
-         >
+          activeStep={activeStep}
+          connector={<CustomStepConnector />}
+        >
           {steps.map((label, index) => (
             <Step key={label} completed={index < activeStep}>
               {/* Chỉ hiển thị StepButton cho bước hiện tại hoặc bước đã hoàn thành */}
@@ -164,8 +192,8 @@ export default function AddSpaceFlow() {
               onClick={handleNext}
               disabled={isNextDisabled}
               sx={{
-                cursor: isNextDisabled ? 'not-allowed' : 'pointer', 
-                opacity: isNextDisabled ? 0.5 : 1, 
+                cursor: isNextDisabled ? 'not-allowed' : 'pointer',
+                opacity: isNextDisabled ? 0.5 : 1,
               }}
               variant="contained"
 
