@@ -19,6 +19,7 @@ import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { ArrowRepeat, BoxArrowInRight, Heart, PersonVcard } from "react-bootstrap-icons";
+import { List } from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -144,14 +145,29 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
+            sx={{
+              ml: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between', // Đẩy icon và avatar ra hai đầu
+              padding: '8px',
+              borderRadius: '50px', // Tạo hình bo
+              border: '1px solid #ccc', // Tùy chọn: thêm đường viền
+              width: '90px', // Điều chỉnh chiều rộng
+              height: '48px', // Điều chỉnh chiều cao
+            }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
+            {/* Thêm biểu tượng bi-list ở bên trái */}
+            <i class="bi bi-list" style={{ marginLeft: '8px' }}><List/></i>
+            {/* Avatar nằm bên phải */}
             <Avatar sx={{ width: 32, height: 32 }} />
           </IconButton>
         </Tooltip>
+
+
       </Box>
       <Menu
         anchorEl={anchorEl}
@@ -215,7 +231,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
                 fullWidth
                 margin="normal"
               />
-            
+
               <FormControl fullWidth margin="normal" disabled={!editMode} sx={{ marginBottom: 2 }}>
                 <InputLabel>Giới tính</InputLabel>
                 <Select
