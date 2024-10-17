@@ -30,6 +30,7 @@ import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
+import ProfileOwner from "./screens/Owner/ProfileOwner";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -85,6 +86,7 @@ function Layout() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
+          <Route path="/profil-owner" element={<ProfileOwner />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

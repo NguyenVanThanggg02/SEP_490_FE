@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Card,
   Carousel,
   Col,
@@ -24,8 +23,8 @@ const ListSpace = () => {
   const [noResult, setNoResult] = useState(false);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(9);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [spaceFavo, setSpaceFavos] = useState([]);
+  const [, setCurrentPage] = useState(1);
+  const [, setSpaceFavos] = useState([]);
   const [appliances, setAppliances] = useState([]);
   const productsOnPage = listSpace.slice(first, first + rows);
   const [districts, setDistricts] = useState([]);
@@ -208,11 +207,6 @@ const handleDistrictSelect = (districtName) => {
   setShowSuggestions(false); 
   handleFilter(); 
 };
-
-const handleAll = async () =>{
-  const response = await axios.get("http://localhost:9999/spaces");
-  setListSpace(response.data);
-}
 
   return (
     <Container>
