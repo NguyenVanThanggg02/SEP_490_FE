@@ -111,7 +111,7 @@ const BookingConfirmation = () => {
                 <li>Lưu trữ nhà của bạn</li>
                 <li>Giữ gìn ngôi nhà như thể đó là nhà bạn</li>
               </ul>
-              <button className="btn btn-primary w-100">Xác nhận và thanh toán</button>
+              <button className="btn btn-danger w-100">Xác nhận và thanh toán</button>
             </div>
           </div>
         </div>

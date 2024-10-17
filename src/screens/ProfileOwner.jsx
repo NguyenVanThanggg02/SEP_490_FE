@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "../style/ProfileOwner.css";
 import { FlagFill } from "react-bootstrap-icons";
+import Drawer from '@mui/material/Drawer';
+import Reports from './Reports'; // Assuming you have a Reports component
+import SelectSpaceToCompare from './SelectSpaceToCompare'; // Assuming you have SelectSpaceToCompare component
+import Similar from './Similar'; // Assuming you have Similar component
 
-const ProfileOwner = () => {
+const ProfileOwner = () => { // Không truyền spaceData vào đây
+  const [visible, setVisible] = useState(false); // For Reports popup
+  const [openDrawer, setOpenDrawer] = useState(false); // For Drawer
+  const [visibleCompare, setVisibleCompare] = useState(false); // For Space Compare
+
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
+
+  const handleReportClick = () => {
+    setVisible(true); // Show the report popup
+  };
+
+  const drawerContent = () => (
+    <div>
+      <h2>Nội dung báo cáo</h2>
+      {/* Your report form or content goes here */}
+      <p>Xin vui lòng điền thông tin báo cáo.</p>
+      <button onClick={() => setOpenDrawer(false)}>Đóng</button>
+    </div>
+  );
+
+  const handleValueChange = (value) => {
+    console.log(value); // Handle the value change for space comparison
+  };
+
   return (
     <div className="container mt-4">
       <div className="row">
         <div className="col-md-4">
-          <div className="profile-card p-3 position-relative">
+        <div className="profile-card p-3 position-relative">
             <div className="d-flex align-items-center">
               <img
                 alt="Profile picture of La"
@@ -49,12 +78,14 @@ const ProfileOwner = () => {
             <a href="#">Tìm hiểu về quy trình xác minh danh tính</a>
           </div>
 
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-            cursor: "pointer",
-          }}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+              cursor: "pointer",
+            }}
+            onClick={handleReportClick} // Show the popup when clicked
           >
             <FlagFill
               style={{
@@ -77,12 +108,13 @@ const ProfileOwner = () => {
           <p>
             Chăm sóc khách hàng 24/7. Cung cấp dịch vụ cho thuê dài hạn đầy đủ, đón khách tại sân bay, hỗ trợ khách hàng trong suốt thời gian lưu trú.
           </p>
+
           <h3>Đánh giá của La</h3>
           <div className="row">
             <div className="col-md-6">
               <div className="review-card">
                 <p>
-                  <i className="fas fa-quote-left"></i> Lavender is một chỗ nhà tuyệt vời. Chủ nhà rất nhiệt tình và chu đáo. Nhà sạch sẽ, đầy đủ tiện nghi, có bếp nấu ăn, có bãi đậu xe rộng rãi, an toàn. Cả gia đình tôi đã có một kỳ nghỉ tuyệt vời tại đây. Hy vọng sẽ quay lại.
+                  <i className="fas fa-quote-left"></i> Lavender là một chỗ nhà tuyệt vời. Chủ nhà rất nhiệt tình và chu đáo. Nhà sạch sẽ, đầy đủ tiện nghi, có bếp nấu ăn, có bãi đậu xe rộng rãi, an toàn. Cả gia đình tôi đã có một kỳ nghỉ tuyệt vời tại đây. Hy vọng sẽ quay lại.
                 </p>
                 <div className="d-flex align-items-center">
                   <img
@@ -121,6 +153,7 @@ const ProfileOwner = () => {
             </div>
           </div>
           <a href="#">Xem tất cả 33 đánh giá</a>
+
           <h3>Mục cho thuê của La</h3>
           <div className="row">
             <div className="col-md-4">
@@ -144,7 +177,7 @@ const ProfileOwner = () => {
                   src="https://storage.googleapis.com/a1aa/image/CDfaW04OChy4UST7we5gGW42qyQyVhiqeVN13yy7IeDSldecC.jpg"
                   width="300"
                 />
-                <p>Nhà ở Nha Trang </p>
+                <p>Nhà ở Nha Trang</p>
               </div>
             </div>
             <div className="col-md-4">
@@ -200,10 +233,47 @@ const ProfileOwner = () => {
               </div>
             </div>
           </div>
+
+          {/* <Similar spaceData={spaceData} /> */} {/* Loại bỏ hoặc giữ lại nếu cần thiết */}
+
+          {visible && <Reports visible={visible} setVisible={setVisible} />}
+          <Drawer
+            anchor="bottom"
+            open={openDrawer}
+            onClose={toggleDrawer(false)}
+            sx={{
+              '& .MuiDrawer-paper': {
+                width: '50vw',
+                left: '25vw',
+                right: 'auto',
+              },
+              zIndex: 1000,
+            }}
+          >
+            {drawerContent()}
+          </Drawer>
+
+          {visibleCompare && (
+            <SelectSpaceToCompare
+              visibleCompare={visibleCompare}
+              setVisibleCompare={setVisibleCompare}
+              sx={{ zIndex: 1500 }}
+              id="space-comparison"
+              onValueChange={handleValueChange}
+            />
+          )}
         </div>
       </div>
     </div>
   );
+
 };
 
+
+
+
+
 export default ProfileOwner;
+
+
+
