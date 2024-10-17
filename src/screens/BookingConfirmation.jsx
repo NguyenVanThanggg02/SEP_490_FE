@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "../style/BookingConfirm.css";
+import ReadMore from './ReadMore'; // Import the ReadMore component
+
 const BookingConfirmation = () => {
+    const [showPopup, setShowPopup] = useState(false); // State to handle popup visibility
+
     return (
-        <div className="container2">
+        <div className="containerpay2">
             <div className="row rowbody ">
                 <div className="col-md-7">
                     <div className="card card1">
@@ -67,14 +71,21 @@ const BookingConfirmation = () => {
                                 <h6>Chính sách hủy</h6>
                                 <p className="text-muted">
                                     Hủy miễn phí trước 26 thg 10. Bạn được hoàn tiền một phần nếu hủy trước khi nhận phòng vào 27 thg 10.
-                                    <a className="text-primary" href="#">Tìm hiểu thêm</a>
+                                    {/* Button to trigger popup */}
+                                    <span
+                                        className="text-primary"
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => setShowPopup(true)}
+                                    >
+                                        Tìm hiểu thêm
+                                    </span>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="col-md-5">
-                    <div className="card card1">
+                    <div className="card cardpay1">
                         <div className="card-body">
                             <div className="d-flex">
                                 <img
@@ -104,18 +115,21 @@ const BookingConfirmation = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='card2'>
-                        <h6>Quy chuẩn chung</h6>
-                        <p className="text-muted">
+                    <div className='cardpay2'>
+                        <h6 style={{paddingTop:'20px',paddingLeft:'20px'}}>Quy chuẩn chung</h6>
+                        <p className="text-muted" style={{paddingLeft:'20px'}}>
                             Chúng tôi yêu cầu tất cả khách phải ghi nhớ một số quy chuẩn đơn giản để đảm bảo chuyến đi của bạn được vui vẻ.
                         </p>
-                        <ul className="text-muted">
+                        <ul className="text-muted" style={{paddingLeft:'40px'}}>
                             <li>Lưu trữ nhà của bạn</li>
                             <li>Giữ gìn ngôi nhà như thể đó là nhà bạn</li>
                         </ul>
                         <button className="btn btn-danger w-100">Xác nhận và thanh toán</button></div>
                 </div>
             </div>
+
+            {/* Popup component */}
+            <ReadMore visible={showPopup} setVisible={setShowPopup} />
         </div>
     );
 };

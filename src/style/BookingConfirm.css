@@ -1,4 +1,4 @@
-.container2 {
+.containerpay2 {
     padding-left: 30px; /* Padding for space from the edges */
     padding-right: 30px;
     margin-left: auto;
@@ -13,16 +13,16 @@
     max-width: 90%; /* Reduce the width of the cards */
   }
   
-  .card1 {
+  .cardpay1 {
     margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Optional styling for cards */
     width: 100%;
   }
-  .card2 {
-    margin-bottom: 20px;
-    margin-left: 20px;
-    border-radius: 8px;
+  .cardpay2 {
+    margin-left: 10px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Optional styling for cards */
     width: 100%;
   }
   .d-flex.justify-content-between {
@@ -42,7 +42,6 @@
   }
   
   ul.text-muted {
-    list-style-type: none;
     padding-left: 0;
   }
   
