@@ -1,0 +1,58 @@
+
+
+ .cardhistory {
+     border: none;
+     border-radius: 10px;
+     margin: 0px 0px 0px;
+     width: 100%;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+ }
+
+ .card-headerhistory {
+     background-color: #fff;
+     border-bottom: none;
+     font-weight: bold;
+     font-size: 18px;
+ }
+
+ .form-control, .form-select {
+     border-radius: 5px;
+     border: 1px solid #ced4da;
+ }
+
+ .btn-search {
+     background-color: #00aaff;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     padding: 8px 16px;
+ }
+
+ .btn-search i {
+     margin-right: 5px;
+ }
+
+ .btn-add {
+     background-color: #00c851;
+     color: #fff;
+     border: none;
+     border-radius: 5px;
+     padding: 8px 16px;
+ }
+
+ .table thead th {
+     border-bottom: 2px solid #dee2e6;
+ }
+
+ .table tbody tr {
+     background-color: #fff;
+ }
+
+ .table tbody tr td {
+     border-top: none;
+ }
+
+ .no-data {
+     text-align: center;
+     color: #6c757d;
+ }
