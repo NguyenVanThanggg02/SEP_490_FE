@@ -104,16 +104,20 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/favorites");
   };
-  const handleChangePass = () => {
+  const handleRentalHistory = () => {
     handleClose();
-    navigate("/chang_pass");
+    navigate("/rentalhistory");
   };
 
   const handleProfileClose = () => {
     setOpenProfileModal(false);
     setEditMode(false);
   };
+  const handleChangePass = () => {
+    handleClose();
+    navigate("/chang_pass");
 
+  };
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -175,6 +179,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             <MenuItem onClick={handleChangePass}>
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
               Thay đổi mật khẩu
+            </MenuItem>
+            <MenuItem onClick={handleRentalHistory}>
+              <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
+              Lịch sử đặt không gian
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight
