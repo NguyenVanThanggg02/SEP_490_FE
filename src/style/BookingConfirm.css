@@ -5,7 +5,7 @@
     margin-right: auto;
   }
   
-  .row {
+  .rowbody {
     justify-content: center; /* Center the cards */
   }
   
@@ -13,13 +13,18 @@
     max-width: 90%; /* Reduce the width of the cards */
   }
   
-  .card {
+  .card1 {
     margin-bottom: 20px;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Optional styling for cards */
     width: 100%;
   }
-  
+  .card2 {
+    margin-bottom: 20px;
+    margin-left: 20px;
+    border-radius: 8px;
+    width: 100%;
+  }
   .d-flex.justify-content-between {
     align-items: center;
   }
