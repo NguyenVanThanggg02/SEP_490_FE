@@ -158,7 +158,7 @@ function SpaceDetails() {
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare.images[0]}
+              image={compare?.images[0]}
               title="image spaceCompare"
               style={{ objectFit: "cover" }}
             />
