@@ -31,6 +31,7 @@ import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import Footer from "./components/Footer"; 
+import Addfuns from "./screens/Addfuns";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -86,6 +87,7 @@ function Layout() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
+          <Route path="/addfunds" element={<Addfuns />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
