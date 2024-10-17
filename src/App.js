@@ -32,6 +32,7 @@ import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import ProfileUpdate from "./Admin/ProfileUpdate";
 import ProfileOwner from "./screens/ProfileOwner";
+import BookingConfirmation from "./screens/BookingConfirmation";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -88,6 +89,7 @@ function Layout() {
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
           <Route path="/profileowner" element={<ProfileOwner />} />
+          <Route path="/bookingconfirm" element={<BookingConfirmation />} />
 
           <Route
             path="/admin"

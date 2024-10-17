@@ -144,7 +144,7 @@ const ProfileOwner = () => {
                   src="https://storage.googleapis.com/a1aa/image/CDfaW04OChy4UST7we5gGW42qyQyVhiqeVN13yy7IeDSldecC.jpg"
                   width="300"
                 />
-                <p>Nhà ở Nha Trang (có vườn và bể bơi)</p>
+                <p>Nhà ở Nha Trang </p>
               </div>
             </div>
             <div className="col-md-4">
