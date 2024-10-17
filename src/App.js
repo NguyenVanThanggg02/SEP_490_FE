@@ -30,7 +30,7 @@ import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
-import ProfileOwner from "./screens/Owner/ProfileOwner";
+import Booking from "./screens/Booking";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,7 +74,7 @@ function Layout() {
           <Route path="/userneed" element={<UserNeedsForm />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
-          <Route path="/host_profile" element={<HostProfile />} />
+          <Route path="/host_profile/:id" element={<HostProfile />} />
           <Route path="/chang_pass" element={<ChangePass />} />
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
@@ -86,7 +86,7 @@ function Layout() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
-          <Route path="/profil-owner" element={<ProfileOwner />} />
+          <Route path="/booking" element={<Booking />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

@@ -8,7 +8,7 @@ import {
   FormSelect,
   Row,
 } from "react-bootstrap";
-import { Search } from "react-bootstrap-icons";
+import { Search, Star, StarFill } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import { Paginator } from "primereact/paginator";
 import "primereact/resources/themes/saga-blue/theme.css";
@@ -296,7 +296,7 @@ const handleDistrictSelect = (districtName) => {
                 </div>
               </div>
 
-              <div className="filter-section" style={{border:'none'}}>
+              <div className="filter-section" style={{ border: "none" }}>
                 <div
                   className="filter-section-title"
                   style={{ marginRight: "10px" }}
@@ -345,7 +345,6 @@ const handleDistrictSelect = (districtName) => {
                     }}
                   />
                 </div>
-
               </div>
 
               <div className="filter-section" style={{ borderBottom: "none" }}>
@@ -425,7 +424,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "400px",
+                      height: "415px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -493,7 +492,7 @@ const handleDistrictSelect = (districtName) => {
                     </Carousel>
                     <Link
                       to={`/spaces/${l._id}`}
-                      style={{ textDecoration: "none", marginTop: "20px" }}
+                      style={{ textDecoration: "none", marginTop: "10px" }}
                     >
                       <Card.Body>
                         <Card.Title
@@ -505,6 +504,7 @@ const handleDistrictSelect = (districtName) => {
                         >
                           {l.name}
                         </Card.Title>
+
                         <Card.Text
                           style={{ fontSize: "14px", color: "#757575" }}
                         >
@@ -519,6 +519,33 @@ const handleDistrictSelect = (districtName) => {
                         >
                           <p> Trạng thái: {l.status}</p>
                         </Card.Text>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Card.Text
+                            style={{
+                              marginLeft: "5px",
+                              fontSize: "15px",
+                              color: "#2d2d2d",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Giá: {l.pricePerHour} / VND
+                          </Card.Text>
+                          <Card.Text style={{ color: "#2d2d2d", display:'flex' }}>
+                            <StarFill
+                              style={{
+                                color: "#FFCC00",
+                                margin: "3px 15px 15px 0",
+                              }}
+                            />
+                            <span style={{ margin:'0 10px 17px -7px'}}>4.5</span>
+                          </Card.Text>
+                        </div>
                       </Card.Body>
                     </Link>
                   </div>

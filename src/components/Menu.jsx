@@ -18,7 +18,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { ArrowRepeat, BoxArrowInRight, Heart, PersonVcard } from "react-bootstrap-icons";
+import { ArrowRepeat, BoxArrowInRight, Heart, PersonVcard, Wallet } from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -84,6 +84,9 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     setIsLoggedIn(false);
     localStorage.clear();
     handleClose();
+  };
+  const handleAddFunds = () => {
+    navigate("/addfund");
   };
 
   const handleLogin = () => {
@@ -175,6 +178,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             <MenuItem onClick={handleChangePass}>
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
               Thay đổi mật khẩu
+            </MenuItem>
+            <MenuItem onClick={handleAddFunds}>
+              <Wallet
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Nạp tiền
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight

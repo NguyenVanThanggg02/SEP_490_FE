@@ -133,6 +133,9 @@ function SpaceDetails() {
     }
     nav('/compare', { state: { id, valueFromChild } });
   }
+  const handleProfileOfOwner = () =>{
+    nav(`/host_profile/${spaceData?.userId._id}`);
+  }
   const handleDeleteIdSoToCompare =() =>{
     setValueFromChild('');
   }
@@ -142,7 +145,7 @@ function SpaceDetails() {
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
-            image={spaceData.images[0]}
+            image={spaceData?.images[0]}
             title="image spaceF"
             style={{ objectFit: "cover" }}
           />
@@ -275,7 +278,7 @@ function SpaceDetails() {
               </div>
             </div>
             <Row container spacing={2}>
-              {images.length > 0 ? (
+              {images?.length > 0 ? (
                 <div>
                   <ImageList cols={3}>
                     {images.map((item) => (
@@ -335,7 +338,7 @@ function SpaceDetails() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }} onClick={handleProfileOfOwner}>
                         <img
                           src={spaceData.userId?.avatar}
                           alt="avatar"
