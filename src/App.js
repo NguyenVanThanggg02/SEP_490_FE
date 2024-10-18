@@ -28,9 +28,13 @@ import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
+import BookingDate from "./screens/BookingDate";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import Footer from "./components/Footer";
+import 'antd/dist/reset.css';
+
+
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -91,6 +95,8 @@ function Layout() {
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
+          <Route path="/booking" element={<BookingDate />} />
+
         </Routes>
       </main>
       {shouldShowHeader && (

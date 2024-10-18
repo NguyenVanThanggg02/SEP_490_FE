@@ -131,8 +131,13 @@ const AddSpaceInforSpace = () => {
             images: newImages, // Cập nhật images
         }));
     };
-    const handleDeleteImage = async (imageUrl) => {
 
+    const handleDeleteImage = (image) => {
+        setSpaceInfo((prevSpaceInfo) => ({
+            ...prevSpaceInfo,
+            images: prevSpaceInfo.images.filter((item) => item !== image), // Xóa ảnh khỏi images
+        }));
+        setImagesPreview((prev) => prev.filter((item) => item !== image));
     };
 
     return (
@@ -385,7 +390,7 @@ const AddSpaceInforSpace = () => {
                                         <img src={item} alt="preview" />
                                         <span
                                             title="Xóa"
-                                        // onClick={() => handleDeleteImage(item)}
+                                        onClick={() => handleDeleteImage(item)}
                                         >
                                             <DeleteIcon />
                                         </span>
