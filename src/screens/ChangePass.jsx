@@ -8,7 +8,7 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import { Lock, Unlock } from "react-bootstrap-icons";
+import { Lock, Unlock, Eye, EyeSlash } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -18,11 +18,13 @@ const ChangePass = () => {
   const [newPass, setNewPass] = useState("");
   const [reNewPass, setReNewPass] = useState("");
   const [username, setUsername] = useState("");
+  const [showOldPass, setShowOldPass] = useState(false);
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showReNewPass, setShowReNewPass] = useState(false);
   const nav = useNavigate();
 
   const handleUpdate = () => {
     const token = localStorage.getItem("accessToken");
-    console.log(token);
 
     if (!token) {
       toast.error("Token không tồn tại. Vui lòng đăng nhập lại!");
@@ -31,7 +33,6 @@ const ChangePass = () => {
     }
     const payload = JSON.parse(atob(token.split(".")[1]));
     const id = payload.user.id;
-    console.log(id);
 
     axios
       .get(`http://localhost:9999/users/${id}`)
@@ -41,8 +42,6 @@ const ChangePass = () => {
       .catch((error) => {
         console.error(error);
       });
-
-    console.log(username);
 
     if (!username) {
       toast.error("Không thể lấy thông tin người dùng.");
@@ -79,7 +78,6 @@ const ChangePass = () => {
         }
       })
       .catch((error) => {
-        console.log(error.message);
         toast.error(
           error.response
             ? error.response.data.message
@@ -88,6 +86,7 @@ const ChangePass = () => {
       });
   };
 
+  // CSS styles
   const containerStyle = {
     display: "flex",
     flexDirection: "column",
@@ -97,79 +96,76 @@ const ChangePass = () => {
     height: "400px",
   };
 
+  const inputIconStyle = {
+    fontSize: "25px",
+    border: "solid #CCCC 1px",
+    height: "38px",
+    color: "#808080",
+    backgroundColor: "#EEEEEE",
+    width: "30px",
+  };
+
+  const eyeIconStyle = {
+    cursor: "pointer",
+    marginLeft: "10px",
+  };
+
   return (
     <Container fluid>
-      <Row className="mt-2 ml-2">
-        <Breadcrumb>
-          <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
-          <Breadcrumb.Item active>Thay đổi mật khẩu</Breadcrumb.Item>
-        </Breadcrumb>
-      </Row>
       <Container style={{ borderRadius: "30px" }}>
         <Row style={containerStyle}>
-          {/* <Row style={{ marginTop: "60px", paddingBottom: "20px" }}>
-            <h3> Change PassWord</h3>
-          </Row> */}
           <Col md={8}>
             <InputGroup className="mb-3">
-              <Lock
-                style={{
-                  fontSize: "25px",
-                  border: "solid #CCCC 1px",
-                  height: "38px",
-                  color: "#808080",
-                  backgroundColor: "#EEEEEE",
-                  width: "30px",
-                }}
-              />
+              <Lock style={inputIconStyle} />
               <FormControl
                 placeholder="Mật khẩu cũ"
                 aria-label="Old Password"
-                type="password"
+                type={showOldPass ? "text" : "password"}
                 value={oldPass}
                 onChange={(e) => setOldPass(e.target.value)}
               />
+              <span
+                style={eyeIconStyle}
+                onClick={() => setShowOldPass(!showOldPass)}
+              >
+                {showOldPass ? <EyeSlash /> : <Eye />}
+              </span>
             </InputGroup>
 
             <InputGroup className="mb-3">
-              <Unlock
-                style={{
-                  fontSize: "25px",
-                  border: "solid #CCCC 1px",
-                  height: "38px",
-                  color: "#808080",
-                  backgroundColor: "#EEEEEE",
-                  width: "30px",
-                }}
-              />
+              <Unlock style={inputIconStyle} />
               <FormControl
                 placeholder="Mật khẩu mới"
                 aria-label="New Password"
-                type="password"
+                type={showNewPass ? "text" : "password"}
                 value={newPass}
                 onChange={(e) => setNewPass(e.target.value)}
               />
+              <span
+                style={eyeIconStyle}
+                onClick={() => setShowNewPass(!showNewPass)}
+              >
+                {showNewPass ? <EyeSlash /> : <Eye />}
+              </span>
             </InputGroup>
-            <InputGroup className="mb-3">
-              <Unlock
-                style={{
-                  fontSize: "25px",
-                  border: "solid #CCCC 1px",
-                  height: "38px",
-                  color: "#808080",
-                  backgroundColor: "#EEEEEE",
-                  width: "30px",
-                }}
-              />
 
+            <InputGroup className="mb-3">
+              <Unlock style={inputIconStyle} />
               <FormControl
                 placeholder="Nhập lại mật khẩu mới"
                 aria-label="Re-enter New Password"
+                type={showReNewPass ? "text" : "password"}
                 value={reNewPass}
                 onChange={(e) => setReNewPass(e.target.value)}
-                type="password"
               />
+              <span
+                style={eyeIconStyle}
+                onClick={() => setShowReNewPass(!showReNewPass)}
+              >
+                {showReNewPass ? <EyeSlash /> : <Eye />}
+              </span>
             </InputGroup>
+
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Button variant="primary" onClick={handleUpdate}>
                 Lưu
