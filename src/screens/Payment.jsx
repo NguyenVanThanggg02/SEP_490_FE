@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import "../style/Booking.css";
+import "../style/Payment.css";
 import { Container } from "react-bootstrap";
 import Calendar from "./Calendar";
 import { Pen } from "react-bootstrap-icons";
 
-const Booking = () => {
+const Payment = () => {
   const [visible, setVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("0");
 
@@ -212,4 +212,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default Payment;
