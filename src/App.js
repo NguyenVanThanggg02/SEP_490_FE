@@ -30,7 +30,7 @@ import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
-import Booking from "./screens/Booking";
+import Payment from "./screens/Payment";
 import History from "./screens/History";
 import AddFunds from "./screens/AddFunds";
 
@@ -88,7 +88,7 @@ function Layout() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
           <Route
