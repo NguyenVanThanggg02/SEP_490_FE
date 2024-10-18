@@ -46,7 +46,6 @@ function SpaceDetails() {
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
   const nav = useNavigate()
-  console.log(valueFromChild);
 
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
@@ -145,7 +144,7 @@ function SpaceDetails() {
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
-            image={spaceData?.images[0]}
+            image={spaceData?.images[0] || "default-image"}
             title="image spaceF"
             style={{ objectFit: "cover" }}
           />
@@ -161,7 +160,7 @@ function SpaceDetails() {
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare?.images[0]}
+              image={compare?.images[0] || "default-image"}
               title="image spaceCompare"
               style={{ objectFit: "cover" }}
             />
