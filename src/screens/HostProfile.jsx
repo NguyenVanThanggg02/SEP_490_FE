@@ -1,16 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Button,
   Card,
-  CardContent,
   Grid,
   Typography,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Divider,
   Box,
   Paper,
 } from "@mui/material";
@@ -20,12 +18,31 @@ import PetsIcon from "@mui/icons-material/Pets";
 import LanguageIcon from "@mui/icons-material/Language";
 import HomeIcon from "@mui/icons-material/Home";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { Envelope, PersonVcard, Phone } from "react-bootstrap-icons";
 
 function HostProfile() {
+  const {id} = useParams();
+  const [profileOwner, setProfileOwner] = useState({})
+  
+  useEffect(() => {
+    fetchUserData();
+  },[id]); 
+
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:9999/users/${id}`,
+      );
+      setProfileOwner(response.data);
+    } catch (error) {
+      console.error("Lỗi khi lấy thông tin người dùng:", error);
+    }
+  };
+  
   return (
-    <Grid container spacing={3} style={{ padding: "20px" }}>
-      {/* Host Information */}
+    <Grid container spacing={3} style={{ padding: "20px 120px" }}>
       <Grid item xs={12} md={4}>
         <Paper elevation={3} style={{ padding: "20px" }}>
           <Box
@@ -41,9 +58,9 @@ function HostProfile() {
             />
           </Box>
           <Typography variant="h5" align="center">
-            Patinee
+            {profileOwner.fullname}
           </Typography>
-          <Typography variant="body2" align="center" color="textSecondary">
+          <Typography variant="body2" align="center" color="textSecondary" style={{marginTop:'10px'}}>
             Chủ nhà/Người tổ chức
           </Typography>
           <Box mt={2} mb={2} display="flex" justifyContent="center">
@@ -77,7 +94,7 @@ function HostProfile() {
       {/* Host Details */}
       <Grid item xs={12} md={8}>
         <Card style={{ padding: "20px" }}>
-          <Typography variant="h6">Thông tin về Patinee</Typography>
+          <Typography variant="h6">Thông tin về {profileOwner.fullname}</Typography>
           <List>
             <ListItem>
               <ListItemIcon>
@@ -113,7 +130,7 @@ function HostProfile() {
               <ListItemIcon>
                 <LocationOnIcon />
               </ListItemIcon>
-              <ListItemText primary="Sống tại" secondary="Bangkok, Thái Lan" />
+              <ListItemText primary="Sống tại" secondary={profileOwner.address} />
             </ListItem>
           </List>
         </Card>
@@ -123,26 +140,26 @@ function HostProfile() {
       <Grid item xs={12} md={4}>
         <Paper elevation={3} style={{ padding: "20px" }}>
           <Typography variant="h6" gutterBottom>
-            Thông tin đã được xác nhận của Patinee
+            Thông tin đã được xác nhận của {profileOwner.fullname}
           </Typography>
           <List>
             <ListItem>
               <ListItemIcon>
-                <CheckIcon />
+                <PersonVcard style={{fontSize:'26px'}}/>
               </ListItemIcon>
               <ListItemText primary="Danh tính" />
             </ListItem>
             <ListItem>
               <ListItemIcon>
-                <CheckIcon />
+                <Envelope style={{fontSize:'26px'}} />
               </ListItemIcon>
-              <ListItemText primary="Địa chỉ email" />
+              <ListItemText primary={profileOwner.gmail} />
             </ListItem>
             <ListItem>
               <ListItemIcon>
-                <CheckIcon />
+                <Phone style={{fontSize:'26px'}}/>
               </ListItemIcon>
-              <ListItemText primary="Số điện thoại" />
+              <ListItemText primary={profileOwner.phone} />
             </ListItem>
           </List>
         </Paper>

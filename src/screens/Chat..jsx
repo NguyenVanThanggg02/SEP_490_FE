@@ -1,12 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { io } from "socket.io-client";
 import Conversation from "../components/Conversation";
 import ChatBox from "../components/ChatBox";
 import { userChats } from "../Api/ChatRequests";
-
+import "../style/chat.css";
 const Chat = () => {
-  const dispatch = useDispatch();
   const socket = useRef();
   const userId = localStorage.getItem("userId");
 
@@ -16,7 +14,7 @@ const Chat = () => {
   const [sendMessage, setSendMessage] = useState(null);
   const [receivedMessage, setReceivedMessage] = useState(null);
 
-  // Get the chat in chat section
+  // Fetch user's chats
   useEffect(() => {
     const getChats = async () => {
       try {
@@ -37,24 +35,16 @@ const Chat = () => {
       reconnectionDelay: 1000,
     });
 
-    // Handle socket connection
     socket.current.on("connect", () => {
-      console.log("Socket connected");
       socket.current.emit("new-user-add", userId);
     });
 
-    // Handle disconnection
-    socket.current.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
-
-    // Get online users from server
     socket.current.on("get-users", (users) => {
       setOnlineUsers(users);
     });
 
     return () => {
-      socket.current.disconnect(); // Cleanup on component unmount
+      socket.current.disconnect();
     };
   }, [userId]);
 
@@ -65,14 +55,14 @@ const Chat = () => {
     }
   }, [sendMessage]);
 
-  // Get the message from socket server
+  // Receive Message from socket server
   useEffect(() => {
     socket.current.on("receive-message", (data) => {
-      console.log("Received message:", data);
       setReceivedMessage(data);
     });
   }, []);
 
+  // Check online status of chat members
   const checkOnlineStatus = (chat) => {
     const chatMember = chat.members.find((member) => member !== userId);
     const online = onlineUsers.find((user) => user.userId === chatMember);
@@ -81,18 +71,12 @@ const Chat = () => {
 
   return (
     <div className="Chat">
-      {/* Left Side */}
       <div className="Left-side-chat">
         <div className="Chat-container">
           <h2>Chats</h2>
           <div className="Chat-list">
             {chats.map((chat) => (
-              <div
-                key={chat._id} // Always add key to mapped elements
-                onClick={() => {
-                  setCurrentChat(chat);
-                }}
-              >
+              <div key={chat._id} onClick={() => setCurrentChat(chat)}>
                 <Conversation
                   data={chat}
                   currentUser={userId}
@@ -104,9 +88,7 @@ const Chat = () => {
         </div>
       </div>
 
-      {/* Right Side */}
       <div className="Right-side-chat">
-        <div style={{ width: "20rem", alignSelf: "flex-end" }}></div>
         <ChatBox
           chat={currentChat}
           currentUser={userId}

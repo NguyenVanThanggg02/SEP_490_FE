@@ -32,6 +32,9 @@ import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import ManaPost from "./screens/ManaPost";
 import ChatBox from "./screens/Chat.";
+import Payment from "./screens/Payment";
+import History from "./screens/History";
+import AddFunds from "./screens/AddFunds";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,7 +85,7 @@ function Layout() {
           <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
-          <Route path="/host_profile" element={<HostProfile />} />
+          <Route path="/host_profile/:id" element={<HostProfile />} />
           <Route path="/chang_pass" element={<ChangePass />} />
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
@@ -94,6 +97,9 @@ function Layout() {
           <Route path="/compare" element={<Compare />} />
           <Route path="/detail-admin" element={<DetailForAdmin />} />
           <Route path="/alladd" element={<AddSpaceFlow />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/history" element={<History />} />
+          <Route path="/addfund" element={<AddFunds />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}

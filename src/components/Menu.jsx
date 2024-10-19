@@ -22,8 +22,11 @@ import {
   ArrowRepeat,
   BoxArrowInRight,
   Calendar2Check,
+  Clipboard2Check,
   Heart,
+  List,
   PersonVcard,
+  Wallet,
 } from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
@@ -92,6 +95,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     localStorage.clear();
     handleClose();
   };
+  const handleAddFunds = () => {
+    navigate("/addfund");
+  };
+  const handleHistory = () => {
+    navigate("/history");
+  };
 
   const handleLogin = () => {
     handleClose();
@@ -156,11 +165,24 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
           <IconButton
             onClick={handleClick}
             size="small"
-            sx={{ ml: 2 }}
+            sx={{
+              ml: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "8px",
+              borderRadius: "50px",
+              border: "1px solid #ccc",
+              width: "90px",
+              height: "48px",
+            }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
+            <i class="bi bi-list" style={{ marginLeft: "8px" }}>
+              <List />
+            </i>
             <Avatar sx={{ width: 32, height: 32 }} />
           </IconButton>
         </Tooltip>
@@ -197,6 +219,16 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               </MenuItem>
             )}
 
+            <MenuItem onClick={handleAddFunds}>
+              <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
+              Nạp tiền
+            </MenuItem>
+            <MenuItem onClick={handleHistory}>
+              <Clipboard2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Lịch sử đặt
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight
                 style={{ fontSize: "20px", marginRight: "10px" }}
