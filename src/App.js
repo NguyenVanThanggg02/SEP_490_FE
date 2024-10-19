@@ -31,6 +31,7 @@ import Landing from "./screens/Landing";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import ManaPost from "./screens/ManaPost";
+import ChatBox from "./screens/Chat.";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -77,6 +78,7 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
+          <Route path="/chat" element={<ChatBox />} />
           <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
