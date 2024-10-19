@@ -2,16 +2,20 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, } from 'react-bootstrap';
 import { Box, Button, FormControlLabel, FormGroup, InputAdornment, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { htmlToText } from 'html-to-text';
 import Loading from "../../components/Loading";
+import CloseIcon from '@mui/icons-material/Close';
+import { Image } from 'antd'; // Import các component từ Antd
 
 
 
+const CLOUDINARY_NAME = 'dakpa1ph2';
+const CLOUDINARY_KEY = '427579294735177';
+const CLOUDINARY_SECRET = 'zw1Ye3U0YF8mC0J9wwReWt9VA6c';
 
 const AddSpaceInforSpace = () => {
     const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule } = useContext(SpaceContext);
@@ -19,6 +23,7 @@ const AddSpaceInforSpace = () => {
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
     const [isLoading, setIsLoading] = useState(false);
     const [imagesPreview, setImagesPreview] = useState([]);
+
 
     const rulesList = [
         "Vệ sinh và ngăn nắp",
@@ -72,12 +77,6 @@ const AddSpaceInforSpace = () => {
         }
     };
 
-    const handleRuleSelect = (ruleId) => {
-        setSpaceInfo(prev => ({
-            ...prev,
-            rulesId: ruleId
-        }));
-    };
 
     const handleBlur = (e) => {
         const { name, value, type } = e.target;
@@ -117,6 +116,7 @@ const AddSpaceInforSpace = () => {
                 url: `https://api.cloudinary.com/v1_1/dakpa1ph2/image/upload/`,
                 data: formData,
             });
+            console.log(response.data);
 
             if (response.status === 200) {
                 newImages.push(response.data.url);
@@ -132,12 +132,46 @@ const AddSpaceInforSpace = () => {
         }));
     };
 
-    const handleDeleteImage = (image) => {
-        setSpaceInfo((prevSpaceInfo) => ({
-            ...prevSpaceInfo,
-            images: prevSpaceInfo.images.filter((item) => item !== image), // Xóa ảnh khỏi images
-        }));
-        setImagesPreview((prev) => prev.filter((item) => item !== image));
+    // const handleDeleteImage = (image) => {
+    //     setSpaceInfo((prevSpaceInfo) => ({
+    //         ...prevSpaceInfo,
+    //         images: prevSpaceInfo.images.filter((item) => item !== image), // Xóa ảnh khỏi images
+    //     }));
+    //     setImagesPreview((prev) => prev.filter((item) => item !== image));
+    // };
+
+    const handleDeleteImage = async (imageUrl) => {
+        try {
+            // Tách tên tệp từ URL
+            let start = imageUrl.indexOf("spacehub");
+            let end = imageUrl.lastIndexOf(".");
+            const result = imageUrl.substring(start, end);
+
+            // Gửi request xóa ảnh đến Cloudinary API
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/dakpa1ph2/image/destroy/`, {
+                public_id: result
+            }, {
+                auth: {
+                    username: CLOUDINARY_KEY, // Cloudinary API Key
+                    password: CLOUDINARY_SECRET   // Cloudinary API Secret
+                }
+
+            });
+
+            if (response.status === 200) {
+                console.log('Ảnh đã được xóa khỏi Cloudinary');
+                // Xóa ảnh khỏi danh sách hiển thị
+                setImagesPreview((prev) => prev.filter((item) => item !== imageUrl));
+                setSpaceInfo((prevSpaceInfo) => ({
+                    ...prevSpaceInfo,
+                    images: prevSpaceInfo.images.filter((item) => item !== imageUrl)
+                }));
+            } else {
+                console.error('Lỗi khi xóa ảnh khỏi Cloudinary:', response.status);
+            }
+        } catch (error) {
+            console.error('Lỗi khi xóa ảnh khỏi Cloudinary:', error);
+        }
     };
 
     return (
@@ -350,7 +384,7 @@ const AddSpaceInforSpace = () => {
                     </Row>
 
                     {/* Thêm ảnh */}
-                    <Row>
+                    <Row style={{marginBottom:"200px"}}>
                         <Col md={3} style={{ marginBottom: "200px" }}>
                             {isLoading ? (
                                 <Loading />
@@ -384,19 +418,32 @@ const AddSpaceInforSpace = () => {
                             )}
                         </Col>
                         <Col md={9}>
-                            {imagesPreview?.map((item, index) => (
-                                <Col md={3} key={index} className="image-item">
-                                    <div className="relative">
-                                        <img src={item} alt="preview" />
-                                        <span
-                                            title="Xóa"
-                                        onClick={() => handleDeleteImage(item)}
-                                        >
-                                            <DeleteIcon />
-                                        </span>
-                                    </div>
-                                </Col>
-                            ))}
+                            <Row gutter={[16, 16]} type="flex" justify="space-between"> 
+                                <Image.PreviewGroup>
+                                    {imagesPreview?.map((item, index) => (
+                                        <Col md={3} key={index} className="image-item">
+                                            <div >
+                                                {/* Sử dụng Image của Antd với tính năng preview */}
+                                                <Image
+                                                    src={item}
+                                                    alt="preview"
+                                                    height={100}
+                                                    style={{ objectFit: 'cover' }}
+                                                    className="relative"
+                                                />
+                                                {/* Nút xóa ảnh */}
+                                                <span
+                                                    title="Xóa"
+                                                    onClick={() => handleDeleteImage(item)}
+                                                    className="closeicon"
+                                                >
+                                                    <CloseIcon sx={{ fontSize: "20px" }} />
+                                                </span>
+                                            </div>
+                                        </Col>
+                                    ))}
+                                </Image.PreviewGroup>
+                            </Row>
                         </Col>
                     </Row>
                 </Col>

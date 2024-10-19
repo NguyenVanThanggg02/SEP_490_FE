@@ -50,9 +50,6 @@ function SpaceDetails() {
 
   const nav = useNavigate()
 
-
-  console.log(valueFromChild);
-
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
   };
@@ -151,7 +148,10 @@ function SpaceDetails() {
     }
     nav('/compare', { state: { id, valueFromChild } });
   }
-  const handleDeleteIdSoToCompare = () => {
+  const handleProfileOfOwner = () =>{
+    nav(`/host_profile/${spaceData?.userId._id}`);
+  }
+  const handleDeleteIdSoToCompare =() =>{
     setValueFromChild('');
   }
 
@@ -161,7 +161,7 @@ function SpaceDetails() {
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
-            image={spaceData.images[0]}
+            image={spaceData?.images[0] || "default-image"}
             title="image spaceF"
             style={{ objectFit: "cover" }}
           />
@@ -177,7 +177,7 @@ function SpaceDetails() {
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare?.images[0]}
+              image={compare?.images[0] || "default-image"}
               title="image spaceCompare"
               style={{ objectFit: "cover" }}
             />
@@ -443,7 +443,7 @@ function SpaceDetails() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center" }} onClick={handleProfileOfOwner}>
                         <img
                           src={spaceData.userId?.avatar}
                           alt="avatar"

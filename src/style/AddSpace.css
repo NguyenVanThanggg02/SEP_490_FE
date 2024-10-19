@@ -29,14 +29,11 @@
 
 .image-item {
     position: relative;
+
     margin-bottom: 10px;
-    /* Khoảng cách giữa các hàng */
-    flex: 0 0 calc(25% - 10px);
-    /* Độ rộng của mỗi ảnh (25% - khoảng cách giữa các ảnh) */
-    max-width: calc(25% - 10px);
-    /* Độ rộng tối đa của mỗi ảnh */
+
     text-align: center;
-    /* Canh giữa nút span */
+
 }
 
 .image-item img {
@@ -47,19 +44,28 @@
 
 .image-item span {
     position: absolute;
-    top: 15%;
-    left: 80%;
+    top: 13%;
+    left: 82%;
     transform: translate(-50%, -50%);
     background-color: rgba(255, 255, 255, 0.8);
     /* Màu nền của nút */
-    padding: 5px 8px;
+    padding: 0 3.5px 2px 3.5px;
     cursor: pointer;
     border-radius: 50%;
 }
 
 .image-item span:hover {
-    background-color: rgba(255, 0, 0, 0.8);
+    background-color: rgba(103, 94, 94, 0.8);
     /* Màu nền khi hover */
     color: #fff;
     /* Màu chữ khi hover */
+}
+
+.ant-image-mask-info {
+    display: none !important;
+    /* Ẩn icon mắt */
+}
+
+.relative {
+    position: relative;
 }
