@@ -13,9 +13,6 @@ import { Image } from 'antd'; // Import các component từ Antd
 
 
 
-const CLOUDINARY_NAME = 'dakpa1ph2';
-const CLOUDINARY_KEY = '427579294735177';
-const CLOUDINARY_SECRET = 'zw1Ye3U0YF8mC0J9wwReWt9VA6c';
 
 const AddSpaceInforSpace = () => {
     const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule } = useContext(SpaceContext);
@@ -99,40 +96,6 @@ const AddSpaceInforSpace = () => {
             }));
         }
     };
-
-    // const handleFiles = async (e) => {
-    //     e.preventDefault();
-    //     setIsLoading(true);
-    //     let newImages = [];
-    //     let files = e.target.files;
-
-    //     for (let i = 0; i < files.length; i++) {
-    //         let formData = new FormData();
-    //         formData.append("file", files[i]);
-    //         formData.append("upload_preset", "img_space");
-
-    //         const response = await axios({
-    //             method: "post",
-    //             url: `https://api.cloudinary.com/v1_1/dakpa1ph2/image/upload/`,
-    //             data: formData,
-    //         });
-    //         console.log(response.data);
-
-    //         if (response.status === 200) {
-    //             newImages.push(response.data);
-    //         } else {
-    //             console.log("Failed to upload image");
-    //         }
-    //     }
-    //     setIsLoading(false);
-    //     setImagesPreview((prev) => [...prev, ...newImages]);
-
-    //     setSpaceInfo((prevSpaceInfo) => ({
-    //         ...prevSpaceInfo, 
-    //         images: [...prevSpaceInfo.images, ...newImages], // Cập nhật đúng cách với mảng images
-    //     }));
-    
-    // };
 
     const handleFiles = async (e) => {
         e.preventDefault();
