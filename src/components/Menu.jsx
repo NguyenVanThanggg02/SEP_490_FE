@@ -146,7 +146,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         {isLoggedIn && userInfo && (
           <Typography sx={{ marginRight: 1 }}>{userInfo.fullname}</Typography>
         )}
-        <Tooltip title="Cài đặt tài khoản">
+        <Tooltip title="Cài đặt tài khoản" style={{height:'61px', marginTop:'-10px'}}>
           <IconButton
             onClick={handleClick}
             size="small"

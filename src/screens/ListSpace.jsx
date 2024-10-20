@@ -203,6 +203,8 @@ const ListSpace = () => {
         },
       });
       setListSpace(response.data);
+      setNoResult(true);
+
   } catch (error) {
     console.error("Error fetching filtered spaces:", error);
   }
@@ -416,8 +418,8 @@ const handleDistrictSelect = (districtName) => {
         <Col md={9}>
           <Row>
             {noResult ? (
-              <Col md={4}>
-                <h6 style={{ margin: "20px" }}>Không có sản phẩm nào !!!</h6>
+              <Col md={12}>
+                <h4 style={{ margin: "20px", textAlign:'center' }}>Không có địa điểm nào !!!</h4>
               </Col>
             ) : (
               productsOnPage.map((l) => (
