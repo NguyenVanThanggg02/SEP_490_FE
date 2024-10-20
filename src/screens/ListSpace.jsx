@@ -15,6 +15,7 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "../style/listSpace.css";
+import { priceFormatter } from "../utils/numberFormatter";
 
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
@@ -186,12 +187,17 @@ const ListSpace = () => {
   const filteredDistricts = districts.filter((district) =>
     district.name.toLowerCase().includes(districtSearch.toLowerCase())
   );
-
-  const handleFilter = async () => {
+  useEffect(() => {
+    if (districtSearch === "") {
+      loadData(); 
+    }
+  }, [districtSearch]); 
+  
+  const handleFilter = async (districtName) => {
   try {
       const response = await axios.get("http://localhost:9999/spaces/filter", {
         params: {
-          location: districtSearch,
+          location: districtName,
           minPrice,
           maxPrice,
         },
@@ -205,7 +211,7 @@ const ListSpace = () => {
 const handleDistrictSelect = (districtName) => {
   setDistrictSearch(districtName); 
   setShowSuggestions(false); 
-  handleFilter(); 
+  handleFilter(districtName); 
 };
 
   return (
@@ -424,7 +430,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "415px",
+                      height: "433px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -534,7 +540,7 @@ const handleDistrictSelect = (districtName) => {
                               fontWeight: "bold",
                             }}
                           >
-                            Giá: {l.pricePerHour} / VND
+                            Giá: {priceFormatter(l.pricePerHour)} / VND
                           </Card.Text>
                           <Card.Text style={{ color: "#2d2d2d", display:'flex' }}>
                             <StarFill
