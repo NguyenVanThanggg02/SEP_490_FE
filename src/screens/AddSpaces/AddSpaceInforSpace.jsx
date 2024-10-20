@@ -119,17 +119,19 @@ const AddSpaceInforSpace = () => {
             console.log(response.data);
 
             if (response.status === 200) {
-                newImages.push(response.data.url);
+                newImages.push(response.data);
             } else {
                 console.log("Failed to upload image");
             }
         }
         setIsLoading(false);
         setImagesPreview((prev) => [...prev, ...newImages]);
+
         setSpaceInfo((prevSpaceInfo) => ({
-            ...prevSpaceInfo, // Giữ nguyên các giá trị khác
-            images: newImages, // Cập nhật images
+            ...prevSpaceInfo, 
+            images: [...prevSpaceInfo.images, ...newImages], // Cập nhật đúng cách với mảng images
         }));
+    
     };
 
     // const handleDeleteImage = (image) => {
@@ -139,40 +141,29 @@ const AddSpaceInforSpace = () => {
     //     }));
     //     setImagesPreview((prev) => prev.filter((item) => item !== image));
     // };
-
-    const handleDeleteImage = async (imageUrl) => {
+    console.log(imagesPreview);
+    const handleDeleteImage = async (public_id) => {
         try {
-            // Tách tên tệp từ URL
-            let start = imageUrl.indexOf("spacehub");
-            let end = imageUrl.lastIndexOf(".");
-            const result = imageUrl.substring(start, end);
-
-            // Gửi request xóa ảnh đến Cloudinary API
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/dakpa1ph2/image/destroy/`, {
-                public_id: result
-            }, {
-                auth: {
-                    username: CLOUDINARY_KEY, // Cloudinary API Key
-                    password: CLOUDINARY_SECRET   // Cloudinary API Secret
-                }
-
-            });
-
+            // Gửi request đến server-side để xóa ảnh từ Cloudinary
+            const response = await axios.post('http://localhost:9999/spaces/removeImage', { public_id });
+            
             if (response.status === 200) {
-                console.log('Ảnh đã được xóa khỏi Cloudinary');
+                console.log('Image deleted successfully');
+    
                 // Xóa ảnh khỏi danh sách hiển thị
-                setImagesPreview((prev) => prev.filter((item) => item !== imageUrl));
+                setImagesPreview((prev) => prev.filter((item) => item.public_id !== public_id));
                 setSpaceInfo((prevSpaceInfo) => ({
                     ...prevSpaceInfo,
-                    images: prevSpaceInfo.images.filter((item) => item !== imageUrl)
+                    images: prevSpaceInfo.images.filter((item) => item.public_id !== public_id)
                 }));
             } else {
-                console.error('Lỗi khi xóa ảnh khỏi Cloudinary:', response.status);
+                console.error('Failed to delete image');
             }
         } catch (error) {
-            console.error('Lỗi khi xóa ảnh khỏi Cloudinary:', error);
+            console.error('Error deleting image:', error);
         }
     };
+    
 
     return (
         <Container fluid >
@@ -425,7 +416,7 @@ const AddSpaceInforSpace = () => {
                                             <div >
                                                 {/* Sử dụng Image của Antd với tính năng preview */}
                                                 <Image
-                                                    src={item}
+                                                    src={item.secure_url}
                                                     alt="preview"
                                                     height={100}
                                                     style={{ objectFit: 'cover' }}
@@ -434,7 +425,7 @@ const AddSpaceInforSpace = () => {
                                                 {/* Nút xóa ảnh */}
                                                 <span
                                                     title="Xóa"
-                                                    onClick={() => handleDeleteImage(item)}
+                                                    onClick={() => handleDeleteImage(item.public_id)}
                                                     className="closeicon"
                                                 >
                                                     <CloseIcon sx={{ fontSize: "20px" }} />
