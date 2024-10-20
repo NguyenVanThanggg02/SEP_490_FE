@@ -100,47 +100,77 @@ const AddSpaceInforSpace = () => {
         }
     };
 
+    // const handleFiles = async (e) => {
+    //     e.preventDefault();
+    //     setIsLoading(true);
+    //     let newImages = [];
+    //     let files = e.target.files;
+
+    //     for (let i = 0; i < files.length; i++) {
+    //         let formData = new FormData();
+    //         formData.append("file", files[i]);
+    //         formData.append("upload_preset", "img_space");
+
+    //         const response = await axios({
+    //             method: "post",
+    //             url: `https://api.cloudinary.com/v1_1/dakpa1ph2/image/upload/`,
+    //             data: formData,
+    //         });
+    //         console.log(response.data);
+
+    //         if (response.status === 200) {
+    //             newImages.push(response.data);
+    //         } else {
+    //             console.log("Failed to upload image");
+    //         }
+    //     }
+    //     setIsLoading(false);
+    //     setImagesPreview((prev) => [...prev, ...newImages]);
+
+    //     setSpaceInfo((prevSpaceInfo) => ({
+    //         ...prevSpaceInfo, 
+    //         images: [...prevSpaceInfo.images, ...newImages], // Cập nhật đúng cách với mảng images
+    //     }));
+    
+    // };
+
     const handleFiles = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         let newImages = [];
-        let files = e.target.files;
-
+        
+        const files = e.target.files; // Lấy tất cả các file
+    
+        const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
-            let formData = new FormData();
-            formData.append("file", files[i]);
-            formData.append("upload_preset", "img_space");
-
-            const response = await axios({
-                method: "post",
-                url: `https://api.cloudinary.com/v1_1/dakpa1ph2/image/upload/`,
-                data: formData,
-            });
-            console.log(response.data);
-
-            if (response.status === 200) {
-                newImages.push(response.data);
-            } else {
-                console.log("Failed to upload image");
-            }
+            formData.append("images", files[i]); // Thêm từng file vào formData
         }
+    
+        try {
+            const response = await axios.post('http://localhost:9999/spaces/uploadImages', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Đặt header để gửi file
+                },
+            });
+    
+            if (response.status === 200) {
+                newImages = response.data.images; // Lưu thông tin ảnh vào mảng từ phản hồi
+            } else {
+                console.error("Failed to upload images");
+            }
+        } catch (error) {
+            console.error("Error uploading images:", error);
+        }
+    
         setIsLoading(false);
         setImagesPreview((prev) => [...prev, ...newImages]);
-
         setSpaceInfo((prevSpaceInfo) => ({
-            ...prevSpaceInfo, 
-            images: [...prevSpaceInfo.images, ...newImages], // Cập nhật đúng cách với mảng images
+            ...prevSpaceInfo,
+            images: [...prevSpaceInfo.images, ...newImages],
         }));
-    
     };
+    
 
-    // const handleDeleteImage = (image) => {
-    //     setSpaceInfo((prevSpaceInfo) => ({
-    //         ...prevSpaceInfo,
-    //         images: prevSpaceInfo.images.filter((item) => item !== image), // Xóa ảnh khỏi images
-    //     }));
-    //     setImagesPreview((prev) => prev.filter((item) => item !== image));
-    // };
     console.log(imagesPreview);
     const handleDeleteImage = async (public_id) => {
         try {
@@ -416,7 +446,7 @@ const AddSpaceInforSpace = () => {
                                             <div >
                                                 {/* Sử dụng Image của Antd với tính năng preview */}
                                                 <Image
-                                                    src={item.secure_url}
+                                                    src={item.url}
                                                     alt="preview"
                                                     height={100}
                                                     style={{ objectFit: 'cover' }}
