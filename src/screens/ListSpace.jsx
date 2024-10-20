@@ -187,12 +187,17 @@ const ListSpace = () => {
   const filteredDistricts = districts.filter((district) =>
     district.name.toLowerCase().includes(districtSearch.toLowerCase())
   );
-
-  const handleFilter = async () => {
+  useEffect(() => {
+    if (districtSearch === "") {
+      loadData(); 
+    }
+  }, [districtSearch]); 
+  
+  const handleFilter = async (districtName) => {
   try {
       const response = await axios.get("http://localhost:9999/spaces/filter", {
         params: {
-          location: districtSearch,
+          location: districtName,
           minPrice,
           maxPrice,
         },
@@ -206,7 +211,7 @@ const ListSpace = () => {
 const handleDistrictSelect = (districtName) => {
   setDistrictSearch(districtName); 
   setShowSuggestions(false); 
-  handleFilter(); 
+  handleFilter(districtName); 
 };
 
   return (
