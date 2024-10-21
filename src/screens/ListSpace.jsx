@@ -36,7 +36,7 @@ const ListSpace = () => {
   const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:9999/spaces")
+    fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {

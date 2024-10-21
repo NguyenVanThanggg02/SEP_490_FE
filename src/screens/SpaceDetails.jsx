@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
 import AcUnitIcon from "@mui/icons-material/AcUnit";
+import BlockIcon from "@mui/icons-material/Block";
+
 import Comment from "./Comment";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
@@ -641,7 +643,7 @@ function SpaceDetails() {
                         <Grid item xs={6} key={index}>
                           <ListItem>
                             <ListItemIcon>
-                              <AcUnitIcon /> {/* Icon ví dụ */}
+                              <BlockIcon /> {/* Icon ví dụ */}
                             </ListItemIcon>
                             <ListItemText primary={rule} />
                           </ListItem>

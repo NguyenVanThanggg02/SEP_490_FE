@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, TwitterX } from 'react-bootstrap-icons';
-import Logo from "../assets/logo.png";
+import LogoV2 from "../assets/images/newlogo.png";
 
 const Footer = () => {
     return (
@@ -12,7 +12,7 @@ const Footer = () => {
                     <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
                         <Link to={"/"}>
                             <img
-                                src={Logo}
+                                src={LogoV2}
                                 style={{ height: "300px", width: "auto", marginRight: "20px" }}
                                 alt="logo"
                             />
@@ -21,9 +21,6 @@ const Footer = () => {
                     <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
                         <div className="d-flex align-items-start">
                             <div>
-                                <div style={{ fontSize: '35px', fontWeight: 'bold', textDecoration: 'underline', color: '#000' }}>
-                                    SPACEHUB
-                                </div>
                                 <p className="text-start mt-4" style={{ color: '#000', fontSize: '18px' }}>
                                     Space Hub cung cấp dịch vụ kết nối giữa người thuê và chủ sở hữu không gian làm việc, phòng họp, studio, và không gian sự kiện, đảm bảo trải nghiệm thuê chuyên nghiệp và tiện lợi.
                                 </p>
