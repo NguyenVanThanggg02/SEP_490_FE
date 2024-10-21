@@ -134,7 +134,6 @@ const AddSpaceInforSpace = () => {
     };
     
 
-    console.log(imagesPreview);
     const handleDeleteImage = async (public_id) => {
         try {
             // Gửi request đến server-side để xóa ảnh từ Cloudinary

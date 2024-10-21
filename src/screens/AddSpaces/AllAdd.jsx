@@ -33,14 +33,16 @@ export default function AddSpaceFlow() {
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
-    addRules();
-    const applianceId = await addAppliances();
+    const ruleId = await addRules();
 
+      // Sau khi thêm quy định thành công, thêm thiết bị
+      const applianceId = await addAppliances();
 
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
       appliancesId: applianceId,
+      rulesId: ruleId,
       location,
       ...spaceInfo,
     };
@@ -51,6 +53,32 @@ export default function AddSpaceFlow() {
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
       alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
+    }
+  };
+
+  const addRules = async () => {
+    try {
+      const customRulesArray =
+        customRule.split(';').map(rule => rule.trim()).filter(rule => rule.length > 0)
+
+      const data = {
+        selectedRules,
+        customRules: customRulesArray, 
+      };
+      console.log("Custom rules array:", customRulesArray);  // Kiểm tra sau 
+
+
+      const response = await axios.post("http://localhost:9999/rules/addRule", data);
+
+      const ruleId = response.data._id;  
+      
+      setSpaceInfo(prev => ({
+        ...prev,
+        rulesId: ruleId  
+      }));
+        return ruleId;
+    } catch (error) {
+      console.error('Error adding rule:', error);
     }
   };
 
@@ -82,32 +110,7 @@ export default function AddSpaceFlow() {
 
 
   // Hàm gửi dữ liệu lên server
-  const addRules = async () => {
-    try {
-      const customRulesArray =
-        customRule.split(';').map(rule => rule.trim()).filter(rule => rule.length > 0)
-
-      const data = {
-        selectedRules,
-        customRules: customRulesArray, // Ensure customRules is an array of strings
-      };
-      console.log("Custom rules array:", customRulesArray);  // Kiểm tra sau khi tách
-
-
-      const response = await axios.post("http://localhost:9999/rules/addRule", data);
-
-      const ruleId = response.data._id;  // Lấy ruleId từ phản hồi
-
-      // Sau khi tạo rule xong, lưu ruleId vào context để sử dụng trong bước tạo space
-      setSpaceInfo(prev => ({
-        ...prev,
-        rulesId: ruleId  // Gán ruleId vừa mới tạo vào spaceInfo
-      }));
-
-    } catch (error) {
-      console.error('Error adding rule:', error);
-    }
-  };
+  
 
 
   const handleNext = async () => {
