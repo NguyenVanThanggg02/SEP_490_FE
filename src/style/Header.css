@@ -1,7 +1,13 @@
+html,
 body {
-  font-family: "Roboto", sans-serif;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
+  width: 100%;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
   background-color: #fff;
 }
 .headerr{
@@ -14,7 +20,9 @@ body {
 
 .search-container {
   display: flex;
-  width: 80%;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   align-items: center;
   background-color: #fff;
   border-radius: 50px;
