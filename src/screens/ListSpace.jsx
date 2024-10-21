@@ -203,7 +203,6 @@ const ListSpace = () => {
         },
       });
       setListSpace(response.data);
-      setNoResult(true);
 
   } catch (error) {
     console.error("Error fetching filtered spaces:", error);

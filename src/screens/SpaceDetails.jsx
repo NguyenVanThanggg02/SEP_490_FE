@@ -133,7 +133,7 @@ function SpaceDetails() {
     nav('/compare', { state: { id, valueFromChild } });
   }
   const handleProfileOfOwner = () =>{
-    nav(`/host_profile/${spaceData?.userId._id}`);
+    nav(`/host_profile/${spaceData?.userId?._id}`);
   }
   const handleDeleteIdSoToCompare =() =>{
     setValueFromChild('');
