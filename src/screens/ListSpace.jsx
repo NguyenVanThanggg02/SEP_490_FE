@@ -34,6 +34,7 @@ const ListSpace = () => {
   const [, setSelectedCate] = useState(null);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [areaList, setAreaList] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
@@ -41,6 +42,8 @@ const ListSpace = () => {
       .then((data) => {
         if (Array.isArray(data)) {
           setListSpace(data);
+          const uniqueAreas = [...new Set(data.map(space => space.area))];
+          setAreaList(uniqueAreas);
         } else {
           setListSpace([]);
         }
@@ -68,7 +71,6 @@ const ListSpace = () => {
   const applianceNames = appliances
     .map((item) => item.appliances.map((appliance) => appliance.name))
     .flat();
-
   const loadData = async () => {
     try {
       let response;
@@ -117,6 +119,7 @@ const ListSpace = () => {
   //     loadData();
   //   }
   // };
+  
   const handleChooseCate = (e) => {
     const selectedCateId = e.target.value;
     if (selectedCateId !== "0") {
@@ -300,9 +303,28 @@ const handleDistrictSelect = (districtName) => {
                         <input
                           type="checkbox"
                           value={name}
+                          style={{marginRight:'7px'}}
                           // onChange={(e) => handleChooseCate(e, name)}
                         />
                         {name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="custom-filter-section">
+                <div className="filter-section-title">Diện tích: </div>
+                <div className="custom-scrollable-filter">
+                  {areaList.map((area, index) => (
+                    <div className="custom-filter-item" key={index}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          value={area}
+                          style={{marginRight:'7px'}}
+                          // onChange={(e) => handleChooseArea(e, area)} // Tùy ý xử lý khi chọn
+                        />
+                        {area}
                       </label>
                     </div>
                   ))}
@@ -424,7 +446,9 @@ const handleDistrictSelect = (districtName) => {
           <Row>
             {noResult ? (
               <Col md={12}>
-                <h4 style={{ margin: "20px", textAlign:'center' }}>Không có địa điểm nào !!!</h4>
+                <h4 style={{ margin: "20px", textAlign: "center" }}>
+                  Không có địa điểm nào !!!
+                </h4>
               </Col>
             ) : (
               productsOnPage.map((l) => (
@@ -549,14 +573,18 @@ const handleDistrictSelect = (districtName) => {
                           >
                             Giá: {priceFormatter(l.pricePerHour)} / VND
                           </Card.Text>
-                          <Card.Text style={{ color: "#2d2d2d", display:'flex' }}>
+                          <Card.Text
+                            style={{ color: "#2d2d2d", display: "flex" }}
+                          >
                             <StarFill
                               style={{
                                 color: "#FFCC00",
                                 margin: "3px 15px 15px 0",
                               }}
                             />
-                            <span style={{ margin:'0 10px 17px -7px'}}>4.5</span>
+                            <span style={{ margin: "0 10px 17px -7px" }}>
+                              4.5
+                            </span>
                           </Card.Text>
                         </div>
                       </Card.Body>

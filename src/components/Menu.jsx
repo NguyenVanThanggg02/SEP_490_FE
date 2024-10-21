@@ -28,7 +28,7 @@ import {
   PersonVcard,
   Wallet,
 } from "react-bootstrap-icons";
-
+import '../style/Menu.css'
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -158,7 +158,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={'/alladd'}>
+        <Link to={'/alladd'}  className="linkk">
           <Typography sx={{ marginRight: 1 }}>
             <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
               Cho thuê địa điểm qua SpaceHub
