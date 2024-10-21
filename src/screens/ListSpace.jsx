@@ -202,7 +202,13 @@ const ListSpace = () => {
           maxPrice,
         },
       });
-      setListSpace(response.data);
+      if (response.data && response.data.length > 0) {
+        setListSpace(response.data);
+        setNoResult(false); 
+      } else {
+        setListSpace([]); 
+        setNoResult(true); 
+      }
 
   } catch (error) {
     console.error("Error fetching filtered spaces:", error);
