@@ -1,33 +1,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import '../style/SpaceDetail.css'; // Đảm bảo đường dẫn đúng
 import {
-  Typography,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Container,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
-  TextField,
-  Box,
-  Drawer,
-  Card,
-  CardContent,
+  Typography, Button, List, ListItem, ListItemIcon, ListItemText, Divider, Container, FormControl, Select, MenuItem, InputLabel, TextField, Box, Drawer, Card, CardContent, Grid,
   CardMedia,
+  AppBar,
+  Toolbar,
+  IconButton,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Chip,
+  Paper,
 } from "@mui/material";
+import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
 import AcUnitIcon from "@mui/icons-material/AcUnit";
+import BlockIcon from "@mui/icons-material/Block";
+
 import Comment from "./Comment";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
+import { Image } from 'antd';
+
+import { ChevronLeft, ChevronRight, FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
@@ -45,6 +46,10 @@ function SpaceDetails() {
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
+  const [openGallery, setOpenGallery] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+
+
   const nav = useNavigate()
 
   const handleValueChange = (newValue) => {
@@ -66,6 +71,7 @@ function SpaceDetails() {
       try {
         const response = await axios.get(`http://localhost:9999/spaces/${id}`);
         setSpaceData(response.data);
+
       } catch (err) {
         setError(err);
       } finally {
@@ -106,16 +112,31 @@ function SpaceDetails() {
     }
   };
 
-  if (loading) return <Typography variant="h6">Loading...</Typography>;
+  const handleOpenGallery = () => {
+    setOpenGallery(true);
+  };
+
+  const handleCloseGallery = () => {
+    setOpenGallery(false);
+  };
+
+  if (loading) return <Typography variant="h6">Đang tải...</Typography>;
   if (error)
     return (
       <Typography variant="h6" color="error">
         Error loading data.
       </Typography>
     );
-  // Ensure spaceData and its properties are properly initialized
+  const mainImage = spaceData?.images[0]?.url;
+  const otherImages = spaceData?.images.slice(1, 5).map(image => image.url);
+
+
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
+  console.log(mainImage);
+  console.log(otherImages);
+  console.log(images);
+
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -126,18 +147,19 @@ function SpaceDetails() {
     }
     setOpenDrawer(open);
   };
-  const handleCompare = () =>{
-    if(valueFromChild == ""){
+  const handleCompare = () => {
+    if (valueFromChild == "") {
       return
     }
     nav('/compare', { state: { id, valueFromChild } });
   }
-  const handleProfileOfOwner = () =>{
+  const handleProfileOfOwner = () => {
     nav(`/host_profile/${spaceData?.userId._id}`);
   }
-  const handleDeleteIdSoToCompare =() =>{
+  const handleDeleteIdSoToCompare = () => {
     setValueFromChild('');
   }
+
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -234,33 +256,87 @@ function SpaceDetails() {
         </Col>
       )}
     </Row>
+
   );
-  
+
+
+
+  const handlePrevMonth = () => {
+    setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth((prev) => (prev === 11 ? 0 : prev + 1));
+  };
+
+  const renderDaysInMonth = (month) => {
+    const date = new Date(2024, month);
+    const daysInMonth = new Date(2024, month + 1, 0).getDate();
+    const firstDay = new Date(2024, month, 1).getDay();
+
+    const days = [];
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<TableCell key={`empty-${i}`} className="inactive"></TableCell>);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(
+        <TableCell key={i} className={i === new Date().getDate() ? 'today' : ''}>
+          {i}
+        </TableCell>
+      );
+    }
+
+    return (
+      <>
+        <TableRow>
+          {days.slice(0, 7)}
+        </TableRow>
+        {days.slice(7).reduce((rows, day, index) => {
+          if (index % 7 === 0) rows.push([]);
+          rows[rows.length - 1].push(day);
+          return rows;
+        }, []).map((row, index) => (
+          <TableRow key={index}>
+            {row}
+          </TableRow>
+        ))}
+      </>
+    );
+  };
+
+  const renderTimeSlots = (title, selectedSlots) => (
+    <div className="time-section">
+      <Typography variant="h6">{title}</Typography>
+      <Grid container spacing={1} className="time-grid">
+        {[...Array(24)].map((_, index) => {
+          const time = index < 10 ? `0${index}:00` : `${index}:00`;
+          const isSelected = selectedSlots.includes(time);
+          return (
+            <Grid item key={index} xs={2}>
+              <Chip
+                label={time}
+                className={`time-slot ${isSelected ? 'selected' : ''}`}
+                onClick={() => { /* handle time slot click */ }}
+                color={isSelected ? 'primary' : 'default'}
+                variant={isSelected ? 'filled' : 'outlined'}
+              />
+            </Grid>
+          );
+        })}
+      </Grid>
+    </div>
+  );
 
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
         <>
-          <Container fluid item xs={12}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                alignSelf: "flex-start",
-              }}
-            >
-              <Typography variant="h4" className="pb-4">
+          <Container>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: "26px" }}>
                 {spaceData.name}
               </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  alignSelf: "flex-start",
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                 <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
                   {spaceData.favorite ? (
                     <FavoriteIcon
@@ -270,46 +346,81 @@ function SpaceDetails() {
                     <FavoriteBorderIcon style={{ fontSize: "40px" }} />
                   )}
                 </div>
-                <div onClick={toggleDrawer(true)}>
-                  <PlusCircle style={{ color: "blue", fontSize: "33px" }} />
+                <div onClick={toggleDrawer(true)} style={{ display: "flex", alignItems: "center" }}>
+                  <PlusCircle style={{ color: "blue", fontSize: "33px", marginRight: "5px" }} />
                   So sánh
                 </div>
               </div>
             </div>
-            <Row container spacing={2}>
-              {images?.length > 0 ? (
-                <div>
-                  <ImageList cols={3}>
-                    {images.map((item) => (
-                      <ImageListItem
-                        key={item}
-                        onClick={() => handleClickOpen(item)}
-                      >
-                        <img
-                          src={`${item}?w=164&h=164&fit=crop&auto=format`}
-                          alt={item.title}
-                          loading="lazy"
-                        />
-                      </ImageListItem>
-                    ))}
-                  </ImageList>
-
-                  <Dialog open={open} onClose={handleClose} maxWidth="md">
-                    <DialogContent>
-                      {selectedImage && (
-                        <img
-                          src={selectedImage}
-                          alt="Chi tiết ảnh"
-                          style={{ width: "100%", height: "auto" }}
-                        />
-                      )}
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              ) : (
-                <Typography variant="body2">No images available</Typography>
+            <Grid container spacing={0.8} style={{ position: "relative", marginBottom: "20px" }}>
+              <Grid item xs={12} md={6}>
+                {mainImage && (
+                  <img
+                    src={`${mainImage}`}
+                    alt="Hình chính"
+                    style={{ width: "100%", height: "405px", borderRadius: "3px", objectFit: "cover" }}
+                    onClick={handleOpenGallery}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={0.8}>
+                  {otherImages.map((item) => (
+                    <Grid item xs={6} key={item}>
+                      <img
+                        src={`${item}`}
+                        alt={item}
+                        style={{ width: "100%", height: "200px", borderRadius: "3px", objectFit: "cover" }}
+                        loading="lazy"
+                        onClick={handleOpenGallery}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              </Grid>
+              {images.length > 4 && (
+                <Grid container justifyContent="flex-end" style={{ position: "absolute", top: "89%", right: "1%" }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleOpenGallery}
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      borderColor: "white",
+                    }}
+                  >
+                    Xem toàn bộ ảnh ({images.length})
+                  </Button>
+                </Grid>
               )}
-            </Row>
+            </Grid>
+
+            <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="xl" PaperProps={{
+              style: {
+                width: "80%",
+                maxWidth: "none",
+
+              },
+            }}>
+              <DialogContent style={{ padding: "10px 10px" }}>
+                <Image.PreviewGroup>
+                  <Grid container spacing={0.4}>
+                    {images.map((item) => (
+                      <Grid item xs={6} sm={6} key={item}>
+                        <Image
+                          src={item.url}
+                          alt={item}
+                          loading="lazy"
+                          style={{ width: "100%", height: "400px", borderRadius: "3px", objectFit: "cover" }}
+                        />
+
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Image.PreviewGroup>
+              </DialogContent>
+
+            </Dialog>
           </Container>
           <Container fluid>
             <Row>
@@ -317,7 +428,7 @@ function SpaceDetails() {
                 <Typography variant="h5">
                   {spaceData.location}
                   <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}{" "}
+                    10 người • {spaceData.area}
                   </p>
                   <Row item md={12}>
                     <Divider
@@ -349,8 +460,12 @@ function SpaceDetails() {
                             marginRight: "10px",
                           }}
                         />
-                        Chủ nhà: {spaceData.userId?.username || "Unknown"}
+                        <div style={{ lineHeight: "0.3" }}>
+                          <p style={{ color: "gray", fontSize: "14px" }}>Được đăng bởi:</p>
+                          {spaceData.userId?.username || "Unknown"}
+                        </div>
                       </div>
+
 
                       <Link to="/mess" state={{ id }}>
                         <Button
@@ -366,8 +481,8 @@ function SpaceDetails() {
                           }}
                         >
                           <Typography variant="button">
-                            <b>
-                              Nhắn tin cho <br /> chủ không gian{" "}
+                            <b style={{ fontSize: "12px" }}>
+                              Nhắn tin cho chủ không gian
                             </b>
                           </Typography>
                         </Button>
@@ -383,56 +498,176 @@ function SpaceDetails() {
                     />
                   </Row>
                 </Typography>
-                <Typography variant="h5" className="pb-2">
-                  Mô tả không gian{" "}
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Thông tin cơ bản
+                </Typography>
+                <Row>
+                  <Col md={6}>
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.AccessTime sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Giờ checkin/out tiêu chuẩn
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Check in sau 14:00 và check-out trước 12:00 ngày hôm sau
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", margin: "25px 0" }}>
+                      <MuiIcons.AlarmOn sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Cho phép đặt theo giờ
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Không gian  cho phép đặt theo giờ cho khách hàng có nhu cầu sử dụng trong thời gian ngắn
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.EventAvailable sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Khung giờ hỗ trợ checkin
+                        </Typography>
+
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Hỗ trợ tất cả khung giờ
+
+                        </Typography>
+
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div style={{ display: "flex" }}>
+                      <MuiIcons.EditCalendar sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Giờ checkin/out theo ngày
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Nhận phòng 9:00<br></br>
+                          Trả phòng trước 21:00
+                        </Typography>
+
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", marginTop: "20px" }}>
+                      <MuiIcons.Key sx={{ fontSize: "30px" }} />
+                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
+                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                          Hình thức checkin
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                          Tự checkin
+                        </Typography>
+
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Giới thiệu về không gian
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {spaceData.description}
                 </Typography>
-                <Divider />
-                <Typography variant="h6">Tiện nghi</Typography>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Tiện nghi</Typography>
+
                 <List>
-                  {appliances.length > 0 ? (
-                    appliances.map((appliance) => (
-                      <ListItem key={appliance._id}>
-                        <ListItemIcon>
-                          {/* Replace with actual icon based on appliance data */}
-                          <AcUnitIcon /> {/* Example icon */}
-                        </ListItemIcon>
-                        <ListItemText primary={appliance.name} />
-                      </ListItem>
-                    ))
+                  {spaceData.appliancesId.appliances?.length > 0 ? (
+                    <Grid container >
+                      {spaceData.appliancesId.appliances?.map((appliance) => {
+                        const IconAppliances = MuiIcons[appliance.iconName];
+                        return (
+                          <Grid item xs={6} key={appliance._id}> {/* Mỗi item chiếm 50% chiều rộng */}
+                            <ListItem>
+                              <ListItemIcon>
+                                {IconAppliances ? (
+                                  <IconAppliances sx={{ color: "black" }} />
+                                ) : null}
+                              </ListItemIcon>
+                              <ListItemText
+                                sx={{ color: "black", fontSize: "10px" }}
+                                primary={appliance.name}
+                              />
+                            </ListItem>
+                          </Grid>
+                        );
+                      })}
+                    </Grid>
                   ) : (
                     <Typography variant="body2">
                       No appliances available
                     </Typography>
                   )}
                 </List>
-                <Typography variant="h5">Nội quy</Typography>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Nội quy
+                </Typography>
                 <List>
-                  {spaceData.rulesId && spaceData.rulesId.length > 0 ? (
-                    spaceData.rulesId.map((ruleGroup) =>
-                      ruleGroup.rules && ruleGroup.rules.length > 0 ? (
-                        ruleGroup.rules.map((rule, index) => (
-                          <ListItem key={index}>
+                  {spaceData.rulesId && (spaceData.rulesId.rules.length > 0 || spaceData.rulesId.customeRules.length > 0) ? (
+                    <Grid container>
+                      {[...spaceData.rulesId.rules, ...spaceData.rulesId.customeRules].map((rule, index) => (
+                        <Grid item xs={6} key={index}>
+                          <ListItem>
                             <ListItemIcon>
-                              <AcUnitIcon /> {/* Example icon */}
+                              <BlockIcon /> {/* Icon ví dụ */}
                             </ListItemIcon>
                             <ListItemText primary={rule} />
                           </ListItem>
-                        ))
-                      ) : (
-                        <ListItem key={ruleGroup._id}>
-                          <ListItemText primary="No rules available" />
-                        </ListItem>
-                      )
-                    )
+                        </Grid>
+                      ))}
+                    </Grid>
                   ) : (
                     <ListItem>
-                      <ListItemText primary="No rule groups available" />
+                      <ListItemText primary="No rules available" />
                     </ListItem>
                   )}
                 </List>
+
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                  Đánh giá
+                </Typography>
+
               </Col>
               <Col item xs={12} md={4}>
                 <Box
@@ -540,12 +775,12 @@ function SpaceDetails() {
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
       <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
-          '& .MuiDrawer-paper': {
-            width: '50vw',  
-            left: '25vw',   
-            right: 'auto',
-          }, zIndex: 1000
-        }}>
+        '& .MuiDrawer-paper': {
+          width: '50vw',
+          left: '25vw',
+          right: 'auto',
+        }, zIndex: 1000
+      }}>
         {drawerContent()}
       </Drawer>
       {visibleCompare && (

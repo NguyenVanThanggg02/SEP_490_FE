@@ -31,7 +31,6 @@ body {
 }
 
 .search-item {
-  margin: 0 25px;
   position: relative;
   display: flex;
   flex-direction: column;

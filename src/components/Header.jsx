@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../style/Header.css";
 import Logo from "../assets/logo.png";
+import NewLogo from "../assets/images/newlogo.png";
+
 import { Col, Row } from "react-bootstrap";
 import AccountMenu from "./Menu";
 import { Link } from "react-router-dom";
@@ -12,8 +14,8 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
           <div className="logo">
             <Link to={"/"}>
               <img
-                src={Logo}
-                style={{ height: "180px", width: "190px" }}
+                src={NewLogo}  
+                style={{width:"60%",height:"100px",objectFit:"cover"}}
                 alt="logo"
               />
             </Link>

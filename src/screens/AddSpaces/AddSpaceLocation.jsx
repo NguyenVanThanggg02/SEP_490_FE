@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { TextField } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { SpaceContext } from '../../Context/SpaceContext ';
 
 const AddSpaceLocation = () => {
@@ -14,16 +14,14 @@ const AddSpaceLocation = () => {
     return (
         <Container fluid>
             <Row className="pb-5">
-                <Col>
-                    <h1 className="text-center">Vị trí không gian của bạn</h1>
-                </Col>
+                <Typography variant='h4' fontWeight={700} className="text-center" >Vị trí không gian của bạn</Typography>
             </Row>
             <Row className="d-flex justify-content-center align-items-center">
                 <Col md={6}>
                     <Row>
+                    <Typography variant="h6"  style={{ fontWeight: 700,fontSize:"20px" }} >Nhập địa chỉ <span style={{color:"red"}}>*</span></Typography>
                         <TextField
-                            label="Địa chỉ"
-                            variant="standard"
+                            variant="outlined"
                             value={location}
                             onChange={handleAddressChange}
                             fullWidth
