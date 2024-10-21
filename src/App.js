@@ -32,6 +32,8 @@ import BookingDate from "./screens/BookingDate";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import Footer from "./components/Footer";
+import ManaPost from "./screens/ManaPost";
+import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/History";
 import AddFunds from "./screens/AddFunds";
@@ -66,7 +68,12 @@ function Layout() {
       )}
       <main>
         <Routes>
-          <Route path="/" element={<Landing isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+          <Route
+            path="/"
+            element={
+              <Landing isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            }
+          />
           <Route
             path="/login"
             element={
@@ -77,6 +84,8 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
+          <Route path="/chat" element={<ChatBox />} />
+          <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile/:id" element={<HostProfile />} />

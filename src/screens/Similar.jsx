@@ -44,7 +44,7 @@ const Similar = ({ spaceData }) => {
         </h3>
       </Row>
       <Row>
-        {similarSpace.slice(0, 4).map((s) => (
+        {similarSpace.slice(-5).map((s) => (
           <Col
             md={3}
             xs={12}
@@ -61,7 +61,7 @@ const Similar = ({ spaceData }) => {
                   style={{ height: "230px", borderRadius: "7px" }}
                   src={
                     s.images && s.images.length > 0
-                      ? s.images[0]
+                      ? s.images[0].url
                       : "default-image-url.png"
                   }
                   alt={s.name}

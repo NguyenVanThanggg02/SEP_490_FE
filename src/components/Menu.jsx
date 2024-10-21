@@ -18,7 +18,16 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { ArrowRepeat, BoxArrowInRight, Clipboard2Check, Heart, List, PersonVcard, Wallet } from "react-bootstrap-icons";
+import {
+  ArrowRepeat,
+  BoxArrowInRight,
+  Calendar2Check,
+  Clipboard2Check,
+  Heart,
+  List,
+  PersonVcard,
+  Wallet,
+} from "react-bootstrap-icons";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -33,6 +42,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     phone: "",
     address: "",
   });
+  const role = localStorage.getItem("role");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -57,7 +67,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
-      console.log(userInfo);
+      console.log(userInfo.role);
 
       setFormData({
         fullname: response.data.fullname,
@@ -126,12 +136,17 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/chang_pass");
   };
+  const handleMannaPost = () => {
+    handleClose();
+    navigate("/manaspace");
+  };
 
   const handleSave = async () => {
     const userId = localStorage.getItem("userId");
     try {
       await axios.put(`http://localhost:9999/users/${userId}`, formData);
       setUserInfo((prev) => ({ ...prev, ...formData }));
+
       setEditMode(false);
       toast.success("Cập nhật thông tin thành công!");
     } catch (error) {
@@ -152,20 +167,22 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             size="small"
             sx={{
               ml: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between', 
-              padding: '8px',
-              borderRadius: '50px', 
-              border: '1px solid #ccc', 
-              width: '90px', 
-              height: '48px', 
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "8px",
+              borderRadius: "50px",
+              border: "1px solid #ccc",
+              width: "90px",
+              height: "48px",
             }}
             aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <i class="bi bi-list" style={{ marginLeft: '8px' }}><List/></i>
+            <i class="bi bi-list" style={{ marginLeft: "8px" }}>
+              <List />
+            </i>
             <Avatar sx={{ width: 32, height: 32 }} />
           </IconButton>
         </Tooltip>
@@ -193,17 +210,24 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
               Thay đổi mật khẩu
             </MenuItem>
+            {role === "2" && (
+              <MenuItem onClick={handleMannaPost}>
+                <Calendar2Check
+                  style={{ fontSize: "20px", marginRight: "10px" }}
+                />
+                Quản Lí Bài Đăng
+              </MenuItem>
+            )}
+
             <MenuItem onClick={handleAddFunds}>
-              <Wallet
-                style={{ fontSize: "20px", marginRight: "10px" }}
-              />
+              <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
               Nạp tiền
             </MenuItem>
             <MenuItem onClick={handleHistory}>
               <Clipboard2Check
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
-             Lịch sử đặt
+              Lịch sử đặt
             </MenuItem>
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight
