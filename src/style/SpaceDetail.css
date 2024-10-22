@@ -1,0 +1,4 @@
+/* styles.css */
+.ant-image-preview {
+    z-index: 2000 !important; /* Đặt z-index cao */
+  }

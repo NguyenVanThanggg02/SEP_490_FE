@@ -1,0 +1,13 @@
+.custom-calendar {
+  width: 1000px;  /* Set custom width */
+  font-size: 18px;  /* Increase the font size for better readability */
+}
+
+.custom-calendar .react-calendar__tile {
+  height: 70px;  /* Increase the height of each day tile */
+  font-size: 1.2em;  /* Increase font size */
+}
+
+.custom-calendar button {
+  width: 70px;  /* Increase the width of day buttons */
+}

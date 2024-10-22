@@ -1,18 +1,71 @@
 .add-space {
-    color: rgb(202, 202, 202); /* Màu chữ mặc định */
-    transition: color 0.3s, border-color 0.3s; /* Hiệu ứng chuyển màu và viền */
-    cursor: pointer; /* Thay đổi con trỏ chuột khi hover */
-    box-shadow: none; /* Bỏ shadow cho card */
-    height: 100%; /* Đảm bảo card có chiều cao đầy đủ */
-    border: 2px solid rgb(218, 218, 218); /* Viền xám khi chưa chọn */
+    color: rgb(202, 202, 202);
+    /* Màu chữ mặc định */
+    transition: color 0.3s, border-color 0.3s;
+    /* Hiệu ứng chuyển màu và viền */
+    cursor: pointer;
+    /* Thay đổi con trỏ chuột khi hover */
+    box-shadow: none;
+    /* Bỏ shadow cho card */
+    height: 100%;
+    /* Đảm bảo card có chiều cao đầy đủ */
+    border: 2px solid rgb(218, 218, 218);
+    /* Viền xám khi chưa chọn */
 }
 
 .add-space:hover {
-    color: black; /* Màu chữ khi hover */
-    border-color: black; /* Viền đen khi hover */
+    color: black;
+    /* Màu chữ khi hover */
+    border-color: black;
+    /* Viền đen khi hover */
 }
 
 .add-space.selected {
-    color: black; /* Màu chữ khi được chọn */
-    border-color: #1976D2; /* Viền màu #1976D2 khi được chọn */
+    color: black;
+    /* Màu chữ khi được chọn */
+    border-color: #1976D2;
+    /* Viền màu #1976D2 khi được chọn */
+}
+
+.image-item {
+    position: relative;
+
+    margin-bottom: 10px;
+
+    text-align: center;
+
+}
+
+.image-item img {
+    height: 100px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.image-item span {
+    position: absolute;
+    top: 13%;
+    left: 82%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Màu nền của nút */
+    padding: 0 3.5px 2px 3.5px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.image-item span:hover {
+    background-color: rgba(103, 94, 94, 0.8);
+    /* Màu nền khi hover */
+    color: #fff;
+    /* Màu chữ khi hover */
+}
+
+.ant-image-mask-info {
+    display: none !important;
+    /* Ẩn icon mắt */
+}
+
+.relative {
+    position: relative;
 }

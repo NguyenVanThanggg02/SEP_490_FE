@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import axios from 'axios';
 import * as MuiIcons from '@mui/icons-material';
 import "../../style/AddSpace.css";
@@ -38,31 +38,28 @@ export const AddSpaceCategories = () => {
 
     return (
         <Container fluid>
-            <Row className="pb-5">
-                <Col>
-                    <h1 className="text-center">Chọn thể loại không gian của bạn</h1>
-                </Col>
+            <Row className="">
+                <Typography variant='h4' fontWeight={700} className="text-center pb-5" >Chọn thể loại không gian của bạn</Typography>
             </Row>
             <Row className="d-flex justify-content-center align-items-center">
-                <Col md={5}>
+                <Col md={6} style={{marginBottom:"100px"}}>
                     <Row>
                         {categories.map((category) => {
                             const Icon = MuiIcons[category.iconName];
                             const isSelected = selectedCategoryId === category._id; 
-                            
 
                             return (
-                                <Col md={3} className="pb-5" key={category._id}>
+                                <Col md={12} className="mb-3" key={category._id}> 
                                     <Card
-                                        className={`text-center add-space ${isSelected ? 'selected' : ''}`} 
+                                        className={`text-center  add-space ${isSelected ? 'selected' : ''}`} 
                                         style={{ cursor: 'pointer', boxShadow: "none", height: '100%' }}
                                         onClick={() => handleCategoryClick(category._id)}
                                     >
                                         <Card.Body>
-                                            <Box sx={{ fontSize: '2rem' }}>
-                                                {Icon ? <Icon  /> : null} {/* Render icon dynamically */}
+                                            <Box sx={{ fontSize: '3em' }}>
+                                                {Icon ? <Icon style={{fontSize:"40px"}} /> : null} 
                                             </Box>
-                                            <Card.Title style={{ fontSize: "1rem" }}>{category.name}</Card.Title>
+                                            <Card.Title style={{ fontSize: "1.2rem" }}>{category.name}</Card.Title>
                                         </Card.Body>
                                     </Card>
                                 </Col>

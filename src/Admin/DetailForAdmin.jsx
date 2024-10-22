@@ -69,7 +69,7 @@ const DetailForAdmin = ({ id, onBack }) => {
                           .map((imgUrl, index) => (
                             <Image
                               key={index}
-                              src={imgUrl}
+                              src={imgUrl.url}
                               alt={`Space image ${index + 1}`}
                               fluid
                               style={{ maxWidth: "200px", padding: "10px", height:'150px' }}

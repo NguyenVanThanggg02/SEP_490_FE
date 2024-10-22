@@ -58,6 +58,21 @@ const ListSpace = () => {
   //       setListSpace([]);
   //     });
   // }, []);
+  useEffect(() => {
+    fetch("http://localhost:9999/spaces/all")
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setListSpace(data);
+        } else {
+          setListSpace([]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+        setListSpace([]);
+      });
+  }, []);
 
   useEffect(() => {
     axios
@@ -268,23 +283,7 @@ const handleDistrictSelect = (districtName) => {
         <Col md={3}>
           <Row>
             <div class="filter-container">
-              {/* <div className="filter-section">
-                <div className="filter-section-title">
-                  Chọn theo thể loại không gian:
-                </div>
-                {categories.map((category) => (
-                  <div className="filter-item" key={category._id}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={category._id}
-                        onChange={(e) => handleChooseCate(e, category)}
-                      />
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
-              </div> */}
+           
               <Col md={7} style={{ display: "flex" }}>
                 <div style={{ position: "relative" }}>
                   <input
@@ -646,7 +645,7 @@ const handleDistrictSelect = (districtName) => {
                           <Carousel.Item key={index}>
                             <img
                               className="d-block w-100"
-                              src={img}
+                              src={img.url}
                               alt={`Ảnh slide ${index + 1}`}
                               height="270"
                               style={{

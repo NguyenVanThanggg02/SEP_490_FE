@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../style/Header.css";
 import Logo from "../assets/logo.png";
+import NewLogo from "../assets/images/newlogo.png";
+
 import { Col, Row } from "react-bootstrap";
 import AccountMenu from "./Menu";
 import { Link } from "react-router-dom";

@@ -14,7 +14,7 @@ const PostManagement = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces")
+      .get("http://localhost:9999/spaces/all")
       .then((response) => {
         setSpaces(response.data);
       })
@@ -102,7 +102,7 @@ const PostManagement = () => {
                       <td>{index + 1}</td>
                       <td>
                         <img
-                          src={s.images[0]}
+                          src={s.images[0].url}
                           alt={s.name}
                           style={{ width: "100px", height: "150px",width:'150px' }}
                         />
