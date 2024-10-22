@@ -33,8 +33,9 @@ export default function AddSpaceFlow() {
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
-    const ruleId = await addRules();
 
+    const ruleId = await addRules();
+    
       // Sau khi thêm quy định thành công, thêm thiết bị
       const applianceId = await addAppliances();
 
