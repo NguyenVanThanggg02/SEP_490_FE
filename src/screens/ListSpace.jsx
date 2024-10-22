@@ -16,6 +16,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "../style/listSpace.css";
 import { priceFormatter } from "../utils/numberFormatter";
+import { InputAdornment, TextField } from "@mui/material";
 
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
@@ -33,28 +34,30 @@ const ListSpace = () => {
   const [showSuggestions, setShowSuggestions] = useState(false); 
   const [, setSelectedCate] = useState(null);
   const [minPrice, setMinPrice] = useState('');
+  const [areaMin, setAreaMin] = useState('');
+  const [areaMax, setAreaMax] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [areaList, setAreaList] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
-  console.log(selectedAreas);
+  const [selectedAppliance, setSelectedAppliance] = useState([]);
   
-  useEffect(() => {
-    fetch("http://localhost:9999/spaces")
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setListSpace(data);
-          const uniqueAreas = [...new Set(data.map(space => space.area))];
-          setAreaList(uniqueAreas);
-        } else {
-          setListSpace([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        setListSpace([]);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:9999/spaces")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (Array.isArray(data)) {
+  //         setListSpace(data);
+  //         const uniqueAreas = [...new Set(data.map(space => space.area))];
+  //         setAreaList(uniqueAreas);
+  //       } else {
+  //         setListSpace([]);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data: ", error);
+  //       setListSpace([]);
+  //     });
+  // }, []);
 
   useEffect(() => {
     axios
@@ -70,9 +73,14 @@ const ListSpace = () => {
       .catch((error) => console.error("Error fetching appliances:", error));
   }, []);
 
-  const applianceNames = appliances
-    .map((item) => item.appliances.map((appliance) => appliance.name))
-    .flat();
+  const applianceNames = [
+    ...new Set(
+      appliances.flatMap((item) =>
+        item.appliances.map((appliance) => appliance.name)
+      )
+    ),
+  ];
+
   const loadData = async () => {
     try {
       let response;
@@ -131,6 +139,18 @@ const ListSpace = () => {
       setSelectedAreas((prev) => prev.filter((a) => a !== area));
     }
   };
+
+  const handleSelectedAppliance = (e) => {
+    const app = e.target.value;
+    const isChecked = e.target.checked;
+  
+    if (isChecked) {
+      setSelectedAppliance((prev) => [...prev, app]);
+    } else {
+      setSelectedAppliance((prev) => prev.filter((a) => a !== app));
+    }
+  };
+
   const handleChooseCate = (e) => {
     const selectedCateId = e.target.value;
     if (selectedCateId !== "0") {
@@ -208,7 +228,7 @@ const ListSpace = () => {
   }, [districtSearch]); 
   useEffect(() => {
     handleFilter(districtSearch); 
-  }, [selectedAreas, districtSearch]);
+  }, [selectedAreas, districtSearch, selectedAppliance]);
   
   const handleFilter = async (districtName) => {
   try {
@@ -217,7 +237,10 @@ const ListSpace = () => {
           location: districtName,
           minPrice,
           maxPrice,
-          area: selectedAreas,
+          // area: selectedAreas,
+          areaMin,
+          areaMax,
+          applianceNames: selectedAppliance,
         },
       });
       if (response.data && response.data.length > 0) {
@@ -318,8 +341,8 @@ const handleDistrictSelect = (districtName) => {
                         <input
                           type="checkbox"
                           value={name}
-                          style={{marginRight:'7px'}}
-                          // onChange={(e) => handleChooseCate(e, name)}
+                          style={{ marginRight: "7px" }}
+                          onChange={handleSelectedAppliance}
                         />
                         {name}
                       </label>
@@ -327,7 +350,7 @@ const handleDistrictSelect = (districtName) => {
                   ))}
                 </div>
               </div>
-              <div className="custom-filter-section">
+              {/* <div className="custom-filter-section">
                 <div className="filter-section-title">Diện tích: </div>
                 <div className="custom-scrollable-filter">
                   {areaList.map((area, index) => (
@@ -343,6 +366,111 @@ const handleDistrictSelect = (districtName) => {
                       </label>
                     </div>
                   ))}
+                </div>
+              </div> */}
+
+              <div className="filter-section" style={{ border: "none" }}>
+                <div
+                  className="filter-section-title"
+                  style={{ marginRight: "10px" }}
+                >
+                  Diện tích:
+                </div>
+                <div
+                  style={{
+                    borderBottom: "none",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* <input
+                    type="text"
+                    placeholder="  Từ"
+                    value={areaMin}
+                    onChange={(e) => setAreaMin(e.target.value)}
+                    style={{
+                      height: "40px",
+                      border: "solid #CCC 1px",
+                      borderRadius: "10px",
+                      width: "117px",
+                      marginRight: "10px",
+                    }}
+                  /> */}
+
+                  <TextField
+                    name="area"
+                    variant="outlined"
+                    value={areaMin}
+                    onChange={(e) => setAreaMin(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          / m<sup>2</sup>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onKeyDown={(e) => {
+                      // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "."
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                    sx={{
+                      height: "40px",
+                      "& .MuiOutlinedInput-root": {
+                        height: "100%",
+                      },
+                      width: "118px",
+                      marginRight: "10px",
+                    }}
+                  />
+
+                  <TextField
+                    name="area"
+                    variant="outlined"
+                    required
+                    value={areaMax}
+                    onChange={(e) => setAreaMax(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          / m<sup>2</sup>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onKeyDown={(e) => {
+                      // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "."
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                    sx={{
+                      height: "40px",
+                      "& .MuiOutlinedInput-root": {
+                        height: "100%",
+                      },
+                      width: "118px",
+                    }}
+                  />
+                  <Search
+                    onClick={handleFilter}
+                    style={{
+                      height: "50px",
+                      cursor: "pointer",
+                      paddingLeft: "11px",
+                      fontSize: "30px",
+                    }}
+                  />
                 </div>
               </div>
 
@@ -368,8 +496,8 @@ const handleDistrictSelect = (districtName) => {
                     style={{
                       height: "40px",
                       border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "117px",
+                      borderRadius: "5px",
+                      width: "118px",
                       marginRight: "10px",
                     }}
                   />
@@ -381,8 +509,8 @@ const handleDistrictSelect = (districtName) => {
                     style={{
                       height: "40px",
                       border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "117px",
+                      borderRadius: "5px",
+                      width: "118px",
                     }}
                   />
                   <Search
