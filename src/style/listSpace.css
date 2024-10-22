@@ -64,7 +64,7 @@
     overflow-y: auto; 
     padding: 5px; 
     scrollbar-width: thin; 
-    scrollbar-color: orange transparent; 
+    scrollbar-color: rgb(101, 101, 99) transparent; 
   }
   
   .custom-scrollable-filter::-webkit-scrollbar {
