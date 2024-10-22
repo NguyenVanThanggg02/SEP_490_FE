@@ -35,7 +35,7 @@ import Footer from "./components/Footer";
 import ManaPost from "./screens/ManaPost";
 import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
-import History from "./screens/History";
+import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import Blog from "./screens/Blog";
 
