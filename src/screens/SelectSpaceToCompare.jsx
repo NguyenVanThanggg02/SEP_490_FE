@@ -61,7 +61,7 @@ const SelectSpaceToCompare = (props) => {
               >
                 <CardMedia
                   sx={{ height: 250 }}
-                  image={s.images[0]}
+                  image={s.images[0].url}
                   title="image spaceF"
                 />
                 <CardContent>

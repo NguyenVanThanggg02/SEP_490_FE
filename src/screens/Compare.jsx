@@ -86,10 +86,10 @@ const Compare = () => {
                       {key === 'images' ? (
                         <>
                           <td>
-                            {value.space1 ? <img src={value.space1} alt="Space 1" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
+                            {value.space1 ? <img src={value.space1.url} alt="Space 1" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
                           </td>
                           <td>
-                            {value.space2 ? <img src={value.space2} alt="Space 2" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
+                            {value.space2 ? <img src={value.space2.url} alt="Space 2" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
                           </td>
                         </>
                       ) : (
@@ -114,12 +114,12 @@ const Compare = () => {
                         <>
                           <td>
                             {data.space1.images ? (
-                              <img src={data.space1.images} alt="Space 1" style={{ width: '200px', height: '200px' }} />
+                              <img src={data.space1.images.url} alt="Space 1" style={{ width: '200px', height: '200px' }} />
                             ) : 'Không có ảnh'}
                           </td>
                           <td>
                             {data.space2.images ? (
-                              <img src={data.space2.images} alt="Space 2" style={{ width: '200px', height: '200px' }} />
+                              <img src={data.space2.images.url} alt="Space 2" style={{ width: '200px', height: '200px' }} />
                             ) : 'Không có ảnh'}
                           </td>
                         </>
