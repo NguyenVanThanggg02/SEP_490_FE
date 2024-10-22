@@ -5,6 +5,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { priceFormatter } from '../utils/numberFormatter';
+import { StarFill } from 'react-bootstrap-icons';
 export const Favorites = () => {
   const [spaceFavo, setSpaceFavos] = useState([]);
 
@@ -46,13 +48,15 @@ export const Favorites = () => {
   };
 
   return (
-    <Container >
+    <Container>
       <Row>
         <Col md={12}>
           <Row>
             {spaceFavo.map((spaceF, index) => (
               <Col md={3}>
-                <div style={{ position: "relative",height:"100%" }} key={index}
+                <div
+                  style={{ position: "relative", height: "100%" }}
+                  key={index}
                   onClick={() => handleCardClick(spaceF._id)}
                 >
                   <div
@@ -65,7 +69,11 @@ export const Favorites = () => {
                     }}
                     onClick={(event) => changeFavorite(spaceF._id, event)}
                   >
-                    {spaceF.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
+                    {spaceF.favorite ? (
+                      <FavoriteIcon style={{ color: "#FF385C" }} />
+                    ) : (
+                      <FavoriteBorderIcon style={{ color: "white" }} />
+                    )}
                   </div>
                   <CardMedia
                     sx={{ height: 250 }}
@@ -79,23 +87,54 @@ export const Favorites = () => {
                       borderBottomRightRadius: "15px",
                     }}
                   />
-                  <CardContent style={{padding:'20px 0'}}>
-                    <Typography gutterBottom variant="h5"  component="div">
+                  <CardContent style={{ padding: "20px 0" }}>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        color: "#2d2d2d",
+                      }}
+                    >
                       {spaceF.name}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {spaceF.pricePerHour} VND / hour
-                    </Typography>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", marginRight: 2 }} 
+                        style={{
+                          marginLeft: "5px",
+                          fontSize: "15px",
+                          color: "#2d2d2d",
+                          fontWeight: "bold",
+                        }}
+                      >
+                       Giá: {priceFormatter(spaceF.pricePerHour)} VND / Giờ
+                      </Typography>
+                      <Typography
+                        gutterBottom
+                        style={{ display: "flex", alignItems: "center" }}
+                      >
+                        <StarFill
+                          style={{
+                            color: "#FFCC00",
+                            margin: "3px 15px 15px 0",
+                          }}
+                        />
+                        <span style={{ margin: "0 10px 13px -7px" }}>4.5</span>
+                      </Typography>
+                    </div>
                   </CardContent>
                 </div>
               </Col>
             ))}
-
           </Row>
         </Col>
       </Row>
     </Container>
-  )
+  );
 }
 export default Favorites
 

@@ -99,17 +99,8 @@ const ChangePass = () => {
 
   return (
     <Container fluid>
-      <Row className="mt-2 ml-2">
-        <Breadcrumb>
-          <Breadcrumb.Item href="/">Trang chủ</Breadcrumb.Item>
-          <Breadcrumb.Item active>Thay đổi mật khẩu</Breadcrumb.Item>
-        </Breadcrumb>
-      </Row>
       <Container style={{ borderRadius: "30px" }}>
         <Row style={containerStyle}>
-          {/* <Row style={{ marginTop: "60px", paddingBottom: "20px" }}>
-            <h3> Change PassWord</h3>
-          </Row> */}
           <Col md={8}>
             <InputGroup className="mb-3">
               <Lock

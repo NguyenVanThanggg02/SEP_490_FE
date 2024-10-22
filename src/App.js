@@ -33,7 +33,7 @@ import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
 import ManaPost from "./screens/ManaPost";
 import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
-import History from "./screens/History";
+import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 
 function Layout() {

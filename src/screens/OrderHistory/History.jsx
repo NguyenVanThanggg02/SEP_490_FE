@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../style/History.css';
+import '../../style/History.css';
 
 const History = () => {
     const [fromDate, setFromDate] = useState("");
@@ -7,7 +7,6 @@ const History = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [service, setService] = useState("Tất cả");
     const [status, setStatus] = useState("Tất cả");
-
     const [historyData, setHistoryData] = useState([]);
 
     const handleSearch = () => {
