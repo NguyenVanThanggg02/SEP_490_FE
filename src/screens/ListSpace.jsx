@@ -41,23 +41,7 @@ const ListSpace = () => {
   const [selectedAreas, setSelectedAreas] = useState([]);
   const [selectedAppliance, setSelectedAppliance] = useState([]);
   
-  // useEffect(() => {
-  //   fetch("http://localhost:9999/spaces")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       if (Array.isArray(data)) {
-  //         setListSpace(data);
-  //         const uniqueAreas = [...new Set(data.map(space => space.area))];
-  //         setAreaList(uniqueAreas);
-  //       } else {
-  //         setListSpace([]);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data: ", error);
-  //       setListSpace([]);
-  //     });
-  // }, []);
+
   useEffect(() => {
     fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
@@ -134,26 +118,6 @@ const ListSpace = () => {
     }
   }, [search]);
   
-  // const handleChooseCate = (e, category) => {
-  //   const selectedCateId = category._id;
-  //   const isChecked = e.target.checked;
-
-  //   if (isChecked) {
-  //     getSpaceByCate(selectedCateId);
-  //   } else {
-  //     loadData();
-  //   }
-  // };
-  const handleAreaSelect = (e) => {
-    const area = e.target.value;
-    const isChecked = e.target.checked;
-  
-    if (isChecked) {
-      setSelectedAreas((prev) => [...prev, area]);
-    } else {
-      setSelectedAreas((prev) => prev.filter((a) => a !== area));
-    }
-  };
 
   const handleSelectedAppliance = (e) => {
     const app = e.target.value;
@@ -349,25 +313,7 @@ const handleDistrictSelect = (districtName) => {
                   ))}
                 </div>
               </div>
-              {/* <div className="custom-filter-section">
-                <div className="filter-section-title">Diện tích: </div>
-                <div className="custom-scrollable-filter">
-                  {areaList.map((area, index) => (
-                    <div className="custom-filter-item" key={index}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          value={area}
-                          onChange={handleAreaSelect} 
-                          style={{marginRight:'7px'}}
-                        />
-                        {area}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div> */}
-
+              
               <div className="filter-section" style={{ border: "none" }}>
                 <div
                   className="filter-section-title"
@@ -382,19 +328,6 @@ const handleDistrictSelect = (districtName) => {
                     alignItems: "center",
                   }}
                 >
-                  {/* <input
-                    type="text"
-                    placeholder="  Từ"
-                    value={areaMin}
-                    onChange={(e) => setAreaMin(e.target.value)}
-                    style={{
-                      height: "40px",
-                      border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "117px",
-                      marginRight: "10px",
-                    }}
-                  /> */}
 
                   <TextField
                     name="area"
@@ -409,7 +342,6 @@ const handleDistrictSelect = (districtName) => {
                       ),
                     }}
                     onKeyDown={(e) => {
-                      // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                       if (
                         !/[0-9]/.test(e.key) &&
                         e.key !== "Backspace" &&
@@ -443,7 +375,6 @@ const handleDistrictSelect = (districtName) => {
                       ),
                     }}
                     onKeyDown={(e) => {
-                      // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                       if (
                         !/[0-9]/.test(e.key) &&
                         e.key !== "Backspace" &&
@@ -573,13 +504,6 @@ const handleDistrictSelect = (districtName) => {
                   </div>
                 </div>
               </div>
-              {/* <Button
-                onClick={handleAll}
-                className="btn btn-success"
-                style={{ marginLeft: "30%" }}
-              >
-                Xem tất cả
-              </Button> */}
             </div>
           </Row>
         </Col>
