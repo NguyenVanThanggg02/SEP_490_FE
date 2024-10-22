@@ -35,7 +35,9 @@ const ListSpace = () => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [areaList, setAreaList] = useState([]);
-
+  const [selectedAreas, setSelectedAreas] = useState([]);
+  console.log(selectedAreas);
+  
   useEffect(() => {
     fetch("http://localhost:9999/spaces")
       .then((response) => response.json())
@@ -119,7 +121,16 @@ const ListSpace = () => {
   //     loadData();
   //   }
   // };
+  const handleAreaSelect = (e) => {
+    const area = e.target.value;
+    const isChecked = e.target.checked;
   
+    if (isChecked) {
+      setSelectedAreas((prev) => [...prev, area]);
+    } else {
+      setSelectedAreas((prev) => prev.filter((a) => a !== area));
+    }
+  };
   const handleChooseCate = (e) => {
     const selectedCateId = e.target.value;
     if (selectedCateId !== "0") {
@@ -195,6 +206,9 @@ const ListSpace = () => {
       loadData(); 
     }
   }, [districtSearch]); 
+  useEffect(() => {
+    handleFilter(districtSearch); 
+  }, [selectedAreas, districtSearch]);
   
   const handleFilter = async (districtName) => {
   try {
@@ -203,6 +217,7 @@ const ListSpace = () => {
           location: districtName,
           minPrice,
           maxPrice,
+          area: selectedAreas,
         },
       });
       if (response.data && response.data.length > 0) {
@@ -321,8 +336,8 @@ const handleDistrictSelect = (districtName) => {
                         <input
                           type="checkbox"
                           value={area}
+                          onChange={handleAreaSelect} 
                           style={{marginRight:'7px'}}
-                          // onChange={(e) => handleChooseArea(e, area)} // Tùy ý xử lý khi chọn
                         />
                         {area}
                       </label>
