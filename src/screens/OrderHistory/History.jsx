@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../style/History.css';
+import '../../style/History.css';
 
 const History = () => {
     const [fromDate, setFromDate] = useState("");
@@ -7,7 +7,6 @@ const History = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [service, setService] = useState("Tất cả");
     const [status, setStatus] = useState("Tất cả");
-
     const [historyData, setHistoryData] = useState([]);
 
     const handleSearch = () => {
@@ -23,7 +22,7 @@ const History = () => {
     return (
         <div className="container containerhistory">
             <div className="card cardhistory">
-                <div className="card-headerhistory">Lịch sử không gian</div>
+                <div className="card-headerhistory">Lịch sử đặt</div>
                 <div className="card-body">
                     <div className="row mb-3">
                         <div className="col-md-2">
@@ -52,19 +51,7 @@ const History = () => {
                                 placeholder="Chọn ngày"
                             />
                         </div>
-                        <div className="col-md-2">
-                            <label htmlFor="phoneNumber" className="form-label">
-                                Số điện thoại
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="phoneNumber"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                placeholder="Nhập số điện thoại"
-                            />
-                        </div>
+                        
                         <div className="col-md-2">
                             <label htmlFor="service" className="form-label">
                                 Không gian
@@ -99,7 +86,7 @@ const History = () => {
                     </div>
                     <div className="card cardhistory">
                         <div className="card-headerhistory d-flex justify-content-between align-items-center">
-                            <span>Lịch sử không gian</span>
+                            <span>Lịch sử đặt</span>
                         </div>
                         <div className="card-body">
                             <div className="row mb-3">
@@ -111,9 +98,8 @@ const History = () => {
                                 <thead>
                                     <tr>
                                         <th>Ảnh</th>
-                                        <th>Không gian</th>
+                                        <th>Địa điểm</th>
                                         <th>Giá</th>
-                                        <th>Số điện thoại</th>
                                         <th>Thời gian</th>
                                         <th>Trạng thái</th>
                                     </tr>
