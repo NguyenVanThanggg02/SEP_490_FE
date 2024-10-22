@@ -8,14 +8,18 @@ import "@radix-ui/themes/styles.css";
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { SpaceProvider } from "./Context/SpaceContext ";
+import { Provider } from "react-redux";
+import store from "./store/store.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <SpaceProvider>
-      <App />
-    </SpaceProvider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <React.StrictMode>
+      <SpaceProvider>
+        <App />
+      </SpaceProvider>
+    </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

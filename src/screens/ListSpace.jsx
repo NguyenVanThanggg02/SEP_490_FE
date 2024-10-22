@@ -15,6 +15,7 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "../style/listSpace.css";
+import { priceFormatter } from "../utils/numberFormatter";
 
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
@@ -35,7 +36,7 @@ const ListSpace = () => {
   const [maxPrice, setMaxPrice] = useState('');
 
   useEffect(() => {
-    fetch("http://localhost:9999/spaces")
+    fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -186,12 +187,17 @@ const ListSpace = () => {
   const filteredDistricts = districts.filter((district) =>
     district.name.toLowerCase().includes(districtSearch.toLowerCase())
   );
-
-  const handleFilter = async () => {
+  useEffect(() => {
+    if (districtSearch === "") {
+      loadData(); 
+    }
+  }, [districtSearch]); 
+  
+  const handleFilter = async (districtName) => {
   try {
       const response = await axios.get("http://localhost:9999/spaces/filter", {
         params: {
-          location: districtSearch,
+          location: districtName,
           minPrice,
           maxPrice,
         },
@@ -205,7 +211,7 @@ const ListSpace = () => {
 const handleDistrictSelect = (districtName) => {
   setDistrictSearch(districtName); 
   setShowSuggestions(false); 
-  handleFilter(); 
+  handleFilter(districtName); 
 };
 
   return (
@@ -214,23 +220,7 @@ const handleDistrictSelect = (districtName) => {
         <Col md={3}>
           <Row>
             <div class="filter-container">
-              {/* <div className="filter-section">
-                <div className="filter-section-title">
-                  Chọn theo thể loại không gian:
-                </div>
-                {categories.map((category) => (
-                  <div className="filter-item" key={category._id}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={category._id}
-                        onChange={(e) => handleChooseCate(e, category)}
-                      />
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
-              </div> */}
+           
               <Col md={7} style={{ display: "flex" }}>
                 <div style={{ position: "relative" }}>
                   <input
@@ -424,7 +414,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "415px",
+                      height: "433px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -466,7 +456,7 @@ const handleDistrictSelect = (districtName) => {
                           <Carousel.Item key={index}>
                             <img
                               className="d-block w-100"
-                              src={img}
+                              src={img.url}
                               alt={`Ảnh slide ${index + 1}`}
                               height="270"
                               style={{
@@ -534,7 +524,7 @@ const handleDistrictSelect = (districtName) => {
                               fontWeight: "bold",
                             }}
                           >
-                            Giá: {l.pricePerHour} / VND
+                            Giá: {priceFormatter(l.pricePerHour)} / VND
                           </Card.Text>
                           <Card.Text style={{ color: "#2d2d2d", display:'flex' }}>
                             <StarFill
