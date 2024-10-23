@@ -37,6 +37,7 @@ import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
+import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -57,7 +58,8 @@ function Layout() {
     "/userneed",
     "/login",
     "/register",
-    "/alladd"
+    "/alladd",
+    
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 
@@ -108,6 +110,7 @@ function Layout() {
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
           <Route path="/booking" element={<BookingDate />} />
+          <Route path="/posted" element={<SpacePosted />} />
 
         </Routes>
       </main>

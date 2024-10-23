@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../style/Header.css";
-import Logo from "../assets/logo.png";
 import NewLogo from "../assets/images/newlogo.png";
 
 import { Col, Row } from "react-bootstrap";
@@ -14,7 +13,7 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
         <div className="logo">
           <Link to={"/"}>
             <img
-              src={Logo}
+              src={NewLogo}
               style={{ height: "180px", width: "190px" }}
               alt="logo"
             />
