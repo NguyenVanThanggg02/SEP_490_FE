@@ -149,7 +149,7 @@ const Comment = () => {
   };
 
   return (
-    <div class="card">
+    <div class="cardd">
       <span class="title">Bình luận</span>
       {username && (
         <Row
