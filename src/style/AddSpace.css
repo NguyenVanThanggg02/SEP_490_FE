@@ -10,7 +10,6 @@
     height: 100%;
     /* Đảm bảo card có chiều cao đầy đủ */
     border: 2px solid rgb(218, 218, 218);
-    /* Viền xám khi chưa chọn */
 }
 
 .add-space:hover {
