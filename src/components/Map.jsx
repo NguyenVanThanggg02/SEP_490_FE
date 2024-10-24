@@ -3,7 +3,7 @@ import axios from "axios"; // Nhập axios để gọi API
 import Map, { FullscreenControl, Marker, NavigationControl } from "react-map-gl";
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocation, setLocation2}) => {
+export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocation, setLocation2, handleSetLocationSpace}) => {
     const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
     const mapRef = useRef(null);
 
@@ -72,6 +72,7 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
             const valueSelect = [longitude,latitude].toString()
             setLocation2(valueSelect)
             setLocationSuggest([{ value: valueSelect, label: addressComponents }])
+            handleSetLocationSpace(valueSelect)
             setLocation('')
         } catch (error) {
             console.error("Lỗi khi lấy địa chỉ:", error);
@@ -89,19 +90,19 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
     };
 
     return (
-        <div>
+        <div style={{ width: "100%", display: "flex", justifyContent: 'center'}}>
             <Map
-                latitude={marker?.latitude || 40}
-                longitude={marker?.longitude || -100}
+                latitude={marker?.latitude || 21.027448753456103}
+                longitude={marker?.longitude || 105.8336955905755}
                 // zoom={marker ? 20: null}
                 ref={mapRef}
                 mapboxAccessToken={MAPBOX_TOKEN}
                 initialViewState={{
-                    longitude: -100,
-                    latitude: 40,
-                    zoom: 3.5
+                    longitude: 105.8336955905755,
+                    latitude: 21.027448753456103,
+                    zoom: 12
                 }}
-                style={{ width: "100%", height: "900px" }} // Đảm bảo bản đồ đủ lớn
+                style={{ width: "80%", height: "500px" }} // Đảm bảo bản đồ đủ lớn
                 mapStyle="mapbox://styles/mapbox/streets-v9"
                 onClick={handleMapClick}  // Thêm sự kiện onClick
             >

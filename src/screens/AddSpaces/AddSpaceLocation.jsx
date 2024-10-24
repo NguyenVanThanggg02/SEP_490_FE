@@ -3,6 +3,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { TextField, Typography } from '@mui/material';
 import { MapSearch } from '../../components/Map';
 import { Select } from 'antd';
+import { SpaceContext } from '../../Context/SpaceContext ';
 
 const AddSpaceLocation = () => {
     const [location, setLocation] = useState('');
@@ -10,8 +11,24 @@ const AddSpaceLocation = () => {
 
     const [address, setAddress] = useState('');
     const [locationSuggest, setLocationSuggest] = useState(null);
-console.log("locationSuggest", locationSuggest);
+    const {setSpaceInfo, spaceInfo  } = useContext(SpaceContext);
 
+    const handleSetLocationSpace = (value) =>{
+        setLocation(value)
+        const location = locationSuggest.find((i) => i.value === value)?.label;
+        console.log("location", location);
+        const latLng = String(value)?.split(",")
+        if(latLng && location){
+            setSpaceInfo(prev => ({
+                ...prev,
+                location,
+                latLng: [latLng[1], latLng[0]]
+            }));
+        }
+        
+    }
+
+console.log("spaceInfo",spaceInfo);
 
     return (
         <Container fluid>
@@ -22,10 +39,16 @@ console.log("locationSuggest", locationSuggest);
                 <Col md={6}>
                     <Row>
                         <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px" }}>Nhập địa chỉ <span style={{ color: "red" }}>*</span></Typography>
-                        
+                        <style>
+                            {`
+                                .ant-select-selector{
+                                    width: 103%
+                                }
+                            `}
+                        </style>
                         <Select
                         size='large'
-                        style={{marginBottom: 50}}
+                        style={{marginBottom: 50, width: "100%"}}
                             onInputKeyDown={(e) => {
                                 console.log("nhập", e.target.value); setAddress(e.target.value)
                             }}
@@ -35,13 +58,14 @@ console.log("locationSuggest", locationSuggest);
                                 (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                             }
                             options={locationSuggest}
-                            onChange={(e) => setLocation(e)}
+                            onChange={(e) => handleSetLocationSpace(e)}
                             value={location || location2}
+                            
                         />
                     </Row>
                 </Col>
             </Row>
-            <MapSearch textSearch={address} setLocationSuggest={setLocationSuggest} location={location} setLocation={setLocation} setLocation2={setLocation2}/>
+            <MapSearch textSearch={address} setLocationSuggest={setLocationSuggest} location={location} setLocation={setLocation} setLocation2={setLocation2} handleSetLocationSpace={handleSetLocationSpace}/>
         </Container>
     );
 };
