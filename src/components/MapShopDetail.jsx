@@ -6,8 +6,6 @@ export const MapShopDetail = ({ lat, lng}) => {
     const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
     const mapRef = useRef(null);
 
-    
-
     return (
         <div style={{ width: "150%", display: "flex", justifyContent: 'center'}}>
             <Map
@@ -29,7 +27,7 @@ export const MapShopDetail = ({ lat, lng}) => {
                         latitude={lat}
                         color="red"
                         anchor="bottom"  // Điều chỉnh vị trí để cải thiện căn chỉnh
-                        draggable={true} 
+                        draggable={false} 
                     />}
                 <NavigationControl />
                 <FullscreenControl />
