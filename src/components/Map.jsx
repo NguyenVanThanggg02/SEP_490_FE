@@ -1,15 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios"; // Nhập axios để gọi API
 import Map, { FullscreenControl, Marker, NavigationControl } from "react-map-gl";
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { SpaceContext } from "../Context/SpaceContext ";
 
-export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocation, setLocation2, handleSetLocationSpace}) => {
+export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocation, setLocation2}) => {
     const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
     const mapRef = useRef(null);
 
     // State để lưu vị trí marker và địa chỉ
     const [marker, setMarker] = useState(null);
     const [address, setAddress] = useState(""); // State để lưu địa chỉ
+    const {setSpaceInfo, spaceInfo  } = useContext(SpaceContext);
 
     const handleAddressChange = async (input) => {
         setAddress(input);
@@ -72,7 +74,11 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
             const valueSelect = [longitude,latitude].toString()
             setLocation2(valueSelect)
             setLocationSuggest([{ value: valueSelect, label: addressComponents }])
-            handleSetLocationSpace(valueSelect)
+            setSpaceInfo(prev => ({
+                ...prev,
+                location: addressComponents,
+                latLng: [latitude, longitude]
+            }));
             setLocation('')
         } catch (error) {
             console.error("Lỗi khi lấy địa chỉ:", error);

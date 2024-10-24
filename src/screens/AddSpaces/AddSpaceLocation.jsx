@@ -11,12 +11,11 @@ const AddSpaceLocation = () => {
 
     const [address, setAddress] = useState('');
     const [locationSuggest, setLocationSuggest] = useState(null);
-    const {setSpaceInfo, spaceInfo  } = useContext(SpaceContext);
+    const {setSpaceInfo  } = useContext(SpaceContext);
 
     const handleSetLocationSpace = (value) =>{
         setLocation(value)
         const location = locationSuggest.find((i) => i.value === value)?.label;
-        console.log("location", location);
         const latLng = String(value)?.split(",")
         if(latLng && location){
             setSpaceInfo(prev => ({
@@ -28,7 +27,6 @@ const AddSpaceLocation = () => {
         
     }
 
-console.log("spaceInfo",spaceInfo);
 
     return (
         <Container fluid>
