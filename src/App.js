@@ -37,6 +37,7 @@ import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
+import Blog from "./screens/Blog";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -108,6 +109,7 @@ function Layout() {
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
           <Route path="/booking" element={<BookingDate />} />
+          <Route path="/blog" element={<Blog />} />
 
         </Routes>
       </main>

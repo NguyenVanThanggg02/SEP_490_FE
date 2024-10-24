@@ -77,7 +77,7 @@ export const Favorites = () => {
                   </div>
                   <CardMedia
                     sx={{ height: 250 }}
-                    image={spaceF.images[0]}
+                    image={spaceF.images[0].url}
                     title="image spaceF"
                     style={{
                       objectFit: "cover",

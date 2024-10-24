@@ -1,4 +1,4 @@
-.card {
+.cardd {
   width: 98%;
   height: fit-content;
   margin-left: 10px;
@@ -7,7 +7,6 @@
     0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09),
     0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
   border-radius: 17px 17px 27px 27px;
-  padding-bottom: 30px;
 }
 
 .title {
@@ -325,37 +324,4 @@
 .radio > input:checked + label ~ label > svg,
 .radio > input:checked + label > svg {
   fill: #ff9e0b; /* Highlight the stars */
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.1);
-  }
-}
-
-@keyframes particle-explosion {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    filter: drop-shadow(0 0 10px rgba(255, 158, 11, 0.5));
-  }
-  100% {
-    filter: drop-shadow(0 0 20px rgba(255, 158, 11, 1));
-  }
 }
