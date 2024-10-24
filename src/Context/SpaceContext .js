@@ -19,8 +19,8 @@ export const SpaceProvider = ({ children }) => {
     pricePerDay: '',
     pricePerWeek: '',
     pricePerMonth: '',
-    images: []
-
+    images: [],
+    latLng: []
   });
   const [rules, setRules] = useState([]);
   const [selectedRules, setSelectedRules] = useState([]);

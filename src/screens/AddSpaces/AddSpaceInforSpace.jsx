@@ -15,7 +15,7 @@ import { Image } from 'antd'; // Import các component từ Antd
 
 
 const AddSpaceInforSpace = () => {
-    const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule } = useContext(SpaceContext);
+    const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule,  } = useContext(SpaceContext);
     const [errorMessage, setErrorMessage] = useState('');
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
     const [isLoading, setIsLoading] = useState(false);
