@@ -38,6 +38,7 @@ import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
+import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -111,6 +112,7 @@ function Layout() {
           />
           <Route path="/booking" element={<BookingDate />} />
           <Route path="/posted" element={<SpacePosted />} />
+          <Route path="/editposted" element={<EditSpacePosted />} />
 
         </Routes>
       </main>

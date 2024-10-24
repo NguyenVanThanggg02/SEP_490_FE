@@ -75,13 +75,19 @@ const SpacePosted = () => {
                 </Typography>
             </Row>
             <Row className="pb-5">
-                <Col md={5} style={{ marginLeft: "auto" }}>
+                <Col md={6} style={{ marginLeft: "auto" }}>
                     <TextField id="outlined-basic" placeholder='Tên không gian' variant="outlined" size="small"
-
                         InputProps={{
                             endAdornment: <InputAdornment position="end"><SearchIcon /></InputAdornment>,
-                        }} />
-                    <Button variant="contained" disableElevation size="large" className="ms-4"><AddIcon />Thêm không gian</Button>
+                        }}
+                        sx={{ width: '400px' }} />
+                    <Link
+                        to={'/alladd'}
+                        style={{ textDecoration: "none" }}
+                    >
+                        <Button variant="contained" disableElevation size="large" className="ms-4"><AddIcon />Thêm không gian</Button>
+
+                    </Link>
                 </Col>
             </Row>
             <Row>
@@ -113,8 +119,14 @@ const SpacePosted = () => {
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
-                                    <Button size="small" variant='contained' disableElevation   sx={{ textTransform: 'none' }}
-                                    >Chỉnh sửa</Button>
+                                    <Link
+                                        to={`/editposted`}
+                                        style={{ textDecoration: "none" }}
+                                    >
+                                        <Button size="small" variant='contained' disableElevation sx={{ textTransform: 'none' }}
+                                        >Chỉnh sửa</Button>
+                                    </Link>
+
                                     <Link
                                         to={`/spaces/${lpost._id}`}
                                         style={{ textDecoration: "none" }}
