@@ -1,5 +1,5 @@
 import React from "react";
-import "./AdmUI.css";
+import "../style/AdmUI.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faBell, faBriefcase, faTasks, faUsers, faBullseye } from '@fortawesome/free-solid-svg-icons';
