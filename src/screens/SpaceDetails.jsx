@@ -48,7 +48,7 @@ function SpaceDetails() {
   const [compare, setCompare] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-
+  const [category, setCategory] = useState(null)
 
   const nav = useNavigate()
 
@@ -71,6 +71,7 @@ function SpaceDetails() {
       try {
         const response = await axios.get(`http://localhost:9999/spaces/${id}`);
         setSpaceData(response.data);
+        setCategory(response.data.categoriesId._id);
 
       } catch (err) {
         setError(err);
@@ -685,7 +686,7 @@ function SpaceDetails() {
                     variant="h5"
                     sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
                   >
-                    {priceFormatter(spaceData.pricePerHour)} / giờ
+                    {priceFormatter(spaceData.pricePerHour)} VND / giờ
                   </Typography>
 
                   {/* Chọn ngày nhận và trả phòng */}

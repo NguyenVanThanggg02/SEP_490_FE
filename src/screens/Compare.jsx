@@ -128,12 +128,12 @@ const Compare = () => {
                         <>
                             <td>
                               {isPriceField(key)
-                                ? priceFormatter(value.space1)
+                                ? priceFormatter(value.space1) +" VND"
                                 : value.space1}
                             </td>
                             <td>
                               {isPriceField(key)
-                                ? priceFormatter(value.space2)
+                                ? priceFormatter(value.space2) +" VND"
                                 : value.space2}
                             </td>
                         </>
@@ -178,12 +178,12 @@ const Compare = () => {
                       <>
                         <td>
                           {isPriceField(key)
-                            ? priceFormatter(data.space1[key])
+                            ? priceFormatter(data.space1[key])+" VND"
                             : data.space1[key]}
                         </td>
                         <td>
                           {isPriceField(key)
-                            ? priceFormatter(data.space2[key])
+                            ? priceFormatter(data.space2[key])+" VND"
                             : data.space2[key]}
                         </td>
                       </>
