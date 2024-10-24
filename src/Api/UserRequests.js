@@ -8,6 +8,8 @@ API.interceptors.request.use((req) => {
   }
 
   return req;
+
+  // commit1
 });
 export const getUser = (userId) => API.get(`/users/${userId}`);
 export const updateUser = (id, formData) => API.put(`/user/${id}`, formData);
