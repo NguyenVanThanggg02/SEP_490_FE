@@ -8,3 +8,32 @@ body {
     color: #fff;
     padding: 20px;
 }
+.sidebar a {
+    color: #adb5bd;
+    text-decoration: none;
+}
+.sidebar a:hover {
+    color: #fff;
+}
+.sidebar .nav-link.active {
+    background-color: #495057;
+    color: #fff;
+}
+.content {
+    padding: 20px;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    background-color: transparent;
+    border-bottom: none;
+}
+.card-body {
+    padding: 20px;
+}
+.chart, .calendar, .real-time, .browser-usage {
+    height: 300px;
+}
