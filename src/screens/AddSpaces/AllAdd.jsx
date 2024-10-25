@@ -29,7 +29,9 @@ const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId, customRule, selectedRules, setSpaceInfo } = useContext(SpaceContext);
+  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId, customRule, selectedRules, setSpaceInfo,
+    isGoldenHour, goldenHourDetails
+   } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
@@ -45,6 +47,8 @@ export default function AddSpaceFlow() {
       rulesId: ruleId,
       location,
       ...spaceInfo,
+      isGoldenHour: isGoldenHour,
+      goldenHourDetails: goldenHourDetails
     };
 
     try {

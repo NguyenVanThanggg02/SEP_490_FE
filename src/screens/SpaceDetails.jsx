@@ -865,6 +865,7 @@ function SpaceDetails() {
                     fullWidth
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
+                    onClick={() => nav(`/booking/${spaceData?._id}`)}
                   >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
