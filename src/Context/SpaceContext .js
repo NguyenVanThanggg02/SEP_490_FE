@@ -20,7 +20,12 @@ export const SpaceProvider = ({ children }) => {
     pricePerWeek: '',
     pricePerMonth: '',
     images: []
-
+  });
+  const [isGoldenHour, setIsGoldenHour] = useState(false);
+  const [goldenHourDetails, setGoldenHourDetails] = useState({
+    startTime: '',
+    endTime: '',
+    priceIncrease: 0,
   });
   const [rules, setRules] = useState([]);
   const [selectedRules, setSelectedRules] = useState([]);
@@ -40,7 +45,9 @@ export const SpaceProvider = ({ children }) => {
       setSpaceInfo,
       rules, setRules,
       selectedRules, setSelectedRules,
-      customRule, setCustomRule
+      customRule, setCustomRule,
+      isGoldenHour, setIsGoldenHour,
+      goldenHourDetails, setGoldenHourDetails
     }}>
       {children}
     </SpaceContext.Provider>
