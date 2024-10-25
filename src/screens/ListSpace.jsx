@@ -61,14 +61,14 @@ const ListSpace = () => {
   useEffect(() => {
     axios
       .get("http://localhost:9999/categories")
-      .then((response) => setCategories(response.data))
+      .then((response) => setCategories(response?.data))
       .catch((error) => console.error("Error fetching brands:", error));
   }, []);
 
   useEffect(() => {
     axios
       .get("http://localhost:9999/appliances")
-      .then((response) => setAppliances(response.data))
+      .then((response) => setAppliances(response?.data))
       .catch((error) => console.error("Error fetching appliances:", error));
   }, []);
 
@@ -131,9 +131,9 @@ const ListSpace = () => {
   };
 
   const handleChooseCate = (e) => {
-    const selectedCateId = e.target.value;
+    const selectedCateId = e?.target?.value;
     if (selectedCateId !== "0") {
-      const selectedBrand = categories.find((b) => b._id === selectedCateId);
+      const selectedBrand = categories.find((b) => b?._id === selectedCateId);
       setSelectedCate(selectedBrand);
       getSpaceByCate(selectedCateId);
     } else {
@@ -148,7 +148,7 @@ const ListSpace = () => {
       );
       setSpaceFavos((prevSpace) => ({
         ...prevSpace,
-        favorite: response.data.favorite,
+        favorite: response?.data?.favorite,
       }));
       loadData();
     } catch (error) {
@@ -165,8 +165,8 @@ const ListSpace = () => {
       } else {
         response = await axios.get("http://localhost:9999/spaces");
       }
-      setListSpace(response.data);
-      if (response.data.length === 0) {
+      setListSpace(response?.data);
+      if (response?.data?.length === 0) {
         setNoResult(true);
     } else {
         setNoResult(false);
@@ -176,9 +176,9 @@ const ListSpace = () => {
     }
   };
   const onPageChange = (event) => {
-    setFirst(event.first);
+    setFirst(event?.first);
     setCurrentPage(event.page + 1);
-    setRows(event.rows);
+    setRows(event?.rows);
   };
 
   // lấy thành phố
@@ -198,7 +198,7 @@ const ListSpace = () => {
   }, []);
 
   const filteredDistricts = districts.filter((district) =>
-    district.name.toLowerCase().includes(districtSearch.toLowerCase())
+    district?.name?.toLowerCase()?.includes(districtSearch?.toLowerCase())
   );
   useEffect(() => {
     if (districtSearch === "") {
@@ -289,8 +289,8 @@ const handleDistrictSelect = (districtName) => {
               >
                 <option value="0">Tất cả địa điểm</option>
                 {categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
+                  <option key={c?._id} value={c?._id}>
+                    {c?.name}
                   </option>
                 ))}
               </FormSelect>
@@ -539,7 +539,7 @@ const handleDistrictSelect = (districtName) => {
                         zIndex: 1,
                         cursor: "pointer",
                       }}
-                      onClick={() => changeFavorite(l._id)}
+                      onClick={() => changeFavorite(l?._id)}
                     >
                       {l.favorite ? (
                         <FavoriteIcon style={{ color: "#FF385C" }} />
@@ -594,7 +594,7 @@ const handleDistrictSelect = (districtName) => {
                       )}
                     </Carousel>
                     <Link
-                      to={`/spaces/${l._id}`}
+                      to={`/spaces/${l?._id}`}
                       style={{ textDecoration: "none", marginTop: "10px" }}
                     >
                       <Card.Body>

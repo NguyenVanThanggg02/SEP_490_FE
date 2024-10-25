@@ -15,7 +15,9 @@ import { Image } from 'antd'; // Import các component từ Antd
 
 
 const AddSpaceInforSpace = () => {
-    const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule } = useContext(SpaceContext);
+    const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule,
+        isGoldenHour, setIsGoldenHour, goldenHourDetails, setGoldenHourDetails
+    } = useContext(SpaceContext);
     const [errorMessage, setErrorMessage] = useState('');
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
     const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +33,9 @@ const AddSpaceInforSpace = () => {
         "Số lượng người không được vượt quá giới hạn",
         "Không gây rối, xung đột với nhân viên và người khác"
     ];
-
+    const handleCheckboxChange = () => {
+        setIsGoldenHour(!isGoldenHour);
+    };
 
     const handleToggleRule = (rule, checked) => {
         setSelectedRules((prevSelectedRules) => {
@@ -49,7 +53,12 @@ const AddSpaceInforSpace = () => {
     const handleCustomRuleChange = (event) => {
         setCustomRule(event.target.value);
     };
-
+    const handleInputHourChange = (e) => {
+        setGoldenHourDetails({
+            ...goldenHourDetails,
+            [e.target.name]: e.target.value,
+        });
+    };
     const handleInputChange = (e) => {
         const { name, value, type } = e.target;
         setSpaceInfo(prev => ({
@@ -101,21 +110,21 @@ const AddSpaceInforSpace = () => {
         e.preventDefault();
         setIsLoading(true);
         let newImages = [];
-        
+
         const files = e.target.files; // Lấy tất cả các file
-    
+
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
             formData.append("images", files[i]); // Thêm từng file vào formData
         }
-    
+
         try {
             const response = await axios.post('http://localhost:9999/spaces/uploadImages', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Đặt header để gửi file
                 },
             });
-    
+
             if (response.status === 200) {
                 newImages = response.data.images; // Lưu thông tin ảnh vào mảng từ phản hồi
             } else {
@@ -124,7 +133,7 @@ const AddSpaceInforSpace = () => {
         } catch (error) {
             console.error("Error uploading images:", error);
         }
-    
+
         setIsLoading(false);
         setImagesPreview((prev) => [...prev, ...newImages]);
         setSpaceInfo((prevSpaceInfo) => ({
@@ -132,16 +141,16 @@ const AddSpaceInforSpace = () => {
             images: [...prevSpaceInfo.images, ...newImages],
         }));
     };
-    
+
 
     const handleDeleteImage = async (public_id) => {
         try {
             // Gửi request đến server-side để xóa ảnh từ Cloudinary
             const response = await axios.post('http://localhost:9999/spaces/removeImage', { public_id });
-            
+
             if (response.status === 200) {
                 console.log('Image deleted successfully');
-    
+
                 // Xóa ảnh khỏi danh sách hiển thị
                 setImagesPreview((prev) => prev.filter((item) => item.public_id !== public_id));
                 setSpaceInfo((prevSpaceInfo) => ({
@@ -155,7 +164,7 @@ const AddSpaceInforSpace = () => {
             console.error('Error deleting image:', error);
         }
     };
-    
+
 
     return (
         <Container fluid >
@@ -281,6 +290,61 @@ const AddSpaceInforSpace = () => {
                                     </Row>
                                 </Col>
                                 <Col md={12}>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value=""
+                                            checked={isGoldenHour}
+                                            onChange={handleCheckboxChange}
+                                        />
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            Khung giờ vàng
+                                        </label>
+                                    </div>
+
+                                    {isGoldenHour && (
+                                        <Row style={{ paddingtop: '10px' }}>
+                                            <Col md={4}>
+                                                <label>
+                                                    Giờ bắt đầu:
+                                                    <input
+                                                        type="time"
+                                                        name="startTime"
+                                                        value={goldenHourDetails.startTime}
+                                                        onChange={handleInputHourChange}
+                                                        required
+                                                    />
+                                                </label>
+                                            </Col>
+                                            <Col md={4}>
+                                                <label>
+                                                    Giờ kết thúc:
+                                                    <input
+                                                        type="time"
+                                                        name="endTime"
+                                                        value={goldenHourDetails.endTime}
+                                                        onChange={handleInputHourChange}
+                                                        required
+                                                    />
+                                                </label>
+                                            </Col>
+                                            <Col md={4}>
+                                                <label>
+                                                    Phần trăm(%) giá tăng lên:
+                                                    <input
+                                                        type="number"
+                                                        name="priceIncrease"
+                                                        value={goldenHourDetails.priceIncrease}
+                                                        onChange={handleInputHourChange}
+                                                        min="0"
+                                                        max="100"
+                                                        required
+                                                    />
+                                                </label>
+                                            </Col>
+                                        </Row>
+
+                                    )}
+                                </Col>
+                                <Col md={12}>
                                     <Typography variant="h6"
                                         style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Diện tích <span style={{ color: "red" }}>*</span></Typography>
                                     <TextField
@@ -367,7 +431,7 @@ const AddSpaceInforSpace = () => {
                     </Row>
 
                     {/* Thêm ảnh */}
-                    <Row style={{marginBottom:"200px"}}>
+                    <Row style={{ marginBottom: "200px" }}>
                         <Col md={3} style={{ marginBottom: "200px" }}>
                             {isLoading ? (
                                 <Loading />
@@ -401,7 +465,7 @@ const AddSpaceInforSpace = () => {
                             )}
                         </Col>
                         <Col md={9}>
-                            <Row gutter={[16, 16]} type="flex" justify="space-between"> 
+                            <Row gutter={[16, 16]} type="flex" justify="space-between">
                                 <Image.PreviewGroup>
                                     {imagesPreview?.map((item, index) => (
                                         <Col md={3} key={index} className="image-item">
