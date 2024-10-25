@@ -210,7 +210,7 @@ const BookingForm = () => {
                 const localDateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T00:00:00.000Z`;
                 return new Date(localDateStr);
             });
-
+            const totalAmount = summary.reduce((acc, item) => acc + item.price, 0);
             const bookingData = {
                 userId: userId,
                 spaceId: id,
@@ -227,7 +227,8 @@ const BookingForm = () => {
                 }),
                 selectedDates: adjustedDates,
                 status: 'awaiting payment',
-                notes: 'Đặt phòng mới'
+                notes: 'Đặt phòng mới',
+                totalAmount
             };
 
             console.log("bookingData >>", bookingData);
@@ -402,7 +403,7 @@ const BookingForm = () => {
                             )}
                         </List>
                         <Typography variant="h6">
-                            Tổng: {priceFormatter(summary.reduce((acc, item) => acc + item.price, 0))} vnđ
+                            Tổng: {priceFormatter(summary.reduce((acc, item) => acc + item.price, 0))} VND
                         </Typography>
                     </Paper>
                 </Col>
