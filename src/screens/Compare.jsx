@@ -231,7 +231,7 @@ const Compare = () => {
               )}
               <tr>
                 <td className="zui-sticky-col">
-                  Khoảng cách shop với bạn
+                  Quãng đường
                 </td>
                 <td>
                   {distances?.[0]}
