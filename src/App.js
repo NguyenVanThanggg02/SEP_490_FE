@@ -108,7 +108,7 @@ function Layout() {
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
-          <Route path="/booking" element={<BookingDate />} />
+          <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
 
         </Routes>
