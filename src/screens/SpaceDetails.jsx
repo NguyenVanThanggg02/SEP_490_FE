@@ -34,6 +34,11 @@ import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
 import { priceFormatter } from "../utils/numberFormatter";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
+import { MapShopDetail } from "../components/MapShopDetail";
+
 function SpaceDetails() {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -47,8 +52,10 @@ function SpaceDetails() {
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [openGalleryPreview, setOpenGalleryPreview] = useState(false);
 
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const nav = useNavigate()
 
@@ -153,7 +160,7 @@ function SpaceDetails() {
     }
     nav('/compare', { state: { id, valueFromChild } });
   }
-  const handleProfileOfOwner = () =>{
+  const handleProfileOfOwner = () => {
     nav(`/host_profile/${spaceData?.userId?._id}`);
   }
   const handleDeleteIdSoToCompare = () => {
@@ -326,6 +333,25 @@ function SpaceDetails() {
       </Grid>
     </div>
   );
+  const handleClickImage = (index) => {
+    setOpenGalleryPreview(true)
+    setCurrentImageIndex(index);
+    handleCloseGallery()
+  };
+
+  // Handle next image
+  const handleNext = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  // Handle previous image
+  const handleBack = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
 
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
@@ -395,32 +421,138 @@ function SpaceDetails() {
               )}
             </Grid>
 
-            <Dialog open={openGallery} onClose={handleCloseGallery} maxWidth="xl" PaperProps={{
-              style: {
-                width: "80%",
-                maxWidth: "none",
-
-              },
-            }}>
+            <Dialog
+              open={openGallery}
+              onClose={handleCloseGallery}
+              maxWidth="xl"
+              PaperProps={{
+                style: {
+                  width: "80%",
+                  maxWidth: "none",
+                  zIndex: 8, // Ensuring Dialog is above other components
+                },
+              }}
+            >
               <DialogContent style={{ padding: "10px 10px" }}>
-                <Image.PreviewGroup>
-                  <Grid container spacing={0.4}>
-                    {images.map((item) => (
-                      <Grid item xs={6} sm={6} key={item}>
-                        <Image
-                          src={item.url}
-                          alt={item}
-                          loading="lazy"
-                          style={{ width: "100%", height: "400px", borderRadius: "3px", objectFit: "cover" }}
-                        />
+                <Grid container spacing={0.4}>
+                  {images.map((item, index) => (
+                    <Grid item xs={6} sm={6} key={index}>
+                      <Image
+                        src={item.url}
+                        alt={item}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "400px",
+                          borderRadius: "3px",
+                        }}
+                        onClick={() => handleClickImage(index)}
+                        preview={{
+                          mask: null, // Remove any additional mask over the image
+                          visible: false, // Disable default preview on click
+                        }}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
 
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Image.PreviewGroup>
+
               </DialogContent>
-
             </Dialog>
+
+            <Dialog
+              open={openGalleryPreview}
+              onClose={() => {
+                setOpenGalleryPreview(false);
+                setOpenGallery(true);
+              }}
+              maxWidth="xl"
+              PaperProps={{
+                style: {
+                  width: "100%",
+                  maxWidth: "none",
+                  zIndex: 8, // Ensuring Dialog is above other components
+                },
+              }}
+
+            >
+              <DialogContent style={{ position: "relative", textAlign: "center" }}>
+                {/* Close Button */}
+                <IconButton
+                  onClick={() => {
+                    setOpenGalleryPreview(false);
+                    setOpenGallery(true);
+                  }}
+                  style={{
+                    position: "absolute",
+                    top: "10px",
+                    right: "10px",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    color: "white",
+                    zIndex: 1000,
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                {images.length > 0 && currentImageIndex >= 0 && currentImageIndex < images.length && (
+                  <div style={{ position: "relative" }}>
+                    {/* Back Button */}
+                    <IconButton
+                      onClick={handleBack}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "10px",
+                        transform: "translateY(-50%)",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        color: "white",
+                        zIndex: 1000,
+                      }}
+                    >
+                      <ArrowBackIosIcon />
+                    </IconButton>
+
+                    {/* Image */}
+                    <Image.PreviewGroup
+                      preview={{
+                        current: currentImageIndex,
+                        onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+                      }}
+                    >
+                      <Image
+                        src={images[currentImageIndex].url}
+                        alt={`Image ${currentImageIndex}`}
+                        style={{
+                          width: "100%",
+                          height: "500px",
+                          borderRadius: "3px",
+                          objectFit: "cover",
+                          zIndex: 999,
+                        }}
+                      />
+                    </Image.PreviewGroup>
+
+                    {/* Next Button */}
+                    <IconButton
+                      onClick={handleNext}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "10px",
+                        transform: "translateY(-50%)",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        color: "white",
+                        zIndex: 1000,
+                      }}
+                    >
+                      <ArrowForwardIosIcon />
+                    </IconButton>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
+
+
           </Container>
           <Container fluid>
             <Row>
@@ -599,7 +731,7 @@ function SpaceDetails() {
                   Tiện nghi</Typography>
 
                 <List>
-                  {spaceData.appliancesId.appliances?.length > 0 ? (
+                  {spaceData?.appliancesId?.appliances?.length > 0 ? (
                     <Grid container >
                       {spaceData.appliancesId.appliances?.map((appliance) => {
                         const IconAppliances = MuiIcons[appliance.iconName];
@@ -656,7 +788,14 @@ function SpaceDetails() {
                     </ListItem>
                   )}
                 </List>
-
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <MapShopDetail lat={spaceData?.latLng?.[0]} lng={spaceData?.latLng?.[1]} />
                 <Divider
                   sx={{
                     bgcolor: "gray",
@@ -780,7 +919,7 @@ function SpaceDetails() {
           width: '50vw',
           left: '25vw',
           right: 'auto',
-        }, zIndex: 1000
+        }, zIndex: 9
       }}>
         {drawerContent()}
       </Drawer>
