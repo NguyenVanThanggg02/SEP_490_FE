@@ -118,7 +118,7 @@ const Compare = () => {
               <tr>
                 <th>
                   <input
-                    type='checkbox'
+                    type="checkbox"
                     checked={showDifferencesOnly}
                     onChange={handleCheckboxChange}
                   />
@@ -135,26 +135,10 @@ const Compare = () => {
                       {key === "images" ? (
                         <>
                           <td>
-                            {value.space1 ? (
-                              <img
-                                src={value.space1.url}
-                                alt="Space 1"
-                                style={{ width: "200px", height: "200px" }}
-                              />
-                            ) : (
-                              "Không có ảnh"
-                            )}
+                            {value.space1 ? <img src={value.space1.url} alt="Space 1" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
                           </td>
                           <td>
-                            {value.space2 ? (
-                              <img
-                                src={value.space2.url}
-                                alt="Space 2"
-                                style={{ width: "200px", height: "200px" }}
-                              />
-                            ) : (
-                              "Không có ảnh"
-                            )}
+                            {value.space2 ? <img src={value.space2.url} alt="Space 2" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
                           </td>
                         </>
                       ) : (
@@ -182,33 +166,23 @@ const Compare = () => {
               ) : hasData ? (
                 Object.keys(data.space1 || {}).map((key) => (
                   <tr key={key}>
-                    <td className="zui-sticky-col">{fieldLabels[key] || key}</td>
+                    {
+                      key !== 'latLng' && <td className="zui-sticky-col">{fieldLabels[key] || key}</td>
+                    }
                     {key === "images" ? (
                       <>
                         <td>
-                          {data.space1.images ? (
-                            <img
-                              src={data.space1.images.url}
-                              alt="Space 1"
-                              style={{ width: "200px", height: "200px" }}
-                            />
-                          ) : (
-                            "Không có ảnh"
-                          )}
+                            {data.space1.images ? (
+                              <img src={data.space1.images.url} alt="Space 1" style={{ width: '200px', height: '200px' }} />
+                            ) : 'Không có ảnh'}
                         </td>
                         <td>
-                          {data.space2.images ? (
-                            <img
-                              src={data.space2.images.url}
-                              alt="Space 2"
-                              style={{ width: "200px", height: "200px" }}
-                            />
-                          ) : (
-                            "Không có ảnh"
-                          )}
+                            {data.space2.images ? (
+                              <img src={data.space2.images.url} alt="Space 2" style={{ width: '200px', height: '200px' }} />
+                            ) : 'Không có ảnh'}
                         </td>
                       </>
-                    ) : (
+                    ) : key === 'latLng' ?"": (
                       <>
                         <td>
                           {isPriceField(key)
