@@ -38,6 +38,7 @@ import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import Blog from "./screens/Blog";
+import Contact from "./screens/Contact";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -105,6 +106,8 @@ function Layout() {
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/contact" element={<Contact />} />
+
 
           <Route
             path="/admin"

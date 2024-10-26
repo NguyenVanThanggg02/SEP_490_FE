@@ -1,64 +1,59 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import "../style/Contact.css";
 
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
-class Contact extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      email: '',
-      message: ''
-    };
-  }
-
-  handleChange = (e) => {
-    this.setState({
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // You can add your form submission logic here
-    console.log('Form submitted:', this.state);
+    // Bạn có thể thêm logic xử lý gửi form ở đây
+    console.log('Form submitted:', formData);
   };
 
-  render() {
-    return (
-      <div className="contact-form">
-        <span className="heading">Contact Us</span>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="name">Name:</label>
-          <input 
-            type="text" 
-            name="name" 
-            value={this.state.name} 
-            onChange={this.handleChange} 
-            required 
-          />
-          <label htmlFor="email">Email:</label>
-          <input 
-            type="email" 
-            id="email" 
-            name="email" 
-            value={this.state.email} 
-            onChange={this.handleChange} 
-            required 
-          />
-          <label htmlFor="message">Message:</label>
-          <textarea 
-            id="message" 
-            name="message" 
-            value={this.state.message} 
-            onChange={this.handleChange} 
-            required 
-          />
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="contact-form">
+      <span className="heading">Contact Us</span>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="name">Name:</label>
+        <input 
+          type="text" 
+          name="name" 
+          value={formData.name} 
+          onChange={handleChange} 
+          required 
+        />
+        <label htmlFor="email">Email:</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          value={formData.email} 
+          onChange={handleChange} 
+          required 
+        />
+        <label htmlFor="message">Message:</label>
+        <textarea 
+          id="message" 
+          name="message" 
+          value={formData.message} 
+          onChange={handleChange} 
+          required 
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
 
 export default Contact;
