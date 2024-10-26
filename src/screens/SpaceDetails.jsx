@@ -52,6 +52,7 @@ function SpaceDetails() {
   const [valueFromChild, setValueFromChild] = useState('');
   const [compare, setCompare] = useState({});
   const [openGallery, setOpenGallery] = useState(false);
+  const [category, setCategory] = useState(null)
   const [openGalleryPreview, setOpenGalleryPreview] = useState(false);
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -78,6 +79,7 @@ function SpaceDetails() {
       try {
         const response = await axios.get(`http://localhost:9999/spaces/${id}`);
         setSpaceData(response.data);
+        setCategory(response.data.categoriesId._id);
 
       } catch (err) {
         setError(err);
@@ -134,9 +136,8 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  const mainImage = spaceData?.images[0]?.url;
-  const otherImages = spaceData?.images.slice(1, 5).map(image => image.url);
-
+  const mainImage = spaceData?.images?.[0]?.url;
+  const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
 
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
@@ -173,7 +174,7 @@ function SpaceDetails() {
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
-            image={spaceData?.images[0].url || "default-image"}
+            image={spaceData?.images?.[0]?.url || "default-image"}
             title="image spaceF"
             style={{ objectFit: "cover" }}
           />
@@ -824,7 +825,7 @@ function SpaceDetails() {
                     variant="h5"
                     sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
                   >
-                    {priceFormatter(spaceData.pricePerHour)} / giờ
+                    {priceFormatter(spaceData.pricePerHour)} VND / giờ
                   </Typography>
 
                   {/* Chọn ngày nhận và trả phòng */}

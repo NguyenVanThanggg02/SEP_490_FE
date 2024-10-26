@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "../style/Compare.css";
 import { useLocation } from 'react-router-dom';
+import { priceFormatter } from '../utils/numberFormatter';
 import axios from 'axios';
 
 const Compare = () => {
@@ -90,19 +91,34 @@ const Compare = () => {
   const hasDifferences = differences && Object.keys(differences).length > 0;
   const hasData = data && Object.keys(data).length > 0;
 
+  const isPriceField = (key) => {
+    const priceKeys = ['pricePerHour', 'pricePerDay', 'pricePerWeek', 'pricePerMonth'];
+    return priceKeys.includes(key);
+  };
+  const fieldLabels = {
+    name: "Tên địa điểm",
+    location: "Vị trí",
+    area: "Diện tích (m²)",
+    pricePerHour: "Giá theo giờ",
+    pricePerDay: "Giá theo ngày",
+    pricePerWeek: "Giá theo tuần",
+    pricePerMonth: "Giá theo tháng",
+    status: "Trạng thái",
+    images: "Hình ảnh",
+  };
+  
   return (
     <div className="comparison-table-v2">
       <h2 className="comparison-title">So Sánh Địa Điểm</h2>
       <div className="zui-wrapper">
-        <div className="instruction">
-        </div>
+        <div className="instruction"></div>
         <div id="container" className="zui-scroller">
           <table className="zui-table">
             <thead>
               <tr>
                 <th>
                   <input
-                    type='checkbox'
+                    type="checkbox"
                     checked={showDifferencesOnly}
                     onChange={handleCheckboxChange}
                   />
@@ -115,8 +131,8 @@ const Compare = () => {
                 hasDifferences ? (
                   Object.entries(differences).map(([key, value]) => (
                     <tr key={key}>
-                      <td className="zui-sticky-col">{key}</td>
-                      {key === 'images' ? (
+                      <td className="zui-sticky-col">{fieldLabels[key] || key}</td>
+                      {key === "images" ? (
                         <>
                           <td>
                             {value.space1 ? <img src={value.space1.url} alt="Space 1" style={{ width: '200px', height: '200px' }} /> : 'Không có ảnh'}
@@ -127,8 +143,16 @@ const Compare = () => {
                         </>
                       ) : (
                         <>
-                          <td>{value.space1}</td>
-                          <td>{value.space2}</td>
+                            <td>
+                              {isPriceField(key)
+                                ? priceFormatter(value.space1) +" VND"
+                                : value.space1}
+                            </td>
+                            <td>
+                              {isPriceField(key)
+                                ? priceFormatter(value.space2) +" VND"
+                                : value.space2}
+                            </td>
                         </>
                       )}
 
@@ -139,44 +163,49 @@ const Compare = () => {
                     <td colSpan={3}>Không có điểm khác biệt</td>
                   </tr>
                 )
-              ) : (
-                hasData ? (
-                  Object.keys(data.space1 || {}).map((key) => (
-                    <tr key={key}>
-                      {
-                        key !== 'latLng' && <td className="zui-sticky-col">{key}</td>
-                      }
-                      
-                      {key === 'images' ? (
-                        <>
-                          <td>
+              ) : hasData ? (
+                Object.keys(data.space1 || {}).map((key) => (
+                  <tr key={key}>
+                    {
+                      key !== 'latLng' && <td className="zui-sticky-col">{fieldLabels[key] || key}</td>
+                    }
+                    {key === "images" ? (
+                      <>
+                        <td>
                             {data.space1.images ? (
                               <img src={data.space1.images.url} alt="Space 1" style={{ width: '200px', height: '200px' }} />
                             ) : 'Không có ảnh'}
-                          </td>
-                          <td>
+                        </td>
+                        <td>
                             {data.space2.images ? (
                               <img src={data.space2.images.url} alt="Space 2" style={{ width: '200px', height: '200px' }} />
                             ) : 'Không có ảnh'}
-                          </td>
-                        </>
-                      ) : key === 'latLng' ?"":(
-                        <>
-                          <td>{data.space1[key]}</td>
-                          <td>{data.space2[key]}</td>
-                        </>
-                      )}
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3}>Không có dữ liệu để hiển thị</td>
+                        </td>
+                      </>
+                    ) : key === 'latLng' ?"": (
+                      <>
+                        <td>
+                          {isPriceField(key)
+                            ? priceFormatter(data.space1[key])+" VND"
+                            : data.space1[key]}
+                        </td>
+                        <td>
+                          {isPriceField(key)
+                            ? priceFormatter(data.space2[key])+" VND"
+                            : data.space2[key]}
+                        </td>
+                      </>
+                    )}
                   </tr>
-                )
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3}>Không có dữ liệu để hiển thị</td>
+                </tr>
               )}
               <tr>
                 <td className="zui-sticky-col">
-                  Khoảng cách shop với bạn
+                  Quãng đường
                 </td>
                 <td>
                   {distances?.[0]}
