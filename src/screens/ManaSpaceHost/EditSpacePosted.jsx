@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Card, CardContent, Divider, Tabs, Tab, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CategoriesPosted from './CategoriesPosted';
 
 const EditSpacePosted = () => {
     const [expanded, setExpanded] = useState('panel1');
@@ -18,7 +19,7 @@ const EditSpacePosted = () => {
     // Nội dung từng tab của từng Accordion
     const renderTabContent = () => {
         if (selectedTab === 0) {
-            return <Typography>Xác nhận địa chỉ</Typography>;
+            return <CategoriesPosted/>;
         } else if (selectedTab === 1) {
             return <Typography>Thông tin chi tiết</Typography>;
         } else {
@@ -63,9 +64,8 @@ const EditSpacePosted = () => {
                                             TabIndicatorProps={{ style: { left: 0 } }}
                                             sx={{ borderLeft: 1, borderColor: 'divider' }}
                                         >
-                                            <Tab label="Thể loại không gian" sx={{ textTransform: 'none' }} />
-                                            <Tab label="Loại phòng" sx={{ textTransform: 'none' }} />
-                                            <Tab label="Mô tả phòng" sx={{ textTransform: 'none' }} />
+                                            <Tab label="Thể loại không gian"  sx={{ textTransform: 'none' }} />
+                                            <Tab label="Tiện ích không gian" sx={{ textTransform: 'none' }} />
                                         </Tabs>
                                     </div>
                                 </AccordionDetails>
@@ -136,7 +136,7 @@ const EditSpacePosted = () => {
                 </Col>
 
                 {/* Content Section */}
-                <Col md={6}>
+                <Col md={8}>
                     {renderTabContent()}
                 </Col>
             </Row>

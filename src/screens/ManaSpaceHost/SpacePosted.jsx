@@ -122,6 +122,7 @@ const SpacePosted = () => {
                                     <Link
                                         to={`/editposted`}
                                         style={{ textDecoration: "none" }}
+                                        state={{ spaceId: lpost._id }}
                                     >
                                         <Button size="small" variant='contained' disableElevation sx={{ textTransform: 'none' }}
                                         >Chỉnh sửa</Button>
