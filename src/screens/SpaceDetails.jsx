@@ -128,9 +128,8 @@ function SpaceDetails() {
         Error loading data.
       </Typography>
     );
-  const mainImage = spaceData?.images[0]?.url;
-  const otherImages = spaceData?.images.slice(1, 5).map(image => image.url);
-
+  const mainImage = spaceData?.images?.[0]?.url;
+  const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
 
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
@@ -167,7 +166,7 @@ function SpaceDetails() {
         <Card style={{ position: "relative" }}>
           <CardMedia
             sx={{ height: 250 }}
-            image={spaceData?.images[0].url || "default-image"}
+            image={spaceData?.images?.[0]?.url || "default-image"}
             title="image spaceF"
             style={{ objectFit: "cover" }}
           />
