@@ -40,7 +40,11 @@ function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const role = localStorage.getItem("role");
+  const [selectedChat, setSelectedChat] = useState(null);
 
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+  };
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("isLoggedIn");
     if (loggedInStatus === "true") {
@@ -81,7 +85,10 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
-          <Route path="/chat" element={<ChatBox />} />
+          <Route
+            path="/chat"
+            element={<ChatBox selectedChat={selectedChat} />}
+          />
           <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
@@ -90,7 +97,10 @@ function Layout() {
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
           <Route path="/mess" element={<Message />} />
-          <Route path="/spaces/:id" element={<SpaceDetails />} />
+          <Route
+            path="/spaces/:id"
+            element={<SpaceDetails onSelectChat={handleSelectChat} />}
+          />
           <Route path="/notfound" element={<NotFound />} />
           <Route path="/changepassadm" element={<ChangePassAdmin />} />
           <Route path="/favorites" element={<Favorites />} />

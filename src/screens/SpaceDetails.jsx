@@ -33,7 +33,9 @@ import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
 import { priceFormatter } from "../utils/numberFormatter";
-function SpaceDetails() {
+import { userChats } from "../Api/ChatRequests";
+function SpaceDetails({ onSelectChat }) {
+  const [chat, setChat] = useState(null);
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -43,10 +45,11 @@ function SpaceDetails() {
   const [visible, setVisible] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
-  const [valueFromChild, setValueFromChild] = useState('');
+  const [valueFromChild, setValueFromChild] = useState("");
   const [compare, setCompare] = useState({});
-  const nav = useNavigate()
 
+  const nav = useNavigate();
+  const userId = localStorage.getItem("userId");
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
   };
@@ -75,11 +78,73 @@ function SpaceDetails() {
 
     fetchSpaceData();
   }, [id]);
+  useEffect(() => {
+    const getChats = async () => {
+      try {
+        const { data } = await userChats(userId);
+
+        const existingChat = data.find(
+          (chat) =>
+            chat._id &&
+            chat.members.includes(userId) &&
+            chat.members.includes(spaceData?.userId._id)
+        );
+
+        if (existingChat) {
+          setChat(existingChat);
+          console.log("Existing chat found:", existingChat);
+        } else {
+          console.log("No existing chat found with userId and spaceId");
+        }
+      } catch (error) {
+        console.log("Error fetching chats:", error);
+      }
+    };
+
+    getChats();
+  }, [userId, spaceData?.userId?._id]);
+
+  const handleCreateChat = async () => {
+    const chatData = chat
+      ? {
+          _id: chat._id,
+          members: [userId, spaceData?.userId?._id],
+        }
+      : null;
+
+    onSelectChat(chatData);
+    try {
+      if (chatData) {
+        // Cập nhật chat hiện tại với ID sản phẩm
+        const updateChatResponse = await axios.put(
+          `http://localhost:9999/chat/${chatData._id}`,
+          { spacesId: id } // Sử dụng id từ useParams
+        );
+        console.log("Chat updated with product ID:", updateChatResponse.data);
+      } else {
+        // Tạo một chat mới
+        const createChatResponse = await axios.post(
+          "http://localhost:9999/chat",
+          {
+            senderId: userId,
+            receiverId: spaceData.userId._id,
+            spacesId: id, // Sử dụng id từ useParams
+          }
+        );
+        console.log("Chat created:", createChatResponse.data);
+      }
+      nav(`/chat`);
+    } catch (error) {
+      console.error("Error creating or finding chat:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchSpaceDataToCompare = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/spaces/${valueFromChild}`);
+        const response = await axios.get(
+          `http://localhost:9999/spaces/${valueFromChild}`
+        );
         console.log(response.data);
         setCompare(response.data);
       } catch (err) {
@@ -90,7 +155,6 @@ function SpaceDetails() {
     };
     fetchSpaceDataToCompare();
   }, [valueFromChild]);
-
 
   const changeFavorite = async () => {
     try {
@@ -126,18 +190,18 @@ function SpaceDetails() {
     }
     setOpenDrawer(open);
   };
-  const handleCompare = () =>{
-    if(valueFromChild == ""){
-      return
+  const handleCompare = () => {
+    if (valueFromChild == "") {
+      return;
     }
-    nav('/compare', { state: { id, valueFromChild } });
-  }
-  const handleProfileOfOwner = () =>{
+    nav("/compare", { state: { id, valueFromChild } });
+  };
+  const handleProfileOfOwner = () => {
     nav(`/host_profile/${spaceData?.userId._id}`);
-  }
-  const handleDeleteIdSoToCompare =() =>{
-    setValueFromChild('');
-  }
+  };
+  const handleDeleteIdSoToCompare = () => {
+    setValueFromChild("");
+  };
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -235,8 +299,14 @@ function SpaceDetails() {
       )}
     </Row>
   );
-  
+  const chatData = chat
+    ? {
+        _id: chat._id,
+        members: [localStorage.getItem("userId"), spaceData?.userId?._id],
+      }
+    : null;
 
+  console.log(chatData);
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
@@ -337,7 +407,10 @@ function SpaceDetails() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }} onClick={handleProfileOfOwner}>
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        onClick={handleProfileOfOwner}
+                      >
                         <img
                           src={spaceData.userId?.avatar}
                           alt="avatar"
@@ -352,7 +425,13 @@ function SpaceDetails() {
                         Chủ nhà: {spaceData.userId?.username || "Unknown"}
                       </div>
 
-                      <Link to="/mess" state={{ id }}>
+                      <Link
+                        onClick={handleCreateChat}
+                        state={{ id }}
+                        className={
+                          userId === spaceData.userId._id ? "d-none" : ""
+                        }
+                      >
                         <Button
                           sx={{
                             backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
@@ -539,13 +618,19 @@ function SpaceDetails() {
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
-      <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
-          '& .MuiDrawer-paper': {
-            width: '50vw',  
-            left: '25vw',   
-            right: 'auto',
-          }, zIndex: 1000
-        }}>
+      <Drawer
+        anchor="bottom"
+        open={openDrawer}
+        onClose={toggleDrawer(false)}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "50vw",
+            left: "25vw",
+            right: "auto",
+          },
+          zIndex: 1000,
+        }}
+      >
         {drawerContent()}
       </Drawer>
       {visibleCompare && (
