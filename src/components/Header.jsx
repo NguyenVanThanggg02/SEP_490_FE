@@ -25,7 +25,7 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
           <div class="nav-links">
             <Link to={"/"}>Trang chủ</Link>
             <Link to={"/list_space"}>Danh sách địa điểm</Link>
-            <Link to={"/"}>Bài viết</Link>
+            <Link to={"/blog"}>Bài viết</Link>
             <Link to={"/"}>Liên hệ</Link>
           </div>
           <AccountMenu setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />
