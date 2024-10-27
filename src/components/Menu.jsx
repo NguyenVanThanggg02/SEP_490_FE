@@ -138,7 +138,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   };
   const handleMannaPost = () => {
     handleClose();
-    navigate("/manaspace");
+    navigate("/posted");
   };
 
   const handleSave = async () => {
