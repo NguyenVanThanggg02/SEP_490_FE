@@ -796,6 +796,9 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
+                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                Vị trí không gian
+                </Typography>
                 <MapShopDetail lat={spaceData?.latLng?.[0]} lng={spaceData?.latLng?.[1]} />
                 <Divider
                   sx={{
@@ -828,38 +831,7 @@ function SpaceDetails() {
                     {priceFormatter(spaceData.pricePerHour)} VND / giờ
                   </Typography>
 
-                  {/* Chọn ngày nhận và trả phòng */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 2,
-                    }}
-                  >
-                    <TextField
-                      label="Nhận phòng"
-                      type="date"
-                      defaultValue="2024-10-17"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      label="Trả phòng"
-                      type="date"
-                      defaultValue="2024-10-22"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Box>
 
-                  {/* Số lượng khách */}
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Khách</InputLabel>
-                    <Select defaultValue={1} label="Khách">
-                      <MenuItem value={1}>1 khách</MenuItem>
-                      <MenuItem value={2}>2 khách</MenuItem>
-                      <MenuItem value={3}>3 khách</MenuItem>
-                      <MenuItem value={4}>4 khách</MenuItem>
-                    </Select>
-                  </FormControl>
 
                   {/* Nút đặt phòng */}
                   <Button
@@ -873,18 +845,7 @@ function SpaceDetails() {
 
                   {/* Chi tiết giá */}
 
-                  <Divider sx={{ mb: 2, bgcolor: "gray" }} />
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <Typography variant="body1">Tổng </Typography>
-                    <Typography variant="body1">....</Typography>
-                  </Box>
                 </Box>
                 <div
                   style={{
@@ -909,9 +870,7 @@ function SpaceDetails() {
           </Container>
           {/* Display Images */}
 
-          <Row item md={12}>
-            <Comment />
-          </Row>
+         
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
