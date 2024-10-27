@@ -28,14 +28,17 @@ import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
 import Landing from "./screens/Landing";
+import BookingDate from "./screens/BookingDate";
 import ListSpace from "./screens/ListSpace";
 import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
+import Footer from "./components/Footer";
 import ManaPost from "./screens/ManaPost";
 import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
-import History from "./screens/History";
+import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
-
+import Blog from "./screens/Blog";
+// a
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -59,6 +62,7 @@ function Layout() {
     "/userneed",
     "/login",
     "/register",
+    "/alladd"
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 
@@ -114,8 +118,14 @@ function Layout() {
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
+          <Route path="/booking/:id" element={<BookingDate />} />
+          <Route path="/blog" element={<Blog />} />
+
         </Routes>
       </main>
+      {shouldShowHeader && (
+        <Footer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      )}
     </>
   );
 }

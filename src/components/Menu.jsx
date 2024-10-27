@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -28,7 +28,7 @@ import {
   PersonVcard,
   Wallet,
 } from "react-bootstrap-icons";
-
+import '../style/Menu.css'
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -158,10 +158,17 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        {isLoggedIn && userInfo && (
-          <Typography sx={{ marginRight: 1 }}>{userInfo.fullname}</Typography>
-        )}
-        <Tooltip title="Cài đặt tài khoản">
+        <Link to={'/alladd'}  className="linkk">
+          <Typography sx={{ marginRight: 1 }}>
+            <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
+              Cho thuê địa điểm qua SpaceHub
+            </p>
+          </Typography>
+        </Link>
+        <Tooltip
+          title="Cài đặt tài khoản"
+          style={{ height: "61px", marginTop: "-10px" }}
+        >
           <IconButton
             onClick={handleClick}
             size="small"

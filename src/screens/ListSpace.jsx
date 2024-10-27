@@ -16,6 +16,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "../style/listSpace.css";
 import { priceFormatter } from "../utils/numberFormatter";
+import { InputAdornment, TextField } from "@mui/material";
 
 const ListSpace = () => {
   const [categories, setCategories] = useState([]);
@@ -33,10 +34,16 @@ const ListSpace = () => {
   const [showSuggestions, setShowSuggestions] = useState(false); 
   const [, setSelectedCate] = useState(null);
   const [minPrice, setMinPrice] = useState('');
+  const [areaMin, setAreaMin] = useState('');
+  const [areaMax, setAreaMax] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [areaList, setAreaList] = useState([]);
+  const [selectedAreas, setSelectedAreas] = useState([]);
+  const [selectedAppliance, setSelectedAppliance] = useState([]);
+  
 
   useEffect(() => {
-    fetch("http://localhost:9999/spaces")
+    fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -54,20 +61,24 @@ const ListSpace = () => {
   useEffect(() => {
     axios
       .get("http://localhost:9999/categories")
-      .then((response) => setCategories(response.data))
+      .then((response) => setCategories(response?.data))
       .catch((error) => console.error("Error fetching brands:", error));
   }, []);
 
   useEffect(() => {
     axios
       .get("http://localhost:9999/appliances")
-      .then((response) => setAppliances(response.data))
+      .then((response) => setAppliances(response?.data))
       .catch((error) => console.error("Error fetching appliances:", error));
   }, []);
 
-  const applianceNames = appliances
-    .map((item) => item.appliances.map((appliance) => appliance.name))
-    .flat();
+  const applianceNames = [
+    ...new Set(
+      appliances.flatMap((item) =>
+        item.appliances.map((appliance) => appliance.name)
+      )
+    ),
+  ];
 
   const loadData = async () => {
     try {
@@ -107,20 +118,22 @@ const ListSpace = () => {
     }
   }, [search]);
   
-  // const handleChooseCate = (e, category) => {
-  //   const selectedCateId = category._id;
-  //   const isChecked = e.target.checked;
 
-  //   if (isChecked) {
-  //     getSpaceByCate(selectedCateId);
-  //   } else {
-  //     loadData();
-  //   }
-  // };
+  const handleSelectedAppliance = (e) => {
+    const app = e.target.value;
+    const isChecked = e.target.checked;
+  
+    if (isChecked) {
+      setSelectedAppliance((prev) => [...prev, app]);
+    } else {
+      setSelectedAppliance((prev) => prev.filter((a) => a !== app));
+    }
+  };
+
   const handleChooseCate = (e) => {
-    const selectedCateId = e.target.value;
+    const selectedCateId = e?.target?.value;
     if (selectedCateId !== "0") {
-      const selectedBrand = categories.find((b) => b._id === selectedCateId);
+      const selectedBrand = categories.find((b) => b?._id === selectedCateId);
       setSelectedCate(selectedBrand);
       getSpaceByCate(selectedCateId);
     } else {
@@ -135,7 +148,7 @@ const ListSpace = () => {
       );
       setSpaceFavos((prevSpace) => ({
         ...prevSpace,
-        favorite: response.data.favorite,
+        favorite: response?.data?.favorite,
       }));
       loadData();
     } catch (error) {
@@ -152,8 +165,8 @@ const ListSpace = () => {
       } else {
         response = await axios.get("http://localhost:9999/spaces");
       }
-      setListSpace(response.data);
-      if (response.data.length === 0) {
+      setListSpace(response?.data);
+      if (response?.data?.length === 0) {
         setNoResult(true);
     } else {
         setNoResult(false);
@@ -163,9 +176,9 @@ const ListSpace = () => {
     }
   };
   const onPageChange = (event) => {
-    setFirst(event.first);
+    setFirst(event?.first);
     setCurrentPage(event.page + 1);
-    setRows(event.rows);
+    setRows(event?.rows);
   };
 
   // lấy thành phố
@@ -185,13 +198,16 @@ const ListSpace = () => {
   }, []);
 
   const filteredDistricts = districts.filter((district) =>
-    district.name.toLowerCase().includes(districtSearch.toLowerCase())
+    district?.name?.toLowerCase()?.includes(districtSearch?.toLowerCase())
   );
   useEffect(() => {
     if (districtSearch === "") {
       loadData(); 
     }
   }, [districtSearch]); 
+  useEffect(() => {
+    handleFilter(districtSearch); 
+  }, [selectedAreas, districtSearch, selectedAppliance]);
   
   const handleFilter = async (districtName) => {
   try {
@@ -200,9 +216,20 @@ const ListSpace = () => {
           location: districtName,
           minPrice,
           maxPrice,
+          // area: selectedAreas,
+          areaMin,
+          areaMax,
+          applianceNames: selectedAppliance,
         },
       });
-      setListSpace(response.data);
+      if (response.data && response.data.length > 0) {
+        setListSpace(response.data);
+        setNoResult(false); 
+      } else {
+        setListSpace([]); 
+        setNoResult(true); 
+      }
+
   } catch (error) {
     console.error("Error fetching filtered spaces:", error);
   }
@@ -220,23 +247,7 @@ const handleDistrictSelect = (districtName) => {
         <Col md={3}>
           <Row>
             <div class="filter-container">
-              {/* <div className="filter-section">
-                <div className="filter-section-title">
-                  Chọn theo thể loại không gian:
-                </div>
-                {categories.map((category) => (
-                  <div className="filter-item" key={category._id}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={category._id}
-                        onChange={(e) => handleChooseCate(e, category)}
-                      />
-                      {category.name}
-                    </label>
-                  </div>
-                ))}
-              </div> */}
+           
               <Col md={7} style={{ display: "flex" }}>
                 <div style={{ position: "relative" }}>
                   <input
@@ -278,8 +289,8 @@ const handleDistrictSelect = (districtName) => {
               >
                 <option value="0">Tất cả địa điểm</option>
                 {categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
+                  <option key={c?._id} value={c?._id}>
+                    {c?.name}
                   </option>
                 ))}
               </FormSelect>
@@ -293,12 +304,103 @@ const handleDistrictSelect = (districtName) => {
                         <input
                           type="checkbox"
                           value={name}
-                          // onChange={(e) => handleChooseCate(e, name)}
+                          style={{ marginRight: "7px" }}
+                          onChange={handleSelectedAppliance}
                         />
                         {name}
                       </label>
                     </div>
                   ))}
+                </div>
+              </div>
+              
+              <div className="filter-section" style={{ border: "none" }}>
+                <div
+                  className="filter-section-title"
+                  style={{ marginRight: "10px" }}
+                >
+                  Diện tích:
+                </div>
+                <div
+                  style={{
+                    borderBottom: "none",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+
+                  <TextField
+                    name="area"
+                    variant="outlined"
+                    value={areaMin}
+                    onChange={(e) => setAreaMin(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          / m<sup>2</sup>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onKeyDown={(e) => {
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "."
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                    sx={{
+                      height: "40px",
+                      "& .MuiOutlinedInput-root": {
+                        height: "100%",
+                      },
+                      width: "118px",
+                      marginRight: "10px",
+                    }}
+                  />
+
+                  <TextField
+                    name="area"
+                    variant="outlined"
+                    required
+                    value={areaMax}
+                    onChange={(e) => setAreaMax(e.target.value)}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          / m<sup>2</sup>
+                        </InputAdornment>
+                      ),
+                    }}
+                    onKeyDown={(e) => {
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "."
+                      ) {
+                        e.preventDefault();
+                      }
+                    }}
+                    sx={{
+                      height: "40px",
+                      "& .MuiOutlinedInput-root": {
+                        height: "100%",
+                      },
+                      width: "118px",
+                    }}
+                  />
+                  <Search
+                    onClick={handleFilter}
+                    style={{
+                      height: "50px",
+                      cursor: "pointer",
+                      paddingLeft: "11px",
+                      fontSize: "30px",
+                    }}
+                  />
                 </div>
               </div>
 
@@ -324,8 +426,8 @@ const handleDistrictSelect = (districtName) => {
                     style={{
                       height: "40px",
                       border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "117px",
+                      borderRadius: "5px",
+                      width: "118px",
                       marginRight: "10px",
                     }}
                   />
@@ -337,8 +439,8 @@ const handleDistrictSelect = (districtName) => {
                     style={{
                       height: "40px",
                       border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "117px",
+                      borderRadius: "5px",
+                      width: "118px",
                     }}
                   />
                   <Search
@@ -402,13 +504,6 @@ const handleDistrictSelect = (districtName) => {
                   </div>
                 </div>
               </div>
-              {/* <Button
-                onClick={handleAll}
-                className="btn btn-success"
-                style={{ marginLeft: "30%" }}
-              >
-                Xem tất cả
-              </Button> */}
             </div>
           </Row>
         </Col>
@@ -416,8 +511,10 @@ const handleDistrictSelect = (districtName) => {
         <Col md={9}>
           <Row>
             {noResult ? (
-              <Col md={4}>
-                <h6 style={{ margin: "20px" }}>Không có sản phẩm nào !!!</h6>
+              <Col md={12}>
+                <h4 style={{ margin: "20px", textAlign: "center" }}>
+                  Không có địa điểm nào !!!
+                </h4>
               </Col>
             ) : (
               productsOnPage.map((l) => (
@@ -442,7 +539,7 @@ const handleDistrictSelect = (districtName) => {
                         zIndex: 1,
                         cursor: "pointer",
                       }}
-                      onClick={() => changeFavorite(l._id)}
+                      onClick={() => changeFavorite(l?._id)}
                     >
                       {l.favorite ? (
                         <FavoriteIcon style={{ color: "#FF385C" }} />
@@ -472,7 +569,7 @@ const handleDistrictSelect = (districtName) => {
                           <Carousel.Item key={index}>
                             <img
                               className="d-block w-100"
-                              src={img}
+                              src={img.url}
                               alt={`Ảnh slide ${index + 1}`}
                               height="270"
                               style={{
@@ -497,7 +594,7 @@ const handleDistrictSelect = (districtName) => {
                       )}
                     </Carousel>
                     <Link
-                      to={`/spaces/${l._id}`}
+                      to={`/spaces/${l?._id}`}
                       style={{ textDecoration: "none", marginTop: "10px" }}
                     >
                       <Card.Body>
@@ -542,14 +639,18 @@ const handleDistrictSelect = (districtName) => {
                           >
                             Giá: {priceFormatter(l.pricePerHour)} / VND
                           </Card.Text>
-                          <Card.Text style={{ color: "#2d2d2d", display:'flex' }}>
+                          <Card.Text
+                            style={{ color: "#2d2d2d", display: "flex" }}
+                          >
                             <StarFill
                               style={{
                                 color: "#FFCC00",
                                 margin: "3px 15px 15px 0",
                               }}
                             />
-                            <span style={{ margin:'0 10px 17px -7px'}}>4.5</span>
+                            <span style={{ margin: "0 10px 17px -7px" }}>
+                              4.5
+                            </span>
                           </Card.Text>
                         </div>
                       </Card.Body>

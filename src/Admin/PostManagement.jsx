@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row, Table, Button } from "react-bootstrap";
-import { Eye } from "react-bootstrap-icons";
+import { Col, Container, Row, Card, Button } from "react-bootstrap";
+import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
@@ -14,9 +14,12 @@ const PostManagement = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces")
+      .get("http://localhost:9999/spaces/all")
       .then((response) => {
-        setSpaces(response.data);
+        const sortedSpaces = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setSpaces(sortedSpaces);
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
@@ -34,7 +37,7 @@ const PostManagement = () => {
       .put(`http://localhost:9999/spaces/update/${postId}`, {
         censorship: "Chấp nhận",
       })
-      .then((response) => {
+      .then(() => {
         setSpaces((prevSpaces) =>
           prevSpaces.map((space) =>
             space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
@@ -52,7 +55,7 @@ const PostManagement = () => {
         censorship: "Từ chối",
         communityStandardsId: communityStandardsId,
       })
-      .then((response) => {
+      .then(() => {
         setSpaces((prevSpaces) =>
           prevSpaces.map((space) =>
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
@@ -79,47 +82,110 @@ const PostManagement = () => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid className="py-4">
       {!showDetail ? (
         <>
-          <Row className="ml-1 mb-4 mt-4"></Row>
-          <Row style={{ width: "100%" }}>
-            <Col md={12}>
-              <Table striped bordered hover>
-                <thead className="text-center">
-                  <tr>
-                    <th>STT</th>
-                    <th>Hình ảnh</th>
-                    <th>Tên không gian</th>
-                    <th>Tên chủ không gian</th>
-                    <th>Chi tiết</th>
-                    <th colSpan={2}>Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody className="text-center">
-                  {spaces.map((s, index) => (
-                    <tr key={s._id}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <img
-                          src={s.images[0]}
-                          alt={s.name}
-                          style={{ width: "100px", height: "150px",width:'150px' }}
-                        />
-                      </td>
-                      <td>{s.name}</td>
-                      <td>{s.userId?.fullname || "Unknown"}</td>
-                      <td>
-                        <Eye
-                          style={{
-                            color: "#3399FF",
-                            fontSize: "30px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleViewDetail(s._id)}
-                        />
-                      </td>
-                      <td>
+          <Row>
+            <div style={{ display: "flex", gap: 20, marginBottom: "20px" }}>
+              <div
+                style={{
+                  width: "150px",
+                  height: "110px",
+                  backgroundColor: "#cccc",
+                  display: "flex",
+                  textAlign: "center",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <p><Person style={{fontSize:'30px'}}/>Chủ cho thuê</p>
+              </div>
+              <div
+                style={{
+                  width: "120px",
+                  height: "110px",
+                  backgroundColor: "#4c68a1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <HouseAddFill style={{ color: "white" }} />
+              </div>
+              <div
+                style={{
+                  width: "120px",
+                  height: "110px",
+                  backgroundColor: "#4c68a1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <HouseAddFill style={{ color: "white" }} />
+              </div>
+              <div
+                style={{
+                  width: "120px",
+                  height: "110px",
+                  backgroundColor: "#4c68a1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <HouseAddFill style={{ color: "white" }} />
+              </div>
+              <div
+                style={{
+                  width: "120px",
+                  height: "110px",
+                  backgroundColor: "#4c68a1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <HouseAddFill style={{ color: "white" }} />
+              </div>
+            </div>
+            <Row>
+              {spaces.map((s, index) => (
+                <Col md={4} key={s._id} className="mb-4">
+                  <Card className="shadow-sm h-100">
+                    <Card.Img
+                      variant="top"
+                      src={s.images[0]?.url || "placeholder.jpg"}
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                        borderTopLeftRadius: "10px",
+                        borderTopRightRadius: "10px",
+                      }}
+                    />
+                    <Card.Body className="d-flex flex-column">
+                      <Card.Title className="text-truncate">
+                        {s.name}
+                      </Card.Title>
+                      <Card.Text className="text-muted">
+                        <strong>Chủ không gian: </strong>
+                        {s.userId?.fullname || "Không rõ"}
+                      </Card.Text>
+                      <Card.Text className="">
+                        <strong>Trạng thái: </strong>
+                        <span
+                          className={
+                            s.censorship === "Chấp nhận"
+                              ? "text-success"
+                              : s.censorship === "Từ chối"
+                                ? "text-danger"
+                                : "text-warning"
+                          }
+                        >
+                          {s.censorship}
+                        </span>
+                      </Card.Text>
+                      <div className="mt-auto d-flex justify-content-between">
                         <Button
                           variant="success"
                           onClick={() => handleAccept(s._id)}
@@ -130,8 +196,6 @@ const PostManagement = () => {
                         >
                           Chấp Nhận
                         </Button>
-                      </td>
-                      <td>
                         <Button
                           variant="danger"
                           onClick={() => openRejectDialog(s._id)}
@@ -142,12 +206,20 @@ const PostManagement = () => {
                         >
                           Từ Chối
                         </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
+                        <Eye
+                          style={{
+                            color: "#3399FF",
+                            fontSize: "30px",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleViewDetail(s._id)}
+                        />
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </Row>
           {visible && (
             <CommunityStandards

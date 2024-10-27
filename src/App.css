@@ -53,14 +53,15 @@
   --shedule: #e1ae4a;
 }
 /* Style cho Header cố định */
+
 header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000; /* Đảm bảo header nằm trên các thành phần khác */
-  background-color: white; /* Màu nền của header, bạn có thể thay đổi */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng cho header */
+  z-index: 1000; 
+  background-color: white; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 }
 
 /* Để đảm bảo nội dung không bị che bởi Header cố định */

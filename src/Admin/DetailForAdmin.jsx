@@ -48,6 +48,7 @@ const DetailForAdmin = ({ id, onBack }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+  const remainingImagesCount = space.images ? space.images.length - 3 : 0;
 
   return (
     <Container>
@@ -64,27 +65,46 @@ const DetailForAdmin = ({ id, onBack }) => {
                   <td style={{ display: "flex", justifyContent: "start" }}>
                     <Image.PreviewGroup>
                       {space.images &&
-                        space.images
-                          .slice(0, 3)
-                          .map((imgUrl, index) => (
-                            <Image
-                              key={index}
-                              src={imgUrl}
-                              alt={`Space image ${index + 1}`}
-                              fluid
-                              style={{ maxWidth: "200px", padding: "10px", height:'150px' }}
-                            />
-                          ))}
+                        space.images.slice(0, 4).map((imgUrl, index) => (
+                          <Image
+                            key={index}
+                            src={imgUrl.url}
+                            alt={`Space image ${index + 1}`}
+                            fluid
+                            style={{ maxWidth: "200px", padding: "10px", height: '150px' }}
+                          />
+                        ))}
+                      {/* Hiển thị ảnh cuối cùng với lớp phủ nếu có nhiều hơn 3 ảnh */}
+                      {space.images && space.images.length > 3 && (
+                        <div style={{ position: "relative", display: "inline-block", padding: "10px" }}>
+                          <Image
+                            src={space.images[2].url}
+                            alt={`Space image 3`}
+                            fluid
+                            style={{ maxWidth: "200px", height: '150px' }}
+                          />
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              backgroundColor: "rgba(0, 0, 0, 0.5)",
+                              color: "white",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              fontSize: "24px",
+                              fontWeight: "bold",
+                            }}
+                            onClick={handleShowAllImages}
+                          >
+                            +{remainingImagesCount}
+                          </div>
+                        </div>
+                      )}
                     </Image.PreviewGroup>
-                    {space.images && space.images.length > 3 && (
-                      <Button
-                        className="btn btn-success"
-                        onClick={handleShowAllImages}
-                        style={{ height: "40px", marginTop: "45px" }}
-                      >
-                        Xem tất cả
-                      </Button>
-                    )}
                   </td>
                 </tr>
                 <tr>
@@ -122,9 +142,9 @@ const DetailForAdmin = ({ id, onBack }) => {
           <Image.PreviewGroup>
             {space.images &&
               space.images.map((imgUrl, index) => (
-                <img
+                <Image
                   key={index}
-                  src={imgUrl}
+                  src={imgUrl.url}
                   alt={`Space image ${index + 1}`}
                   fluid
                   style={{ maxWidth: "768px", padding: "10px" }}

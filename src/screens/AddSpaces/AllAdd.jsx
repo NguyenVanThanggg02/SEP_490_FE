@@ -29,28 +29,60 @@ const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId } = useContext(SpaceContext);
+  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId, customRule, selectedRules, setSpaceInfo,
+    isGoldenHour, goldenHourDetails
+   } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
 
   const handleFinish = async () => {
-    const applianceId = await addAppliances();
+    const ruleId = await addRules();
 
+      // Sau khi thêm quy định thành công, thêm thiết bị
+      const applianceId = await addAppliances();
 
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
       appliancesId: applianceId,
+      rulesId: ruleId,
       location,
       ...spaceInfo,
+      isGoldenHour: isGoldenHour,
+      goldenHourDetails: goldenHourDetails
     };
 
     try {
       const response = await axios.post('http://localhost:9999/spaces', spaceData);
-      console.log('Thêm không gian thành công:', response.data);
       alert('Thêm không gian thành công!');
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
       alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
+    }
+  };
+
+  const addRules = async () => {
+    try {
+      const customRulesArray =
+        customRule.split(';').map(rule => rule.trim()).filter(rule => rule.length > 0)
+
+      const data = {
+        selectedRules,
+        customRules: customRulesArray, 
+      };
+      console.log("Custom rules array:", customRulesArray);  // Kiểm tra sau 
+
+
+      const response = await axios.post("http://localhost:9999/rules/addRule", data);
+
+      const ruleId = response.data._id;  
+      
+      setSpaceInfo(prev => ({
+        ...prev,
+        rulesId: ruleId  
+      }));
+        return ruleId;
+    } catch (error) {
+      console.error('Error adding rule:', error);
     }
   };
 
@@ -62,18 +94,13 @@ export default function AddSpaceFlow() {
       categoryId: selectedCategoryId,
     };
 
-    console.log(appliancesToAdd);
-
-
     try {
       const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
       if (response.data.success) {
         const newApplianceId = response.data.appliance._id;
-        console.log(response.data);
 
         setSelectedApplianceId(newApplianceId);
 
-        console.log('New appliance added with ID:', newApplianceId);
         return newApplianceId
       } else {
         console.error('Failed to add appliance:', response.data.message);
@@ -85,7 +112,10 @@ export default function AddSpaceFlow() {
 
   };
 
-  console.log("ap id" + selectedApplianceId);
+
+  // Hàm gửi dữ liệu lên server
+  
+
 
   const handleNext = async () => {
     setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
@@ -113,9 +143,9 @@ export default function AddSpaceFlow() {
     }
   };
 
-  const isNextDisabled = 
-  (activeStep === 0 && !selectedCategoryId) || 
-  (activeStep === 1 && selectedAppliances.length === 0);
+  const isNextDisabled =
+    (activeStep === 0 && !selectedCategoryId) ||
+    (activeStep === 1 && selectedAppliances.length === 0);
 
 
 
@@ -136,9 +166,9 @@ export default function AddSpaceFlow() {
         boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)'
       }}>
         <Stepper nonLinear
-         activeStep={activeStep}
-         connector={<CustomStepConnector />}  
-         >
+          activeStep={activeStep}
+          connector={<CustomStepConnector />}
+        >
           {steps.map((label, index) => (
             <Step key={label} completed={index < activeStep}>
               {/* Chỉ hiển thị StepButton cho bước hiện tại hoặc bước đã hoàn thành */}
@@ -150,7 +180,7 @@ export default function AddSpaceFlow() {
             </Step>
           ))}
         </Stepper>
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 1 }}>
           <Button
             color="inherit"
             disabled={activeStep === 0}
@@ -169,8 +199,8 @@ export default function AddSpaceFlow() {
               onClick={handleNext}
               disabled={isNextDisabled}
               sx={{
-                cursor: isNextDisabled ? 'not-allowed' : 'pointer', 
-                opacity: isNextDisabled ? 0.5 : 1, 
+                cursor: isNextDisabled ? 'not-allowed' : 'pointer',
+                opacity: isNextDisabled ? 0.5 : 1,
               }}
               variant="contained"
 

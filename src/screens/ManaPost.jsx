@@ -135,7 +135,7 @@ const ManaPost = () => {
                 <td>
                   {space.images && space.images.length > 0 ? (
                     <img
-                      src={space.images[0]}
+                      src={space.images[0].url}
                       alt={space.name}
                       style={{
                         width: "100px",
