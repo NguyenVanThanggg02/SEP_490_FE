@@ -99,11 +99,10 @@ const BookingForm = () => {
         if (!spaceData || !spaceData.isGoldenHour) return false;
         const { startTime, endTime } = spaceData.goldenHourDetails;
     
-        // Tạo các đối tượng Date cho startTime, endTime và time để so sánh
         const [startHour, startMinute] = startTime?.split(':').map(Number);
         const [endHour, endMinute] = endTime?.split(':').map(Number);
         const [timeHour, timeMinute] = time?.split(':').map(Number);
-    // 1
+    
         const start = new Date();
         start.setHours(startHour, startMinute, 0, 0);
     
