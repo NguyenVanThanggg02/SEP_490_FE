@@ -103,7 +103,7 @@ const BookingForm = () => {
         const [startHour, startMinute] = startTime?.split(':').map(Number);
         const [endHour, endMinute] = endTime?.split(':').map(Number);
         const [timeHour, timeMinute] = time?.split(':').map(Number);
-    // a
+    // 1
         const start = new Date();
         start.setHours(startHour, startMinute, 0, 0);
     
