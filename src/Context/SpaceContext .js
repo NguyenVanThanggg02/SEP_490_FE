@@ -19,7 +19,8 @@ export const SpaceProvider = ({ children }) => {
     pricePerDay: '',
     pricePerWeek: '',
     pricePerMonth: '',
-    images: []
+    images: [],
+    latLng: []
   });
   const [isGoldenHour, setIsGoldenHour] = useState(false);
   const [goldenHourDetails, setGoldenHourDetails] = useState({

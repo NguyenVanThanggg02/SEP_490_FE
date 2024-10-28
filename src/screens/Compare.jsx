@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../style/Compare.css";
 import { useLocation } from 'react-router-dom';
 import { priceFormatter } from '../utils/numberFormatter';
+import axios from 'axios';
 
 const Compare = () => {
   const location = useLocation();
@@ -11,12 +12,13 @@ const Compare = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDifferencesOnly, setShowDifferencesOnly] = useState(false);
+  const [distances, setDistances] = useState(null);
 
   const fetchData = async (isDifference) => {
     const endpoint = isDifference
       ? `http://localhost:9999/spaces/compare-spaces-differences?id1=${id}&id2=${valueFromChild}`
       : `http://localhost:9999/spaces/compare-spaces?id1=${id}&id2=${valueFromChild}`;
-    
+
     try {
       const response = await fetch(endpoint);
       if (!response.ok) {
@@ -29,19 +31,47 @@ const Compare = () => {
       return null;
     }
   };
+  const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
 
+  const getRoute = async (start, end) => {     // tính distance 2 location [lng, lat]
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      const route = data.routes[0];
+      return (route.distance / 1000).toFixed(2)
+    } catch (error) {
+      console.error("Error getting route:", error);
+    }
+  };
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+
       const loadedData = await fetchData(showDifferencesOnly);
       if (loadedData) {
+        if (navigator?.geolocation) {   // check có được cấp quyền truy cập vị trí user hay không
+          navigator.geolocation.getCurrentPosition(async(position) => {
+            const distanceSpace1 = await getRoute([position.coords.latitude, position.coords.longitude], loadedData.space1.latLng)  // tính khoảng cách user hiện tại tới space
+            const distanceSpace2 = await getRoute([position.coords.latitude, position.coords.longitude], loadedData.space2.latLng)
+
+            setDistances([distanceSpace1, distanceSpace2]);
+          }, (error) => {
+            console.error("Lỗi khi lấy vị trí hiện tại:", error);
+          })
+            
+          
+        } else {
+          return;
+        }
+
         setData(loadedData);
         setDifferences(showDifferencesOnly ? loadedData : null);
       }
       setLoading(false);
     };
     loadData();
-  }, [id, valueFromChild, showDifferencesOnly]);
+  }, [id, valueFromChild, showDifferencesOnly, navigator]);
 
   const handleCheckboxChange = () => {
     setShowDifferencesOnly(prev => !prev);
@@ -54,6 +84,9 @@ const Compare = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+
+
 
   const hasDifferences = differences && Object.keys(differences).length > 0;
   const hasData = data && Object.keys(data).length > 0;
@@ -122,6 +155,7 @@ const Compare = () => {
                             </td>
                         </>
                       )}
+
                     </tr>
                   ))
                 ) : (
@@ -169,6 +203,17 @@ const Compare = () => {
                   <td colSpan={3}>Không có dữ liệu để hiển thị</td>
                 </tr>
               )}
+              <tr>
+                <td className="zui-sticky-col">
+                  Quãng đường
+                </td>
+                <td>
+                  {distances?.[0]}
+                </td>
+                <td>
+                  {distances?.[1]}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -97,9 +97,31 @@ const BookingForm = () => {
 
     const isGoldenHour = (time) => {
         if (!spaceData || !spaceData.isGoldenHour) return false;
+<<<<<<< HEAD
         const { startTime, endTime } = spaceData?.goldenHourDetails;
         return time >= startTime && time <= endTime;
     };
+=======
+        const { startTime, endTime } = spaceData.goldenHourDetails;
+    
+        // Tạo các đối tượng Date cho startTime, endTime và time để so sánh
+        const [startHour, startMinute] = startTime?.split(':').map(Number);
+        const [endHour, endMinute] = endTime?.split(':').map(Number);
+        const [timeHour, timeMinute] = time?.split(':').map(Number);
+    
+        const start = new Date();
+        start.setHours(startHour, startMinute, 0, 0);
+    
+        const end = new Date();
+        end.setHours(endHour, endMinute, 0, 0);
+    
+        const currentTime = new Date();
+        currentTime.setHours(timeHour, timeMinute, 0, 0);
+    
+        return currentTime >= start && currentTime < end;
+    };
+    
+>>>>>>> 5fb0eaae384103567920f18cda4a09f058bfae64
 
     const calculatePrice = (time) => {
         if (!spaceData) return 0;
