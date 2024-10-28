@@ -12,7 +12,6 @@ const Landing = ({isLoggedIn, setIsLoggedIn}) => {
       <Features></Features>
       <HotSpace></HotSpace>
       <HowWork></HowWork>
-      <UserFeed></UserFeed>
     </div>
   );
 };
