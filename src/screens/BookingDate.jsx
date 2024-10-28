@@ -97,11 +97,6 @@ const BookingForm = () => {
 
     const isGoldenHour = (time) => {
         if (!spaceData || !spaceData.isGoldenHour) return false;
-<<<<<<< HEAD
-        const { startTime, endTime } = spaceData?.goldenHourDetails;
-        return time >= startTime && time <= endTime;
-    };
-=======
         const { startTime, endTime } = spaceData.goldenHourDetails;
     
         // Tạo các đối tượng Date cho startTime, endTime và time để so sánh
@@ -121,7 +116,6 @@ const BookingForm = () => {
         return currentTime >= start && currentTime < end;
     };
     
->>>>>>> 5fb0eaae384103567920f18cda4a09f058bfae64
 
     const calculatePrice = (time) => {
         if (!spaceData) return 0;
