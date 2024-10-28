@@ -57,7 +57,7 @@ function SpaceDetails() {
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  
   const nav = useNavigate()
 
   const handleValueChange = (newValue) => {
@@ -890,6 +890,7 @@ function SpaceDetails() {
           sx={{ zIndex: 1500 }}
           id={id}
           onValueChange={handleValueChange}
+          setCategoryId={spaceData.categoriesId._id}
         />
       )}
       <Similar spaceData={spaceData} />
