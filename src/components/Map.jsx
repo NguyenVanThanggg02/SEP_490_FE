@@ -7,9 +7,8 @@ import { SpaceContext } from "../Context/SpaceContext ";
 export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocation, setLocation2}) => {
     const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
     const mapRef = useRef(null);
-    //a
 
-    // State để lưu vị trí marker và địa chỉ và chọn địa chỉa
+    // State để lưu vị trí marker và địa chỉ
     const [marker, setMarker] = useState(null);
     const [address, setAddress] = useState(""); // State để lưu địa chỉ
     const {setSpaceInfo, spaceInfo  } = useContext(SpaceContext);
