@@ -25,7 +25,7 @@ const ListSpace = () => {
   const [noResult, setNoResult] = useState(false);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(9);
-  const [, setCurrentPage] = useState(1);
+  const [curentPage, setCurrentPage] = useState(1);
   const [, setSpaceFavos] = useState([]);
   const [appliances, setAppliances] = useState([]);
   const productsOnPage = listSpace.slice(first, first + rows);
@@ -227,11 +227,36 @@ const ListSpace = () => {
       alert("Lỗi khi gọi API lấy danh sách sản phẩm theo cate ", error);
     }
   };
-  const onPageChange = (event) => {
+  const onPageChange = async (event) => {
     setFirst(event?.first);
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
+  
+    // Tính toán khoảng cách cho các không gian mới trên trang
+    const currentPosition = await new Promise((resolve) => {
+      if (navigator?.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          resolve([position.coords.latitude, position.coords.longitude]);
+        });
+      } else {
+        console.warn("Geolocation is not supported by this browser.");
+        resolve(null);
+      }
+    });
+  
+    if (currentPosition) {
+      const calculatedDistances = [];
+      const currentSpaces = listSpace.slice(event.first, event.first + event.rows);
+  
+      for (const space of currentSpaces) {
+        const distance = await getRoute(currentPosition, space.latLng);
+        calculatedDistances.push(distance);
+      }
+  
+      setDistances(calculatedDistances); 
+    }
   };
+  
 
   // lấy thành phố
   useEffect(() => {
@@ -665,7 +690,7 @@ const handleDistrictSelect = (districtName) => {
                         <Card.Text
                           style={{ fontSize: "14px", color: "#757575" }}
                         >
-                          Quãng đường:{distances[index] ? `${distances[index]} km` : "Không xác định."}
+                          Quãng đường: {distances[index] ? `${distances[index]} km` : "Không xác định."}
                         </Card.Text>
                         <Card.Text
                           style={{
