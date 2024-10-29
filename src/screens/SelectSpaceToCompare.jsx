@@ -12,14 +12,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const SelectSpaceToCompare = (props) => {
-  const { visibleCompare, setVisibleCompare, id, onValueChange  } = props;
+  const { visibleCompare, setVisibleCompare, id, onValueChange,setCategoryId  } = props;
   const [spaces, setSpaces] = useState([]);
   const [selectedSpace, setSelectedSpace] = useState(null);
   console.log(selectedSpace);
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces")
+      .get(`http://localhost:9999/spaces/cate/${setCategoryId}`)
       .then((response) => {
         const filterItems = filterSapces(response.data);
         setSpaces(filterItems);

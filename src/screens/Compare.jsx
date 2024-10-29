@@ -47,24 +47,32 @@ const Compare = () => {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-
+  
       const loadedData = await fetchData(showDifferencesOnly);
       if (loadedData) {
-        if (navigator?.geolocation) {   // check có được cấp quyền truy cập vị trí user hay không
-          navigator.geolocation.getCurrentPosition(async(position) => {
-            const distanceSpace1 = await getRoute([position.coords.latitude, position.coords.longitude], loadedData.space1.latLng)  // tính khoảng cách user hiện tại tới space
-            const distanceSpace2 = await getRoute([position.coords.latitude, position.coords.longitude], loadedData.space2.latLng)
-
-            setDistances([distanceSpace1, distanceSpace2]);
-          }, (error) => {
-            console.error("Lỗi khi lấy vị trí hiện tại:", error);
-          })
-            
-          
+        if (loadedData.space1?.latLng && loadedData.space2?.latLng) {
+          if (navigator?.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+              const distanceSpace1 = await getRoute(
+                [position.coords.latitude, position.coords.longitude],
+                loadedData.space1.latLng
+              );  // tính khoảng cách user hiện tại tới space
+              const distanceSpace2 = await getRoute(
+                [position.coords.latitude, position.coords.longitude],
+                loadedData.space2.latLng
+              );
+  
+              setDistances([distanceSpace1, distanceSpace2]);
+            }, (error) => {
+              console.error("Lỗi khi lấy vị trí hiện tại:", error);
+            });
+          } else {
+            console.warn("Geolocation is not supported by this browser.");
+          }
         } else {
-          return;
+          console.log("Không có thông tin latLng cho space1 hoặc space2.");
         }
-
+  
         setData(loadedData);
         setDifferences(showDifferencesOnly ? loadedData : null);
       }
@@ -72,6 +80,7 @@ const Compare = () => {
     };
     loadData();
   }, [id, valueFromChild, showDifferencesOnly, navigator]);
+  
 
   const handleCheckboxChange = () => {
     setShowDifferencesOnly(prev => !prev);
@@ -208,10 +217,10 @@ const Compare = () => {
                   Quãng đường
                 </td>
                 <td>
-                  {distances?.[0]}
+                  {`${distances?.[0]} km`}
                 </td>
                 <td>
-                  {distances?.[1]}
+                  {`${distances?.[1]} km`}
                 </td>
               </tr>
             </tbody>
