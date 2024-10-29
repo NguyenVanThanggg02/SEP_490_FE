@@ -40,8 +40,61 @@ const ListSpace = () => {
   const [areaList, setAreaList] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
   const [selectedAppliance, setSelectedAppliance] = useState([]);
-  
+  const [distances, setDistances] = useState([]);
 
+  const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
+  console.log(listSpace);
+  
+  const getRoute = async (start, end) => {     // tính distance 2 location [lng, lat]
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      console.log(data);
+      
+      const route = data.routes[0];
+      return (route.distance / 1000).toFixed(2)
+    } catch (error) {
+      console.error("Error getting route:", error);
+    }
+  };
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch("http://localhost:9999/spaces/all");
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          setListSpace(data);
+          
+          if (navigator?.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+              const currentPosition = [position.coords.latitude, position.coords.longitude];
+              const calculatedDistances = [];
+
+              for (const space of data) {
+                const distance = await getRoute(currentPosition, space.latLng);
+                calculatedDistances.push(distance);
+              }
+
+              setDistances(calculatedDistances); // Lưu khoảng cách đã tính vào trạng thái
+            }, (error) => {
+              console.error("Lỗi khi lấy vị trí hiện tại:", error);
+            });
+          } else {
+            console.warn("Geolocation is not supported by this browser.");
+          }
+        } else {
+          setListSpace([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        setListSpace([]);
+      }
+    };
+
+    loadData();
+  }, []);
   useEffect(() => {
     fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
@@ -96,7 +149,6 @@ const ListSpace = () => {
         response = await axios.get("http://localhost:9999/spaces");
       }
       const spaces = response.data;
-      console.log(spaces);
 
       if (spaces.length === 0) {
         setNoResult(true);
@@ -188,7 +240,6 @@ const ListSpace = () => {
         const response = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
         // https://provinces.open-api.vn/api/
         setDistricts(response.data.data); 
-        console.log(districts);
         
       } catch (error) {
         console.error("Error fetching districts:", error);
@@ -247,7 +298,6 @@ const handleDistrictSelect = (districtName) => {
         <Col md={3}>
           <Row>
             <div class="filter-container">
-           
               <Col md={7} style={{ display: "flex" }}>
                 <div style={{ position: "relative" }}>
                   <input
@@ -313,7 +363,7 @@ const handleDistrictSelect = (districtName) => {
                   ))}
                 </div>
               </div>
-              
+
               <div className="filter-section" style={{ border: "none" }}>
                 <div
                   className="filter-section-title"
@@ -328,7 +378,6 @@ const handleDistrictSelect = (districtName) => {
                     alignItems: "center",
                   }}
                 >
-
                   <TextField
                     name="area"
                     variant="outlined"
@@ -517,7 +566,7 @@ const handleDistrictSelect = (districtName) => {
                 </h4>
               </Col>
             ) : (
-              productsOnPage.map((l) => (
+              productsOnPage.map((l, index) => (
                 <Col key={l._id} md={4} sm={6} xs={12} className="mb-4">
                   <div
                     style={{
@@ -612,6 +661,11 @@ const handleDistrictSelect = (districtName) => {
                           style={{ fontSize: "14px", color: "#757575" }}
                         >
                           Địa điểm: {l.location}
+                        </Card.Text>
+                        <Card.Text
+                          style={{ fontSize: "14px", color: "#757575" }}
+                        >
+                          Quãng đường:{distances[index] ? `${distances[index]} km` : "Không xác định."}
                         </Card.Text>
                         <Card.Text
                           style={{
