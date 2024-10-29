@@ -1,6 +1,7 @@
 // Chatbox.jsx
 import React from 'react';
-import './Chatbox.css';
+import "../style/Chatboxx.css";
+
 
 function Chatbox() {
   return (
@@ -45,7 +46,44 @@ function Chatbox() {
         </div>
       </div>
 
-
+      <div className="chat">
+        <div className="chat-header">
+          <div className="d-flex align-items-center">
+            <img
+              alt="Profile picture of SpaceHub support group"
+              height="50"
+              src="https://storage.googleapis.com/a1aa/image/rQeQowC0PBWLFqALgjLfDwkBCTFaiDcDd0kqy8J301rZwmrTA.jpg"
+              width="50"
+            />
+            <h5 className="mb-0 ms-3">Nhóm hỗ trợ SpaceHub</h5>
+          </div>
+        </div>
+        <div className="chat-messages">
+          <p className="text-muted">Hôm nay</p>
+          <p className="text-muted">
+            Chúng tôi có thể phân tích các tin nhắn nhằm mục đích đảm bảo an toàn, hỗ trợ, cải tiến sản phẩm hoặc
+            mục đích khác. <a href="#">Tìm hiểu thêm</a>
+          </p>
+          <div className="message">
+            <img
+              alt="Profile picture of SpaceHub support group"
+              height="50"
+              src="https://storage.googleapis.com/a1aa/image/rQeQowC0PBWLFqALgjLfDwkBCTFaiDcDd0kqy8J301rZwmrTA.jpg"
+              width="50"
+            />
+            <div className="message-content">
+              <p><strong>Nhóm hỗ trợ SpaceHub 17:32</strong></p>
+              <p>Chào Hoà! Chúng tôi sẽ trợ giúp bạn. Chúng tôi cần bạn trả lời một số câu hỏi và sau đó sẽ kết nối bạn với một thành viên trong nhóm của chúng tôi.</p>
+              <p>Vui lòng mô tả vấn đề của bạn trong vài câu. Điều này sẽ giúp nhóm của chúng tôi hiểu được vấn đề đang diễn ra.</p>
+              <p>Vui lòng không cho biết các thông tin nhạy cảm như số thẻ tín dụng.</p>
+            </div>
+          </div>
+        </div>
+        <div className="chat-input">
+          <input type="text" placeholder="Nhập tin nhắn" />
+          <i className="fas fa-paper-plane"></i>
+        </div>
+      </div>
 
       <div className="details">
         <div className="details-header">
