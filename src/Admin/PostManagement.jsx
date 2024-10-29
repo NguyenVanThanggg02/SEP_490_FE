@@ -4,6 +4,7 @@ import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
+import { Paginator } from "primereact/paginator";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -11,6 +12,10 @@ const PostManagement = () => {
   const [currentPostId, setCurrentPostId] = useState(null);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [rows, setRows] = useState(6);
+  const [first, setFirst] = useState(0);
+  const productsOnPage = spaces.slice(first, first + rows);
+  const [, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios
@@ -80,7 +85,11 @@ const PostManagement = () => {
   const handleBackToList = () => {
     setShowDetail(false);
   };
-
+  const onPageChange = (event) => {
+    setFirst(event?.first);
+    setCurrentPage(event.page + 1);
+    setRows(event?.rows);
+  };
   return (
     <Container fluid className="py-4">
       {!showDetail ? (
@@ -150,7 +159,7 @@ const PostManagement = () => {
               </div>
             </div>
             <Row>
-              {spaces.map((s, index) => (
+              {productsOnPage.map((s, index) => (
                 <Col md={4} key={s._id} className="mb-4">
                   <Card className="shadow-sm h-100">
                     <Card.Img
@@ -190,8 +199,7 @@ const PostManagement = () => {
                           variant="success"
                           onClick={() => handleAccept(s._id)}
                           disabled={
-                            s.censorship === "Chấp nhận" ||
-                            s.censorship === "Từ chối"
+                            s.censorship === "Chấp nhận"
                           }
                         >
                           Chấp Nhận
@@ -233,6 +241,20 @@ const PostManagement = () => {
       ) : (
         <DetailForAdmin id={selectedSpaceId} onBack={handleBackToList} />
       )}
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Paginator
+          style={{ backgroundColor: "#f9f9f9" }}
+          first={first}
+          rows={rows}
+          totalRecords={spaces.length}
+          onPageChange={onPageChange}
+        />
+      </Row>
     </Container>
   );
 };
