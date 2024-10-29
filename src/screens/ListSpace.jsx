@@ -688,11 +688,11 @@ const handleDistrictSelect = (districtName) => {
                           Địa điểm: {l.location}
                         </Card.Text>
                         <Card.Text
-                          style={{ fontSize: "14px", color: "#757575" }}
+                          style={{ fontSize: "14px", color: "#757575", fontWeight: "bold" }}
                         >
                           Quãng đường: {distances[index] ? `${distances[index]} km` : "Không xác định."}
                         </Card.Text>
-                        <Card.Text
+                        {/* <Card.Text
                           style={{
                             fontSize: "15px",
                             color: "#2d2d2d",
@@ -700,7 +700,7 @@ const handleDistrictSelect = (districtName) => {
                           }}
                         >
                           <p> Trạng thái: {l.status}</p>
-                        </Card.Text>
+                        </Card.Text> */}
                         <div
                           style={{
                             display: "flex",

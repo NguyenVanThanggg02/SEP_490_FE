@@ -54,23 +54,24 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = (postId, communityStandardsId) => {
-    axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+  const handleReject = async (postId, { communityStandardsId, customComment }) => {
+    try {
+      const response = await axios.put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
-        communityStandardsId: communityStandardsId,
-      })
-      .then(() => {
-        setSpaces((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Từ chối" } : space
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating censorship:", error);
+        communityStandardsId,
+        customComment, 
       });
+  
+      setSpaces((prevSpaces) =>
+        prevSpaces.map((space) =>
+          space._id === postId ? { ...space, censorship: response.data.censorship, communityStandardsId: response.data.communityStandardsId, customComment: response.data.customComment } : space
+        )
+      );
+    } catch (error) {
+      console.error("Error updating censorship:", error);
+    }
   };
+  
 
   const openRejectDialog = (postId) => {
     setCurrentPostId(postId);
