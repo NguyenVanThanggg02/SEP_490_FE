@@ -158,7 +158,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={'/alladd'}  className="linkk">
+        <Link to={"/alladd"} className="linkk">
           <Typography sx={{ marginRight: 1 }}>
             <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
               Cho thuê địa điểm qua SpaceHub
@@ -190,7 +190,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             <i class="bi bi-list" style={{ marginLeft: "8px" }}>
               <List />
             </i>
-            <Avatar sx={{ width: 32, height: 32 }} />
+            <Avatar
+              src={userInfo?.avatar || "/default-avatar.png"}
+              sx={{ width: 56, height: 56 }}
+            />
           </IconButton>
         </Tooltip>
       </Box>

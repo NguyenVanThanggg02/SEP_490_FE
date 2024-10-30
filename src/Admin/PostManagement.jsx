@@ -170,10 +170,10 @@ const PostManagement = () => {
                       variant="top"
                       src={s.images[0]?.url || "placeholder.jpg"}
                       style={{
-                        height: "200px",
+                        height: "220px",
                         objectFit: "cover",
-                        borderTopLeftRadius: "10px",
-                        borderTopRightRadius: "10px",
+                        borderTopLeftRadius: "5px",
+                        borderTopRightRadius: "5px",
                       }}
                     />
                     <Card.Body className="d-flex flex-column">
