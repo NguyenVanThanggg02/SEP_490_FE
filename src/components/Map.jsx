@@ -22,6 +22,7 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
                 const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${input}.json`, {
                     params: {
                         access_token: MAPBOX_TOKEN,
+                        country: 'VN',
                     },
                 });
 

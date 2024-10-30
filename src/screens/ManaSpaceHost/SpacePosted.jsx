@@ -72,7 +72,6 @@ const SpacePosted = () => {
                     setlistPosted(listPosted.filter((product) => product._id !== id));
                 })
                 .catch((error) => {
-                    alert("Không thể xóa không gian. Có thể không gian không ở trạng thái 'Chờ duyệt'.");
                     console.error("Failed to delete product:", error);
                 });
         }

@@ -145,12 +145,12 @@ const History = () => {
                         <tr key={item._id}>
                           <td>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
                               style={{height:'50px', width:'50px'}}
                             />
                           </td>
-                          <td>{item.items[0].spaceId.name}</td>
+                          <td>{item?.items?.[0]?.spaceId?.name}</td>
                           <td>{formatNumberToVND(item.totalAmount)}</td>
                           <td>{formatDate(item.startDate)}</td>
                           <td>{formatDate(item.endDate)}</td>

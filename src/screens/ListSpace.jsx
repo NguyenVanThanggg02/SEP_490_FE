@@ -43,7 +43,7 @@ const ListSpace = () => {
   
 
   useEffect(() => {
-    fetch("http://localhost:9999/spaces/")
+    fetch("http://localhost:9999/spaces")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
