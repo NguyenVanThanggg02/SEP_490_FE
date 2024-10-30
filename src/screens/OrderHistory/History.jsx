@@ -31,7 +31,7 @@ const History = () => {
       let filteredData = bookings;
 
       if (date) {
-          filteredData = filteredData.filter((item) => new Date(item.endDate) <= new Date(date));
+          filteredData = filteredData.filter((item) => new Date(item.startDate) <= new Date(date));
       }
 
       // Lọc theo rentalType
@@ -76,8 +76,8 @@ const History = () => {
             </Grid>
             <Grid item md={3}>
               <Select
-                value={rentalType} // Cập nhật giá trị ở đây
-                onChange={(e) => setRentalType(e.target.value)} // Cập nhật state ở đây
+                value={rentalType}
+                onChange={(e) => setRentalType(e.target.value)}
                 fullWidth
                 variant="outlined"
               >
@@ -86,7 +86,6 @@ const History = () => {
                 <MenuItem value="day">Ngày</MenuItem>
                 <MenuItem value="week">Tuần</MenuItem>
                 <MenuItem value="month">Tháng</MenuItem>
-                {/* Thêm các tùy chọn khác nếu cần */}
               </Select>
             </Grid>
             <Grid item md={3}>
@@ -102,13 +101,12 @@ const History = () => {
                 <MenuItem value="canceled">Đã huỷ</MenuItem>
               </Select>
             </Grid>
-
             <Grid item md={2} container alignItems="flex-end">
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleSearch}
-                style={{height:'55px'}}
+                style={{ height: "55px" }}
               >
                 Tìm kiếm
               </Button>
@@ -138,7 +136,10 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          height: "214px",
+                          // height: "215px",
+                          height: "auto",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
                         <Grid container spacing={2} alignItems="center">
@@ -224,6 +225,17 @@ const History = () => {
                             </Typography>
                           </Grid>
                         </Grid>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          disabled={item.status !== "awaiting payment"}
+                          style={{
+                            marginTop: "auto", 
+                            marginLeft: "auto", 
+                          }}
+                        >
+                          Hủy lịch
+                        </Button>
                       </Card>
                     </Grid>
                   ))
