@@ -39,7 +39,6 @@ import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import Blog from "./screens/Blog";
 import Contact from "./screens/Contact";
-
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -114,6 +113,7 @@ function Layout() {
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
           <Route path="/booking" element={<BookingDate />} />
+          <Route path="/blog" element={<Blog />} />
 
         </Routes>
       </main>

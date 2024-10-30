@@ -58,12 +58,12 @@ const Footer = () => {
                         <h5 className="text-uppercase mb-4" style={{ color: '#000' }}>TRUY CẬP</h5>
                         <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="/" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
                                     <i className="bi bi-house"></i> Trang chủ
                                 </Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="/blog" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
                                     <i className="bi bi-house"></i> Giới thiệu về SPACEHUB
                                 </Link>
                             </li>

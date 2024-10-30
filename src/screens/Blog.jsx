@@ -1,10 +1,10 @@
 import React from "react";
-import "../style/Blog.css";
+import "../style/blog.css";
 
 const Blog = () => {
     return (
         <div className="container">
-            <div className="title title1">
+            <div className=" title1">
                 Văn phòng &amp; Study Working
             </div>
             <div className="row featured-article">
@@ -42,7 +42,7 @@ const Blog = () => {
 
 
             <div className="container containerblog">
-                <div className="title title2">Địa điểm làm việc lý tưởng để tối ưu công việc</div>
+                <div className="title2">Địa điểm làm việc lý tưởng để tối ưu công việc</div>
                 <div className="row g-4">
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
