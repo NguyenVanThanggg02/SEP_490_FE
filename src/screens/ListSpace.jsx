@@ -601,7 +601,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "433px",
+                      height: "463px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >

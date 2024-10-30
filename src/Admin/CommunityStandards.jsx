@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import axios from "axios";
+import { TextField } from '@mui/material';
 
 const CommunityStandards = (props) => {
     const { visible, setVisible, handleReject, postId } = props; 
@@ -92,14 +93,19 @@ const CommunityStandards = (props) => {
               ))}
             </div>
             <div>
-              <input
-                type="text"
-                name="reportt"
-                className="reporttt"
+              <TextField
+                className="mt-3"
+                id="outlined-basic"
+                label="Vấn đề khác"
+                variant="outlined"
                 value={customCom}
                 onChange={handleCustomCom}
-                placeholder="Vấn đề khác"
-                style={{width:'100%', height:'40px', borderRadius:"8px", padding:"15px", margin:'13px'}}
+                FormHelperTextProps={{
+                  style: {
+                    fontSize: "14px",
+                  },
+                }}
+                fullWidth 
               />
             </div>
           </div>
