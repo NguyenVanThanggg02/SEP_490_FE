@@ -120,8 +120,20 @@ const DetailForAdmin = ({ id, onBack }) => {
                   <td>{space.area}</td>
                 </tr>
                 <tr>
-                  <th>Giá phòng</th>
+                  <th>Giá theo giờ</th>
                   <td>{space.pricePerHour}</td>
+                </tr>
+                <tr>
+                  <th>Giá theo ngày</th>
+                  <td>{space.pricePerDay}</td>
+                </tr>
+                <tr>
+                  <th>Giá theo tuần</th>
+                  <td>{space.pricePerWeek}</td>
+                </tr>
+                <tr>
+                  <th>Giá theo tháng</th>
+                  <td>{space.pricePerMonth}</td>
                 </tr>
               </tbody>
             </Table>

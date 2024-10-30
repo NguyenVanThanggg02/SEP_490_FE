@@ -108,7 +108,10 @@ const PostManagement = () => {
                   justifyContent: "center",
                 }}
               >
-                <p><Person style={{fontSize:'30px'}}/>Chủ cho thuê</p>
+                <p>
+                  <Person style={{ fontSize: "30px" }} />
+                  Chủ cho thuê
+                </p>
               </div>
               <div
                 style={{
@@ -199,9 +202,7 @@ const PostManagement = () => {
                         <Button
                           variant="success"
                           onClick={() => handleAccept(s._id)}
-                          disabled={
-                            s.censorship === "Chấp nhận"
-                          }
+                          disabled={s.censorship === "Chấp nhận"}
                         >
                           Chấp Nhận
                         </Button>
@@ -248,13 +249,15 @@ const PostManagement = () => {
           justifyContent: "center",
         }}
       >
-        <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
-          first={first}
-          rows={rows}
-          totalRecords={spaces.length}
-          onPageChange={onPageChange}
-        />
+        {!showDetail && (
+          <Paginator
+            style={{ backgroundColor: "#f9f9f9" }}
+            first={first}
+            rows={rows}
+            totalRecords={spaces.length}
+            onPageChange={onPageChange}
+          />
+        )}
       </Row>
     </Container>
   );
