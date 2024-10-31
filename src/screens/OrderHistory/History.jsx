@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Sel
 import axios from "axios";
 import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
+import { Row } from "react-bootstrap";
+import { Paginator } from "primereact/paginator";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -12,7 +14,11 @@ const History = () => {
   const [rentalType, setRentalType] = useState("Tất cả"); // Thêm state cho rentalType
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]); // State cho danh sách đã lọc
-  
+  const [first, setFirst] = useState(0);
+  const [rows, setRows] = useState(6);
+  const [curentPage, setCurrentPage] = useState(1);
+  const productsOnPage = filteredBookings.slice(first, first + rows);
+
   const user = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -55,7 +61,11 @@ const History = () => {
       const year = dateObject.getFullYear();
       return `${day}-${month}-${year}`;
   };
-
+  const onPageChange = async (event) => {
+    setFirst(event?.first);
+    setCurrentPage(event.page + 1);
+    setRows(event?.rows);
+  };
   return (
     <div className="container containerhistory">
       <Card className="cardhistory" elevation={3}>
@@ -120,14 +130,14 @@ const History = () => {
             />
             <CardContent>
               <Grid container spacing={2}>
-                {filteredBookings.length === 0 ? (
+                {productsOnPage.length === 0 ? (
                   <Grid item md={12}>
                     <Typography variant="body1" className="no-data">
                       Bạn chưa đặt lịch nào !!!
                     </Typography>
                   </Grid>
                 ) : (
-                  filteredBookings.map((item) => (
+                  productsOnPage.map((item) => (
                     <Grid item md={6} key={item._id}>
                       <Card
                         variant="outlined"
@@ -136,8 +146,7 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          // height: "215px",
-                          height: "auto",
+                          height: "250px",
                           display: "flex",
                           flexDirection: "column",
                         }}
@@ -148,7 +157,7 @@ const History = () => {
                               src={item.items[0].spaceId.images[0].url}
                               alt="Ảnh không gian"
                               style={{
-                                height: "150px",
+                                height: "170px",
                                 width: "100%",
                                 borderRadius: "8px",
                                 objectFit: "cover",
@@ -164,7 +173,7 @@ const History = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ fontWeight: "bold" }}
+                              style={{ fontWeight: "bold", fontSize: "15px" }}
                             >
                               Thuê theo:{" "}
                               {item.rentalType === "hour"
@@ -185,23 +194,32 @@ const History = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ color: "gray" }}
+                              style={{ color: "gray", fontSize: "15px" }}
                             >
-                              Thời gian đặt: {formatDate(item.startDate)}
+                              <span style={{ fontWeight: "bold" }}>
+                                Thời gian đặt:{" "}
+                              </span>
+                              {formatDate(item.startDate)}
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ color: "gray" }}
+                              style={{ color: "gray", fontSize: "15px" }}
                             >
-                              Thời gian trả: {formatDate(item.endDate)}
+                              <span style={{ fontWeight: "bold" }}>
+                                Thời gian trả:{" "}
+                              </span>
+                              {formatDate(item.endDate)}
                             </Typography>
                             {item.selectedSlots.map((slot, index) => (
                               <div key={index}>
                                 <Typography
                                   variant="body2"
-                                  style={{ color: "gray" }}
+                                  style={{ color: "gray", fontSize: "15px" }}
                                 >
-                                  Thời gian: {slot.startTime} - {slot.endTime}
+                                  <span style={{ fontWeight: "bold" }}>
+                                    Thời gian:{" "}
+                                  </span>
+                                  {slot.startTime} - {slot.endTime}
                                 </Typography>
                               </div>
                             ))}
@@ -212,9 +230,10 @@ const History = () => {
                                   item.status === "Đã hoàn tất"
                                     ? "green"
                                     : "red",
+                                fontSize: "15px",
                               }}
                             >
-                              Trạng thái:{" "}
+                              <span style={{fontWeight:'bold'}}>Trạng thái: </span>
                               {item.status === "awaiting payment"
                                 ? "Chờ thanh toán"
                                 : item.status === "completed"
@@ -230,11 +249,11 @@ const History = () => {
                           color="secondary"
                           disabled={item.status !== "awaiting payment"}
                           style={{
-                            marginTop: "auto", 
-                            marginLeft: "auto", 
+                            marginTop: "auto",
+                            marginLeft: "auto",
                           }}
                         >
-                          Hủy lịch
+                          Huỷ lịch
                         </Button>
                       </Card>
                     </Grid>
@@ -245,6 +264,21 @@ const History = () => {
           </Card>
         </CardContent>
       </Card>
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <Paginator
+          style={{ backgroundColor: "#f9f9f9" }}
+          first={first}
+          rows={rows}
+          totalRecords={filteredBookings.length}
+          onPageChange={onPageChange}
+        />
+      </Row>
     </div>
   );
 };
