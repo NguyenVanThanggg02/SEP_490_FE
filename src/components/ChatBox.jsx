@@ -134,20 +134,21 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                       ? `$${chat.spacesId.pricePerHour}`
                       : "N/A"}
                   </div>
-                  {chat.spacesId.images && chat.spacesId.images.length > 0 && (
-                    <div>
-                      <strong>Image:</strong>
-                      <img
-                        src={chat.spacesId.images[0]} // Use the first image of the product
-                        alt="Product"
-                        style={{
-                          width: "80px",
-                          borderRadius: "5px",
-                          marginTop: "5px",
-                        }} // Adjust size and style of the image
-                      />
-                    </div>
-                  )}
+                  {chat?.spacesId?.images &&
+                    chat.spacesId?.images?.length > 0 && (
+                      <div>
+                        <strong>Image:</strong>
+                        <img
+                          src={chat?.spacesId?.images?.[0].url} // Use the first image of the product
+                          alt="Product"
+                          style={{
+                            width: "80px",
+                            borderRadius: "5px",
+                            marginTop: "5px",
+                          }} // Adjust size and style of the image
+                        />
+                      </div>
+                    )}
                 </div>
               </div>
             )}

@@ -274,7 +274,7 @@ function SpaceDetails({ onSelectChat }) {
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare?.images[0].url || "default-image"}
+              image={compare?.images?.[0]?.url || "default-image"}
               title="image spaceCompare"
               style={{ objectFit: "cover" }}
             />
@@ -748,7 +748,7 @@ function SpaceDetails({ onSelectChat }) {
                         onClick={handleCreateChat}
                         state={{ id }}
                         className={
-                          userId === spaceData.userId._id ? "d-none" : ""
+                          userId === spaceData.userId?._id ? "d-none" : ""
                         }
                       >
                         <Button

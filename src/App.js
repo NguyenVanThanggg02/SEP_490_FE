@@ -38,6 +38,7 @@ import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import Blog from "./screens/Blog";
+import ProfileTemplate from "./screens/Profile";
 // a
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,7 +63,7 @@ function Layout() {
     "/userneed",
     "/login",
     "/register",
-    "/alladd"
+    "/alladd",
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 
@@ -94,6 +95,7 @@ function Layout() {
             element={<ChatBox selectedChat={selectedChat} />}
           />
           <Route path="/manaspace" element={<ManaPost />} />
+          <Route path="/profile" element={<ProfileTemplate />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile/:id" element={<HostProfile />} />
@@ -120,7 +122,6 @@ function Layout() {
           />
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
-
         </Routes>
       </main>
       {shouldShowHeader && (
