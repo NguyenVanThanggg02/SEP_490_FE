@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 const PMana = () => {
   const [spaces, setSpaces] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [currentPostId, setCurrentPostId] = useState(null); 
-  
+  const [currentPostId, setCurrentPostId] = useState(null);
+
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces")
@@ -42,9 +42,13 @@ const PMana = () => {
       });
   };
 
-  const handleReject = (postId, communityStandardsId) => {
+  const handleReject = (postId, selectedReasons, customReason) => {
     axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, { censorship: "Từ chối", communityStandardsId: communityStandardsId }) 
+      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+        censorship: "Từ chối",
+        selectedReasons,
+        customReason
+      })
       .then((response) => {
         setSpaces((prevSpaces) =>
           prevSpaces.map((space) =>
@@ -58,7 +62,7 @@ const PMana = () => {
   };
 
   const openRejectDialog = (postId) => {
-    setCurrentPostId(postId); 
+    setCurrentPostId(postId);
     setVisible(true);
   };
 
@@ -92,8 +96,8 @@ const PMana = () => {
                   <td>{s.name}</td>
                   <td>{s.userId?.fullname || "Unknown"}</td>
                   <td>
-                  <Link to={'/detail-admin'} state={{ id: s._id }}>
-                  <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
+                    <Link to={'/detail-admin'} state={{ id: s._id }}>
+                      <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
                     </Link>
                   </td>
                   <td>

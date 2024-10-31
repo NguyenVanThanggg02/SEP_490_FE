@@ -7,41 +7,30 @@ import { FormControlLabel, Switch, TextField } from '@mui/material';
 
 const CommunityStandards = (props) => {
     const { visible, setVisible, handleReject, postId } = props;
-    const [reasons, setReasons] = useState([]);
     const [selectedReason, setSelectedReason] = useState([]);
     const [customReason, setCustomReason] = useState('');
 
     const reasonList = [
         "Nội dung không phù hợp",
-        "Thiếu thông tin chi tiết, gây không rõ ràng hoặc hiểu nhầm",
         "Ảnh không rõ ràng hoặc không đúng yêu cầu",
-        "Vi phạm pháp luật",
         "Không gian không an toàn",
+        "Thiếu thông tin chi tiết, gây không rõ ràng hoặc hiểu nhầm",
+        "Ngôn ngữ chứa từ cấm",
         "Không phù hợp với nhu cầu người dùng",
-        "Ngôn ngữ chứa từ cấm"
-    ];
-
-    useEffect(() => {
-        axios
-            .get("http://localhost:9999/communityStandards")
-            .then((res) => {
-                setReasons(res.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching reasons:", error);
-            });
-    }, []);
+        "Vi phạm pháp luật có sẵn ",
+    ];  
 
     const onHide = () => {
         setVisible(false);
     };
-
     const handleSubmit = () => {
-        if (selectedReason) {
-            handleReject(postId, selectedReason);
+        if (selectedReason.length > 0 || customReason) { 
+            handleReject(postId, selectedReason, customReason);
             onHide();
         }
     };
+    
+    
 
     const dialogFooter = (
         <div style={{ margin: "20px" }}>
@@ -87,11 +76,14 @@ const CommunityStandards = (props) => {
                         {reasonList.map((reason) => (
                             <FormControlLabel
                                 key={reason}
-                                control={<Switch onChange={(e) => handleToggleReason(reason, e.target.checked)} />}
+                                control={<Switch
+                                    color="warning"
+                                    onChange={(e) => handleToggleReason(reason, e.target.checked)} />}
                                 label={reason}
                             />
                         ))}
                         <TextField
+                            className='mt-2'
                             label="Thêm lí do từ chối"
                             fullWidth
                             value={customReason}
@@ -99,7 +91,7 @@ const CommunityStandards = (props) => {
                             helperText="Các lí do riêng lẻ có thể tách nhau bằng dấu ';'"
                             FormHelperTextProps={{
                                 style: {
-                                    fontSize: '14px', // Kích thước chữ helperText
+                                    fontSize: '13px', // Kích thước chữ helperText
                                 },
                             }}
                         />

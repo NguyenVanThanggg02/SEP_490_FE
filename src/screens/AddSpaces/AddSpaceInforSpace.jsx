@@ -53,6 +53,7 @@ const AddSpaceInforSpace = () => {
     const handleCustomRuleChange = (event) => {
         setCustomRule(event.target.value);
     };
+    
     const handleInputHourChange = (e) => {
         setGoldenHourDetails({
             ...goldenHourDetails,
