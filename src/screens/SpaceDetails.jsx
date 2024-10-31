@@ -167,7 +167,27 @@ function SpaceDetails() {
   const handleDeleteIdSoToCompare = () => {
     setValueFromChild('');
   }
+// // Tạo một MutationObserver để theo dõi sự thay đổi trong DOM
+// const observer = new MutationObserver((mutations) => {
+//   mutations.forEach((mutation) => {
+//     if (mutation.type === 'childList') {
+//       const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+//       elements.forEach((element) => {
+//         element.style.background = 'none'; 
+//         element.style.boxShadow = 'none'; 
+//       });
+//     }
+//   });
+// });
+// const targetNode = document.body; 
+// observer.observe(targetNode, { childList: true, subtree: true });
 
+  const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+      elements.forEach((element) => {
+      element.style.background = 'none'; 
+      element.style.boxShadow = 'none'; 
+  });
+  
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>

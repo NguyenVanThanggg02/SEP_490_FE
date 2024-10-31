@@ -151,17 +151,15 @@ const DetailForAdmin = ({ id, onBack }) => {
           <Modal.Title>Tất cả ảnh</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-          <Image.PreviewGroup>
             {space.images &&
               space.images.map((imgUrl, index) => (
-                <Image
+                <img
                   key={index}
                   src={imgUrl.url}
                   alt={`Space image ${index + 1}`}
                   style={{ width:"100%", padding: "5px" }}
                 />
               ))}
-          </Image.PreviewGroup>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
