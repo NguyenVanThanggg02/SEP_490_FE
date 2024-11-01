@@ -18,19 +18,25 @@ const CommunityStandards = (props) => {
         "Ngôn ngữ chứa từ cấm",
         "Không phù hợp với nhu cầu người dùng",
         "Vi phạm pháp luật có sẵn ",
-    ];  
+    ];
 
     const onHide = () => {
         setVisible(false);
+        setSelectedReason([]); // Reset selected reasons when closing
+        setCustomReason(''); // Reset custom reason when closing
+
     };
     const handleSubmit = () => {
-        if (selectedReason.length > 0 || customReason) { 
+        if (selectedReason.length > 0 || customReason) {
+            console.log("Submitting selectedReason:", selectedReason);
+            console.log("Submitting customReason:", customReason);
+
             handleReject(postId, selectedReason, customReason);
             onHide();
         }
     };
-    
-    
+
+
 
     const dialogFooter = (
         <div style={{ margin: "20px" }}>

@@ -49,11 +49,13 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = (postId, communityStandardsId) => {
+  const handleReject = (postId, selectedReasons, customReason) => {
     axios
       .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
-        communityStandardsId: communityStandardsId,
+        reasons: selectedReasons,
+        customReason: customReason ? [customReason] : [],
+
       })
       .then(() => {
         setSpaces((prevSpaces) =>
@@ -98,7 +100,7 @@ const PostManagement = () => {
                   justifyContent: "center",
                 }}
               >
-                <p><Person style={{fontSize:'30px'}}/>Chủ cho thuê</p>
+                <p><Person style={{ fontSize: '30px' }} />Chủ cho thuê</p>
               </div>
               <div
                 style={{
@@ -190,8 +192,7 @@ const PostManagement = () => {
                           variant="success"
                           onClick={() => handleAccept(s._id)}
                           disabled={
-                            s.censorship === "Chấp nhận" ||
-                            s.censorship === "Từ chối"
+                            s.censorship === "Chấp nhận"
                           }
                         >
                           Chấp Nhận
