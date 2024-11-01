@@ -1,15 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Typography, Card, CardContent, Grid } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-  Col,
-  Container,
-  Row,
-  Table,
-  Button,
-  Modal,
-  ProgressBar,
-} from "react-bootstrap";
+import { Container, Button, Modal, ProgressBar } from "react-bootstrap";
 import { Image } from "antd";
 
 const DetailForAdmin = ({ id, onBack }) => {
@@ -41,6 +33,7 @@ const DetailForAdmin = ({ id, onBack }) => {
   const handleCloseModal = () => {
     setShowAllImages(false);
   };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -48,109 +41,125 @@ const DetailForAdmin = ({ id, onBack }) => {
   if (error) {
     return <div>Error: {error.message}</div>;
   }
+
   const remainingImagesCount = space.images ? space.images.length - 3 : 0;
 
   return (
-    <Container>
+    <Container style={{ maxWidth: "900px", marginTop: "20px" }}>
       <Button className="btn btn-success m-3" onClick={onBack}>
         Quay lại
       </Button>
-      <Box style={{ display: "flex", justifyContent: "center" }}>
-        <Row style={{ width: "100%" }}>
-          <Col md={12}>
-            <Table bordered hover className="horizontal-table">
-              <tbody>
-                <tr>
-                  <th>Ảnh</th>
-                  <td style={{ display: "flex", justifyContent: "start" }}>
-                    <Image.PreviewGroup>
-                      {space.images &&
-                        space.images.slice(0, 4).map((imgUrl, index) => (
+      <Card sx={{ padding: "20px", borderRadius: "10px", boxShadow: 4 }}>
+        <CardContent>
+          <Typography variant="h4" gutterBottom align="center">
+            {space.name}
+          </Typography>
+
+          <Grid container spacing={3}>
+            {/* Image Section */}
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <Grid container spacing={2}>
+                  <Image.PreviewGroup>
+                  {space.images &&
+                    space.images.slice(0, 3).map((imgUrl, index) => (
+                      <Grid item xs={4} key={index}>
+                        <Box position="relative">
                           <Image
-                            key={index}
                             src={imgUrl.url}
                             alt={`Space image ${index + 1}`}
-                            fluid
-                            style={{ maxWidth: "200px", padding: "10px", height: '150px' }}
-                          />
-                        ))}
-                      {/* Hiển thị ảnh cuối cùng với lớp phủ nếu có nhiều hơn 3 ảnh */}
-                      {space.images && space.images.length > 3 && (
-                        <div style={{ position: "relative", display: "inline-block", padding: "10px" }}>
-                          <Image
-                            src={space.images[2].url}
-                            alt={`Space image 3`}
-                            fluid
-                            style={{ maxWidth: "200px", height: '150px' }}
-                          />
-                          <div
                             style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              backgroundColor: "rgba(0, 0, 0, 0.5)",
-                              color: "white",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              fontSize: "24px",
-                              fontWeight: "bold",
+                              borderRadius: "8px",
+                              width: "100%",
+                              height: "150px",
+                              objectFit: "cover",
                             }}
-                            onClick={handleShowAllImages}
-                          >
-                            +{remainingImagesCount}
-                          </div>
-                        </div>
-                      )}
+                          />
+                          {/* Overlay for the last image if there are more than 3 images */}
+                          {index === 2 && remainingImagesCount > 0 && (
+                            <Box
+                              position="absolute"
+                              top="0"
+                              left="0"
+                              right="0"
+                              bottom="0"
+                              display="flex"
+                              justifyContent="center"
+                              alignItems="center"
+                              bgcolor="rgba(0, 0, 0, 0.5)"
+                              color="white"
+                              fontSize="24px"
+                              fontWeight="bold"
+                              borderRadius="8px"
+                              sx={{
+                                cursor: "pointer",
+                                '&:hover': {
+                                  bgcolor: "rgba(0, 0, 0, 0.7)"
+                                }
+                              }}
+                              onClick={handleShowAllImages}
+                            >
+                              +{remainingImagesCount}
+                            </Box>
+                          )}
+                        </Box>
+                      </Grid>
+                    ))}
                     </Image.PreviewGroup>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Tên</th>
-                  <td>{space.name}</td>
-                </tr>
-                <tr>
-                  <th>Mô tả</th>
-                  <td>{space.description}</td>
-                </tr>
-                <tr>
-                  <th>Diện tích</th>
-                  <td>{space.area}</td>
-                </tr>
-                <tr>
-                  <th>Giá phòng</th>
-                  <td>{space.pricePerHour}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </Col>
+                </Grid>
+              </Box>
+            </Grid>
+
+            {/* Information Section */}
+            <Grid item xs={12}>
+              <Grid container spacing={3}>
+                {[
+                  { label: "Diện tích", value: space.area },
+                  { label: "Giá theo giờ", value: space.pricePerHour },
+                  { label: "Giá theo ngày", value: space.pricePerDay },
+                  { label: "Giá theo tuần", value: space.pricePerWeek },
+                  { label: "Giá theo tháng", value: space.pricePerMonth },
+                ].map((info, index) => (
+                  <Grid item xs={6} key={index}>
+                    <Card variant="outlined" sx={{ padding: "10px", borderRadius: "8px" }}>
+                      <Typography variant="subtitle1" color="textSecondary">
+                        {info.label}
+                      </Typography>
+                      <Typography variant="h6">{info.value}</Typography>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Typography variant="body1" color="textSecondary" mt={4}>
+            {space.description}
+          </Typography>
+
           <ProgressBar
-            style={{ padding: "0" }}
+            style={{ padding: "0", marginTop: "20px" }}
             variant="info"
             now={now}
             label={`${now}%`}
           />
-        </Row>
-      </Box>
+        </CardContent>
+      </Card>
+
       <Modal show={showAllImages} onHide={handleCloseModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Tất cả ảnh</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ display: "flex", flexWrap: "wrap" }}>
-          <Image.PreviewGroup>
+        <Modal.Body style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
             {space.images &&
               space.images.map((imgUrl, index) => (
-                <Image
+                <img
                   key={index}
                   src={imgUrl.url}
                   alt={`Space image ${index + 1}`}
-                  fluid
-                  style={{ maxWidth: "768px", padding: "10px" }}
+                  style={{ width:"100%", padding: "5px" }}
                 />
               ))}
-          </Image.PreviewGroup>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>

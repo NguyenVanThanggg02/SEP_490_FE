@@ -39,7 +39,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
 
-function SpaceDetails() {
+function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -57,9 +57,10 @@ function SpaceDetails() {
 
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  const nav = useNavigate()
+  const [chat, setChat] = useState(null);
 
+  const nav = useNavigate()
+  const userId = localStorage.getItem("userId");
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
   };
@@ -168,6 +169,62 @@ function SpaceDetails() {
     setValueFromChild('');
   }
 
+  const handleCreateChat = async () => {
+    const chatData = chat
+      ? {
+          _id: chat._id,
+          members: [userId, spaceData?.userId?._id],
+        }
+      : null;
+
+    onSelectChat(chatData);
+    try {
+      if (chatData) {
+        // Cập nhật chat hiện tại với ID sản phẩm
+        const updateChatResponse = await axios.put(
+          `http://localhost:9999/chat/${chatData._id}`,
+          { spacesId: id } // Sử dụng id từ useParams
+        );
+        console.log("Chat updated with product ID:", updateChatResponse.data);
+      } else {
+        // Tạo một chat mới
+        const createChatResponse = await axios.post(
+          "http://localhost:9999/chat",
+          {
+            senderId: userId,
+            receiverId: spaceData.userId._id,
+            spacesId: id, // Sử dụng id từ useParams
+          }
+        );
+        console.log("Chat created:", createChatResponse.data);
+      }
+      nav(`/chat`);
+    } catch (error) {
+      console.error("Error creating or finding chat:", error);
+    }
+  };
+
+// // Tạo một MutationObserver để theo dõi sự thay đổi trong DOM
+// const observer = new MutationObserver((mutations) => {
+//   mutations.forEach((mutation) => {
+//     if (mutation.type === 'childList') {
+//       const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+//       elements.forEach((element) => {
+//         element.style.background = 'none'; 
+//         element.style.boxShadow = 'none'; 
+//       });
+//     }
+//   });
+// });
+// const targetNode = document.body; 
+// observer.observe(targetNode, { childList: true, subtree: true });
+
+  const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+      elements.forEach((element) => {
+      element.style.background = 'none'; 
+      element.style.boxShadow = 'none'; 
+  });
+  
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -359,11 +416,27 @@ function SpaceDetails() {
       {spaceData && (
         <>
           <Container>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: "26px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "15px",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 500, fontSize: "26px" }}
+              >
                 {spaceData.name}
               </Typography>
-              <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
                   {spaceData.favorite ? (
                     <FavoriteIcon
@@ -373,19 +446,37 @@ function SpaceDetails() {
                     <FavoriteBorderIcon style={{ fontSize: "40px" }} />
                   )}
                 </div>
-                <div onClick={toggleDrawer(true)} style={{ display: "flex", alignItems: "center" }}>
-                  <PlusCircle style={{ color: "blue", fontSize: "33px", marginRight: "5px" }} />
+                <div
+                  onClick={toggleDrawer(true)}
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <PlusCircle
+                    style={{
+                      color: "blue",
+                      fontSize: "33px",
+                      marginRight: "5px",
+                    }}
+                  />
                   So sánh
                 </div>
               </div>
             </div>
-            <Grid container spacing={0.8} style={{ position: "relative", marginBottom: "20px" }}>
+            <Grid
+              container
+              spacing={0.8}
+              style={{ position: "relative", marginBottom: "20px" }}
+            >
               <Grid item xs={12} md={6}>
                 {mainImage && (
                   <img
                     src={`${mainImage}`}
                     alt="Hình chính"
-                    style={{ width: "100%", height: "405px", borderRadius: "3px", objectFit: "cover" }}
+                    style={{
+                      width: "100%",
+                      height: "405px",
+                      borderRadius: "3px",
+                      objectFit: "cover",
+                    }}
                     onClick={handleOpenGallery}
                   />
                 )}
@@ -397,7 +488,12 @@ function SpaceDetails() {
                       <img
                         src={`${item}`}
                         alt={item}
-                        style={{ width: "100%", height: "200px", borderRadius: "3px", objectFit: "cover" }}
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          borderRadius: "3px",
+                          objectFit: "cover",
+                        }}
                         loading="lazy"
                         onClick={handleOpenGallery}
                       />
@@ -406,7 +502,11 @@ function SpaceDetails() {
                 </Grid>
               </Grid>
               {images.length > 4 && (
-                <Grid container justifyContent="flex-end" style={{ position: "absolute", top: "89%", right: "1%" }}>
+                <Grid
+                  container
+                  justifyContent="flex-end"
+                  style={{ position: "absolute", top: "89%", right: "1%" }}
+                >
                   <Button
                     variant="outlined"
                     onClick={handleOpenGallery}
@@ -456,8 +556,6 @@ function SpaceDetails() {
                     </Grid>
                   ))}
                 </Grid>
-
-
               </DialogContent>
             </Dialog>
 
@@ -475,9 +573,10 @@ function SpaceDetails() {
                   zIndex: 8, // Ensuring Dialog is above other components
                 },
               }}
-
             >
-              <DialogContent style={{ position: "relative", textAlign: "center" }}>
+              <DialogContent
+                style={{ position: "relative", textAlign: "center" }}
+              >
                 {/* Close Button */}
                 <IconButton
                   onClick={() => {
@@ -495,65 +594,68 @@ function SpaceDetails() {
                 >
                   <CloseIcon />
                 </IconButton>
-                {images.length > 0 && currentImageIndex >= 0 && currentImageIndex < images.length && (
-                  <div style={{ position: "relative" }}>
-                    {/* Back Button */}
-                    <IconButton
-                      onClick={handleBack}
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "10px",
-                        transform: "translateY(-50%)",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        color: "white",
-                        zIndex: 1000,
-                      }}
-                    >
-                      <ArrowBackIosIcon />
-                    </IconButton>
-
-                    {/* Image */}
-                    <Image.PreviewGroup
-                      preview={{
-                        current: currentImageIndex,
-                        onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
-                      }}
-                    >
-                      <Image
-                        src={images[currentImageIndex].url}
-                        alt={`Image ${currentImageIndex}`}
+                {images.length > 0 &&
+                  currentImageIndex >= 0 &&
+                  currentImageIndex < images.length && (
+                    <div style={{ position: "relative" }}>
+                      {/* Back Button */}
+                      <IconButton
+                        onClick={handleBack}
                         style={{
-                          width: "100%",
-                          height: "500px",
-                          borderRadius: "3px",
-                          objectFit: "cover",
-                          zIndex: 999,
+                          position: "absolute",
+                          top: "50%",
+                          left: "10px",
+                          transform: "translateY(-50%)",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          color: "white",
+                          zIndex: 1000,
                         }}
-                      />
-                    </Image.PreviewGroup>
+                      >
+                        <ArrowBackIosIcon />
+                      </IconButton>
 
-                    {/* Next Button */}
-                    <IconButton
-                      onClick={handleNext}
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        right: "10px",
-                        transform: "translateY(-50%)",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        color: "white",
-                        zIndex: 1000,
-                      }}
-                    >
-                      <ArrowForwardIosIcon />
-                    </IconButton>
-                  </div>
-                )}
+                      {/* Image */}
+                      <Image.PreviewGroup
+                        preview={{
+                          current: currentImageIndex,
+                          onChange: (current, prev) =>
+                            console.log(
+                              `current index: ${current}, prev index: ${prev}`
+                            ),
+                        }}
+                      >
+                        <Image
+                          src={images[currentImageIndex].url}
+                          alt={`Image ${currentImageIndex}`}
+                          style={{
+                            width: "100%",
+                            height: "500px",
+                            borderRadius: "3px",
+                            objectFit: "cover",
+                            zIndex: 999,
+                          }}
+                        />
+                      </Image.PreviewGroup>
+
+                      {/* Next Button */}
+                      <IconButton
+                        onClick={handleNext}
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "10px",
+                          transform: "translateY(-50%)",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          color: "white",
+                          zIndex: 1000,
+                        }}
+                      >
+                        <ArrowForwardIosIcon />
+                      </IconButton>
+                    </div>
+                  )}
               </DialogContent>
             </Dialog>
-
-
           </Container>
           <Container fluid>
             <Row>
@@ -581,7 +683,10 @@ function SpaceDetails() {
                         justifyContent: "space-between",
                       }}
                     >
-                      <div style={{ display: "flex", alignItems: "center" }} onClick={handleProfileOfOwner}>
+                      <div
+                        style={{ display: "flex", alignItems: "center" }}
+                        onClick={handleProfileOfOwner}
+                      >
                         <img
                           src={spaceData.userId?.avatar}
                           alt="avatar"
@@ -594,13 +699,20 @@ function SpaceDetails() {
                           }}
                         />
                         <div style={{ lineHeight: "0.3" }}>
-                          <p style={{ color: "gray", fontSize: "14px" }}>Được đăng bởi:</p>
+                          <p style={{ color: "gray", fontSize: "14px" }}>
+                            Được đăng bởi:
+                          </p>
                           {spaceData.userId?.username || "Unknown"}
                         </div>
                       </div>
 
-
-                      <Link to="/mess" state={{ id }}>
+                      <Link
+                        onClick={handleCreateChat}
+                        state={{ id }}
+                        className={
+                          userId === spaceData.userId?._id ? "d-none" : ""
+                        }
+                      >
                         <Button
                           sx={{
                             backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
@@ -631,7 +743,12 @@ function SpaceDetails() {
                     />
                   </Row>
                 </Typography>
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Thông tin cơ bản
                 </Typography>
                 <Row>
@@ -639,43 +756,62 @@ function SpaceDetails() {
                     <div style={{ display: "flex" }}>
                       <MuiIcons.AccessTime sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           Giờ checkin/out tiêu chuẩn
                         </Typography>
 
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
-                          Check in sau 14:00 và check-out trước 12:00 ngày hôm sau
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          style={{ marginTop: "5px", fontSize: "14px" }}
+                        >
+                          Check in sau 14:00 và check-out trước 12:00 ngày hôm
+                          sau
                         </Typography>
-
                       </div>
                     </div>
 
                     <div style={{ display: "flex", margin: "25px 0" }}>
                       <MuiIcons.AlarmOn sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           Cho phép đặt theo giờ
                         </Typography>
 
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
-                          Không gian  cho phép đặt theo giờ cho khách hàng có nhu cầu sử dụng trong thời gian ngắn
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          style={{ marginTop: "5px", fontSize: "14px" }}
+                        >
+                          Không gian cho phép đặt theo giờ cho khách hàng có nhu
+                          cầu sử dụng trong thời gian ngắn
                         </Typography>
-
                       </div>
                     </div>
 
                     <div style={{ display: "flex" }}>
                       <MuiIcons.EventAvailable sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           Khung giờ hỗ trợ checkin
                         </Typography>
 
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          style={{ marginTop: "5px", fontSize: "14px" }}
+                        >
                           Hỗ trợ tất cả khung giờ
-
                         </Typography>
-
                       </div>
                     </div>
                   </Col>
@@ -683,27 +819,39 @@ function SpaceDetails() {
                     <div style={{ display: "flex" }}>
                       <MuiIcons.EditCalendar sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           Giờ checkin/out theo ngày
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          style={{ marginTop: "5px", fontSize: "14px" }}
+                        >
                           Nhận phòng 9:00<br></br>
                           Trả phòng trước 21:00
                         </Typography>
-
                       </div>
                     </div>
 
                     <div style={{ display: "flex", marginTop: "20px" }}>
                       <MuiIcons.Key sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography variant="body1" sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ fontWeight: "bold", fontSize: "14px" }}
+                        >
                           Hình thức checkin
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" style={{ marginTop: "5px", fontSize: "14px" }}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          style={{ marginTop: "5px", fontSize: "14px" }}
+                        >
                           Tự checkin
                         </Typography>
-
                       </div>
                     </div>
                   </Col>
@@ -715,7 +863,12 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Giới thiệu về không gian
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
@@ -728,16 +881,24 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
-                  Tiện nghi</Typography>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
+                  Tiện nghi
+                </Typography>
 
                 <List>
                   {spaceData?.appliancesId?.appliances?.length > 0 ? (
-                    <Grid container >
+                    <Grid container>
                       {spaceData.appliancesId.appliances?.map((appliance) => {
                         const IconAppliances = MuiIcons[appliance.iconName];
                         return (
-                          <Grid item xs={6} key={appliance._id}> {/* Mỗi item chiếm 50% chiều rộng */}
+                          <Grid item xs={6} key={appliance._id}>
+                            {" "}
+                            {/* Mỗi item chiếm 50% chiều rộng */}
                             <ListItem>
                               <ListItemIcon>
                                 {IconAppliances ? (
@@ -766,13 +927,23 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Nội quy
                 </Typography>
                 <List>
-                  {spaceData.rulesId && (spaceData.rulesId.rules.length > 0 || spaceData.rulesId.customeRules.length > 0) ? (
+                  {spaceData.rulesId &&
+                  (spaceData.rulesId.rules.length > 0 ||
+                    spaceData.rulesId.customeRules.length > 0) ? (
                     <Grid container>
-                      {[...spaceData.rulesId.rules, ...spaceData.rulesId.customeRules].map((rule, index) => (
+                      {[
+                        ...spaceData.rulesId.rules,
+                        ...spaceData.rulesId.customeRules,
+                      ].map((rule, index) => (
                         <Grid item xs={6} key={index}>
                           <ListItem>
                             <ListItemIcon>
@@ -796,10 +967,18 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
-                Vị trí không gian
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
+                  Vị trí không gian
                 </Typography>
-                <MapShopDetail lat={spaceData?.latLng?.[0]} lng={spaceData?.latLng?.[1]} />
+                <MapShopDetail
+                  lat={spaceData?.latLng?.[0]}
+                  lng={spaceData?.latLng?.[1]}
+                />
                 <Divider
                   sx={{
                     bgcolor: "gray",
@@ -807,10 +986,14 @@ function SpaceDetails() {
                     width: "100%",
                   }}
                 />
-                <Typography variant="h6" className="pb-2" sx={{ fontSize: "20px", fontWeight: "700" }} gutterBottom>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Đánh giá
                 </Typography>
-
               </Col>
               <Col item xs={12} md={4}>
                 <Box
@@ -831,8 +1014,6 @@ function SpaceDetails() {
                     {priceFormatter(spaceData.pricePerHour)} VND / giờ
                   </Typography>
 
-
-
                   {/* Nút đặt phòng */}
                   <Button
                     fullWidth
@@ -844,8 +1025,6 @@ function SpaceDetails() {
                   </Button>
 
                   {/* Chi tiết giá */}
-
-
                 </Box>
                 <div
                   style={{
@@ -869,18 +1048,22 @@ function SpaceDetails() {
             </Row>
           </Container>
           {/* Display Images */}
-
-         
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
-      <Drawer anchor="bottom" open={openDrawer} onClose={toggleDrawer(false)} sx={{
-        '& .MuiDrawer-paper': {
-          width: '50vw',
-          left: '25vw',
-          right: 'auto',
-        }, zIndex: 9
-      }}>
+      <Drawer
+        anchor="bottom"
+        open={openDrawer}
+        onClose={toggleDrawer(false)}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "50vw",
+            left: "25vw",
+            right: "auto",
+          },
+          zIndex: 9,
+        }}
+      >
         {drawerContent()}
       </Drawer>
       {visibleCompare && (
