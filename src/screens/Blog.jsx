@@ -18,12 +18,6 @@ const Blog = () => {
                     />
                 </div> 
                 <div className="col-md-6" style={{margin:'auto',paddingLeft:'20px'}}>
-                    {/* <p className="text-muted">
-                        Featured Article
-                    </p>
-                    <p className="text-muted">
-                        17 Sep 2024 • 5 minutes read
-                    </p> */}
                     <h2>
                         SPACEHUB
                     </h2>
