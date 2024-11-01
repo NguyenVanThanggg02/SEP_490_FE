@@ -44,7 +44,7 @@ function Layout() {
       setIsLoggedIn(true);
     }
   }, []);
-
+// a
   const hiddenPaths = [
     "/notfound",
     "/admin",
