@@ -54,7 +54,7 @@ function Layout() {
     "/register",
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
-// . 
+
   return (
     <>
       {shouldShowHeader && (
