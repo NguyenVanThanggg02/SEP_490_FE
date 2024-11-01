@@ -88,7 +88,13 @@
   font-weight: bold;
   cursor: pointer;
 }
-.chat-sender > div {
-  height: 70%;
-  padding: 0px 15px 0px 15px;
+.buttonn {
+  background-color: #090a0a;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 30px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
