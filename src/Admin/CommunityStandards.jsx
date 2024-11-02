@@ -1,8 +1,7 @@
 import { Dialog } from 'primereact/dialog';
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
-import axios from "axios";
 import { FormControlLabel, Switch, TextField } from '@mui/material';
 
 const CommunityStandards = (props) => {

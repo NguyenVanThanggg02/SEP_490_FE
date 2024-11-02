@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Card, Button } from "react-bootstrap";
-import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
+import { Eye, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";

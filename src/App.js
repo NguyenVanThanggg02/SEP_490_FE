@@ -39,13 +39,18 @@ import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
 import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
+import {ToastContainer} from "react-toastify";
 
 import Blog from "./screens/Blog";
+import Profile from "./screens/Profile";
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const role = localStorage.getItem("role");
-
+  const [selectedChat, setSelectedChat] = useState(null);
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+  };
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("isLoggedIn");
     if (loggedInStatus === "true") {
@@ -88,16 +93,15 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
-          <Route path="/chat" element={<ChatBox />} />
+          <Route path="/chat" element={<ChatBox selectedChat={selectedChat} />}/>
           <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile/:id" element={<HostProfile />} />
-          <Route path="/chang_pass" element={<ChangePass />} />
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
           <Route path="/mess" element={<Message />} />
-          <Route path="/spaces/:id" element={<SpaceDetails />} />
+          <Route path="/spaces/:id" element={<SpaceDetails onSelectChat={handleSelectChat} />} />
           <Route path="/notfound" element={<NotFound />} />
           <Route path="/changepassadm" element={<ChangePassAdmin />} />
           <Route path="/favorites" element={<Favorites />} />
@@ -107,6 +111,7 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
+          <Route path="/profile" element={<Profile />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
@@ -128,6 +133,7 @@ function App() {
   return (
     <BrowserRouter>
       <Layout />
+      <ToastContainer />
     </BrowserRouter>
   );
 }

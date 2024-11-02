@@ -23,21 +23,23 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
       }
     };
 
-    if (chat !== null) getUserData();
+    if (chat) getUserData();
   }, [chat, currentUser]);
 
   // Fetch messages for the chat
   useEffect(() => {
     const fetchMessages = async () => {
-      try {
-        const { data } = await getMessages(chat._id);
-        setMessages(data);
-      } catch (error) {
-        console.log(error);
+      if (chat) {
+        try {
+          const { data } = await getMessages(chat._id);
+          setMessages(data);
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 
-    if (chat !== null) fetchMessages();
+    fetchMessages();
   }, [chat]);
 
   // Scroll to the last message
@@ -62,7 +64,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     // Save message to database
     try {
       const { data } = await addMessage(message);
-      setMessages([...messages, data]);
+      setMessages((prevMessages) => [...prevMessages, data]);
       setNewMessage("");
     } catch (error) {
       console.log("Message sending error: ", error);
@@ -71,13 +73,13 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
 
   // Update messages when receiving new one
   useEffect(() => {
-    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
+    if (receivedMessage && chat && receivedMessage.chatId === chat._id) {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     }
   }, [receivedMessage, chat]);
 
   return (
-    <div className="ChatBox-container">
+    <div className="ChatBox-container" style={{height:'100vh'}}>
       {chat ? (
         <>
           <div className="chat-header">
@@ -102,7 +104,56 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             />
           </div>
 
-          <div className="chat-body">
+          {/* Chat Body */}
+          <div
+            className="chat-body"
+            style={{ overflowY: "auto", maxHeight: "400px", padding: "1.5rem" }}
+          >
+            {/* Product Information */}
+            {chat?.spacesId && (
+              <div
+                className="product-info"
+                style={{
+                  padding: "5px",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: "5px",
+                  marginBottom: "10px",
+                }}
+              >
+                <strong style={{ fontSize: "1rem" }}>Product:</strong>
+                <div style={{ fontSize: "0.8rem" }}>
+                  <div>
+                    <strong>Name:</strong> {chat.spacesId.name || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Location:</strong> {chat.spacesId.location || "N/A"}
+                  </div>
+                  <div>
+                    <strong>Price:</strong>{" "}
+                    {chat.spacesId.pricePerHour
+                      ? `$${chat.spacesId.pricePerHour}`
+                      : "N/A"}
+                  </div>
+                  {chat?.spacesId?.images &&
+                    chat.spacesId?.images?.length > 0 && (
+                      <div>
+                        <strong>Image:</strong>
+                        <img
+                          src={chat?.spacesId?.images?.[0].url} // Use the first image of the product
+                          alt="Product"
+                          style={{
+                            width: "80px",
+                            borderRadius: "5px",
+                            marginTop: "5px",
+                          }} // Adjust size and style of the image
+                        />
+                      </div>
+                    )}
+                </div>
+              </div>
+            )}
+
+            {/* Messages */}
             {messages.map((message) => (
               <div
                 ref={scroll}
@@ -117,10 +168,18 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             ))}
           </div>
 
-          <div className="chat-sender">
+          {/* Message Sender */}
+          <div
+            className="chat-sender"
+            style={{ display: "flex", alignItems: "center" }}
+          >
             <InputEmoji value={newMessage} onChange={setNewMessage} />
-            <div className="send-button button" onClick={handleSend}>
-              Send
+            <div
+              className="send-button buttonn"
+              onClick={handleSend}
+              style={{ marginLeft: "10px" }}
+            >
+              Gửi
             </div>
           </div>
         </>
