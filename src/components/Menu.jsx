@@ -217,14 +217,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
               Thay đổi mật khẩu
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={handleMannaPost}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
+            </MenuItem>
 
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
