@@ -224,7 +224,7 @@ function SpaceDetails({ onSelectChat }) {
       element.style.background = 'none'; 
       element.style.boxShadow = 'none'; 
   });
-  
+  const displayName = spaceData.userId?.fullname || spaceData.userId?.username || "Unknown";
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -702,7 +702,7 @@ function SpaceDetails({ onSelectChat }) {
                           <p style={{ color: "gray", fontSize: "14px" }}>
                             Được đăng bởi:
                           </p>
-                          {spaceData.userId?.username || "Unknown"}
+                          {displayName}
                         </div>
                       </div>
 
