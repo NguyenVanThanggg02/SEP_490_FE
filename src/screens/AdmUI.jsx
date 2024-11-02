@@ -105,7 +105,6 @@ const AdmUI = () => {
               </tr>
             </thead>
             <tbody>
-              {/* Here is an example project row */}
               <tr>
                 <td>
                   <img
