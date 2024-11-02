@@ -167,7 +167,7 @@ const Profile = () => {
                           objectFit: "cover",
                         }}
                       />
-                      {isEditingUser && ( // Chỉ hiển thị CameraFill khi đang chỉnh sửa
+                      {isEditingUser && (
                         <div
                           className="edit-image-button"
                           style={{
