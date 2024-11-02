@@ -39,6 +39,7 @@ import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
 import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
 import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
+import {ToastContainer} from "react-toastify";
 
 import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
@@ -132,6 +133,7 @@ function App() {
   return (
     <BrowserRouter>
       <Layout />
+      <ToastContainer />
     </BrowserRouter>
   );
 }
