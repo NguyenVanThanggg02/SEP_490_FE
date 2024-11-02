@@ -73,7 +73,6 @@ const ChangePass = () => {
         nav("/profile");
       } else {
         toast.error(response.data.message);
-        setError("Thay đổi mật khẩu thất bại !!!");
       }
     } catch (error) {
       console.log(error.message);
