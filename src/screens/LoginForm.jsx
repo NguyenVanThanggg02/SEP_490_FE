@@ -4,8 +4,7 @@ import "../style/login.css";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const LoginForm = ({ setIsLoggedIn }) => {
   const formRef = useRef(null);
@@ -133,12 +132,12 @@ const LoginForm = ({ setIsLoggedIn }) => {
                 Đăng nhập
               </Button>
               <div>
-                <Link to={"/register"} className="text-danger text-opacity-75">
+                <Link to={"/register"} className="text-danger text-opacity-75" style={{textDecoration:'none'}}>
                   Tôi chưa có tài khoản ...
                 </Link>
               </div>{" "}
               <div>
-                <Link to={"/forgot"} className="text-danger text-opacity-75">
+                <Link to={"/forgot_pass"} className="text-danger text-opacity-75"  style={{textDecoration:'none'}}>
                   Tôi quên mật khẩu
                 </Link>
               </div>
@@ -146,7 +145,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
           </div>
         </Col>
       </Row>
-      <ToastContainer /> {/* Tự đóng toast sau 3 giây */}
     </Container>
   );
 };

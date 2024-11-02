@@ -14,7 +14,7 @@ import {
 } from "react-bootstrap";
 import ChangePass from "./ChangePass";
 import BankAccount from "./BankAccount";
-import { Camera, CameraFill } from "react-bootstrap-icons";
+import { CameraFill } from "react-bootstrap-icons";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("general");
@@ -30,6 +30,17 @@ const Profile = () => {
       fetchUserData();
     }
   }, [userId]);
+  
+  useEffect(() => {
+    if (success || error) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+        setError(null);
+      }, 3000); 
+
+      return () => clearTimeout(timer); 
+    }
+  }, [success, error]);
 
   const fetchUserData = () => {
     axios
@@ -153,10 +164,10 @@ const Profile = () => {
                           cursor: "pointer",
                           backgroundColor:'#CCCCCC',
                           borderRadius: "50%",
-                          padding:'7px'
+                          padding:'6px'
                         }}
                       >
-                        <Camera style={{ fontSize: "25px", color:'white' }} />
+                        <CameraFill style={{ fontSize: "25px", color:'white' }} />
                       </div>
                     </Form.Group>
 
