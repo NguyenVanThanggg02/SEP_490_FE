@@ -30,7 +30,7 @@ const Profile = () => {
       fetchUserData();
     }
   }, [userId]);
-  
+
   useEffect(() => {
     if (success || error) {
       const timer = setTimeout(() => {
@@ -62,6 +62,19 @@ const Profile = () => {
       [field]: value,
     }));
   };
+
+  const handleFileChange = async (event) => {
+    const target = event.target;
+    const files = target.files;
+  
+    if (files && files.length > 0) {
+  
+      
+    } else {
+      console.log("No files selected.");
+    }
+  };
+  
 
   const handleSaveUser = () => {
     axios
@@ -118,7 +131,7 @@ const Profile = () => {
                     <Nav.Link
                       eventKey={tab.key}
                       style={{
-                        color: activeTab === tab.key ? "#fff" : "#495057", 
+                        color: activeTab === tab.key ? "#fff" : "#495057",
                         backgroundColor:
                           activeTab === tab.key ? "#000" : "transparent",
                         padding: "0.85rem 1.5rem",
@@ -154,21 +167,32 @@ const Profile = () => {
                           objectFit: "cover",
                         }}
                       />
-                      <div
-                        className="edit-image-button"
-                        style={{
-                          position: "absolute",
-                          bottom: "16px",
-                          left: "53%",
-                          transform: "translateX(-50%)",
-                          cursor: "pointer",
-                          backgroundColor:'#CCCCCC',
-                          borderRadius: "50%",
-                          padding:'6px'
-                        }}
-                      >
-                        <CameraFill style={{ fontSize: "25px", color:'white' }} />
-                      </div>
+                      {isEditingUser && (
+                        <div
+                          className="edit-image-button"
+                          style={{
+                            position: "absolute",
+                            bottom: "16px",
+                            left: "53%",
+                            transform: "translateX(-50%)",
+                            cursor: "pointer",
+                            backgroundColor: "#CCCCCC",
+                            borderRadius: "50%",
+                            padding: "6px",
+                          }}
+                          onClick={() => document.getElementById("chooseFile")?.click()}
+                        >
+                          <CameraFill
+                            style={{ fontSize: "25px", color: "white" }}
+                          />
+                          <input
+                            type="file"
+                            id="chooseFile"
+                            hidden
+                            onChange={handleFileChange}
+                          />
+                        </div>
+                      )}
                     </Form.Group>
 
                     {[
