@@ -185,7 +185,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
         </>
       ) : (
         <span className="chatbox-empty-message">
-          Tap on a chat to start conversation...
+          Nhấn vào cuộc trò chuyện để bắt đầu cuộc trò chuyện...
         </span>
       )}
     </div>
