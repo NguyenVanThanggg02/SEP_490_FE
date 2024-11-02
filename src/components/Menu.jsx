@@ -84,6 +84,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.clear();
+    setUserInfo(null);
     handleClose();
   };
   const handleAddFunds = () => {

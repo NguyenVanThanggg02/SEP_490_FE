@@ -4,31 +4,22 @@ import '../style/SpaceDetail.css'; // Đảm bảo đường dẫn đúng
 import {
   Typography, Button, List, ListItem, ListItemIcon, ListItemText, Divider, Container, FormControl, Select, MenuItem, InputLabel, TextField, Box, Drawer, Card, CardContent, Grid,
   CardMedia,
-  AppBar,
-  Toolbar,
   IconButton,
-  TableContainer,
-  Table,
-  TableHead,
   TableRow,
   TableCell,
-  TableBody,
   Chip,
-  Paper,
 } from "@mui/material";
 import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
-import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BlockIcon from "@mui/icons-material/Block";
 
-import Comment from "./Comment";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
-import { ChevronLeft, ChevronRight, FlagFill, Plus, PlusCircle } from "react-bootstrap-icons";
+import { FlagFill, PlusCircle } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
@@ -96,7 +87,6 @@ function SpaceDetails({ onSelectChat }) {
     const fetchSpaceDataToCompare = async () => {
       try {
         const response = await axios.get(`http://localhost:9999/spaces/${valueFromChild}`);
-        console.log(response.data);
         setCompare(response.data);
       } catch (err) {
         setError(err);
@@ -142,9 +132,6 @@ function SpaceDetails({ onSelectChat }) {
 
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
-  console.log(mainImage);
-  console.log(otherImages);
-  console.log(images);
 
 
   const toggleDrawer = (open) => (event) => {
@@ -663,7 +650,7 @@ function SpaceDetails({ onSelectChat }) {
                 <Typography variant="h5">
                   {spaceData.location}
                   <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}
+                    10 người • {spaceData.area}m2
                   </p>
                   <Row item md={12}>
                     <Divider
@@ -986,14 +973,6 @@ function SpaceDetails({ onSelectChat }) {
                     width: "100%",
                   }}
                 />
-                <Typography
-                  variant="h6"
-                  className="pb-2"
-                  sx={{ fontSize: "20px", fontWeight: "700" }}
-                  gutterBottom
-                >
-                  Đánh giá
-                </Typography>
               </Col>
               <Col item xs={12} md={4}>
                 <Box
@@ -1020,6 +999,9 @@ function SpaceDetails({ onSelectChat }) {
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
                     onClick={() => nav(`/booking/${spaceData?._id}`)}
+                    className={
+                      userId === spaceData.userId?._id ? "d-none" : ""
+                    }
                   >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
@@ -1034,6 +1016,9 @@ function SpaceDetails({ onSelectChat }) {
                     cursor: "pointer",
                   }}
                   onClick={() => setVisible(true)}
+                  className={
+                    userId === spaceData.userId?._id ? "d-none" : ""
+                  }
                 >
                   <FlagFill
                     style={{
