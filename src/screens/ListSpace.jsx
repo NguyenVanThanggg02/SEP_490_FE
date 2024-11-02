@@ -25,7 +25,7 @@ const ListSpace = () => {
   const [noResult, setNoResult] = useState(false);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(9);
-  const [, setCurrentPage] = useState(1);
+  const [curentPage, setCurrentPage] = useState(1);
   const [, setSpaceFavos] = useState([]);
   const [appliances, setAppliances] = useState([]);
   const productsOnPage = listSpace.slice(first, first + rows);
@@ -40,8 +40,61 @@ const ListSpace = () => {
   const [areaList, setAreaList] = useState([]);
   const [selectedAreas, setSelectedAreas] = useState([]);
   const [selectedAppliance, setSelectedAppliance] = useState([]);
-  
+  const [distances, setDistances] = useState([]);
 
+  const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
+  console.log(listSpace);
+  
+  const getRoute = async (start, end) => {     // tính distance 2 location [lng, lat]
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+    try {
+      const response = await axios.get(url);
+      const data = response.data;
+      console.log(data);
+      
+      const route = data.routes[0];
+      return (route.distance / 1000).toFixed(2)
+    } catch (error) {
+      console.error("Error getting route:", error);
+    }
+  };
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch("http://localhost:9999/spaces/all");
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          setListSpace(data);
+          
+          if (navigator?.geolocation) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+              const currentPosition = [position.coords.latitude, position.coords.longitude];
+              const calculatedDistances = [];
+
+              for (const space of data) {
+                const distance = await getRoute(currentPosition, space.latLng);
+                calculatedDistances.push(distance);
+              }
+
+              setDistances(calculatedDistances); // Lưu khoảng cách đã tính vào trạng thái
+            }, (error) => {
+              console.error("Lỗi khi lấy vị trí hiện tại:", error);
+            });
+          } else {
+            console.warn("Geolocation is not supported by this browser.");
+          }
+        } else {
+          setListSpace([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+        setListSpace([]);
+      }
+    };
+
+    loadData();
+  }, []);
   useEffect(() => {
     fetch("http://localhost:9999/spaces/all")
       .then((response) => response.json())
@@ -61,14 +114,14 @@ const ListSpace = () => {
   useEffect(() => {
     axios
       .get("http://localhost:9999/categories")
-      .then((response) => setCategories(response.data))
+      .then((response) => setCategories(response?.data))
       .catch((error) => console.error("Error fetching brands:", error));
   }, []);
 
   useEffect(() => {
     axios
       .get("http://localhost:9999/appliances")
-      .then((response) => setAppliances(response.data))
+      .then((response) => setAppliances(response?.data))
       .catch((error) => console.error("Error fetching appliances:", error));
   }, []);
 
@@ -96,7 +149,6 @@ const ListSpace = () => {
         response = await axios.get("http://localhost:9999/spaces");
       }
       const spaces = response.data;
-      console.log(spaces);
 
       if (spaces.length === 0) {
         setNoResult(true);
@@ -131,9 +183,9 @@ const ListSpace = () => {
   };
 
   const handleChooseCate = (e) => {
-    const selectedCateId = e.target.value;
+    const selectedCateId = e?.target?.value;
     if (selectedCateId !== "0") {
-      const selectedBrand = categories.find((b) => b._id === selectedCateId);
+      const selectedBrand = categories.find((b) => b?._id === selectedCateId);
       setSelectedCate(selectedBrand);
       getSpaceByCate(selectedCateId);
     } else {
@@ -148,7 +200,7 @@ const ListSpace = () => {
       );
       setSpaceFavos((prevSpace) => ({
         ...prevSpace,
-        favorite: response.data.favorite,
+        favorite: response?.data?.favorite,
       }));
       loadData();
     } catch (error) {
@@ -165,8 +217,8 @@ const ListSpace = () => {
       } else {
         response = await axios.get("http://localhost:9999/spaces");
       }
-      setListSpace(response.data);
-      if (response.data.length === 0) {
+      setListSpace(response?.data);
+      if (response?.data?.length === 0) {
         setNoResult(true);
     } else {
         setNoResult(false);
@@ -175,11 +227,36 @@ const ListSpace = () => {
       alert("Lỗi khi gọi API lấy danh sách sản phẩm theo cate ", error);
     }
   };
-  const onPageChange = (event) => {
-    setFirst(event.first);
+  const onPageChange = async (event) => {
+    setFirst(event?.first);
     setCurrentPage(event.page + 1);
-    setRows(event.rows);
+    setRows(event?.rows);
+  
+    // Tính toán khoảng cách cho các không gian mới trên trang
+    const currentPosition = await new Promise((resolve) => {
+      if (navigator?.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          resolve([position.coords.latitude, position.coords.longitude]);
+        });
+      } else {
+        console.warn("Geolocation is not supported by this browser.");
+        resolve(null);
+      }
+    });
+  
+    if (currentPosition) {
+      const calculatedDistances = [];
+      const currentSpaces = listSpace.slice(event.first, event.first + event.rows);
+  
+      for (const space of currentSpaces) {
+        const distance = await getRoute(currentPosition, space.latLng);
+        calculatedDistances.push(distance);
+      }
+  
+      setDistances(calculatedDistances); 
+    }
   };
+  
 
   // lấy thành phố
   useEffect(() => {
@@ -188,7 +265,6 @@ const ListSpace = () => {
         const response = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
         // https://provinces.open-api.vn/api/
         setDistricts(response.data.data); 
-        console.log(districts);
         
       } catch (error) {
         console.error("Error fetching districts:", error);
@@ -198,7 +274,7 @@ const ListSpace = () => {
   }, []);
 
   const filteredDistricts = districts.filter((district) =>
-    district.name.toLowerCase().includes(districtSearch.toLowerCase())
+    district?.name?.toLowerCase()?.includes(districtSearch?.toLowerCase())
   );
   useEffect(() => {
     if (districtSearch === "") {
@@ -247,7 +323,6 @@ const handleDistrictSelect = (districtName) => {
         <Col md={3}>
           <Row>
             <div class="filter-container">
-           
               <Col md={7} style={{ display: "flex" }}>
                 <div style={{ position: "relative" }}>
                   <input
@@ -289,8 +364,8 @@ const handleDistrictSelect = (districtName) => {
               >
                 <option value="0">Tất cả địa điểm</option>
                 {categories.map((c) => (
-                  <option key={c._id} value={c._id}>
-                    {c.name}
+                  <option key={c?._id} value={c?._id}>
+                    {c?.name}
                   </option>
                 ))}
               </FormSelect>
@@ -313,7 +388,7 @@ const handleDistrictSelect = (districtName) => {
                   ))}
                 </div>
               </div>
-              
+
               <div className="filter-section" style={{ border: "none" }}>
                 <div
                   className="filter-section-title"
@@ -328,7 +403,6 @@ const handleDistrictSelect = (districtName) => {
                     alignItems: "center",
                   }}
                 >
-
                   <TextField
                     name="area"
                     variant="outlined"
@@ -517,7 +591,7 @@ const handleDistrictSelect = (districtName) => {
                 </h4>
               </Col>
             ) : (
-              productsOnPage.map((l) => (
+              productsOnPage.map((l, index) => (
                 <Col key={l._id} md={4} sm={6} xs={12} className="mb-4">
                   <div
                     style={{
@@ -527,7 +601,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "433px",
+                      height: "463px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -539,7 +613,7 @@ const handleDistrictSelect = (districtName) => {
                         zIndex: 1,
                         cursor: "pointer",
                       }}
-                      onClick={() => changeFavorite(l._id)}
+                      onClick={() => changeFavorite(l?._id)}
                     >
                       {l.favorite ? (
                         <FavoriteIcon style={{ color: "#FF385C" }} />
@@ -594,7 +668,7 @@ const handleDistrictSelect = (districtName) => {
                       )}
                     </Carousel>
                     <Link
-                      to={`/spaces/${l._id}`}
+                      to={`/spaces/${l?._id}`}
                       style={{ textDecoration: "none", marginTop: "10px" }}
                     >
                       <Card.Body>
@@ -614,6 +688,11 @@ const handleDistrictSelect = (districtName) => {
                           Địa điểm: {l.location}
                         </Card.Text>
                         <Card.Text
+                          style={{ fontSize: "14px", color: "#757575", fontWeight: "bold" }}
+                        >
+                          Quãng đường: {distances[index] ? `${distances[index]} km` : "Không xác định."}
+                        </Card.Text>
+                        {/* <Card.Text
                           style={{
                             fontSize: "15px",
                             color: "#2d2d2d",
@@ -621,7 +700,7 @@ const handleDistrictSelect = (districtName) => {
                           }}
                         >
                           <p> Trạng thái: {l.status}</p>
-                        </Card.Text>
+                        </Card.Text> */}
                         <div
                           style={{
                             display: "flex",

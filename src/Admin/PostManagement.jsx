@@ -4,6 +4,7 @@ import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
+import { Paginator } from "primereact/paginator";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -11,6 +12,10 @@ const PostManagement = () => {
   const [currentPostId, setCurrentPostId] = useState(null);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [rows, setRows] = useState(6);
+  const [first, setFirst] = useState(0);
+  const productsOnPage = spaces.slice(first, first + rows);
+  const [, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios
@@ -49,23 +54,24 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = (postId, communityStandardsId) => {
-    axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+  const handleReject = async (postId, { communityStandardsId, customComment }) => {
+    try {
+      const response = await axios.put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
-        communityStandardsId: communityStandardsId,
-      })
-      .then(() => {
-        setSpaces((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Từ chối" } : space
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating censorship:", error);
+        communityStandardsId,
+        customComment, 
       });
+  
+      setSpaces((prevSpaces) =>
+        prevSpaces.map((space) =>
+          space._id === postId ? { ...space, censorship: response.data.censorship, communityStandardsId: response.data.communityStandardsId, customComment: response.data.customComment } : space
+        )
+      );
+    } catch (error) {
+      console.error("Error updating censorship:", error);
+    }
   };
+  
 
   const openRejectDialog = (postId) => {
     setCurrentPostId(postId);
@@ -80,7 +86,11 @@ const PostManagement = () => {
   const handleBackToList = () => {
     setShowDetail(false);
   };
-
+  const onPageChange = (event) => {
+    setFirst(event?.first);
+    setCurrentPage(event.page + 1);
+    setRows(event?.rows);
+  };
   return (
     <Container fluid className="py-4">
       {!showDetail ? (
@@ -98,7 +108,10 @@ const PostManagement = () => {
                   justifyContent: "center",
                 }}
               >
-                <p><Person style={{fontSize:'30px'}}/>Chủ cho thuê</p>
+                <p>
+                  <Person style={{ fontSize: "30px" }} />
+                  Chủ cho thuê
+                </p>
               </div>
               <div
                 style={{
@@ -150,17 +163,17 @@ const PostManagement = () => {
               </div>
             </div>
             <Row>
-              {spaces.map((s, index) => (
+              {productsOnPage.map((s, index) => (
                 <Col md={4} key={s._id} className="mb-4">
                   <Card className="shadow-sm h-100">
                     <Card.Img
                       variant="top"
                       src={s.images[0]?.url || "placeholder.jpg"}
                       style={{
-                        height: "200px",
+                        height: "220px",
                         objectFit: "cover",
-                        borderTopLeftRadius: "10px",
-                        borderTopRightRadius: "10px",
+                        borderTopLeftRadius: "5px",
+                        borderTopRightRadius: "5px",
                       }}
                     />
                     <Card.Body className="d-flex flex-column">
@@ -189,10 +202,7 @@ const PostManagement = () => {
                         <Button
                           variant="success"
                           onClick={() => handleAccept(s._id)}
-                          disabled={
-                            s.censorship === "Chấp nhận" ||
-                            s.censorship === "Từ chối"
-                          }
+                          disabled={s.censorship === "Chấp nhận"}
                         >
                           Chấp Nhận
                         </Button>
@@ -233,6 +243,22 @@ const PostManagement = () => {
       ) : (
         <DetailForAdmin id={selectedSpaceId} onBack={handleBackToList} />
       )}
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {!showDetail && (
+          <Paginator
+            style={{ backgroundColor: "#f9f9f9" }}
+            first={first}
+            rows={rows}
+            totalRecords={spaces.length}
+            onPageChange={onPageChange}
+          />
+        )}
+      </Row>
     </Container>
   );
 };

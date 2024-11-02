@@ -4,15 +4,17 @@ import Conversation from "../components/Conversation";
 import ChatBox from "../components/ChatBox";
 import { userChats } from "../Api/ChatRequests";
 import "../style/chat.css";
-const Chat = () => {
+
+const Chat = ({ selectedChat }) => {
   const socket = useRef();
   const userId = localStorage.getItem("userId");
 
   const [chats, setChats] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
+  const [currentChat, setCurrentChat] = useState(selectedChat || null);
   const [sendMessage, setSendMessage] = useState(null);
   const [receivedMessage, setReceivedMessage] = useState(null);
+  console.log(currentChat);
 
   // Fetch user's chats
   useEffect(() => {
@@ -69,6 +71,30 @@ const Chat = () => {
     return online ? true : false;
   };
 
+  // Update messages when receiving new one
+  useEffect(() => {
+    if (
+      receivedMessage &&
+      currentChat &&
+      receivedMessage.chatId === currentChat._id
+    ) {
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat._id === currentChat._id
+            ? { ...chat, lastMessage: receivedMessage }
+            : chat
+        )
+      );
+    }
+  }, [receivedMessage, currentChat]);
+
+  // Handle chat selection from SpaceDetail
+  useEffect(() => {
+    if (selectedChat) {
+      setCurrentChat(selectedChat);
+    }
+  }, [selectedChat]);
+
   return (
     <div className="Chat">
       <div className="Left-side-chat">
@@ -81,6 +107,7 @@ const Chat = () => {
                   data={chat}
                   currentUser={userId}
                   online={checkOnlineStatus(chat)}
+                  lastMessage={chat.lastMessage}
                 />
               </div>
             ))}

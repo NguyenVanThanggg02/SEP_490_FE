@@ -37,13 +37,25 @@ import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
+<<<<<<< HEAD
 import Blog from "./screens/Blog";
 import Contact from "./screens/Contact";
+=======
+import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
+import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
+import {ToastContainer} from "react-toastify";
+
+import Blog from "./screens/Blog";
+import Profile from "./screens/Profile";
+>>>>>>> 94fa7b9ab6ace2f7866c0ae9fc099facbf1f84d6
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const role = localStorage.getItem("role");
-
+  const [selectedChat, setSelectedChat] = useState(null);
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat);
+  };
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("isLoggedIn");
     if (loggedInStatus === "true") {
@@ -58,7 +70,8 @@ function Layout() {
     "/userneed",
     "/login",
     "/register",
-    "/alladd"
+    "/alladd",
+    
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 
@@ -85,16 +98,15 @@ function Layout() {
             }
           />
           <Route path="/userneed" element={<UserNeedsForm />} />
-          <Route path="/chat" element={<ChatBox />} />
+          <Route path="/chat" element={<ChatBox selectedChat={selectedChat} />}/>
           <Route path="/manaspace" element={<ManaPost />} />
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile/:id" element={<HostProfile />} />
-          <Route path="/chang_pass" element={<ChangePass />} />
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
           <Route path="/mess" element={<Message />} />
-          <Route path="/spaces/:id" element={<SpaceDetails />} />
+          <Route path="/spaces/:id" element={<SpaceDetails onSelectChat={handleSelectChat} />} />
           <Route path="/notfound" element={<NotFound />} />
           <Route path="/changepassadm" element={<ChangePassAdmin />} />
           <Route path="/favorites" element={<Favorites />} />
@@ -104,15 +116,21 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
+<<<<<<< HEAD
           <Route path="/blog" element={<Blog />} />
           <Route path="/contact" element={<Contact />} />
 
 
+=======
+          <Route path="/profile" element={<Profile />} />
+>>>>>>> 94fa7b9ab6ace2f7866c0ae9fc099facbf1f84d6
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
-          <Route path="/booking" element={<BookingDate />} />
+          <Route path="/posted" element={<SpacePosted />} />
+          <Route path="/editposted" element={<EditSpacePosted />} />
+          <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
 
         </Routes>
@@ -127,6 +145,7 @@ function App() {
   return (
     <BrowserRouter>
       <Layout />
+      <ToastContainer />
     </BrowserRouter>
   );
 }

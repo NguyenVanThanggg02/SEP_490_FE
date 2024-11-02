@@ -18,7 +18,7 @@ const ResetPass = () => {
         if (res.data.Status === "Success") {
           console.log('success');
           
-          toast.success("Thành Công");
+          toast.success("Cập nhật mật khẩu mới thành công.");
           nav("/login");
         }
       })
@@ -35,7 +35,7 @@ const ResetPass = () => {
           <label htmlFor="email">Mật khẩu mới</label>
           <input
             type="password"
-            placeholder="Enter your new password"
+            placeholder="Nhập mật khẩu mới của bạn."
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -44,12 +44,6 @@ const ResetPass = () => {
           Cập nhật
         </button>
       </form>
-      {/* <p className="signup-link">
-        Tôi không có tài khoản...
-        <a href="/register" className="signup-link link">
-          Đăng kí ngay bây giờ
-        </a>
-      </p> */}
     </div>
   );
 };

@@ -52,7 +52,7 @@ function HostProfile() {
             mb={2}
           >
             <Avatar
-              src="https://example.com/avatar.jpg"
+              src={profileOwner?.avatar || "https://via.placeholder.com/150"}
               alt="Patinee"
               sx={{ width: 100, height: 100 }}
             />
