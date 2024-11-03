@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { Card, CardContent, Divider, Tabs, Tab, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CategoriesPosted from './CategoriesPosted';
+import CategoriesPosted  from './CategoriesPosted';
+import { useParams } from 'react-router-dom'; // Import useParams
 
 const EditSpacePosted = () => {
+    const { spaceId } = useParams(); // Lấy spaceId từ URL
+
     const [expanded, setExpanded] = useState('panel1');
     const [selectedTab, setSelectedTab] = useState(0);
+
 
     const handleChangeAccordion = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
@@ -19,7 +23,7 @@ const EditSpacePosted = () => {
     // Nội dung từng tab của từng Accordion
     const renderTabContent = () => {
         if (selectedTab === 0) {
-            return <CategoriesPosted/>;
+            return <CategoriesPosted spaceId={spaceId}/>;
         } else if (selectedTab === 1) {
             return <Typography>Thông tin chi tiết</Typography>;
         } else {

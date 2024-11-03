@@ -239,7 +239,11 @@ function SpaceDetails({ onSelectChat }) {
               style={{ objectFit: "cover" }}
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div">
+              <Typography gutterBottom variant="h6" component="div"style={{
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}>
                 {compare.name}
               </Typography>
             </CardContent>

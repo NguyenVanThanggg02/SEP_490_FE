@@ -24,7 +24,7 @@ const HotSpace = () => {
       ) : (
         Array.isArray(topSpaces) &&
         topSpaces.map((s) => (
-          <div className="space-item" >
+          <div className="space-item">
             <Link to={`/spaces/${s?._id}`} style={{ textDecoration: "none" }}>
               <img
                 className="d-block w-100"
@@ -39,8 +39,26 @@ const HotSpace = () => {
                 }}
               />
 
-              <h2 style={{ color: "#ADD8E6" }}>{s.name}</h2>
-              <h3 style={{ color: "#ADD8E6" }}>Địa điểm: {s.location}</h3>
+              <h2
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {s.name}
+              </h2>
+              <h3
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                Địa điểm: {s.location}
+              </h3>
               <h4
                 style={{
                   marginLeft: "5px",

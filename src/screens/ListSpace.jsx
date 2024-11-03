@@ -94,7 +94,7 @@ const ListSpace = () => {
     loadData();
   }, []);
   useEffect(() => {
-    fetch("http://localhost:9999/spaces/all")
+    fetch("http://localhost:9999/spaces")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -599,7 +599,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "463px",
+                      height: "443px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -675,20 +675,37 @@ const handleDistrictSelect = (districtName) => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             color: "#2d2d2d",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           }}
                         >
                           {l.name}
                         </Card.Title>
 
                         <Card.Text
-                          style={{ fontSize: "14px", color: "#757575" }}
+                          style={{
+                            fontSize: "14px",
+                            color: "#757575",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            marginTop: "6px",
+                          }}
                         >
                           Địa điểm: {l.location}
                         </Card.Text>
                         <Card.Text
-                          style={{ fontSize: "14px", color: "#757575", fontWeight: "bold" }}
+                          style={{
+                            fontSize: "14px",
+                            color: "#757575",
+                            fontWeight: "bold",
+                          }}
                         >
-                          Quãng đường: {distances[index] ? `${distances[index]} km` : "Không xác định."}
+                          Quãng đường:{" "}
+                          {distances[index]
+                            ? `${distances[index]} km`
+                            : "Không xác định."}
                         </Card.Text>
                         {/* <Card.Text
                           style={{

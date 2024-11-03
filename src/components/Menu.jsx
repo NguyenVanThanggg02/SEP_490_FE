@@ -8,7 +8,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import {
   ArrowRepeat,
   BoxArrowInRight,
@@ -200,14 +199,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={handleMannaPost}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
+            </MenuItem>
 
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />

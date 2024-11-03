@@ -1,4 +1,4 @@
-import { Button, Card, CardActions, CardContent, CardMedia, InputAdornment, TextField, Typography } from '@mui/material'
+import { Box, Button, Card, CardActions, CardContent, CardMedia, InputAdornment, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import SearchIcon from '@mui/icons-material/Search';
@@ -64,7 +64,18 @@ const SpacePosted = () => {
         }
     };
 
-
+    const handleDeleteSpace = (id) => {
+        if (window.confirm("Bạn có muốn xóa không gian này không?")) {
+            axios
+                .delete(`http://localhost:9999/spaces/delete/${id}`)
+                .then(() => {
+                    setlistPosted(listPosted.filter((product) => product._id !== id));
+                })
+                .catch((error) => {
+                    console.error("Failed to delete product:", error);
+                });
+        }
+    };
 
 
     return (
@@ -117,24 +128,36 @@ const SpacePosted = () => {
                                     <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
                                         Host {lpost.userId?.username}
                                     </Typography>
+                                         {renderCensorshipIcon(lpost.censorship)}
                                 </CardContent>
                                 <CardActions>
-                                    <Link
-                                        to={`/editposted`}
-                                        style={{ textDecoration: "none" }}
-                                        state={{ spaceId: lpost._id }}
-                                    >
-                                        <Button size="small" variant='contained' disableElevation sx={{ textTransform: 'none' }}
-                                        >Chỉnh sửa</Button>
-                                    </Link>
+                                    {/* Chỉnh sửa và Xem phòng */}
+                                        <Link to={`/editposted`} style={{ textDecoration: 'none' }}>
+                                            <Button size="small" variant="contained" disableElevation sx={{ textTransform: 'none' }}>
+                                                Chỉnh sửa
+                                            </Button>
+                                        </Link>
 
-                                    <Link
-                                        to={`/spaces/${lpost._id}`}
-                                        style={{ textDecoration: "none" }}
-                                    >
-                                        <Button size="small" variant='outlined' sx={{ textTransform: 'none' }}>Xem phòng</Button>
-                                    </Link>
-                                    {renderCensorshipIcon(lpost.censorship)}
+                                        <Link to={`/spaces/${lpost._id}`} style={{ textDecoration: 'none' }}>
+                                            <Button size="small" variant="outlined" sx={{ textTransform: 'none' }}>
+                                                Xem phòng
+                                            </Button>
+                                        </Link>
+                                    {/* Xóa phòng và Trạng thái */}
+                                        <Button
+                                            size="small"
+                                            variant="outlined"
+                                            sx={{
+                                                textTransform: 'none',
+                                                backgroundColor: 'red',
+                                                color: 'white',
+                                                '&:hover': { backgroundColor: 'darkred' }
+                                            }}
+                                            onClick={() => handleDeleteSpace(lpost._id)}
+                                        >
+                                            Xóa phòng
+                                        </Button>
+
                                 </CardActions>
                             </Card>
                         </Col>
@@ -143,7 +166,7 @@ const SpacePosted = () => {
                 )}
 
             </Row>
-        </Container>
+        </Container >
     )
 }
 

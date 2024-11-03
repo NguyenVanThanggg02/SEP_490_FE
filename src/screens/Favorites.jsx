@@ -96,6 +96,9 @@ export const Favorites = () => {
                         fontSize: "18px",
                         fontWeight: "bold",
                         color: "#2d2d2d",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
                       }}
                     >
                       {spaceF.name}
