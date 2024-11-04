@@ -21,25 +21,17 @@ import {
   CardContent,
   Grid,
   CardMedia,
-  AppBar,
-  Toolbar,
   IconButton,
-  TableContainer,
-  Table,
-  TableHead,
   TableRow,
   TableCell,
-  TableBody,
   Chip,
-  Paper,
 } from "@mui/material";
 import * as MuiIcons from "@mui/icons-material"; // Import all MUI icons
 import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BlockIcon from "@mui/icons-material/Block";
 
-import Comment from "./Comment";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ImageList, ImageListItem, Dialog, DialogContent } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -138,41 +130,6 @@ function SpaceDetails({ onSelectChat }) {
     getChats();
   }, [userId, spaceData?.userId?._id]);
 
-  const handleCreateChat = async () => {
-    const chatData = chat
-      ? {
-          _id: chat._id,
-          members: [userId, spaceData?.userId?._id],
-        }
-      : null;
-
-    onSelectChat(chatData);
-    try {
-      if (chatData) {
-        // Cập nhật chat hiện tại với ID sản phẩm
-        const updateChatResponse = await axios.put(
-          `http://localhost:9999/chat/${chatData._id}`,
-          { spacesId: id } // Sử dụng id từ useParams
-        );
-        console.log("Chat updated with product ID:", updateChatResponse.data);
-      } else {
-        // Tạo một chat mới
-        const createChatResponse = await axios.post(
-          "http://localhost:9999/chat",
-          {
-            senderId: userId,
-            receiverId: spaceData.userId._id,
-            spacesId: id, // Sử dụng id từ useParams
-          }
-        );
-        console.log("Chat created:", createChatResponse.data);
-      }
-      nav(`/chat`);
-    } catch (error) {
-      console.error("Error creating or finding chat:", error);
-    }
-  };
-
   useEffect(() => {
     const fetchSpaceDataToCompare = async () => {
       try {
@@ -226,9 +183,6 @@ function SpaceDetails({ onSelectChat }) {
 
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
-  console.log(mainImage);
-  console.log(otherImages);
-  console.log(images);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -252,6 +206,65 @@ function SpaceDetails({ onSelectChat }) {
     setValueFromChild("");
   };
 
+  const handleCreateChat = async () => {
+    const chatData = chat
+      ? {
+          _id: chat._id,
+          members: [userId, spaceData?.userId?._id],
+        }
+      : null;
+
+    onSelectChat(chatData);
+    try {
+      if (chatData) {
+        // Cập nhật chat hiện tại với ID sản phẩm
+        const updateChatResponse = await axios.put(
+          `http://localhost:9999/chat/${chatData._id}`,
+          { spacesId: id } // Sử dụng id từ useParams
+        );
+        console.log("Chat updated with product ID:", updateChatResponse.data);
+      } else {
+        // Tạo một chat mới
+        const createChatResponse = await axios.post(
+          "http://localhost:9999/chat",
+          {
+            senderId: userId,
+            receiverId: spaceData.userId._id,
+            spacesId: id, // Sử dụng id từ useParams
+          }
+        );
+        console.log("Chat created:", createChatResponse.data);
+      }
+      nav(`/chat`);
+    } catch (error) {
+      console.error("Error creating or finding chat:", error);
+    }
+  };
+
+  // // Tạo một MutationObserver để theo dõi sự thay đổi trong DOM
+  // const observer = new MutationObserver((mutations) => {
+  //   mutations.forEach((mutation) => {
+  //     if (mutation.type === 'childList') {
+  //       const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+  //       elements.forEach((element) => {
+  //         element.style.background = 'none';
+  //         element.style.boxShadow = 'none';
+  //       });
+  //     }
+  //   });
+  // });
+  // const targetNode = document.body;
+  // observer.observe(targetNode, { childList: true, subtree: true });
+
+  const elements = document.querySelectorAll(
+    ".css-pdteti-MuiPaper-root-MuiDialog-paper"
+  );
+  elements.forEach((element) => {
+    element.style.background = "none";
+    element.style.boxShadow = "none";
+  });
+  const displayName =
+    spaceData.userId?.fullname || spaceData.userId?.username || "Unknown";
   const drawerContent = () => (
     <Row style={{ margin: "20px" }}>
       <Col md={6}>
@@ -701,7 +714,7 @@ function SpaceDetails({ onSelectChat }) {
                 <Typography variant="h5">
                   {spaceData.location}
                   <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}
+                    10 người • {spaceData.area}m2
                   </p>
                   <Row item md={12}>
                     <Divider
@@ -1044,63 +1057,18 @@ function SpaceDetails({ onSelectChat }) {
                     {priceFormatter(spaceData.pricePerHour)} VND / giờ
                   </Typography>
 
-                  {/* Chọn ngày nhận và trả phòng */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 2,
-                    }}
-                  >
-                    <TextField
-                      label="Nhận phòng"
-                      type="date"
-                      defaultValue="2024-10-17"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                      label="Trả phòng"
-                      type="date"
-                      defaultValue="2024-10-22"
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Box>
-
-                  {/* Số lượng khách */}
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel>Khách</InputLabel>
-                    <Select defaultValue={1} label="Khách">
-                      <MenuItem value={1}>1 khách</MenuItem>
-                      <MenuItem value={2}>2 khách</MenuItem>
-                      <MenuItem value={3}>3 khách</MenuItem>
-                      <MenuItem value={4}>4 khách</MenuItem>
-                    </Select>
-                  </FormControl>
-
                   {/* Nút đặt phòng */}
                   <Button
                     fullWidth
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
                     onClick={() => nav(`/booking/${spaceData?._id}`)}
+                    className={userId === spaceData.userId?._id ? "d-none" : ""}
                   >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
 
                   {/* Chi tiết giá */}
-
-                  <Divider sx={{ mb: 2, bgcolor: "gray" }} />
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <Typography variant="body1">Tổng </Typography>
-                    <Typography variant="body1">....</Typography>
-                  </Box>
                 </Box>
                 <div
                   style={{
@@ -1110,6 +1078,7 @@ function SpaceDetails({ onSelectChat }) {
                     cursor: "pointer",
                   }}
                   onClick={() => setVisible(true)}
+                  className={userId === spaceData.userId?._id ? "d-none" : ""}
                 >
                   <FlagFill
                     style={{
@@ -1124,10 +1093,6 @@ function SpaceDetails({ onSelectChat }) {
             </Row>
           </Container>
           {/* Display Images */}
-
-          <Row item md={12}>
-            <Comment />
-          </Row>
         </>
       )}
       {visible && <Reports visible={visible} setVisible={setVisible} />}
@@ -1153,6 +1118,7 @@ function SpaceDetails({ onSelectChat }) {
           sx={{ zIndex: 1500 }}
           id={id}
           onValueChange={handleValueChange}
+          setCategoryId={spaceData.categoriesId._id}
         />
       )}
       <Similar spaceData={spaceData} />

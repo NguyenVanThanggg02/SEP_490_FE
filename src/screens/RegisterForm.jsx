@@ -33,7 +33,10 @@ const RegisterForm = () => {
       toast.error("Mật khẩu không khớp!");
       return;
     }
-
+    if (password.length < 8) {
+      toast.error("Mật khẩu phải có ít nhất 8 ký tự!");
+      return;
+    }
     // Tạo đối tượng FormData
     const formDataToSend = new FormData();
     formDataToSend.append("username", username);
@@ -154,7 +157,7 @@ const RegisterForm = () => {
       </button>
       <div>
         <div>
-          <Link to="/login" className="text-danger text-opacity-75">
+          <Link to="/login" className="text-danger text-opacity-75"  style={{textDecoration:'none'}}>
             Tôi đã có tài khoản ...
           </Link>
         </div>

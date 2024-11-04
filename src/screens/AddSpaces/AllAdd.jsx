@@ -12,9 +12,10 @@ import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
 import StepConnector from '@mui/material/StepConnector';  // Import StepConnector
 import { styled } from '@mui/material/styles';  // Import styled from MUI
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const steps = ['Chọn thể loại', 'Chọn tiện ích', 'Vị trí', 'Thông tin chi tiết'];
-
 const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
   [`& .${StepConnector.line}`]: {
     borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
@@ -33,10 +34,12 @@ export default function AddSpaceFlow() {
     isGoldenHour, goldenHourDetails
    } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
+  const navigate = useNavigate();
 
   const handleFinish = async () => {
-    const ruleId = await addRules();
 
+    const ruleId = await addRules();
+    
       // Sau khi thêm quy định thành công, thêm thiết bị
       const applianceId = await addAppliances();
 
@@ -53,7 +56,11 @@ export default function AddSpaceFlow() {
 
     try {
       const response = await axios.post('http://localhost:9999/spaces', spaceData);
-      alert('Thêm không gian thành công!');
+      toast.success('Thêm không gian thành công!');
+      setTimeout(() => {
+        navigate('/posted');
+      }, 3000);
+
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
       alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');

@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { priceFormatter } from '../utils/numberFormatter';
 import { checkDayAvailability, checkHourAvailability, createBooking } from '../Api/BookingRequests';
+import { toast } from 'react-toastify';
 
 const BookingForm = () => {
     const { id } = useParams()
@@ -173,7 +174,7 @@ const BookingForm = () => {
                     price: calculatePrice(null),
                 })));
             } else {
-                alert(`Ngày ${dateString} đã có người đặt`);
+                toast.warning(`Ngày ${dateString} đã có người đặt`);
             }
         } else if (rentalType === 'week') {
             const startDate = date;
@@ -194,7 +195,7 @@ const BookingForm = () => {
                     price: calculatePrice(null),
                 }]);
             } else {
-                alert('Một hoặc nhiều ngày trong tuần này đã có phòng đặt, vui lòng chọn tuần khác.');
+                toast.warning('Một hoặc nhiều ngày trong tuần này đã có phòng đặt, vui lòng chọn tuần khác.');
             }
         } else if (rentalType === 'month') {
             const startDate = date;
@@ -215,7 +216,7 @@ const BookingForm = () => {
                     price: calculatePrice(null),
                 }]);
             } else {
-                alert('Một hoặc nhiều ngày trong tháng này đã có phòng đặt, vui lòng chọn tháng khác.');
+                toast.warning('Một hoặc nhiều ngày trong tháng này đã có phòng đặt, vui lòng chọn tháng khác.');
             }
         }
     };
@@ -250,14 +251,14 @@ const BookingForm = () => {
             console.log("bookingData >>", bookingData);
 
             const response = await createBooking(bookingData);
-            alert('Booking created successfully!');
+            toast.success('Đặt địa điểm thành công.');
         } catch (error) {
             if (error.response && error.response.status === 409) {
                 // Nếu có xung đột ngày/slot, thông báo cho người dùng
-                alert("Lịch bạn chọn đã có người đặt trước. Vui lòng chọn ngày hoặc slot khác.");
+                toast.warning("Lịch bạn chọn đã có người đặt trước. Vui lòng chọn ngày hoặc slot khác.");
             } else {
                 console.error("Error creating booking:", error.response ? error.response.data : error.message);
-                alert('Error creating booking');
+                toast.error('Lỗi khi đặt địa điểm.');
             }
         }
     };

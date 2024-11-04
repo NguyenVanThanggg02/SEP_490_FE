@@ -6,8 +6,8 @@ import LogoV2 from "../assets/images/newlogo.png";
 
 const Footer = () => {
     return (
-        <footer className="text-center text-lg-start" style={{ backgroundColor: '#6c757d', marginTop: '20px', paddingBottom: '20px' }}>
-            <Container className="p-4">
+        <footer className="text-center text-lg-start" style={{ backgroundColor: '#6c757d', marginTop: '20px'}}>
+            <Container >
                 <Row className="my-4 ">
                     <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
                         <Link to={"/"}>

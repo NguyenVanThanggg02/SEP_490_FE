@@ -1,38 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Row, Table } from "react-bootstrap";
-import axios from "axios"; // Đảm bảo bạn đã cài đặt axios bằng cách chạy 'npm install axios'
+import { Container, Grid, Card, CardContent, Typography, Avatar, AvatarGroup, Box, Button, Stack } from "@mui/material";
+import { Block as BlockIcon, Undo as UndoIcon, Person as PersonIcon } from '@mui/icons-material';
+import axios from "axios";
 
 const UserManagement = () => {
   const [listUser, setListUser] = useState([]);
-  const isBan = useState()
-  
-  // Lấy danh sách user từ API
+  const [currentUserId, setCurrentUserId] = useState(null);
+
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setCurrentUserId(storedUserId);
+    }
+
     fetch("http://localhost:9999/users")
       .then((resp) => resp.json())
-      .then((data) => {
-        setListUser(data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .then((data) => setListUser(data))
+      .catch((err) => console.log(err.message));
   }, []);
 
-  // Hàm định dạng ngày tháng
   const formatDate = (inputDate) => {
     const dateObject = new Date(inputDate);
-    const day = dateObject.getDate().toString().padStart(2, "0");
-    const month = (dateObject.getMonth() + 1).toString().padStart(2, "0");
-    const year = dateObject.getFullYear();
-    const formattedDate = `${day}-${month}-${year}`;
-    return formattedDate;
+    return dateObject.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
   const handleBanUser = (userId, isBan) => {
+    if (userId === currentUserId) {
+      console.warn("Không thể ban chính mình!");
+      return;
+    }
+
     axios
-      .put(`http://localhost:9999/users/${userId}`, {
-        isBan: !isBan, 
-      })
+      .put(`http://localhost:9999/users/${userId}`, { isBan: !isBan })
       .then((response) => {
         if (response.status === 200) {
           const updatedUsers = listUser.map((user) =>
@@ -43,62 +46,91 @@ const UserManagement = () => {
           console.error("Cập nhật thất bại");
         }
       })
-      .catch((error) => {
-        console.error("Đã xảy ra lỗi:", error);
-      });
+      .catch((error) => console.error("Đã xảy ra lỗi:", error));
   };
 
   return (
-    <Container fluid>
-      <Row style={{ width: "100%", marginTop: "24px" }}>
-        <Col md={12}>
-          <div>
-            <Row className="ml-1 mb-4">
-              <h3>Quản Lí Khách Hàng</h3>
-            </Row>
-          </div>
-          <Table striped bordered hover>
-            <thead className="text-center">
-              <tr>
-                <th>ID</th>
-                <th>Họ và Tên</th>
-                <th>Giới tính</th>
-                <th>Địa chỉ</th>
-                <th>Ngày sinh</th>
-                <th>Số điện thoại</th>
-                <th>Gmail</th>
-                <th>Tên tài khoản</th>
-                {/* <th>IsBan</th> */}
-                <th>Hành động</th>
-              </tr>
-            </thead>
+    <Container>
+      <Box textAlign="center" mb={4}>
+        <Typography variant="h4" component="h1">
+          Quản Lí Khách Hàng
+        </Typography>
+      </Box>
 
-            <tbody className="text-center">
-              {listUser.map((u, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{u.fullname}</td>
-                  <td>{u.gender}</td>
-                  <td>{u.address}</td>
-                  <td>{formatDate(u.birthday)}</td>
-                  <td>{u.phone}</td>
-                  <td>{u.gmail}</td>
-                  <td>{u.username}</td>
-                  {/* <td>{u.isBan ? "True" : "False"}</td> */}
-                  <td>
-                    <Button
-                      variant={u.isBan ? "success" : "danger"}
-                      onClick={() => handleBanUser(u._id, u.isBan)} 
-                    >
-                      {u.isBan ? "Unban" : "Ban"}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
+      <Grid container spacing={3}>
+        {listUser.map((user) => (
+          <Grid item xs={12} sm={6} md={4} key={user._id}>
+            <Card 
+              variant="outlined" 
+              sx={{ 
+                borderRadius: 4, 
+                boxShadow: 3, 
+                overflow: 'hidden', 
+                position: 'relative', 
+                transition: "transform 0.3s", 
+                "&:hover": { transform: "scale(1.05)" } 
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Avatar 
+                    alt={user.fullname} 
+                    src={user.avatar || "/default-avatar.png"} 
+                    sx={{ width: 56, height: 56 }}
+                  />
+                  <Box>
+                    <Typography variant="h6">{user.fullname}</Typography>
+                    <Typography variant="body2" color="textSecondary">@{user.username}</Typography>
+                  </Box>
+                </Stack>
+
+                <Box mt={2}>
+                <Typography variant="body2" color="textSecondary">
+                  Giới tính: {user.gender === "Male" ? "Nam" : user.gender === "Female" ? "Nữ" : "Khác"}
+                </Typography>
+                  <Typography variant="body2" color="textSecondary">Địa chỉ: {user.address}</Typography>
+                  <Typography variant="body2" color="textSecondary">Ngày sinh: {formatDate(user.birthday)}</Typography>
+                  <Typography variant="body2" color="textSecondary">SĐT: {user.phone}</Typography>
+                  <Typography variant="body2" color="textSecondary">Email: {user.gmail}</Typography>
+                </Box>
+
+                <Box mt={3} textAlign="center">
+                  <Button
+                    variant="contained"
+                    color={user.isBan ? "success" : "error"}
+                    startIcon={user.isBan ? <UndoIcon /> : <BlockIcon />}
+                    onClick={() => handleBanUser(user._id, user.isBan)}
+                    sx={{ borderRadius: 2, px: 3 }}
+                    disabled={user._id === currentUserId}
+                  >
+                    {user.isBan ? "Unban" : "Ban"}
+                  </Button>
+                </Box>
+              </CardContent>
+
+              <Box 
+                position="absolute" 
+                top={16} 
+                right={16}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <AvatarGroup max={2}>
+                  <Avatar sx={{ bgcolor: user.isBan ? "error.main" : "success.main" }}>
+                    <PersonIcon />
+                  </Avatar>
+                  {user.isBan && (
+                    <Avatar sx={{ bgcolor: "error.main" }}>
+                      <BlockIcon />
+                    </Avatar>
+                  )}
+                </AvatarGroup>
+              </Box>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </Container>
   );
 };

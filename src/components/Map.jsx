@@ -17,15 +17,18 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
         setAddress(input);
 
         // Lấy gợi ý địa chỉ từ Mapbox Geocoding API
-        if (input) {
+        if (input && input.length > 0) {
             try {
-                const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${input}.json`, {
+                const response = await axios.get(`https://api.mapbox.com/search/geocode/v6/forward`, {
                     params: {
                         access_token: MAPBOX_TOKEN,
+                        q: input,
+                        country: "vn",
+                        language: "vi"
                     },
                 });
 
-                setLocationSuggest(response.data.features?.map((i) => ({ value: i.center.toString(), label: i.place_name }))); // Đặt gợi ý
+                setLocationSuggest(response.data.features?.map((i) => ({ value: i.geometry.coordinates.toString(), label: i.properties.full_address.replace(/, \d+,/, ",").replace(/, việt nam/i, "") }))); // Đặt gợi ý
             } catch (error) {
                 console.error("Lỗi khi lấy gợi ý địa chỉ:", error);
             }
@@ -35,7 +38,11 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
     };
 
     useEffect(() => {
-        handleAddressChange(textSearch)
+        const handler = setTimeout(() => {
+            handleAddressChange(textSearch);
+        }, 500);
+    
+        return () => clearTimeout(handler); 
     }, [textSearch])
 
     useEffect(() => {
@@ -64,12 +71,17 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
     // Hàm lấy địa chỉ từ tọa độ
     const fetchAddress = async (latitude, longitude) => {
         try {
-            const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json`, {
+            const response = await axios.get(`https://api.mapbox.com/search/geocode/v6/reverse`, {
                 params: {
                     access_token: MAPBOX_TOKEN,
+                    longitude: longitude,
+                    latitude: latitude,
+                    country: "vn",
+                    language: "vi",
+                    types:"neighborhood,locality,place,district"
                 },
             });
-            const addressComponents = response.data.features[0]?.place_name; // Lấy địa chỉ từ phản hồi
+            const addressComponents = response.data.features[0]?.properties.full_address.replace(/, \d+,/, ",").replace(/, việt nam/i, ""); // Lấy địa chỉ từ phản hồi
             setAddress(addressComponents || ""); // Cập nhật state địa chỉ
             const valueSelect = [longitude,latitude].toString()
             setLocation2(valueSelect)

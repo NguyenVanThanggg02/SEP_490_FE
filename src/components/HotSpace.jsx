@@ -9,7 +9,6 @@ const HotSpace = () => {
     fetch("http://localhost:9999/bookings/top-spaces")
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
         setTopSpaces(data);
       })
       .catch((err) => {

@@ -37,6 +37,10 @@ import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
+import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
+import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
+import { ToastContainer } from "react-toastify";
+
 import Blog from "./screens/Blog";
 import ProfileTemplate from "./screens/Profile";
 // a
@@ -45,7 +49,6 @@ function Layout() {
   const location = useLocation();
   const role = localStorage.getItem("role");
   const [selectedChat, setSelectedChat] = useState(null);
-
   const handleSelectChat = (chat) => {
     setSelectedChat(chat);
   };
@@ -99,7 +102,6 @@ function Layout() {
           <Route path="/list_space" element={<ListSpace />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/host_profile/:id" element={<HostProfile />} />
-          <Route path="/chang_pass" element={<ChangePass />} />
           <Route path="/reset-password/:id/:token" element={<ResetPass />} />
           <Route path="/forgot_pass" element={<Forgot_Pass />} />
           <Route path="/mess" element={<Message />} />
@@ -116,10 +118,13 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
+          {/* <Route path="/profile" element={<Profile />} /> */}
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
+          <Route path="/posted" element={<SpacePosted />} />
+          <Route path="/editposted" element={<EditSpacePosted />} />
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
         </Routes>
@@ -134,6 +139,7 @@ function App() {
   return (
     <BrowserRouter>
       <Layout />
+      <ToastContainer />
     </BrowserRouter>
   );
 }
