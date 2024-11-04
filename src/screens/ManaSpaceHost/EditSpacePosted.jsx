@@ -22,9 +22,9 @@ const EditSpacePosted = () => {
 
     // Nội dung từng tab của từng Accordion
     const renderTabContent = () => {
-        if (selectedTab === 0) {
+        if (selectedTab) {
             return <CategoriesPosted spaceId={spaceId}/>;
-        } else if (selectedTab === 1) {
+        } else if (selectedTab) {
             return <Typography>Thông tin chi tiết</Typography>;
         } else {
             return <Typography>Bản đồ vị trí</Typography>;

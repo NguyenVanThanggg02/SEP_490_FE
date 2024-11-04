@@ -30,6 +30,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
 
+import { userChats } from "../Api/ChatRequests";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -82,6 +83,31 @@ function SpaceDetails({ onSelectChat }) {
 
     fetchSpaceData();
   }, [id]);
+  useEffect(() => {
+    const getChats = async () => {
+      try {
+        const { data } = await userChats(userId);
+
+        const existingChat = data.find(
+          (chat) =>
+            chat._id &&
+            chat.members.includes(userId) &&
+            chat.members.includes(spaceData?.userId._id)
+        );
+
+        if (existingChat) {
+          setChat(existingChat);
+          console.log("Existing chat found:", existingChat);
+        } else {
+          console.log("No existing chat found with userId and spaceId");
+        }
+      } catch (error) {
+        console.log("Error fetching chats:", error);
+      }
+    };
+
+    getChats();
+  }, [userId, spaceData?.userId?._id]);
 
   useEffect(() => {
     const fetchSpaceDataToCompare = async () => {
@@ -128,7 +154,7 @@ function SpaceDetails({ onSelectChat }) {
       </Typography>
     );
   const mainImage = spaceData?.images?.[0]?.url;
-  const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
+   const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
 
   const appliances = spaceData?.appliancesId || [];
   const images = spaceData?.images || [];
@@ -191,25 +217,25 @@ function SpaceDetails({ onSelectChat }) {
     }
   };
 
-// // Tạo một MutationObserver để theo dõi sự thay đổi trong DOM
-// const observer = new MutationObserver((mutations) => {
-//   mutations.forEach((mutation) => {
-//     if (mutation.type === 'childList') {
-//       const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
-//       elements.forEach((element) => {
-//         element.style.background = 'none'; 
-//         element.style.boxShadow = 'none'; 
-//       });
-//     }
-//   });
-// });
-// const targetNode = document.body; 
-// observer.observe(targetNode, { childList: true, subtree: true });
+  // // Tạo một MutationObserver để theo dõi sự thay đổi trong DOM
+  // const observer = new MutationObserver((mutations) => {
+  //   mutations.forEach((mutation) => {
+  //     if (mutation.type === 'childList') {
+  //       const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+  //       elements.forEach((element) => {
+  //         element.style.background = 'none';
+  //         element.style.boxShadow = 'none';
+  //       });
+  //     }
+  //   });
+  // });
+  // const targetNode = document.body;
+  // observer.observe(targetNode, { childList: true, subtree: true });
 
-  const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
-      elements.forEach((element) => {
-      element.style.background = 'none'; 
-      element.style.boxShadow = 'none'; 
+    const elements = document.querySelectorAll('.css-pdteti-MuiPaper-root-MuiDialog-paper');
+  elements.forEach((element) => {
+    element.style.background = 'none'; 
+    element.style.boxShadow = 'none'; 
   });
   const displayName = spaceData.userId?.fullname || spaceData.userId?.username || "Unknown";
   const drawerContent = () => (
@@ -234,12 +260,12 @@ function SpaceDetails({ onSelectChat }) {
           <Card style={{ position: "relative" }}>
             <CardMedia
               sx={{ height: 250 }}
-              image={compare?.images[0].url || "default-image"}
+              image={compare?.images?.[0]?.url || "default-image"}
               title="image spaceCompare"
               style={{ objectFit: "cover" }}
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div"style={{
+            <Typography gutterBottom variant="h6" component="div"style={{
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -316,6 +342,12 @@ function SpaceDetails({ onSelectChat }) {
   );
 
 
+  const chatData = chat
+    ? {
+        _id: chat._id,
+        members: [localStorage.getItem("userId"), spaceData?.userId?._id],
+      }
+    : null;
 
   const handlePrevMonth = () => {
     setCurrentMonth((prev) => (prev === 0 ? 11 : prev - 1));
@@ -348,14 +380,14 @@ function SpaceDetails({ onSelectChat }) {
           {days.slice(0, 7)}
         </TableRow>
         {days.slice(7).reduce((rows, day, index) => {
-          if (index % 7 === 0) rows.push([]);
-          rows[rows.length - 1].push(day);
-          return rows;
-        }, []).map((row, index) => (
-          <TableRow key={index}>
+            if (index % 7 === 0) rows.push([]);
+            rows[rows.length - 1].push(day);
+            return rows;
+          }, []).map((row, index) => (
+            <TableRow key={index}>
             {row}
           </TableRow>
-        ))}
+          ))}
       </>
     );
   };
@@ -1006,7 +1038,7 @@ function SpaceDetails({ onSelectChat }) {
                     className={
                       userId === spaceData.userId?._id ? "d-none" : ""
                     }
-                  >
+                    >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
 
@@ -1023,7 +1055,7 @@ function SpaceDetails({ onSelectChat }) {
                   className={
                     userId === spaceData.userId?._id ? "d-none" : ""
                   }
-                >
+                  >
                   <FlagFill
                     style={{
                       color: "gray",

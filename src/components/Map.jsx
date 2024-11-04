@@ -108,7 +108,7 @@ export const MapSearch = ({ textSearch, setLocationSuggest, location , setLocati
     };
 
     return (
-        <div style={{ width: "100%", display: "flex", justifyContent: 'center'}}>
+        <div style={{ width: "100%", display: "flex", justifyContent: 'center', marginBottom:'100px'}}>
             <Map
                 latitude={marker?.latitude || 21.027448753456103}
                 longitude={marker?.longitude || 105.8336955905755}

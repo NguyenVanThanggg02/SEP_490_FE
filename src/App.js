@@ -119,7 +119,7 @@ function Layout() {
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
           <Route path="/posted" element={<SpacePosted />} />
-          <Route path="/editposted" element={<EditSpacePosted />} />
+          <Route path="/editposted/:id" element={<EditSpacePosted />} />
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/welcome" element={<StartToUp />} />

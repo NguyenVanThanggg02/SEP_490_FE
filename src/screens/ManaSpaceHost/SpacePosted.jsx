@@ -1,5 +1,5 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, InputAdornment, TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { Box, Button, Card, CardActions, CardContent, CardMedia, InputAdornment, TextField, Typography } from '@mui/material'
 import { Col, Container, Row } from 'react-bootstrap'
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -86,12 +86,14 @@ const SpacePosted = () => {
                 </Typography>
             </Row>
             <Row className="pb-5">
-                <Col md={6} style={{ marginLeft: "auto" }}>
+                <Col md={6} style={{ marginLeft: "auto", flexDirection:'row' }}>
                     <TextField id="outlined-basic" placeholder='Tên không gian' variant="outlined" size="small"
                         InputProps={{
-                            endAdornment: <InputAdornment position="end"><SearchIcon /></InputAdornment>,
+                            endAdornment: <InputAdornment position="end">
+                                <SearchIcon />
+                                </InputAdornment>,
                         }}
-                        sx={{ width: '400px' }} />
+                        sx={{ width: '350px' }} />
                     <Link
                         to={'/alladd'}
                         style={{ textDecoration: "none" }}
@@ -109,7 +111,7 @@ const SpacePosted = () => {
                 ) : (
                     listPosted.map((lpost) => (
                         <Col md={3} className='pb-5'>
-                            <Card key={lpost.id} sx={{ maxWidth: 345, height: "100%" }}>
+                            <Card key={lpost._id} sx={{ maxWidth: 345, height: "100%" }}>
                                 <CardMedia
                                     sx={{ height: 200 }}
                                     image={lpost.images[0]?.url || "path/to/default/image.jpg"} // Thay thế với đường dẫn hình ảnh mặc định nếu không có
@@ -132,7 +134,7 @@ const SpacePosted = () => {
                                 </CardContent>
                                 <CardActions>
                                     {/* Chỉnh sửa và Xem phòng */}
-                                        <Link to={`/editposted`} style={{ textDecoration: 'none' }}>
+                                        <Link to={`/editposted/${lpost._id}`} style={{ textDecoration: 'none' }}>
                                             <Button size="small" variant="contained" disableElevation sx={{ textTransform: 'none' }}>
                                                 Chỉnh sửa
                                             </Button>

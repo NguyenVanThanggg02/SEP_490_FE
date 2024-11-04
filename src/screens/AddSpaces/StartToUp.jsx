@@ -104,7 +104,7 @@ const StartToUp = () => {
           <div style={styles.stepNumber}>1</div>
           <div style={styles.stepContent}>
             <div style={styles.stepTitle}>
-              Chia sẻ thông tin về chỗ ở của bạn cho chúng tôi
+              Chia sẻ thông tin về không gian của bạn cho chúng tôi
             </div>
             <div style={styles.stepDescription}>
               Chia sẻ một số thông tin cơ bản, như vị trí của không gian cho

@@ -22,6 +22,12 @@ const BankAccount = () => {
     }
   }, [userId]);
 
+  useEffect(() =>{
+    setTimeout(()=>{
+      setError(null)
+      setSuccess(null);
+    },1000)
+  })
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`http://localhost:9999/users/${userId}`);
