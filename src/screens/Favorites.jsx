@@ -7,7 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 export const Favorites = () => {
   const [spaceFavo, setSpaceFavos] = useState([]);
-
+// aâ
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces/favorite")
