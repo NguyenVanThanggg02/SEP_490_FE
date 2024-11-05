@@ -85,6 +85,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     localStorage.clear();
     setUserInfo(null);
     handleClose();
+    navigate("/");
+
   };
   const handleAddFunds = () => {
     navigate("/addfund");

@@ -1,79 +1,89 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import { Card, CardContent, Divider, Tabs, Tab, Typography, Accordion, AccordionSummary, AccordionDetails, Box } from '@mui/material';
-import axios from 'axios';
 import * as MuiIcons from '@mui/icons-material';
-import { SpaceContext } from '../../Context/SpaceContext ';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 
-const CategoriesPosted = ({spaceId }) => {
-    const [editSpace, setEditSpace] = useState({});
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [categories, setCategories] = useState([]);
-    const { selectedCategoryId, setSelectedCategoryId } = useContext(SpaceContext); // Sử dụng context để lưu categoryId
+const CategoriesPosted = ({
+  selectedCategoryId,
+  setSelectedCategoryId,
+  setSelectedAppliances,
+}) => {
+  const location = useLocation();
+  const { spaceId } = location.state;
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            setLoading(true);
-            try {
-                const res = await axios.get('http://localhost:9999/categories');
-                setCategories(res.data);
-            } catch (error) {
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCategories();
-    }, []);
-    
-    if (error) {
-        return <Typography>Có lỗi xảy ra: {error.message}</Typography>;
-    }
-    const handleCategoryClick = (cateid) => {
-        // Nếu category được chọn là category hiện tại, bỏ chọn
-        if (selectedCategoryId === cateid) {
-            setSelectedCategoryId(null); // Bỏ chọn category
-        } else {
-            setSelectedCategoryId(cateid); // Chọn category mới
-        }
-    }
-    return (
-        <Row>
-            <Col md={12}>
-                <Card>
-                    <CardContent>
-                    <Typography>Categories for Space ID: {spaceId}</Typography>
-                        <Typography variant='h5' gutterBottom>Thể loại không gian</Typography>
-                        <Row>
-                        {categories.map((category) => {
-                            const Icon = MuiIcons[category.iconName]|| MuiIcons.School;
-                            console.log(`Icon for ${category.name}:`, Icon);
-                            const isSelected = selectedCategoryId === category._id; 
+  const [categories, setCategories] = useState([]);
 
-                            return (
-                                <Col md={12} className="mb-3" key={category._id}> 
-                                    <Card
-                                        className={`text-center  add-space ${isSelected ? 'selected' : ''}`} 
-                                        style={{ cursor: 'pointer', boxShadow: "none", height: '100%' }}
-                                        onClick={() => handleCategoryClick(category._id)}
-                                    >
-                                        <Card.Body>
-                                            <Box sx={{ fontSize: '3em' }}>
-                                                {Icon &&Icon ? <Icon style={{fontSize:"40px"}} /> : null} 
-                                            </Box>
-                                            <Card.Title style={{ fontSize: "1.2rem" }}>{category.name}</Card.Title>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            );
-                        })}
-                    </Row>
-                    </CardContent>
-                </Card>
+  console.log('CategoriesPosted', spaceId, selectedCategoryId);
 
-            </Col>
-        </Row>
-    );
+  useEffect(() => {
+    axios
+      .get('http://localhost:9999/categories')
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching categories:', error);
+      });
+  }, []);
+
+  const handleCategoryClick = (cateid) => {
+    setSelectedCategoryId(cateid); // Chọn category mới
+    setSelectedAppliances([]); // Xóa appliances đã chọn khi chọn category mới
+  };
+  return (
+    <Row>
+      <Col md={12}>
+        <Card>
+          <CardContent>
+            <Typography variant="h5" gutterBottom>
+              Thể loại không gian
+            </Typography>
+            <Row>
+              {categories.map((category) => {
+                const Icon = MuiIcons[category.iconName];
+                const isSelected = selectedCategoryId === category._id;
+
+                return (
+                  <Col md={12} className="mb-3" key={category._id}>
+                    <Card
+                      className={`text-center  add-space ${isSelected ? 'selected' : ''}`}
+                      sx={{
+                        backgroundColor: isSelected ? '#e0f7fa' : '#fff',
+                      }}
+                      style={{
+                        cursor: 'pointer',
+                        boxShadow: 'none',
+                        height: '100%',
+                      }}
+                      onClick={() => handleCategoryClick(category._id)}
+                    >
+                      <CardContent>
+                        <Box sx={{ fontSize: '3em' }}>
+                          {!!Icon ? (
+                            <Icon style={{ fontSize: '40px' }} />
+                          ) : null}
+                        </Box>
+                        <Typography
+                          sx={{ color: 'text.secondary', fontSize: 14 }}
+                        >
+                          {category.name}
+                        </Typography>
+                        {/* <Card.Title style={{ fontSize: '1.2rem' }}>
+                          {JSON.stringify(category)}
+                        </Card.Title> */}
+                      </CardContent>
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
+          </CardContent>
+        </Card>
+      </Col>
+    </Row>
+  );
 };
+
 export default CategoriesPosted;

@@ -134,7 +134,7 @@ const SpacePosted = () => {
                                 </CardContent>
                                 <CardActions>
                                     {/* Chỉnh sửa và Xem phòng */}
-                                        <Link to={`/editposted/${lpost._id}`} style={{ textDecoration: 'none' }}>
+                                        <Link to={`/editposted`} state={{ spaceId: lpost._id }} style={{ textDecoration: 'none' }}>
                                             <Button size="small" variant="contained" disableElevation sx={{ textTransform: 'none' }}>
                                                 Chỉnh sửa
                                             </Button>
