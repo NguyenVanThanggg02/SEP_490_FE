@@ -14,6 +14,23 @@
     padding: 16px;
     margin-bottom: 16px;
 }
+.report-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .flag-icon {
+    color: gray;
+    margin-right: 15px;
+    margin-top: 6px;
+  }
+  
+  .property-section .property-card {
+    text-align: center;
+  }
+  
 .review-card {
     border: 1px solid #ddd;
     border-radius: 8px;
