@@ -37,17 +37,14 @@ import ChatBox from "./screens/Chat.";
 import Payment from "./screens/Payment";
 import History from "./screens/OrderHistory/History";
 import AddFunds from "./screens/AddFunds";
-<<<<<<< HEAD
-import Blog from "./screens/Blog";
-import Contact from "./screens/Contact";
-=======
 import SpacePosted from "./screens/ManaSpaceHost/SpacePosted";
 import EditSpacePosted from "./screens/ManaSpaceHost/EditSpacePosted";
 import {ToastContainer} from "react-toastify";
 
 import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
->>>>>>> 94fa7b9ab6ace2f7866c0ae9fc099facbf1f84d6
+import AdmUI from "./screens/AdmUI";
+import CancellationPolicy from "./screens/CancellationPolicy";
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -116,14 +113,10 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
-<<<<<<< HEAD
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/contact" element={<Contact />} />
-
-
-=======
           <Route path="/profile" element={<Profile />} />
->>>>>>> 94fa7b9ab6ace2f7866c0ae9fc099facbf1f84d6
+          <Route path="/admui" element={<AdmUI />} />
+          <Route path="/cancellation" element={<CancellationPolicy />} />
+
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
