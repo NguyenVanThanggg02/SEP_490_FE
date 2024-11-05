@@ -158,9 +158,9 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            <MenuItem onClick={() => handleNavigation("/chang_pass")}>
+            <MenuItem onClick={() => handleNavigation("/chat")}>
               <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
-              Thay đổi mật khẩu
+              Tin nhắn
             </MenuItem>
             {role === "2" && (
               <MenuItem onClick={() => handleNavigation("/manaspace")}>
