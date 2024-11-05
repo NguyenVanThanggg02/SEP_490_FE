@@ -1065,7 +1065,7 @@ function SpaceDetails({ onSelectChat }) {
           setCategoryId={spaceData.categoriesId._id}
         />
       )}
-      <Similar spaceData={spaceData} />
+      < Similar spaceData={spaceData} />
     </Container>
   );
 }
