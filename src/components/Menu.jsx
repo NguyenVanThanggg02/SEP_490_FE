@@ -85,6 +85,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     localStorage.clear();
     setUserInfo(null);
     handleClose();
+    navigate("/");
+
   };
   const handleAddFunds = () => {
     navigate("/addfund");
@@ -141,7 +143,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={"/alladd"} className="linkk">
+        <Link to={"/welcome"} className="linkk">
           <Typography sx={{ marginRight: 1 }}>
             <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
               Cho thuê địa điểm qua SpaceHub

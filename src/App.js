@@ -43,6 +43,7 @@ import {ToastContainer} from "react-toastify";
 
 import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
+import StartToUp from "./screens/AddSpaces/StartToUp";
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -66,6 +67,7 @@ function Layout() {
     "/login",
     "/register",
     "/alladd",
+    "/welcome"
     
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
@@ -120,6 +122,7 @@ function Layout() {
           <Route path="/editposted" element={<EditSpacePosted />} />
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/welcome" element={<StartToUp />} />
 
         </Routes>
       </main>
