@@ -45,6 +45,7 @@ import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
 import AdmUI from "./screens/AdmUI";
 import CancellationPolicy from "./screens/CancellationPolicy";
+import Chatbox from "./screens/Chatbox";
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -114,8 +115,10 @@ function Layout() {
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/admui" element={<AdmUI />} />
+          {/* <Route path="/admui" element={<AdmUI />} /> */}
           <Route path="/cancellation" element={<CancellationPolicy />} />
+          <Route path="/chatbox" element={<Chatbox />} />
+
 
           <Route
             path="/admin"

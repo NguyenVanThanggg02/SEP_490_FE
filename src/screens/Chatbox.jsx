@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import "../style/Chatboxx.css";
 
-function Chatbox({ messages = [], chatDetails, onSendMessage }) {
+function Chatbox() {
   const [input, setInput] = useState('');
+  const [messages, setMessages] = useState([
+    // Example default messages
+    { senderName: "Alice", avatarUrl: "https://via.placeholder.com/50", preview: "Hello!", content: "Hello!", time: "10:00 AM" },
+    { senderName: "Bob", avatarUrl: "https://via.placeholder.com/50", preview: "How are you?", content: "How are you?", time: "10:05 AM" },
+  ]);
+
+  const chatDetails = {
+    groupName: "Default Group",
+    avatarUrl: "https://via.placeholder.com/50",
+    introMessage: "Welcome to the chat!",
+    description: "This is a default chat group description.",
+  };
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -10,7 +22,13 @@ function Chatbox({ messages = [], chatDetails, onSendMessage }) {
 
   const handleSendMessage = () => {
     if (input.trim()) {
-      onSendMessage(input);
+      const newMessage = {
+        senderName: "You",
+        avatarUrl: "https://via.placeholder.com/50",
+        content: input,
+        time: new Date().toLocaleTimeString(),
+      };
+      setMessages([...messages, newMessage]);
       setInput('');
     }
   };

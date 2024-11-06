@@ -36,11 +36,7 @@
     "html-to-text": "^9.0.5",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.441.0",
-<<<<<<< HEAD
-    "primeicons": "^7.0.0",
-=======
     "mapbox-gl": "^3.7.0",
->>>>>>> 94fa7b9ab6ace2f7866c0ae9fc099facbf1f84d6
     "primereact": "^10.8.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
