@@ -1021,13 +1021,45 @@ function SpaceDetails({ onSelectChat }) {
                     border: "1px solid #ddd",
                   }}
                 >
-                  {/* Giá theo đêm */}
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
-                  >
-                    {priceFormatter(spaceData.pricePerHour)} VND / giờ
-                  </Typography>
+                  {spaceData.pricePerHour !== 0 &&
+                    spaceData.pricePerHour !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerHour)} VND / giờ
+                      </Typography>
+                    )}
+
+                  {spaceData.pricePerDay !== 0 &&
+                    spaceData.pricePerDay !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerDay)} VND / Ngày
+                      </Typography>
+                    )}
+
+                  {spaceData.pricePerWeek !== 0 &&
+                    spaceData.pricePerWeek !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerWeek)} VND / Tuần
+                      </Typography>
+                    )}
+
+                  {spaceData.pricePerMonth !== 0 &&
+                    spaceData.pricePerMonth !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerMonth)} VND / Tháng
+                      </Typography>
+                    )}
 
                   {/* Nút đặt phòng */}
                   <Button
@@ -1035,14 +1067,74 @@ function SpaceDetails({ onSelectChat }) {
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
                     onClick={() => nav(`/booking/${spaceData?._id}`)}
-                    className={
-                      userId === spaceData.userId?._id ? "d-none" : ""
-                    }
-                    >
+                    className={userId === spaceData.userId?._id ? "d-none" : ""}
+                  >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
-
-                  {/* Chi tiết giá */}
+                  {/* Community Standards Information */}
+                  {spaceData.communityStandardsId && (
+                    <Box
+                      mt={2}
+                      sx={{
+                        backgroundColor: "#f9f9f9", 
+                        padding: "10px",
+                        borderRadius: "5px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", 
+                        border: "2px solid #4CAF50", 
+                        transition: "all 0.3s ease-in-out", 
+                        ":hover": {
+                          backgroundColor: "#eaf1e4", 
+                          borderColor: "#388e3c", 
+                          boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", 
+                        },
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#4CAF50", 
+                        }}
+                      >
+                        Lý do từ chối
+                      </Typography>
+                      {spaceData.communityStandardsId.reasons &&
+                        spaceData.communityStandardsId.reasons.length > 0 && (
+                          <ul>
+                            {spaceData.communityStandardsId.reasons.map(
+                              (reason, index) => (
+                                <li key={index}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ color: "black" }}
+                                  >
+                                    {reason}
+                                  </Typography>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        )}
+                      {spaceData.communityStandardsId.customReason &&
+                        spaceData.communityStandardsId.customReason.length >
+                          0 && (
+                          <ul>
+                            {spaceData.communityStandardsId.customReason.map(
+                              (customReason, index) => (
+                                <li key={index}>
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ color: "black" }}
+                                  >
+                                    {customReason}
+                                  </Typography>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        )}
+                    </Box>
+                  )}
                 </Box>
                 <div
                   style={{
@@ -1052,10 +1144,8 @@ function SpaceDetails({ onSelectChat }) {
                     cursor: "pointer",
                   }}
                   onClick={() => setVisible(true)}
-                  className={
-                    userId === spaceData.userId?._id ? "d-none" : ""
-                  }
-                  >
+                  className={userId === spaceData.userId?._id ? "d-none" : ""}
+                >
                   <FlagFill
                     style={{
                       color: "gray",

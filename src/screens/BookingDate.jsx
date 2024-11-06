@@ -27,8 +27,6 @@ const BookingForm = () => {
 
     useEffect(() => {
         fetchSpaceData();
-
-
     }, []);
 
     const fetchSpaceData = async () => {
