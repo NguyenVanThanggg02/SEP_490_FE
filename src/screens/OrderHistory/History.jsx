@@ -5,6 +5,7 @@ import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
+import CancelBooking from "./CancelBooking";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -16,19 +17,21 @@ const History = () => {
   const [rows, setRows] = useState(6);
   const [curentPage, setCurrentPage] = useState(1);
   const productsOnPage = filteredBookings.slice(first, first + rows);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [visible, setVisible] = useState(false);
 
   const user = localStorage.getItem("userId");
-
+  const statusBook = bookings.map((m) => m.status);
   useEffect(() => {
-      axios
-        .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
-        .then((res) => {
-          setBookings(res.data);
-          setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+    axios
+      .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
+      .then((res) => {
+        setBookings(res.data);
+        setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }, [user]);
 
   const handleSearch = () => {
@@ -64,6 +67,13 @@ const History = () => {
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
   };
+
+  const handleViewToCancel = (bookingId) => {
+    const booking = bookings.find((b) => b._id === bookingId);
+    setSelectedBooking(booking);
+    setVisible(true);
+  };
+
   return (
     <div className="container containerhistory">
       <Card className="cardhistory" elevation={3}>
@@ -167,7 +177,7 @@ const History = () => {
                               variant="h6"
                               style={{ color: "#1976d2", fontWeight: "bold" }}
                             >
-                              {item.items[0].spaceId.name}
+                              {item.items[0]?.spaceId.name}
                             </Typography>
                             <Typography
                               variant="body2"
@@ -245,11 +255,12 @@ const History = () => {
                         <Button
                           variant="contained"
                           color="secondary"
-                          disabled={item.status !== "awaiting payment"}
+                          disabled={item.status === "canceled"}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
                           }}
+                          onClick={() => handleViewToCancel(item._id)}
                         >
                           Huỷ lịch
                         </Button>
@@ -277,6 +288,13 @@ const History = () => {
           onPageChange={onPageChange}
         />
       </Row>
+      {visible && (
+        <CancelBooking
+          visible={visible}
+          setVisible={setVisible}
+          booking={selectedBooking}
+        />
+      )}
     </div>
   );
 };
