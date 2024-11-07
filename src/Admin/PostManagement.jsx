@@ -55,7 +55,7 @@ const PostManagement = () => {
 
   const handleReject = (postId, selectedReasons, customReason) => {
     axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+      .put(`http://localhost:9999/spaces/update/${postId}`, {
         censorship: "Từ chối",
         reasons: selectedReasons,
         customReason: customReason ? [customReason] : [],

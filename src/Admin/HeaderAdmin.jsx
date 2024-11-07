@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import "../style/headeradmin.css";
-import Logo from "../assets/logo.png";
-import { BellFill, PersonCircle } from "react-bootstrap-icons";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Col, Row } from "react-bootstrap";
-import NewLogo from "../assets/images/newlogo.png";
-import MenuAdmin from "./MenuAdmin";
+import React, { useEffect, useState } from 'react';
+import '../style/headeradmin.css';
+import Logo from '../assets/logo.png';
+import { BellFill, PersonCircle } from 'react-bootstrap-icons';
+import { Box, Menu, MenuItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Notification from '../components/Notification';
 
 const HeaderAdmin = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -19,7 +18,7 @@ const HeaderAdmin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   useEffect(() => {
     if (isLoggedIn) {
-      const storedUsername = localStorage.getItem("userId");
+      const storedUsername = localStorage.getItem('userId');
       if (storedUsername) {
         fetchUserData(storedUsername);
       }
@@ -27,7 +26,7 @@ const HeaderAdmin = () => {
   }, [isLoggedIn]);
 
   const fetchUserData = async (userId) => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem('accessToken');
     try {
       const response = await axios.get(
         `http://localhost:9999/users/${userId}`,
@@ -39,7 +38,7 @@ const HeaderAdmin = () => {
       );
       setUserInfo(response.data);
     } catch (error) {
-      console.error("Lỗi khi lấy thông tin người dùng:", error);
+      console.error('Lỗi khi lấy thông tin người dùng:', error);
     }
   };
 
@@ -47,12 +46,12 @@ const HeaderAdmin = () => {
     setIsLoggedIn(false);
     localStorage.clear();
     handleClose();
-    navigate('/login')
+    navigate('/login');
   };
 
   const handleChangePass = () => {
     handleClose();
-    navigate("/changepassadm");
+    navigate('/changepassadm');
   };
 
   const handleClose = () => {
@@ -60,30 +59,46 @@ const HeaderAdmin = () => {
   };
 
   return (
-    <Row className="d-flex justify-content-between headerr">
-      <Col md={2}>
-        <div className="logo">
-          <Link to={"/"}>
-            <img
-              src={NewLogo}
-              style={{ height: "180px", width: "190px", marginTop: "-30px"}}
-              alt="logo"
-            />
-          </Link>
+    <div className="navbar" style={{ marginBottom: "100px" }}>
+      <div className="logo">
+        <img src={Logo} height="100" width="100" alt="logo" />
+      </div>
+      <div className="nav-links">
+        <h5 style={{ paddingRight: '30px' }}>Trang chủ</h5>
+        <h5>Tạo</h5>
+      </div>
+      <div className="search-bar">
+        <input placeholder="Tìm kiếm" type="text" />
+      </div>
+      <div className="icons">
+        <Box>
+          <Notification />
+        </Box>
+        <div
+          className="icon"
+          onClick={handleClick}
+          style={{ cursor: 'pointer' }}
+        >
+          <PersonCircle style={{ fontSize: '25px' }} />
         </div>
-      </Col>
-      <Col md={10}>
-        <div class="navbar">
-          <div class="nav-links">
-            <Link to={"/"}>Trang chủ</Link>
-            <Link to={"/list_space"}>Danh sách địa điểm</Link>
-          </div>
-          <BellFill style={{ fontSize: "25px", marginBottom:'10px' }} />
-          <MenuAdmin setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />
-        </div>
-      </Col>
-     
-    </Row>
+      </div>
+      <div className="profile">
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <>
+            <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
+            <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+          </>
+        </Menu>
+      </div>
+    </div>
   );
 };
 

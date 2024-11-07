@@ -1072,69 +1072,70 @@ function SpaceDetails({ onSelectChat }) {
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
                   {/* Community Standards Information */}
-                  {spaceData.communityStandardsId && (
-                    <Box
-                      mt={2}
-                      sx={{
-                        backgroundColor: "#f9f9f9", 
-                        padding: "10px",
-                        borderRadius: "5px",
-                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", 
-                        border: "2px solid #4CAF50", 
-                        transition: "all 0.3s ease-in-out", 
-                        ":hover": {
-                          backgroundColor: "#eaf1e4", 
-                          borderColor: "#388e3c", 
-                          boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)", 
-                        },
-                      }}
-                    >
-                      <Typography
-                        variant="subtitle1"
+                  {spaceData.communityStandardsId?.reasons &&
+                    spaceData.communityStandardsId?.reasons.length > 0 && (
+                      <Box
+                        mt={2}
                         sx={{
-                          fontWeight: "bold",
-                          color: "#4CAF50", 
+                          backgroundColor: "#f9f9f9",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                          border: "2px solid #4CAF50",
+                          transition: "all 0.3s ease-in-out",
+                          ":hover": {
+                            backgroundColor: "#eaf1e4",
+                            borderColor: "#388e3c",
+                            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                          },
                         }}
                       >
-                        Lý do từ chối
-                      </Typography>
-                      {spaceData.communityStandardsId.reasons &&
-                        spaceData.communityStandardsId.reasons.length > 0 && (
-                          <ul>
-                            {spaceData.communityStandardsId.reasons.map(
-                              (reason, index) => (
-                                <li key={index}>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{ color: "black" }}
-                                  >
-                                    {reason}
-                                  </Typography>
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        )}
-                      {spaceData.communityStandardsId.customReason &&
-                        spaceData.communityStandardsId.customReason.length >
-                          0 && (
-                          <ul>
-                            {spaceData.communityStandardsId.customReason.map(
-                              (customReason, index) => (
-                                <li key={index}>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{ color: "black" }}
-                                  >
-                                    {customReason}
-                                  </Typography>
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        )}
-                    </Box>
-                  )}
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#4CAF50",
+                          }}
+                        >
+                          Lý do từ chối
+                        </Typography>
+                        {spaceData.communityStandardsId.reasons &&
+                          spaceData.communityStandardsId.reasons.length > 0 && (
+                            <ul>
+                              {spaceData.communityStandardsId.reasons.map(
+                                (reason, index) => (
+                                  <li key={index}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "black" }}
+                                    >
+                                      {reason}
+                                    </Typography>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                        {spaceData.communityStandardsId.customReason &&
+                          spaceData.communityStandardsId.customReason.length >
+                            0 && (
+                            <ul>
+                              {spaceData.communityStandardsId.customReason.map(
+                                (customReason, index) => (
+                                  <li key={index}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "black" }}
+                                    >
+                                      {customReason}
+                                    </Typography>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                      </Box>
+                    )}
                 </Box>
                 <div
                   style={{
