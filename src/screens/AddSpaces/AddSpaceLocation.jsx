@@ -1,32 +1,36 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { TextField, Typography } from '@mui/material';
 import { MapSearch } from '../../components/Map';
 import { Select } from 'antd';
 import { SpaceContext } from '../../Context/SpaceContext ';
+import Autocomplete from '@mui/material/Autocomplete';
 
 const AddSpaceLocation = () => {
     const [location, setLocation] = useState('');
     const [location2, setLocation2] = useState(''); // trường hợp click kéo thả marker 
 
     const [address, setAddress] = useState('');
-    const [locationSuggest, setLocationSuggest] = useState(null);
-    const {setSpaceInfo  } = useContext(SpaceContext);
+    const [locationSuggest, setLocationSuggest] = useState([]);
+    const { setSpaceInfo } = useContext(SpaceContext);
 
-    const handleSetLocationSpace = (value) =>{
+    const handleSetLocationSpace = (value) => {
         setLocation(value)
         const location = locationSuggest.find((i) => i.value === value)?.label;
         const latLng = String(value)?.split(",")
-        if(latLng && location){
+        if (latLng && location) {
             setSpaceInfo(prev => ({
                 ...prev,
                 location,
                 latLng: [latLng[1], latLng[0]]
             }));
         }
-        
+
     }
 
+    useEffect(() => {
+        console.log("change location")
+    }, [locationSuggest])
 
     return (
         <Container fluid>
@@ -45,10 +49,11 @@ const AddSpaceLocation = () => {
                             `}
                         </style>
                         <Select
-                        size='large'
-                        style={{marginBottom: 50, width: "100%"}}
+                            size='large'
+                            style={{ marginBottom: 50, width: "100%" }}
                             onInputKeyDown={(e) => {
-                                console.log("nhập", e.target.value); setAddress(e.target.value)
+                                // console.log("nhập", e.target.value);
+                                setAddress(e.target.value)
                             }}
                             showSearch
                             placeholder="Nhập địa chỉ"
@@ -58,12 +63,44 @@ const AddSpaceLocation = () => {
                             options={locationSuggest}
                             onChange={(e) => handleSetLocationSpace(e)}
                             value={location || location2}
-                            
-                        />
+
+                        >
+                            {locationSuggest.map((item, index) => {
+                                return <Select.Option value={item.value} key={index + "__" + item.label}>{item.label}</Select.Option>
+
+                            })
+
+                            }
+                        </Select>
+                        {/* <Autocomplete
+                            freeSolo
+                            id="free-solo-2-demo"
+                            disableClearable
+                            options={locationSuggest.map((option) => option.value)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    placeholder="Nhập địa chỉ"
+                                    value={location || location2}
+
+                                    label="Search input"
+                                    onChange={(e) => handleSetLocationSpace(e)}
+                                    onInputKeyDown={(e) => {
+                                        console.log("nhập", e.target.value); setAddress(e.target.value)
+                                    }}
+                                    slotProps={{
+                                        input: {
+                                            ...params.InputProps,
+                                            type: 'search',
+                                        },
+                                    }}
+                                />
+                            )}
+                        /> */}
                     </Row>
                 </Col>
             </Row>
-            <MapSearch textSearch={address} setLocationSuggest={setLocationSuggest} location={location} setLocation={setLocation} setLocation2={setLocation2} handleSetLocationSpace={handleSetLocationSpace}/>
+            <MapSearch textSearch={address} setLocationSuggest={setLocationSuggest} location={location} setLocation={setLocation} setLocation2={setLocation2} handleSetLocationSpace={handleSetLocationSpace} />
         </Container>
     );
 };

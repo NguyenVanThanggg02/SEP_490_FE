@@ -7,9 +7,9 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import axios from "axios";
 import {
-  ArrowRepeat,
   BoxArrowInRight,
   Calendar2Check,
   Clipboard2Check,
@@ -22,8 +22,6 @@ import '../style/Menu.css'
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     fullname: "",
     gmail: "",
@@ -32,7 +30,6 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     phone: "",
     address: "",
   });
-  const role = localStorage.getItem("role");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -57,7 +54,6 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
-      console.log(userInfo.role);
 
       setFormData({
         fullname: response.data.fullname,
@@ -104,34 +100,19 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/register");
   };
-
-  const handleProfileOpen = () => {
-    setOpenProfileModal(true);
-    handleClose();
-  };
-
-  const handleProfileClose = () => {
-    setOpenProfileModal(false);
-    setEditMode(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+    
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");
   };
-  const handleChangePass = () => {
-    handleClose();
-    navigate("/chang_pass");
-  };
+  
   const handleMannaPost = () => {
     handleClose();
     navigate("/posted");
+  };
+  const handleMannaOrder = () => {
+    handleClose();
+    navigate("/order");
   };
 
   const handleNavigation = (path) => {
@@ -207,7 +188,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               />
               Quản Lí Bài Đăng
             </MenuItem>
-
+            <MenuItem onClick={handleMannaOrder}>
+              <ListAltIcon
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Đơn
+            </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
               Nạp tiền
