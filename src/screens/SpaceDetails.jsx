@@ -1072,8 +1072,7 @@ function SpaceDetails({ onSelectChat }) {
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
                   {/* Community Standards Information */}
-                  {spaceData.communityStandardsId?.reasons &&
-                    spaceData.communityStandardsId?.reasons.length > 0 && (
+                  {spaceData.communityStandardsId && (
                       <Box
                         mt={2}
                         sx={{
