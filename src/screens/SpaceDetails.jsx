@@ -1072,7 +1072,7 @@ function SpaceDetails({ onSelectChat }) {
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
                   {/* Community Standards Information */}
-                  {spaceData.communityStandardsId && (
+                  { spaceData.censorship === "Từ chối" && spaceData.communityStandardsId && (
                       <Box
                         mt={2}
                         sx={{

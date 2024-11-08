@@ -24,10 +24,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { SpaceContext } from '../../Context/SpaceContext ';
 import Appliances from './Appliances';
 import CategoriesPosted from './CategoriesPosted';
+import EditLocation from './EditLocation';
 import PreviewImage from './PreviewImage';
 import Price from './Price';
 import RuleList from './RuleList';
-import EditLocation from './EditLocation';
 
 const panels = {
   panel1: {
@@ -54,9 +54,10 @@ const EditSpacePosted = () => {
 
   const [expanded, setExpanded] = useState('panel1');
   const [selectedTab, setSelectedTab] = useState(0);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [spaceName, setSpaceName] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); 
+  const [spaceName, setSpaceName] = useState("")
+  const userId = localStorage.getItem("userId");
   const {
     selectedCategoryId,
     setSelectedCategoryId,
@@ -78,6 +79,8 @@ const EditSpacePosted = () => {
     setIsGoldenHour,
     goldenHourDetails,
     setGoldenHourDetails,
+    priceIncrease,
+    setPriceIncrease,
   } = useContext(SpaceContext);
   const handleChangeAccordion = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
@@ -116,6 +119,8 @@ const EditSpacePosted = () => {
             setIsGoldenHour,
             goldenHourDetails,
             setGoldenHourDetails,
+            priceIncrease,
+            setPriceIncrease,
           }}
         />
       );
@@ -126,13 +131,14 @@ const EditSpacePosted = () => {
       const updatedSpace = {
         ...spaceInfo,
         name: spaceName,
-        isGoldenHour,
-        goldenHourDetails,
+        userId,
         rulesId: {
           _id: spaceInfo.rulesId._id,
           rules: selectedRules,
           customeRules: customRule ? customRule.split(';') : [],
         },
+        isGoldenHour,
+        goldenHourDetails,
         categoriesId: selectedCategoryId,
         appliancesId: {
           _id: spaceInfo.appliancesId._id,
@@ -140,14 +146,13 @@ const EditSpacePosted = () => {
           appliances: selectedAppliances,
         },
       };
-      console.log('updatedSpace', updatedSpace);
       const res = await axios.post(
         `http://localhost:9999/spaces/update/${spaceId}`,
         updatedSpace
       );
 
       toast.success(
-        'Cập nhật thông tin thành công! Đang chuyển hướng đến trang danh sách địa điểm...'
+        'Cập nhật thông tin thành công! Đang chuyển hướng đến trang chi tiết...'
       );
 
       setTimeout(() => {
@@ -183,6 +188,7 @@ const EditSpacePosted = () => {
         } = response.data;
 
         setSpaceName(name);
+
         setSelectedCategoryId(categoriesId._id);
         setSelectedAppliances(appliancesId.appliances);
 
@@ -191,9 +197,14 @@ const EditSpacePosted = () => {
 
         setIsGoldenHour(isGoldenHour);
         setGoldenHourDetails(goldenHourDetails);
-        
-        setLocation(location);
 
+        setLocation(location);
+        setPriceIncrease(goldenHourDetails?.[0]?.priceIncrease || '');
+
+        console.log(
+          'goldenHourDetails after fetch data space',
+          goldenHourDetails
+        );
         setSpaceInfo({
           name,
           pricePerHour,
@@ -212,13 +223,13 @@ const EditSpacePosted = () => {
             categoryId: appliancesId.categoryId,
             appliances: appliancesId.appliances,
           },
-          isGoldenHour,
-          goldenHourDetails,
+
           location,
           latLng: [locationPoint.coordinates[1], locationPoint.coordinates[0]],
         });
       } catch (err) {
-        setError(err);
+        console.error(err);
+        setError('Something wrong');
       } finally {
         setLoading(false);
       }
@@ -246,8 +257,8 @@ const EditSpacePosted = () => {
                   label="Tên không gian"
                   fullWidth
                 />
-                <IconButton onClick={onSave}>
-                  <Save /> Lưu
+                <IconButton disabled={!!error} onClick={onSave}>
+                  <Save />
                 </IconButton>
               </Stack>
               <Divider
@@ -390,7 +401,7 @@ const EditSpacePosted = () => {
                   </div>
                 </AccordionDetails>
               </Accordion>
-              {/* Địa điểm  */}
+
               <Accordion
                 expanded={expanded === 'panel4'}
                 onChange={handleChangeAccordion('panel4')}

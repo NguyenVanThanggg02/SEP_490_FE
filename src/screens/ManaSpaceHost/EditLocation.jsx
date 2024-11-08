@@ -4,22 +4,44 @@ import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { MapSearch } from '../../components/Map';
 
+const defaultLatLng = {
+  lat: 21.027448753456103,
+  lng: 105.8336955905755,
+};
+
+export const getLatLngFromText = (lngLatString) => {
+  const latLng = String(lngLatString)?.split(',');
+  const lng = Number(latLng?.[0]);
+  const lat = Number(latLng?.[1]);
+
+  const validLatLng = !Number.isNaN(lat) && !Number.isNaN(lng);
+  if (validLatLng) return { lat, lng };
+  return defaultLatLng;
+};
+
 const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
   const [location2, setLocation2] = useState(''); // trường hợp click kéo thả marker
   const [address, setAddress] = useState('');
   const [locationSuggest, setLocationSuggest] = useState([]);
 
-  const handleSetLocationSpace = (value) => {
-    setLocation(value);
-    const location = locationSuggest.find((i) => i.value === value)?.label;
-    const latLng = String(value)?.split(',');
-    if (latLng && location) {
-      setSpaceInfo((prev) => ({
-        ...prev,
-        location,
-        latLng: [latLng[1], latLng[0]],
-      }));
+  const handleSetLocationSpace = (lngLatString) => {
+    console.log('handleSetLocationSpace input', lngLatString);
+    const suggest = locationSuggest.find(
+      (value) => value.value === lngLatString
+    );
+    if (!suggest) {
+      console.log('selectVal not correct format', lngLatString);
+      return;
     }
+    console.log('full_address', suggest.label);
+    setLocation(suggest.label);
+
+    const { lat, lng } = getLatLngFromText(lngLatString);
+    setSpaceInfo((prev) => ({
+      ...prev,
+      location: suggest.label,
+      latLng: [lat, lng],
+    }));
   };
 
   return (
@@ -58,6 +80,7 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
               value={location || location2}
             >
               {locationSuggest.map((item, index) => {
+                console.log('locationSuggest', item);
                 return (
                   <Select.Option
                     value={item.value}
@@ -73,12 +96,13 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
       </Row>
       <MapSearch
         textSearch={address}
+        locationSuggest={locationSuggest}
         setLocationSuggest={setLocationSuggest}
         location={location}
         setLocation={setLocation}
         defaultMarker={{
-          latitude: spaceInfo?.latLng?.[0] || 21.027448753456103,
-          longitude: spaceInfo?.latLng?.[1] || 105.8336955905755,
+          latitude: spaceInfo?.latLng?.[0] || defaultLatLng.lat,
+          longitude: spaceInfo?.latLng?.[1] || defaultLatLng.lat,
         }}
         setLocation2={setLocation2}
         handleSetLocationSpace={handleSetLocationSpace}
