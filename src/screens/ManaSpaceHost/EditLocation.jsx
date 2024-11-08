@@ -1,18 +1,28 @@
 import { Typography } from '@mui/material';
 import { Select } from 'antd';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { MapSearch } from '../../components/Map';
-import { SpaceContext } from '../../Context/SpaceContext ';
-import { getLatLngFromText } from '../ManaSpaceHost/EditLocation';
 
-const AddSpaceLocation = () => {
-  const [location, setLocation] = useState('');
+const defaultLatLng = {
+  lat: 21.027448753456103,
+  lng: 105.8336955905755,
+};
+
+export const getLatLngFromText = (lngLatString) => {
+  const latLng = String(lngLatString)?.split(',');
+  const lng = Number(latLng?.[0]);
+  const lat = Number(latLng?.[1]);
+
+  const validLatLng = !Number.isNaN(lat) && !Number.isNaN(lng);
+  if (validLatLng) return { lat, lng };
+  return defaultLatLng;
+};
+
+const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
   const [location2, setLocation2] = useState(''); // trường hợp click kéo thả marker
-
   const [address, setAddress] = useState('');
   const [locationSuggest, setLocationSuggest] = useState([]);
-  const { setSpaceInfo } = useContext(SpaceContext);
 
   const handleSetLocationSpace = (lngLatString) => {
     console.log('handleSetLocationSpace input', lngLatString);
@@ -36,13 +46,8 @@ const AddSpaceLocation = () => {
 
   return (
     <Container fluid>
-      <Row className="pb-5">
-        <Typography variant="h4" fontWeight={700} className="text-center">
-          Vị trí không gian của bạn
-        </Typography>
-      </Row>
       <Row className="d-flex justify-content-center align-items-center">
-        <Col md={6}>
+        <Col md={12}>
           <Row>
             <Typography
               variant="h6"
@@ -61,7 +66,6 @@ const AddSpaceLocation = () => {
               size="large"
               style={{ marginBottom: 50, width: '100%' }}
               onInputKeyDown={(e) => {
-                // console.log("nhập", e.target.value);
                 setAddress(e.target.value);
               }}
               showSearch
@@ -76,6 +80,7 @@ const AddSpaceLocation = () => {
               value={location || location2}
             >
               {locationSuggest.map((item, index) => {
+                console.log('locationSuggest', item);
                 return (
                   <Select.Option
                     value={item.value}
@@ -86,40 +91,19 @@ const AddSpaceLocation = () => {
                 );
               })}
             </Select>
-            {/* <Autocomplete
-                            freeSolo
-                            id="free-solo-2-demo"
-                            disableClearable
-                            options={locationSuggest.map((option) => option.value)}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    placeholder="Nhập địa chỉ"
-                                    value={location || location2}
-
-                                    label="Search input"
-                                    onChange={(e) => handleSetLocationSpace(e)}
-                                    onInputKeyDown={(e) => {
-                                        console.log("nhập", e.target.value); setAddress(e.target.value)
-                                    }}
-                                    slotProps={{
-                                        input: {
-                                            ...params.InputProps,
-                                            type: 'search',
-                                        },
-                                    }}
-                                />
-                            )}
-                        /> */}
           </Row>
         </Col>
       </Row>
       <MapSearch
         textSearch={address}
-        setLocationSuggest={setLocationSuggest}
         locationSuggest={locationSuggest}
+        setLocationSuggest={setLocationSuggest}
         location={location}
         setLocation={setLocation}
+        defaultMarker={{
+          latitude: spaceInfo?.latLng?.[0] || defaultLatLng.lat,
+          longitude: spaceInfo?.latLng?.[1] || defaultLatLng.lat,
+        }}
         setLocation2={setLocation2}
         handleSetLocationSpace={handleSetLocationSpace}
       />
@@ -127,4 +111,4 @@ const AddSpaceLocation = () => {
   );
 };
 
-export default AddSpaceLocation;
+export default EditLocation;

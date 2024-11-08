@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Nav, Row, Tab } from "react-bootstrap";
 import PostManagement from "./PostManagement";
 import UserManagement from "./UserManagement ";
@@ -13,6 +13,16 @@ import StatCards from "./Chart/StartCard";
 import HomeAdmin from "./HomeAdmin";
 const DashBoard = () => {
   const [activeKey, setActiveKey] = useState("one");
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const segment = hash.replace('#', '');
+    if (segment === "manage-spaces") {
+      setActiveKey("three");
+    }
+
+    window.history.pushState({}, '', window.location.href.replace(/#manage-spaces/, ''));
+  }, [])
 
   return (
     <Tab.Container

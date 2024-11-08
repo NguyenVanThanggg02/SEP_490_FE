@@ -1,56 +1,40 @@
 import { Dialog } from 'primereact/dialog';
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { Button, Row } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
-import axios from "axios";
-import { TextField } from '@mui/material';
+import { FormControlLabel, Switch, TextField } from '@mui/material';
 
 const CommunityStandards = (props) => {
-    const { visible, setVisible, handleReject, postId } = props; 
-    const [reasons, setReasons] = useState([]);
-    const [selectedReason, setSelectedReason] = useState(null); 
-    const [customCom, setCustomCom]= useState("")
+    const { visible, setVisible, handleReject, postId } = props;
+    const [selectedReason, setSelectedReason] = useState([]);
+    const [customReason, setCustomReason] = useState('');
 
-    const handleCustomCom = (event) => {
-        setCustomCom(event.target.value);
-    };
-    useEffect(() => {
-        axios
-          .get("http://localhost:9999/communityStandards")
-          .then((res) => {
-            setReasons(res.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching reasons:", error);
-          });
-    }, []);
+    const reasonList = [
+        "Nội dung không phù hợp",
+        "Ảnh không rõ ràng hoặc không đúng yêu cầu",
+        "Không gian không an toàn",
+        "Thiếu thông tin chi tiết, gây không rõ ràng hoặc hiểu nhầm",
+        "Ngôn ngữ chứa từ cấm",
+        "Không phù hợp với nhu cầu người dùng",
+        "Vi phạm pháp luật có sẵn ",
+    ];
 
     const onHide = () => {
         setVisible(false);
-    };
+        setSelectedReason([]); // Reset selected reasons when closing
+        setCustomReason(''); // Reset custom reason when closing
 
-    const handleSubmit = async () => {
-        try {
-            const dataToSend = {
-                communityStandardsId: selectedReason, 
-                customComment: customCom || null 
-            };
-    
-            if (customCom) {
-                await axios.post("http://localhost:9999/communityStandards/addCom", {
-                    customeCommunityStandards: customCom,
-                });
-            }
-    
-            if (selectedReason) {
-                await handleReject(postId, dataToSend); 
-            }
+    };
+    const handleSubmit = () => {
+        if (selectedReason.length > 0 || customReason) {
+            console.log("Submitting selectedReason:", selectedReason);
+            console.log("Submitting customReason:", customReason);
+
+            handleReject(postId, selectedReason, customReason);
             onHide();
-        } catch (error) {
-            console.error("Error submitting community standards:", error);
         }
     };
-    
+
 
 
     const dialogFooter = (
@@ -63,55 +47,64 @@ const CommunityStandards = (props) => {
         </div>
     );
 
+    const handleToggleReason = (reasonn, checked) => {
+        setSelectedReason((prevSelectedReason) => {
+            if (checked) {
+                // Nếu switch được bật, thêm reasonn vào mảng
+                return [...prevSelectedReason, reasonn];
+            } else {
+                // Nếu switch bị tắt, loại bỏ reasonn khỏi mảng
+                return prevSelectedReason.filter(r => r !== reasonn);
+            }
+        });
+    };
+
+    const handleCustomReasonChange = (event) => {
+        setCustomReason(event.target.value);
+    };
+
     return (
-      <div>
-        <Dialog
-          visible={visible}
-          onHide={onHide}
-          footer={dialogFooter}
-          className="bg-light dialogForm"
-          style={{ width: "40vw" }}
-          modal
-        >
-          <div style={{ margin: "20px" }}>
-            <div className="container">
-              <Row className="header text-center">
-                <h4>Lí do từ chối</h4>
-              </Row>
-              {reasons.map((r) => (
-                <div className="option" key={r._id}>
-                  <input
-                    type="radio"
-                    id={`option-${r._id}`}
-                    name="report"
-                    className="reportt"
-                    value={r._id}
-                    onChange={() => setSelectedReason(r._id)}
-                  />
-                  <label htmlFor={`option-${r._id}`}>{r.reason}</label>
+        <div>
+            <Dialog
+                visible={visible}
+                onHide={onHide}
+                footer={dialogFooter}
+                className="bg-light dialogForm"
+                style={{ width: "40vw" }}
+                modal
+            >
+                <div style={{ margin: "20px" }}>
+                    <div className="container">
+                        <Row className="header text-center">
+                            <h4>Lí do từ chối</h4>
+                        </Row>
+                        {reasonList.map((reason) => (
+                            <FormControlLabel
+                                key={reason}
+                                control={<Switch
+                                    color="warning"
+                                    onChange={(e) => handleToggleReason(reason, e.target.checked)} />}
+                                label={reason}
+                            />
+                        ))}
+                        <TextField
+                            className='mt-2'
+                            label="Thêm lí do từ chối"
+                            fullWidth
+                            value={customReason}
+                            onChange={handleCustomReasonChange}
+                            helperText="Các lí do riêng lẻ có thể tách nhau bằng dấu ';'"
+                            FormHelperTextProps={{
+                                style: {
+                                    fontSize: '13px', // Kích thước chữ helperText
+                                },
+                            }}
+                        />
+                    </div>
                 </div>
-              ))}
-            </div>
-            <div>
-              <TextField
-                className="mt-3"
-                id="outlined-basic"
-                label="Vấn đề khác"
-                variant="outlined"
-                value={customCom}
-                onChange={handleCustomCom}
-                FormHelperTextProps={{
-                  style: {
-                    fontSize: "14px",
-                  },
-                }}
-                fullWidth 
-              />
-            </div>
-          </div>
-        </Dialog>
-        <ToastContainer />
-      </div>
+            </Dialog>
+            <ToastContainer />
+        </div>
     );
 };
 

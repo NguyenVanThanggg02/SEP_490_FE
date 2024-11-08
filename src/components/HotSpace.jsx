@@ -9,7 +9,6 @@ const HotSpace = () => {
     fetch("http://localhost:9999/bookings/top-spaces")
       .then((resp) => resp.json())
       .then((data) => {
-        console.log(data);
         setTopSpaces(data);
       })
       .catch((err) => {
@@ -25,11 +24,11 @@ const HotSpace = () => {
       ) : (
         Array.isArray(topSpaces) &&
         topSpaces.map((s) => (
-          <div className="space-item" >
+          <div className="space-item">
             <Link to={`/spaces/${s?._id}`} style={{ textDecoration: "none" }}>
               <img
                 className="d-block w-100"
-                src={s.images[0].url}
+                src={s.images?.[0]?.url}
                 alt="Ảnh"
                 height="370"
                 style={{
@@ -40,8 +39,26 @@ const HotSpace = () => {
                 }}
               />
 
-              <h2 style={{ color: "#ADD8E6" }}>{s.name}</h2>
-              <h3 style={{ color: "#ADD8E6" }}>Địa điểm: {s.location}</h3>
+              <h2
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {s.name}
+              </h2>
+              <h3
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                Địa điểm: {s.location}
+              </h3>
               <h4
                 style={{
                   marginLeft: "5px",

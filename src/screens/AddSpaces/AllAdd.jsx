@@ -56,14 +56,14 @@ export default function AddSpaceFlow() {
 
     try {
       const response = await axios.post('http://localhost:9999/spaces', spaceData);
-      toast.success('Thêm không gian thành công!');
+      toast.success('Thêm không gian thành công');
+
       setTimeout(() => {
         navigate('/posted');
-      }, 3000);
+      }, 2000);
 
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
-      alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
     }
   };
 

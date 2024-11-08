@@ -8,7 +8,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import {
   ArrowRepeat,
   BoxArrowInRight,
@@ -20,6 +19,8 @@ import {
   Wallet,
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
+import Notification from './Notification';
+
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -84,7 +85,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.clear();
+    setUserInfo(null);
     handleClose();
+    navigate("/");
+
   };
   const handleAddFunds = () => {
     navigate("/addfund");
@@ -141,13 +145,14 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={"/alladd"} className="linkk">
+        <Link to={"/welcome"} className="linkk">
           <Typography sx={{ marginRight: 1 }}>
             <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
               Cho thuê địa điểm qua SpaceHub
             </p>
           </Typography>
         </Link>
+        <Notification />
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -199,14 +204,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={handleMannaPost}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
+            </MenuItem>
 
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />

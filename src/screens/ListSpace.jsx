@@ -43,14 +43,12 @@ const ListSpace = () => {
   const [distances, setDistances] = useState([]);
 
   const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
-  console.log(listSpace);
   
   const getRoute = async (start, end) => {     // tính distance 2 location [lng, lat]
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
     try {
       const response = await axios.get(url);
       const data = response.data;
-      console.log(data);
       
       const route = data.routes[0];
       return (route.distance / 1000).toFixed(2)
@@ -61,7 +59,7 @@ const ListSpace = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch("http://localhost:9999/spaces/all");
+        const response = await fetch("http://localhost:9999/spaces");
         const data = await response.json();
         
         if (Array.isArray(data)) {
@@ -96,7 +94,7 @@ const ListSpace = () => {
     loadData();
   }, []);
   useEffect(() => {
-    fetch("http://localhost:9999/spaces/all")
+    fetch("http://localhost:9999/spaces")
       .then((response) => response.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -601,7 +599,7 @@ const handleDistrictSelect = (districtName) => {
                       overflow: "hidden",
                       boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
                       position: "relative",
-                      height: "463px",
+                      height: "443px",
                       backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
                     }}
                   >
@@ -677,20 +675,37 @@ const handleDistrictSelect = (districtName) => {
                             fontSize: "18px",
                             fontWeight: "bold",
                             color: "#2d2d2d",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
                           }}
                         >
                           {l.name}
                         </Card.Title>
 
                         <Card.Text
-                          style={{ fontSize: "14px", color: "#757575" }}
+                          style={{
+                            fontSize: "14px",
+                            color: "#757575",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            marginTop: "6px",
+                          }}
                         >
                           Địa điểm: {l.location}
                         </Card.Text>
                         <Card.Text
-                          style={{ fontSize: "14px", color: "#757575", fontWeight: "bold" }}
+                          style={{
+                            fontSize: "14px",
+                            color: "#757575",
+                            fontWeight: "bold",
+                          }}
                         >
-                          Quãng đường: {distances[index] ? `${distances[index]} km` : "Không xác định."}
+                          Quãng đường:{" "}
+                          {distances[index]
+                            ? `${distances[index]} km`
+                            : "Không xác định."}
                         </Card.Text>
                         {/* <Card.Text
                           style={{

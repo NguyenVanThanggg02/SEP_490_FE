@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, } from 'react-bootstrap';
-import { Box, Button, FormControlLabel, FormGroup, InputAdornment, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, Button, FormControlLabel, FormGroup, Grid, InputAdornment, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
@@ -11,10 +11,107 @@ import Loading from "../../components/Loading";
 import CloseIcon from '@mui/icons-material/Close';
 import { Image } from 'antd'; // Import các component từ Antd
 
+export const availableSlots = [
+    {
+      startTime: '00:00',
+      endTime: '01:00',
+    },
+    {
+      startTime: '01:00',
+      endTime: '02:00',
+    },
+    {
+      startTime: '02:00',
+      endTime: '03:00',
+    },
+    {
+      startTime: '03:00',
+      endTime: '04:00',
+    },
+    {
+      startTime: '04:00',
+      endTime: '05:00',
+    },
+    {
+      startTime: '05:00',
+      endTime: '06:00',
+    },
+    {
+      startTime: '06:00',
+      endTime: '07:00',
+    },
+    {
+      startTime: '07:00',
+      endTime: '08:00',
+    },
+    {
+      startTime: '08:00',
+      endTime: '09:00',
+    },
+    {
+      startTime: '09:00',
+      endTime: '10:00',
+    },
+    {
+      startTime: '10:00',
+      endTime: '11:00',
+    },
+    {
+      startTime: '11:00',
+      endTime: '12:00',
+    },
+    {
+      startTime: '12:00',
+      endTime: '13:00',
+    },
+    {
+      startTime: '13:00',
+      endTime: '14:00',
+    },
+    {
+      startTime: '14:00',
+      endTime: '15:00',
+    },
+    {
+      startTime: '15:00',
+      endTime: '16:00',
+    },
+    {
+      startTime: '16:00',
+      endTime: '17:00',
+    },
+    {
+      startTime: '17:00',
+      endTime: '18:00',
+    },
+    {
+      startTime: '18:00',
+      endTime: '19:00',
+    },
+    {
+      startTime: '19:00',
+      endTime: '20:00',
+    },
+    {
+      startTime: '20:00',
+      endTime: '21:00',
+    },
+    {
+      startTime: '21:00',
+      endTime: '22:00',
+    },
+    {
+      startTime: '22:00',
+      endTime: '23:00',
+    },
+    {
+      startTime: '23:00',
+      endTime: '00:00',
+    },
+  ];
 
 
-
-const AddSpaceInforSpace = () => {
+const AddSpaceInforSpace = ({ editorRef }) => {
     const { spaceInfo, setSpaceInfo, rules, setRules, selectedRules, setSelectedRules, customRule, setCustomRule,
         isGoldenHour, setIsGoldenHour, goldenHourDetails, setGoldenHourDetails
     } = useContext(SpaceContext);
@@ -22,7 +119,10 @@ const AddSpaceInforSpace = () => {
     const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
     const [isLoading, setIsLoading] = useState(false);
     const [imagesPreview, setImagesPreview] = useState([]);
-
+    const [selectedSlot, setSelectedSlot] = useState({
+        startDate: '',
+        endDate: '',
+      });
 
     const rulesList = [
         "Vệ sinh và ngăn nắp",
@@ -36,6 +136,19 @@ const AddSpaceInforSpace = () => {
     const handleCheckboxChange = () => {
         setIsGoldenHour(!isGoldenHour);
     };
+
+    const handleTimeSlotSelection = (slotStartTime, slotEndTime) => {
+        setSelectedSlot({
+          startDate: slotStartTime,
+          endDate: slotEndTime,
+        });
+    
+        setGoldenHourDetails({
+          ...goldenHourDetails,
+          startDate: slotStartTime,
+          endDate: slotEndTime,
+        });
+      };
 
     const handleToggleRule = (rule, checked) => {
         setSelectedRules((prevSelectedRules) => {
@@ -53,6 +166,7 @@ const AddSpaceInforSpace = () => {
     const handleCustomRuleChange = (event) => {
         setCustomRule(event.target.value);
     };
+    
     const handleInputHourChange = (e) => {
         setGoldenHourDetails({
             ...goldenHourDetails,
@@ -302,7 +416,7 @@ const AddSpaceInforSpace = () => {
 
                                     {isGoldenHour && (
                                         <Row style={{ paddingtop: '10px' }}>
-                                            <Col md={4}>
+                                            {/* <Col md={4}>
                                                 <label>
                                                     Giờ bắt đầu:
                                                     <input
@@ -325,7 +439,37 @@ const AddSpaceInforSpace = () => {
                                                         required
                                                     />
                                                 </label>
-                                            </Col>
+                                            </Col> */}
+                                            <Grid
+                        container
+                        justifyContent="center"
+                        spacing={1}
+                        mt={1}
+                        mb={4}
+                      >
+                        {availableSlots.map((slot, index) => (
+                          <Grid item key={index}>
+                            <Button
+                              variant={
+                                goldenHourDetails.startDate ===
+                                  slot.startTime &&
+                                goldenHourDetails.endDate === slot.endTime
+                                  ? 'contained'
+                                  : 'outlined'
+                              }
+                              onClick={() =>
+                                handleTimeSlotSelection(
+                                  slot.startTime,
+                                  slot.endTime
+                                )
+                              }
+                              style={{ margin: '5px' }}
+                            >
+                              {slot.startTime} - {slot.endTime}
+                            </Button>
+                          </Grid>
+                        ))}
+                      </Grid>
                                             <Col md={4}>
                                                 <label>
                                                     Phần trăm(%) giá tăng lên:
@@ -377,6 +521,7 @@ const AddSpaceInforSpace = () => {
                         <Col md={12} className="pb-5">
                             <Typography variant="h6" style={{ fontWeight: 700, fontSize: "20px", paddingBottom: "10px" }}  >Mô tả</Typography>
                             <CKEditor
+                                ref={editorRef}
                                 editor={ClassicEditor}
                                 data={spaceInfo.description}
                                 error={!!errors.description}
