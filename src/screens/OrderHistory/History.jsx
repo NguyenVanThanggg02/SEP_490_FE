@@ -74,6 +74,23 @@ const History = () => {
     setVisible(true);
   };
 
+  const updateBookingStatus = (bookingId, newStatus) => {
+    setBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+    setFilteredBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+  };
+
   return (
     <div className="container containerhistory">
       <Card className="cardhistory" elevation={3}>
@@ -293,6 +310,7 @@ const History = () => {
           visible={visible}
           setVisible={setVisible}
           booking={selectedBooking}
+          updateBookingStatus={updateBookingStatus}
         />
       )}
     </div>

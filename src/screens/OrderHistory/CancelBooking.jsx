@@ -5,7 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const CancelBooking = (props) => {
-  const { visible, setVisible, booking } = props;
+  const { visible, setVisible, booking, updateBookingStatus  } = props;
   const [cancelReason, setCancelReason] = useState("");
 
   const cancelReasons = [
@@ -29,6 +29,7 @@ const CancelBooking = (props) => {
       });
 
       toast.success(response.data.message || "Lịch book đã được hủy thành công");
+      updateBookingStatus(booking._id, "canceled");
       setVisible(false);
     } catch (error) {
       if (error.response) {

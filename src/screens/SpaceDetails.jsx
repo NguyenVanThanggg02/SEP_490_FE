@@ -453,36 +453,38 @@ function SpaceDetails({ onSelectChat }) {
               >
                 {spaceData.name}
               </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                  {spaceData.favorite ? (
-                    <FavoriteIcon
-                      style={{ color: "#FF385C", fontSize: "40px" }}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                  )}
-                </div>
+              {spaceData && spaceData.censorship === "Chấp nhận" && (
                 <div
-                  onClick={toggleDrawer(true)}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
                 >
-                  <PlusCircle
-                    style={{
-                      color: "blue",
-                      fontSize: "33px",
-                      marginRight: "5px",
-                    }}
-                  />
-                  So sánh
+                  <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                    {spaceData.favorite ? (
+                      <FavoriteIcon
+                        style={{ color: "#FF385C", fontSize: "40px" }}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                    )}
+                  </div>
+                  <div
+                    onClick={toggleDrawer(true)}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <PlusCircle
+                      style={{
+                        color: "blue",
+                        fontSize: "33px",
+                        marginRight: "5px",
+                      }}
+                    />
+                    So sánh
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <Grid
               container
@@ -1072,7 +1074,8 @@ function SpaceDetails({ onSelectChat }) {
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
                   {/* Community Standards Information */}
-                  { spaceData.censorship === "Từ chối" && spaceData.communityStandardsId && (
+                  {spaceData.censorship === "Từ chối" &&
+                    spaceData.communityStandardsId && (
                       <Box
                         mt={2}
                         sx={{
@@ -1187,7 +1190,9 @@ function SpaceDetails({ onSelectChat }) {
           setCategoryId={spaceData.categoriesId._id}
         />
       )}
-      < Similar spaceData={spaceData} />
+      {spaceData.censorship === "Chấp nhận" && (
+        <Similar spaceData={spaceData} />
+      )}
     </Container>
   );
 }
