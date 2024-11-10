@@ -1,59 +1,62 @@
-import { Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-export const Favorites = () => {
-  const [spaceFavo, setSpaceFavos] = useState([]);
+
+const Favorites = () => {
+  const [spaceFavorites, setSpaceFavorites] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:9999/spaces/favorite")
-      .then((response) => {
-        const filterItems = filterSapces(response.data);
-        setSpaceFavos(filterItems);
-      })
-      .catch((error) => {
-        console.error("Error fetching spaces:", error);
-      });
+    fetchFavoriteSpaces();
   }, []);
-  const filterSapces = (spaces) => {
-    return spaces.filter((spaces) => spaces.censorship === "Chấp nhận");
+
+  const fetchFavoriteSpaces = async () => {
+    try {
+      const response = await axios.get("http://localhost:9999/spaces/favorite");
+      const filteredSpaces = response.data.filter(space => space.censorship === "Chấp nhận");
+      setSpaceFavorites(filteredSpaces);
+    } catch (error) {
+      console.error("Error fetching spaces:", error);
+    }
   };
-  const changeFavorite = async (spaceId, event) => {
-    event.stopPropagation()
+
+  const toggleFavorite = async (spaceId, event) => {
+    event.stopPropagation();
     try {
       const response = await axios.put(`http://localhost:9999/spaces/${spaceId}/favorite`);
-      setSpaceFavos(prevSpaces =>
+      setSpaceFavorites(prevSpaces =>
         prevSpaces.map(space =>
           space._id === spaceId ? { ...space, favorite: response.data.favorite } : space
         )
       );
-      const updatedSpacesResponse = await axios.get("http://localhost:9999/spaces/favorite");
-      setSpaceFavos(updatedSpacesResponse.data); 
-
+      await fetchFavoriteSpaces(); // Refresh favorites list
     } catch (error) {
-      console.error("Error change favorite:", error);
+      console.error("Error changing favorite:", error);
     }
   };
 
-  const navigate = useNavigate();
+  const handleCardClick = (id) => navigate(`/spaces/${id}`);
 
-  const handleCardClick = (id) => {
-    navigate(`/spaces/${id}`);
-  };
+  const renderFavoriteIcon = (isFavorite, spaceId) => (
+    isFavorite ? 
+      <FavoriteIcon style={{ color: "#FF385C" }} onClick={(e) => toggleFavorite(spaceId, e)} /> :
+      <FavoriteBorderIcon style={{ color: "white" }} onClick={(e) => toggleFavorite(spaceId, e)} />
+  );
 
   return (
-    <Container >
+    <Container>
       <Row>
         <Col md={12}>
           <Row>
-            {spaceFavo.map((spaceF, index) => (
-              <Col md={3}>
-                <div style={{ position: "relative",height:"100%" }} key={index}
-                  onClick={() => handleCardClick(spaceF._id)}
+            {spaceFavorites.map((space, index) => (
+              <Col md={3} key={index}>
+                <div
+                  style={{ position: "relative", height: "100%" }}
+                  onClick={() => handleCardClick(space._id)}
                 >
                   <div
                     style={{
@@ -63,39 +66,34 @@ export const Favorites = () => {
                       zIndex: 1,
                       cursor: "pointer",
                     }}
-                    onClick={(event) => changeFavorite(spaceF._id, event)}
                   >
-                    {spaceF.favorite ? <FavoriteIcon style={{ color: "#FF385C" }} /> : <FavoriteBorderIcon style={{ color: "white" }} />}
+                    {renderFavoriteIcon(space.favorite, space._id)}
                   </div>
                   <CardMedia
                     sx={{ height: 250 }}
-                    image={spaceF.images[0]}
-                    title="image spaceF"
+                    image={space.images[0]}
+                    title="image space"
                     style={{
                       objectFit: "cover",
-                      borderTopLeftRadius: "15px",
-                      borderTopRightRadius: "15px",
-                      borderBottomLeftRadius: "15px",
-                      borderBottomRightRadius: "15px",
+                      borderRadius: "15px",
                     }}
                   />
-                  <CardContent style={{padding:'20px 0'}}>
-                    <Typography gutterBottom variant="h5"  component="div">
-                      {spaceF.name}
+                  <CardContent style={{ padding: '20px 0' }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {space.name}
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      {spaceF.pricePerHour} VND / hour
+                      {space.pricePerHour} VND / hour
                     </Typography>
                   </CardContent>
                 </div>
               </Col>
             ))}
-
           </Row>
         </Col>
       </Row>
     </Container>
-  )
-}
-export default Favorites
+  );
+};
 
+export default Favorites;
