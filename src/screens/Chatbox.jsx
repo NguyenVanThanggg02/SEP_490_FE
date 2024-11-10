@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import "../style/Chatboxx.css";
 
 function Chatbox() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
-    // Example default messages
     { senderName: "Alice", avatarUrl: "https://via.placeholder.com/50", preview: "Hello!", content: "Hello!", time: "10:00 AM" },
     { senderName: "Bob", avatarUrl: "https://via.placeholder.com/50", preview: "How are you?", content: "How are you?", time: "10:05 AM" },
   ]);
@@ -16,6 +15,12 @@ function Chatbox() {
     description: "This is a default chat group description.",
   };
 
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const handleInputChange = (e) => {
     setInput(e.target.value);
   };
@@ -26,7 +31,7 @@ function Chatbox() {
         senderName: "You",
         avatarUrl: "https://via.placeholder.com/50",
         content: input,
-        time: new Date().toLocaleTimeString(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages([...messages, newMessage]);
       setInput('');
@@ -40,8 +45,8 @@ function Chatbox() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h5 className="mb-0">Tin nhắn</h5>
           <div>
-            <i className="fas fa-search me-3"></i>
-            <i className="fas fa-cog"></i>
+            <i className="fas fa-search me-3" aria-label="Search"></i>
+            <i className="fas fa-cog" aria-label="Settings"></i>
           </div>
         </div>
         <div className="d-flex mb-4">
@@ -83,6 +88,7 @@ function Chatbox() {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <div className="chat-input">
           <input
@@ -91,7 +97,7 @@ function Chatbox() {
             value={input}
             onChange={handleInputChange}
           />
-          <i className="fas fa-paper-plane" onClick={handleSendMessage}></i>
+          <i className="fas fa-paper-plane" onClick={handleSendMessage} aria-label="Send"></i>
         </div>
       </div>
 
@@ -99,7 +105,7 @@ function Chatbox() {
       <div className="details">
         <div className="details-header">
           <h5 className="mb-0">Thông tin chi tiết</h5>
-          <i className="fas fa-times"></i>
+          <i className="fas fa-times" aria-label="Close Details"></i>
         </div>
         <div className="message">
           <img alt={chatDetails.groupName} height="50" src={chatDetails.avatarUrl} width="50" />
