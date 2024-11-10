@@ -5,37 +5,37 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const ResetPass = () => {
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState("");
   const { id, token } = useParams();
-  const nav = useNavigate();
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    axios
-      .post(`http://localhost:9999/users/reset-password/${id}/${token}`, {
-        password,
-      })
-      .then((res) => {
-        if (res.data.Status === "Success") {
-          console.log('success');
-          
-          toast.success("Thành Công");
-          nav("/login");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Thất bại");
-      });
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`http://localhost:9999/users/reset-password/${id}/${token}`, { password });
+      
+      if (response.data.Status === "Success") {
+        toast.success("Mật khẩu được cập nhật thành công!");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Password reset failed:", error);
+      toast.error("Cập nhật mật khẩu thất bại");
+    }
   };
+
   return (
     <div className="form-container">
       <div className="logo-container">Cập nhật lại mật khẩu</div>
       <form className="form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="email">Mật khẩu mới</label>
+          <label htmlFor="password">Mật khẩu mới</label>
           <input
+            id="password"
             type="password"
             placeholder="Enter your new password"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -44,12 +44,6 @@ const ResetPass = () => {
           Cập nhật
         </button>
       </form>
-      {/* <p className="signup-link">
-        Tôi không có tài khoản...
-        <a href="/register" className="signup-link link">
-          Đăng kí ngay bây giờ
-        </a>
-      </p> */}
     </div>
   );
 };
