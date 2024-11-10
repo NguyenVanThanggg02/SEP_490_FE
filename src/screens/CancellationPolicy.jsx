@@ -32,7 +32,6 @@ const CancellationPolicy = () => {
         </div>
       </div>
 
-      {/* Thêm chính sách hủy bổ sung */}
       <div className="policy-section">
         <div className="row">
           <div className="col-4">Trong vòng 24 giờ</div>
