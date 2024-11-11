@@ -5,79 +5,71 @@ import axios from "axios";
 import { priceFormatter } from "../utils/numberFormatter";
 
 const Similar = ({ spaceData }) => {
-  const [similarSpace, setSimilarSpace] = useState([]);
+  const [similarSpaces, setSimilarSpaces] = useState([]);
 
   useEffect(() => {
     if (spaceData.categoriesId) {
       axios
         .get(`http://localhost:9999/spaces/cate/${spaceData.categoriesId._id}`)
         .then((response) => {
-          const filteredSimilarSpace = response.data
-            .filter((p) => p._id !== spaceData._id)
+          const filteredSpaces = response.data
+            .filter((space) => space._id !== spaceData._id)
             .slice(0, 4);
-          setSimilarSpace(filteredSimilarSpace);
+          setSimilarSpaces(filteredSpaces);
         })
         .catch((error) => {
-          console.error("Error fetching similar products:", error);
+          console.error("Error fetching similar spaces:", error);
         });
     }
   }, [spaceData]);
 
   return (
     <Container
-      className="similarproduct mb-4"
+      className="similar-product mb-4"
       fluid
       style={{
         boxShadow: "5px 10px 10px 5px #C0C0C0",
         borderRadius: "20px",
         marginTop: "20px",
         width: "100%",
-        padding:'0 30px',
-        backgroundColor:'white'
+        padding: "0 30px",
+        backgroundColor: "white",
       }}
     >
-      <Row style={{ display: "flex", justifyContent: "center" }}>
-        <h3
-          style={{ margin: "20px", display: "flex", justifyContent: "center" }}
-        >
-          Địa Điểm Tương Tự
-        </h3>
+      <Row className="justify-content-center">
+        <h3 style={{ margin: "20px" }}>Địa Điểm Tương Tự</h3>
       </Row>
       <Row>
-        {similarSpace.slice(0, 4).map((s) => (
+        {similarSpaces.map((space) => (
           <Col
             md={3}
             xs={12}
-            style={{ textAlign: "center", paddingBottom: "40px" }}
-            key={s._id}
+            className="text-center"
+            style={{ paddingBottom: "40px" }}
+            key={space._id}
           >
-            <div>
-              <Link
-                to={`/spaces/${s._id}`}
-                className="text-dark"
-                style={{ textDecoration: "none" }}
-              >
-                <Image
-                  style={{ height: "230px", borderRadius: "7px" }}
-                  src={
-                    s.images && s.images.length > 0
-                      ? s.images[0]
-                      : "default-image-url.png"
-                  }
-                  alt={s.name}
-                  width="250"
-                  preview
-                />
-                <div className="text-center m-2">
-                  <div>
-                    <h6 style={{fontSize:'20px'}}>{s.name}</h6>
-                  </div>
-                  <div>
-                    <span style={{fontSize:'15px', fontWeight:'bold'}}> Giá mỗi giờ: {priceFormatter(s.pricePerHour)} VND </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
+            <Link
+              to={`/spaces/${space._id}`}
+              className="text-dark"
+              style={{ textDecoration: "none" }}
+            >
+              <Image
+                style={{ height: "230px", borderRadius: "7px" }}
+                src={
+                  space.images && space.images.length > 0
+                    ? space.images[0]
+                    : "default-image-url.png"
+                }
+                alt={space.name}
+                width="250"
+              />
+              <div className="text-center m-2">
+                <h6 style={{ fontSize: "20px" }}>{space.name}</h6>
+                <span style={{ fontSize: "15px", fontWeight: "bold" }}>
+                  Giá mỗi giờ: {priceFormatter(space.pricePerHour)} VND
+                </span>
+              </div>
+            </Link>
           </Col>
         ))}
       </Row>
