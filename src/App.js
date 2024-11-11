@@ -44,6 +44,9 @@ import {ToastContainer} from "react-toastify";
 import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
 import StartToUp from "./screens/AddSpaces/StartToUp";
+import CreateReview from './screens/CreateReview';
+import AddFundsResult from "./screens/AddFundsResult";
+
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -113,6 +116,7 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
+          <Route path="/addfund/result" element={<AddFundsResult />} />
           <Route path="/profile" element={<Profile />} />
           <Route
             path="/admin"
@@ -123,6 +127,7 @@ function Layout() {
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/welcome" element={<StartToUp />} />
+          <Route path="/reviews/create/:spaceId" element={<CreateReview />} />
 
         </Routes>
       </main>

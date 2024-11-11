@@ -29,7 +29,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
-
+import Reviews from './Reviews';
 import { userChats } from "../Api/ChatRequests";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
@@ -1011,6 +1011,7 @@ function SpaceDetails({ onSelectChat }) {
                     width: "100%",
                   }}
                 />
+                <Reviews />
               </Col>
               <Col item xs={12} md={4}>
                 <Box
