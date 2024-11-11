@@ -1,8 +1,5 @@
 import React from 'react';
-import './accountmanager.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAddressCard, faShieldAlt, faWallet, faFileAlt, faBell, faEye, faSlidersH, faBriefcase, faChartBar } from '@fortawesome/free-solid-svg-icons';
+import "../style/accountmanager.css";
 
 const AccountManager = () => {
   return (
