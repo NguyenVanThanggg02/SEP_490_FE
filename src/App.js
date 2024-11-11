@@ -115,7 +115,6 @@ function Layout() {
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
           <Route path="/profile" element={<Profile />} />
-          {/* <Route path="/admui" element={<AdmUI />} /> */}
           <Route path="/cancellation" element={<CancellationPolicy />} />
           <Route path="/chatbox" element={<Chatbox />} />
 
