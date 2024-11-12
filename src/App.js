@@ -7,12 +7,10 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import Header from "./components/Header";
-import Home from "./screens/Home";
 import LoginForm from "./screens/LoginForm";
 import RegisterForm from "./screens/RegisterForm";
 import UserNeedsForm from "./screens/UserNeed";
 import HostProfile from "./screens/HostProfile";
-import ChangePass from "./screens/ChangePass";
 import ResetPass from "./screens/ResetPass";
 import Forgot_Pass from "./screens/Forgot_Pass";
 import Message from "./screens/Message";
@@ -20,10 +18,6 @@ import SpaceDetails from "./screens/SpaceDetails";
 import NotFound from "./screens/NotFound";
 import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
 import Favorites from "./screens/Favorites";
-import AddSpaceCategories from "./screens/AddSpaces/AddSpaceCategories";
-import AddSpaceLocation from "./screens/AddSpaces/AddSpaceLocation";
-import AddSpaceInforSpace from "./screens/AddSpaces/AddSpaceInforSpace";
-import AllAdd from "./screens/AddSpaces/AllAdd";
 import Compare from "./screens/Compare";
 import DetailForAdmin from "./Admin/DetailForAdmin";
 import DashBoard from "./Admin/DashBoard";
@@ -45,6 +39,10 @@ import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
 import StartToUp from "./screens/AddSpaces/StartToUp";
 import OrderMana from "./screens/OrderMana";
+import CreateReview from './screens/CreateReview';
+import AddFundsResult from "./screens/AddFundsResult";
+import Statistics from "./screens/Statistics";
+
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -114,18 +112,20 @@ function Layout() {
           <Route path="/payment" element={<Payment />} />
           <Route path="/history" element={<History />} />
           <Route path="/addfund" element={<AddFunds />} />
+          <Route path="/addfund/result" element={<AddFundsResult />} />
           <Route path="/profile" element={<Profile />} />
           <Route
             path="/admin"
             element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
           />
+          <Route path="/statistics" element={<Statistics />} />
           <Route path="/posted" element={<SpacePosted />} />
           <Route path="/editposted" element={<EditSpacePosted />} />
           <Route path="/booking/:id" element={<BookingDate />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/welcome" element={<StartToUp />} />
           <Route path="/order" element={<OrderMana />} />
-
+          <Route path="/reviews/create/:spaceId" element={<CreateReview />} />
         </Routes>
       </main>
       {shouldShowHeader && (

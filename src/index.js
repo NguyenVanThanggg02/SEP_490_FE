@@ -11,14 +11,20 @@ import { SpaceProvider } from "./Context/SpaceContext ";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import "react-toastify/dist/ReactToastify.css";
+import { SocketProvider } from './Context/SocketContext.js';
+import { UserProvider } from './Context/UserContext.js';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
-      <SpaceProvider>
-        <App />
-      </SpaceProvider>
+    <SocketProvider>
+        <UserProvider>
+          <SpaceProvider>
+            <App />
+          </SpaceProvider>
+        </UserProvider>
+      </SocketProvider>
     </React.StrictMode>
   </Provider>
 );

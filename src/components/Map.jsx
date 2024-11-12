@@ -7,16 +7,17 @@ import Map, {
   NavigationControl,
 } from 'react-map-gl';
 import { SpaceContext } from '../Context/SpaceContext ';
+import { getLatLngFromText } from '../screens/ManaSpaceHost/EditLocation';
 
 export const MapSearch = ({
   textSearch,
+  locationSuggest = [],
   setLocationSuggest,
   location,
   setLocation,
   setLocation2,
   defaultMarker = null,
 }) => {
-  console.log('defaultMarker', defaultMarker);
   const MAPBOX_TOKEN =
     'pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q';
   const mapRef = useRef(null);
@@ -44,14 +45,14 @@ export const MapSearch = ({
           }
         );
 
-        setLocationSuggest(
-          response.data.features?.map((i) => ({
-            value: i.geometry.coordinates.toString(),
-            label: i.properties.full_address
-              .replace(/, \d+,/, ',')
-              .replace(/, việt nam/i, ''),
-          }))
-        ); // Đặt gợi ý
+        const suggestList = response.data.features?.map((i) => ({
+          value: i.geometry.coordinates.toString(),
+          label: i.properties.full_address
+            .replace(/, \d+,/, ',')
+            .replace(/, việt nam/i, ''),
+        }));
+
+        setLocationSuggest(suggestList); // Đặt gợi ý
       } catch (error) {
         console.error('Lỗi khi lấy gợi ý địa chỉ:', error);
       }
@@ -70,14 +71,14 @@ export const MapSearch = ({
 
   useEffect(() => {
     if (location) {
-      console.log('location', location);
-      const lngLatSlipt = String(location).split(',');
-      //   if (!Number.isNaN(lngLatSlipt[0] && !Number.isNaN(lngLatSlipt[1]))) {
-      //     setMarker({
-      //       longitude: lngLatSlipt[0],
-      //       latitude: lngLatSlipt[1],
-      //     });
-      //   }
+      const suggest = locationSuggest.find((value) => value.label === location);
+      if (suggest) {
+        const { lat, lng } = getLatLngFromText(suggest.value);
+        setMarker({
+          latitude: lat,
+          longitude: lng,
+        });
+      }
     }
   }, [location]);
 
@@ -85,8 +86,8 @@ export const MapSearch = ({
   const handleMapClick = async (event) => {
     const { lngLat } = event;
     setMarker({
-      longitude: lngLat.lng,
       latitude: lngLat.lat,
+      longitude: lngLat.lng,
     });
 
     // Gọi API geocoding ngược để lấy địa chỉ
@@ -114,9 +115,9 @@ export const MapSearch = ({
           .replace(/, \d+,/, ',')
           .replace(/, việt nam/i, ''); // Lấy địa chỉ từ phản hồi
       setAddress(addressComponents || ''); // Cập nhật state địa chỉ
-      const valueSelect = [longitude, latitude].toString();
-      setLocation2(valueSelect);
-      setLocationSuggest([{ value: valueSelect, label: addressComponents }]);
+      const lngLatString = [longitude, latitude].toString();
+      setLocation2(lngLatString);
+      setLocationSuggest([{ value: lngLatString, label: addressComponents }]);
       setSpaceInfo((prev) => ({
         ...prev,
         location: addressComponents,
@@ -147,8 +148,8 @@ export const MapSearch = ({
         ref={mapRef}
         mapboxAccessToken={MAPBOX_TOKEN}
         initialViewState={{
-          longitude: 105.8336955905755,
           latitude: 21.027448753456103,
+          longitude: 105.8336955905755,
           zoom: 12,
         }}
         style={{ width: '80%', height: '500px' }} // Đảm bảo bản đồ đủ lớn
@@ -158,8 +159,8 @@ export const MapSearch = ({
         {/* Hiển thị marker nếu tồn tại */}
         {marker ? (
           <Marker
-            longitude={marker?.longitude}
             latitude={marker?.latitude}
+            longitude={marker?.longitude}
             color="red"
             anchor="bottom" // Điều chỉnh vị trí để cải thiện căn chỉnh
             draggable={true}

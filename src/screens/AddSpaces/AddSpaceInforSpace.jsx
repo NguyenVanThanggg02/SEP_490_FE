@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import { Image } from 'antd'; // Import các component từ Antd
 import axios from 'axios';
-import { htmlToText } from 'html-to-text';
 import React, { useContext, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import Loading from '../../components/Loading';
@@ -137,6 +136,8 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setIsGoldenHour,
     goldenHourDetails,
     setGoldenHourDetails,
+    priceIncrease,
+    setPriceIncrease,
   } = useContext(SpaceContext);
   const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
@@ -173,13 +174,20 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setCustomRule(event.target.value);
   };
   const handleInputHourChange = (e) => {
-    setGoldenHourDetails({
-      ...goldenHourDetails,
-      [e.target.name]: e.target.value,
+    setPriceIncrease(e.target.value);
+
+    const tempGoldenHourDetails = [...goldenHourDetails].map((hour) => {
+      return { ...hour, priceIncrease: e.target.value };
     });
+
+    setGoldenHourDetails(tempGoldenHourDetails);
   };
+
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
+
+    console.log('{ name, value, type }', { name, value, type });
+
     setSpaceInfo((prev) => ({
       ...prev,
       [name]: value,
@@ -194,6 +202,23 @@ const AddSpaceInforSpace = ({ editorRef }) => {
         ...prev,
         [name]: 'Giá trị không được âm',
       }));
+    } else if (name === 'area') {
+      if (parseFloat(value) < 1) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: 'Giá trị phải lớn hơn 1',
+        }));
+      }
+    }
+    if (
+      type === 'number' &&
+      name === 'priceIncrease' &&
+      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+      }));
     } else {
       setErrors((prev) => ({
         ...prev,
@@ -205,6 +230,8 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const handleBlur = (e) => {
     const { name, value, type } = e.target;
 
+    console.log('{ name, value, type }', { name, value, type });
+
     // Kiểm tra lại khi rời khỏi input
     if (value.trim() === '') {
       setErrors((prev) => ({
@@ -215,6 +242,20 @@ const AddSpaceInforSpace = ({ editorRef }) => {
       setErrors((prev) => ({
         ...prev,
         [name]: 'Giá trị không được âm',
+      }));
+    } else if (name === 'area' && parseFloat(value) < 1) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: 'Giá trị phải lớn hơn 1',
+      }));
+    } else if (
+      type === 'number' &&
+      name === 'priceIncrease' &&
+      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
       }));
     } else {
       setErrors((prev) => ({
@@ -294,37 +335,74 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   };
 
   // =================================================================
-  const [state, setState] = React.useState({
-    hour: true,
-    day: false,
-    week: false,
-    month: false,
+  const [stateSpacePriceWay, setStateSpacePriceWay] = React.useState({
+    pricePerHour: true,
+    pricePerDay: false,
+    pricePerWeek: false,
+    pricePerMonth: false,
   });
+
+  const [isShowNotPermissionSpacePrice, setIsShowNotPermissionSpacePrice] =
+    useState(false);
 
   const handleChange = (event) => {
-    setState({
-      ...state,
+    console.log('308 handleChange =======================>', {
+      checked: event.target.checked,
+      name: event.target.name,
+    });
+    if (event.target.checked === false) {
+      const checkOther = Object.keys(stateSpacePriceWay)
+        .filter((item) => item !== event.target.name)
+        .every((key) => {
+          return stateSpacePriceWay[key] === false;
+        });
+      if (checkOther) {
+        setIsShowNotPermissionSpacePrice(true);
+        return;
+      }
+      const tempName = event.target.name;
+      const tempPrice = {};
+      tempPrice[tempName] = 0;
+      setSpaceInfo({ ...spaceInfo, ...tempPrice });
+    }
+    setStateSpacePriceWay({
+      ...stateSpacePriceWay,
       [event.target.name]: event.target.checked,
     });
+    setIsShowNotPermissionSpacePrice(false);
   };
 
-  const { hour, day, week, month } = state;
-
-  const [selectedSlot, setSelectedSlot] = useState({
-    startDate: '',
-    endDate: '',
-  });
+  const { pricePerHour, pricePerDay, pricePerWeek, pricePerMonth } =
+    stateSpacePriceWay;
 
   const handleTimeSlotSelection = (slotStartTime, slotEndTime) => {
-    setSelectedSlot({
-      startDate: slotStartTime,
-      endDate: slotEndTime,
-    });
+    if (
+      goldenHourDetails.length > 0 &&
+      goldenHourDetails.findIndex(
+        (goldenHourDetails) =>
+          goldenHourDetails.startTime === slotStartTime &&
+          goldenHourDetails.endTime === slotEndTime
+      ) > -1
+    ) {
+      const tempGoldenHourDetails = [...goldenHourDetails].filter(
+        (goldenHourDetails) =>
+          goldenHourDetails.startTime !== slotStartTime &&
+          goldenHourDetails.endTime !== slotEndTime
+      );
 
-    setGoldenHourDetails({
-      ...goldenHourDetails,
-      startTime: slotStartTime,
-      endTime: slotEndTime,
+      setGoldenHourDetails(tempGoldenHourDetails);
+      return;
+    }
+
+    setGoldenHourDetails((goldenHourDetails) => {
+      return [
+        ...goldenHourDetails,
+        {
+          startTime: slotStartTime,
+          endTime: slotEndTime,
+          priceIncrease: priceIncrease,
+        },
+      ];
     });
   };
   return (
@@ -392,9 +470,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={hour}
+                                checked={pricePerHour}
                                 onChange={handleChange}
-                                name="hour"
+                                name="pricePerHour"
                               />
                             }
                             label="Giờ"
@@ -402,9 +480,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={day}
+                                checked={pricePerDay}
                                 onChange={handleChange}
-                                name="day"
+                                name="pricePerDay"
                               />
                             }
                             label="Ngày"
@@ -412,9 +490,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={week}
+                                checked={pricePerWeek}
                                 onChange={handleChange}
-                                name="week"
+                                name="pricePerWeek"
                               />
                             }
                             label="Tuần"
@@ -422,9 +500,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={month}
+                                checked={pricePerMonth}
                                 onChange={handleChange}
-                                name="month"
+                                name="pricePerMonth"
                               />
                             }
                             label="Tháng"
@@ -432,7 +510,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         </FormGroup>
                       </FormControl>
                     </Col>
-                    {hour && (
+                    {pricePerHour && (
                       <Col md={6}>
                         <TextField
                           name="pricePerHour"
@@ -467,7 +545,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </Col>
                     )}
 
-                    {day && (
+                    {pricePerDay && (
                       <Col md={6}>
                         <TextField
                           name="pricePerDay"
@@ -502,7 +580,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </Col>
                     )}
 
-                    {week && (
+                    {pricePerWeek && (
                       <Col md={6}>
                         <TextField
                           name="pricePerWeek"
@@ -536,7 +614,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </Col>
                     )}
 
-                    {month && (
+                    {pricePerMonth && (
                       <Col md={6}>
                         <TextField
                           name="pricePerMonth"
@@ -570,49 +648,43 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         />
                       </Col>
                     )}
+
+                    {isShowNotPermissionSpacePrice && (
+                      <span className="text-danger d-inline-block">
+                        Phải chọn ít nhất một cách thức thuê, mặc định là chọn
+                        theo giờ
+                      </span>
+                    )}
                   </Row>
                 </Col>
+
                 <Col md={12}>
                   <div class="form-check">
-                    <input
+                    {/* <input
                       class="form-check-input"
                       type="checkbox"
                       value=""
                       checked={isGoldenHour}
                       onChange={handleCheckboxChange}
                       style={{ cursor: 'pointer' }}
+                    /> */}
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={isGoldenHour}
+                          onChange={handleCheckboxChange}
+                          name="isGoldenHour"
+                        />
+                      }
+                      label="Khung giờ vàng"
                     />
-                    <label class="form-check-label" for="flexCheckDefault">
+                    {/* <label class="form-check-label" for="flexCheckDefault">
                       Khung giờ vàng
-                    </label>
+                    </label> */}
                   </div>
 
                   {isGoldenHour && (
                     <Row style={{ paddingtop: '10px' }}>
-                      {/* <Col md={4}>
-                        <label>
-                          Giờ bắt đầu:
-                          <input
-                            type="time"
-                            name="startTime"
-                            value={goldenHourDetails.startTime}
-                            onChange={handleInputHourChange}
-                            required
-                          />
-                        </label>
-                      </Col>
-                      <Col md={4}>
-                        <label>
-                          Giờ kết thúc:
-                          <input
-                            type="time"
-                            name="endTime"
-                            value={goldenHourDetails.endTime}
-                            onChange={handleInputHourChange}
-                            required
-                          />
-                        </label>
-                      </Col> */}
                       <Grid
                         container
                         justifyContent="center"
@@ -620,42 +692,63 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         mt={1}
                         mb={4}
                       >
-                        {availableSlots.map((slot, index) => (
-                          <Grid item key={index}>
-                            <Button
-                              variant={
-                                goldenHourDetails.startTime ===
-                                  slot.startTime &&
-                                goldenHourDetails.endTime === slot.endTime
-                                  ? 'contained'
-                                  : 'outlined'
-                              }
-                              onClick={() =>
-                                handleTimeSlotSelection(
-                                  slot.startTime,
-                                  slot.endTime
-                                )
-                              }
-                              style={{ margin: '5px' }}
-                            >
-                              {slot.startTime} - {slot.endTime}
-                            </Button>
-                          </Grid>
-                        ))}
+                        {availableSlots.map((slot, index) => {
+                          const check = goldenHourDetails.findIndex(
+                            (item, index) => {
+                              return (
+                                item.startTime === slot.startTime &&
+                                item.endTime === slot.endTime
+                              );
+                            }
+                          );
+
+                          return (
+                            <Grid item key={index}>
+                              <Button
+                                variant={check > -1 ? 'contained' : 'outlined'}
+                                onClick={() =>
+                                  handleTimeSlotSelection(
+                                    slot.startTime,
+                                    slot.endTime
+                                  )
+                                }
+                                style={{ margin: '5px' }}
+                              >
+                                {slot.startTime} - {slot.endTime}
+                              </Button>
+                            </Grid>
+                          );
+                        })}
                       </Grid>
-                      <Col md={4}>
+                      <Col md={12}>
                         <label>
                           Phần trăm(%) giá tăng lên:
-                          <input
+                          {/* <input
                             type="number"
                             name="priceIncrease"
-                            value={goldenHourDetails.priceIncrease}
+                            value={priceIncrease}
                             onChange={handleInputHourChange}
                             min="0"
                             max="100"
                             required
-                          />
+                          /> */}{' '}
                         </label>
+
+                        <TextField
+                          name="priceIncrease"
+                          type="number"
+                          variant="outlined"
+                          fullWidth
+                          required
+                          min={0}
+                          max={100}
+                          value={priceIncrease}
+                          onChange={handleInputHourChange}
+                          onBlur={handleBlur}
+                          error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
+                          helperText={errors.priceIncrease}
+                          sx={{ mb: 4 }}
+                        />
                       </Col>
                     </Row>
                   )}

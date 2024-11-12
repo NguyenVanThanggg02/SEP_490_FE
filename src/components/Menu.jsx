@@ -19,6 +19,8 @@ import {
   Wallet,
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
+import Notification from './Notification';
+
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -119,18 +121,26 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate(path);
     handleClose();
   };
-
+  const handleStatistic = () => {
+    handleClose();
+    navigate('/statistics');
+  };
 
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={"/welcome"} className="linkk">
-          <Typography sx={{ marginRight: 1 }}>
-            <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-              Cho thuê địa điểm qua SpaceHub
-            </p>
-          </Typography>
-        </Link>
+        {isLoggedIn && (
+          <>
+            <Link to={"/welcome"} className="linkk">
+              <Typography sx={{ marginRight: 1 }}>
+                <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
+                  Cho thuê địa điểm qua SpaceHub
+                </p>
+              </Typography>
+            </Link>
+            <Notification />
+          </>
+        )}
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -175,7 +185,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         {isLoggedIn ? (
           <>
             <MenuItem onClick={() => handleNavigation("/profile")}>
-            <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
+              <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
               Thông tin cá nhân
             </MenuItem>
             <MenuItem onClick={handleFavorites}>
@@ -188,6 +198,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               />
               Quản Lí Bài Đăng
             </MenuItem>
+              <MenuItem onClick={handleStatistic}>
+                <Calendar2Check
+                  style={{ fontSize: '20px', marginRight: '10px' }}
+                />
+                Thống kê doanh thu
+              </MenuItem>
             <MenuItem onClick={handleMannaOrder}>
               <ListAltIcon
                 style={{ fontSize: "20px", marginRight: "10px" }}

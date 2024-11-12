@@ -1,6 +1,7 @@
 // UserContext.js
-import React, { createContext, useState } from "react";
-
+import React, { createContext, useEffect, useState } from "react";
+import { useSocket } from './SocketContext';
+import { useUser } from '../hooks/useUser';
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -12,6 +13,20 @@ export const UserProvider = ({ children }) => {
     firstLogin: false,
   });
   const [userId,setUserId]=useState("")
+
+  const socket = useSocket();
+  const { user: userHook, refreshUser } = useUser();
+
+  useEffect(() => {
+    window.addEventListener("storage", refreshUser);
+    return () => {
+      window.removeEventListener("storage", refreshUser);
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.emit('register', userHook);
+  }, [userHook]);
 
   return (
     <UserContext.Provider value={{ user, setUser,userId,setUserId }}>

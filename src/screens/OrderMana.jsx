@@ -135,7 +135,7 @@ const OrderMana = () => {
                     getRowId={(row) => row.id}  // Thiết lập getRowId để sử dụng _id làm id
                     sx={{ border: 0 }}
                 />
-                <Dialog
+                {/* <Dialog
                     open={open}
                     TransitionComponent={Transition}
                     keepMounted
@@ -178,7 +178,7 @@ const OrderMana = () => {
                         <Button onClick={handleClose}>Disagree</Button>
                         <Button onClick={handleClose}>Agree</Button>
                     </DialogActions>
-                </Dialog>
+                </Dialog> */}
             </Paper>
         </>
     );

@@ -8,11 +8,17 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
 import React, { useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
-
-import Checkbox from '@mui/material/Checkbox';
 import { availableSlots } from '../AddSpaces/AddSpaceInforSpace';
+
+const labelForPricePer = {
+  pricePerHour: 'Giờ',
+  pricePerDay: 'Ngày',
+  pricePerWeek: 'Tuần',
+  pricePerMonth: ' Tháng',
+};
 
 export default function Price({
   spaceInfo,
@@ -21,79 +27,95 @@ export default function Price({
   setIsGoldenHour,
   goldenHourDetails,
   setGoldenHourDetails,
+  priceIncrease,
+  setPriceIncrease,
 }) {
-  const [selectedSlot, setSelectedSlot] = useState({
-    startDate: '',
-    endDate: '',
-  });
-
-  const handleCheckboxChange = () => {
-    setIsGoldenHour(!isGoldenHour);
-  };
-  const handleInputHourChange = (e) => {
-    setGoldenHourDetails({
-      ...goldenHourDetails,
-      [e.target.name]:
-        e.target.type === 'number' ? Number(e.target.value) : e.target.value,
-    });
-  };
-  const handleTimeSlotSelection = (slotStartTime, slotEndTime) => {
-    setSelectedSlot({
-      startTime: slotStartTime,
-      endTime: slotEndTime,
-    });
-
-    setGoldenHourDetails({
-      ...goldenHourDetails,
-      startTime: slotStartTime,
-      endTime: slotEndTime,
-    });
-  };
   const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
-
-  const [state, setState] = React.useState({
-    hour: !!spaceInfo.pricePerHour,
-    day: !!spaceInfo.pricePerDay,
-    week: !!spaceInfo.pricePerWeek,
-    month: !!spaceInfo.pricePerMonth,
+  const [showPricePers, setShowPricePers] = useState({
+    pricePerHour: !!spaceInfo.pricePerHour,
+    pricePerDay: !!spaceInfo.pricePerDay,
+    pricePerWeek: !!spaceInfo.pricePerWeek,
+    pricePerMonth: !!spaceInfo.pricePerMonth,
   });
 
-  // const handleChange = (event) => {
-  //   setState({
-  //     ...state,
-  //     [event.target.name]: event.target.checked,
-  //   });
-  // };
-  const handleChange = (event) => {
-    const { name, checked } = event.target;
-  
-    setState({
-      ...state,
-      [name]: checked,
+  const onIsGoldenHourChange = () => {
+    setIsGoldenHour((prev) => !prev);
+    setGoldenHourDetails([]);
+  };
+
+  const onPriceIncreaseChange = (e) => {
+    setPriceIncrease(e.target.value);
+
+    setGoldenHourDetails((prev) => {
+      const updateIncPriceDetails = prev.map((hour) => {
+        return { ...hour, priceIncrease: e.target.value };
+      });
+      return updateIncPriceDetails;
     });
-  
-    // Cập nhật giá trị trong spaceInfo
-    setSpaceInfo((prev) => ({
+  };
+
+  const onTimeSlotSelect = (slotStartTime, slotEndTime) => {
+    setGoldenHourDetails((prev) => {
+      const checked = prev.find(
+        ({ startTime, endTime }) =>
+          startTime === slotStartTime && endTime === slotEndTime
+      );
+      let updatedDetails = checked
+        ? prev.filter(
+            ({ startTime, endTime }) =>
+              startTime !== slotStartTime && endTime !== slotEndTime
+          )
+        : [
+            ...prev,
+            {
+              startTime: slotStartTime,
+              endTime: slotEndTime,
+              priceIncrease: priceIncrease,
+            },
+          ];
+
+      return updatedDetails;
+    });
+  };
+
+  const onShowPricePersChange = (event) => {
+    const name = event.target.name;
+    const checked = event.target.checked;
+
+    if (!checked) {
+      const showPriceCheckedKeys = Object.keys(showPricePers).filter(
+        (key) => showPricePers[key]
+      );
+
+      if (
+        showPriceCheckedKeys.length === 1 &&
+        name === showPriceCheckedKeys[0]
+      ) {
+        setErrors((prev) => ({
+          ...prev,
+          ['perPrice']: 'Bạn phải chọn ít nhất một cách thức thuê',
+        }));
+      } else {
+        setSpaceInfo((prev) => ({ ...prev, [name]: null }));
+      }
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        ['perPrice']: '',
+      }));
+    }
+
+    setShowPricePers((prev) => ({
       ...prev,
-      [name === 'hour' ? 'pricePerHour' :
-        name === 'day' ? 'pricePerDay' :
-        name === 'week' ? 'pricePerWeek' :
-        name === 'month' ? 'pricePerMonth' : '']: 
-        checked ? prev[name === 'hour' ? 'pricePerHour' :
-                     name === 'day' ? 'pricePerDay' :
-                     name === 'week' ? 'pricePerWeek' :
-                     name === 'month' ? 'pricePerMonth' : 0] : null, // Gán null nếu bỏ chọn
+      [name]: checked,
     }));
   };
-  
 
-  const { hour, day, week, month } = state;
-
-  const handleInputChange = (e) => {
+  const onPricePerValChange = (e) => {
     const { name, value, type } = e.target;
     setSpaceInfo((prev) => ({
       ...prev,
-      [name]: Number(value),
+      [name]: value,
     }));
     if (value.trim() === '') {
       setErrors((prev) => ({
@@ -105,6 +127,15 @@ export default function Price({
         ...prev,
         [name]: 'Giá trị không được âm',
       }));
+    } else if (
+      type === 'number' &&
+      name === 'priceIncrease' &&
+      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+      }));
     } else {
       setErrors((prev) => ({
         ...prev,
@@ -113,7 +144,7 @@ export default function Price({
     }
   };
 
-  const handleBlur = (e) => {
+  const onBlurToValidate = (e) => {
     const { name, value, type } = e.target;
 
     // Kiểm tra lại khi rời khỏi input
@@ -127,6 +158,15 @@ export default function Price({
         ...prev,
         [name]: 'Giá trị không được âm',
       }));
+    } else if (
+      type === 'number' &&
+      name === 'priceIncrease' &&
+      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+    ) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+      }));
     } else {
       setErrors((prev) => ({
         ...prev,
@@ -134,8 +174,10 @@ export default function Price({
       }));
     }
   };
+
   return (
     <Row>
+      {/* price per */}
       <Col md={12} className="pb-5">
         <Typography
           variant="h6"
@@ -148,6 +190,7 @@ export default function Price({
           Giá không gian <span style={{ color: 'red' }}>*</span>
         </Typography>
         <Row>
+          {/* check box for price per */}
           <Col md={12} align="center">
             <Typography
               variant="h6"
@@ -161,181 +204,69 @@ export default function Price({
             </Typography>
             <FormControl component="fieldset" variant="standard">
               <FormGroup sx={{ flexDirection: 'row' }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={hour}
-                      onChange={handleChange}
-                      name="hour"
-                    />
-                  }
-                  label="Giờ"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={day}
-                      onChange={handleChange}
-                      name="day"
-                    />
-                  }
-                  label="Ngày"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={week}
-                      onChange={handleChange}
-                      name="week"
-                    />
-                  }
-                  label="Tuần"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={month}
-                      onChange={handleChange}
-                      name="month"
-                    />
-                  }
-                  label="Tháng"
-                />
+                {[
+                  ...Object.keys(labelForPricePer).map((pricePer, i) => {
+                    return (
+                      <FormControlLabel
+                        key={i}
+                        control={
+                          <Checkbox
+                            checked={showPricePers[pricePer]}
+                            onChange={onShowPricePersChange}
+                            name={pricePer}
+                          />
+                        }
+                        label={labelForPricePer[pricePer]}
+                      />
+                    );
+                  }),
+                ]}
               </FormGroup>
+              {!!errors['perPrice'] ? (
+                <span style={{ color: 'red' }}>{errors['perPrice']}</span>
+              ) : null}
             </FormControl>
           </Col>
-          {hour && (
-            <Col md={6}>
-              <TextField
-                name="pricePerHour"
-                type="number"
-                variant="outlined"
-                required
-                value={spaceInfo.pricePerHour}
-                onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                onBlur={handleBlur}
-                error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
-                helperText={errors.pricePerHour}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">/ giờ</InputAdornment>
-                  ),
-                }}
-                onKeyDown={(e) => {
-                  // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
-                  if (
-                    !/[0-9]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== '.'
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
-                sx={{ marginBottom: '20px' }}
-              />
-            </Col>
-          )}
-
-          {day && (
-            <Col md={6}>
-              <TextField
-                name="pricePerDay"
-                type="number"
-                variant="outlined"
-                required
-                value={spaceInfo.pricePerDay}
-                onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                onBlur={handleBlur}
-                error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
-                helperText={errors.pricePerDay}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">/ ngày</InputAdornment>
-                  ),
-                }}
-                onKeyDown={(e) => {
-                  // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
-                  if (
-                    !/[0-9]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== '.'
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
-                sx={{ marginBottom: '20px' }}
-              />
-            </Col>
-          )}
-
-          {week && (
-            <Col md={6}>
-              <TextField
-                name="pricePerWeek"
-                type="number"
-                variant="outlined"
-                required
-                value={spaceInfo.pricePerWeek}
-                onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                onBlur={handleBlur}
-                error={!!errors.pricePerWeek} // Hiển thị lỗi nếu có
-                helperText={errors.pricePerWeek}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">/ tuần</InputAdornment>
-                  ),
-                }}
-                onKeyDown={(e) => {
-                  // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
-                  if (
-                    !/[0-9]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== '.'
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
-              />
-            </Col>
-          )}
-
-          {month && (
-            <Col md={6}>
-              <TextField
-                name="pricePerMonth"
-                type="number"
-                variant="outlined"
-                required
-                value={spaceInfo.pricePerMonth}
-                onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                onBlur={handleBlur}
-                error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
-                helperText={errors.pricePerMonth}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">/ tháng</InputAdornment>
-                  ),
-                }}
-                onKeyDown={(e) => {
-                  // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
-                  if (
-                    !/[0-9]/.test(e.key) &&
-                    e.key !== 'Backspace' &&
-                    e.key !== 'Delete' &&
-                    e.key !== '.'
-                  ) {
-                    e.preventDefault();
-                  }
-                }}
-                sx={{ marginBottom: '20px' }}
-              />
-            </Col>
-          )}
+          {/* input for price per */}
+          {Object.keys(showPricePers).map((pricePer, i) => {
+            return showPricePers[pricePer] ? (
+              <Col key={i} md={6}>
+                <TextField
+                  name={pricePer}
+                  type="number"
+                  variant="outlined"
+                  required
+                  value={spaceInfo[pricePer]}
+                  onChange={onPricePerValChange} // Cập nhật khi người dùng nhập
+                  onBlur={onBlurToValidate}
+                  error={!!errors[pricePer]} // Hiển thị lỗi nếu có
+                  helperText={errors[pricePer]}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        / {labelForPricePer[pricePer]}
+                      </InputAdornment>
+                    ),
+                  }}
+                  onKeyDown={(e) => {
+                    // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
+                    if (
+                      !/[0-9]/.test(e.key) &&
+                      e.key !== 'Backspace' &&
+                      e.key !== 'Delete' &&
+                      e.key !== '.'
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                  sx={{ marginBottom: '20px' }}
+                />
+              </Col>
+            ) : null;
+          })}
         </Row>
       </Col>
+      {/* golden hours */}
       <Col md={12}>
         <div class="form-check">
           <input
@@ -343,7 +274,7 @@ export default function Price({
             type="checkbox"
             value=""
             checked={isGoldenHour}
-            onChange={handleCheckboxChange}
+            onChange={onIsGoldenHourChange}
             style={{ cursor: 'pointer' }}
           />
           <label class="form-check-label" for="flexCheckDefault">
@@ -353,61 +284,44 @@ export default function Price({
 
         {isGoldenHour && (
           <Row style={{ paddingtop: '10px' }}>
-            {/* <Col md={4}>
-                        <label>
-                          Giờ bắt đầu:
-                          <input
-                            type="time"
-                            name="startTime"
-                            value={goldenHourDetails.startTime}
-                            onChange={handleInputHourChange}
-                            required
-                          />
-                        </label>
-                      </Col>
-                      <Col md={4}>
-                        <label>
-                          Giờ kết thúc:
-                          <input
-                            type="time"
-                            name="endTime"
-                            value={goldenHourDetails.endTime}
-                            onChange={handleInputHourChange}
-                            required
-                          />
-                        </label>
-                      </Col> */}
             <Grid container justifyContent="center" spacing={1} mt={1} mb={4}>
-              {availableSlots.map((slot, index) => (
-                <Grid item key={index}>
-                  <Button
-                    variant={
-                      goldenHourDetails?.startTime === slot?.startTime &&
-                      goldenHourDetails?.endTime === slot?.endTime
-                        ? 'contained'
-                        : 'outlined'
-                    }
-                    onClick={() =>
-                      handleTimeSlotSelection(slot.startTime, slot.endTime)
-                    }
-                    style={{ margin: '5px' }}
-                  >
-                    {slot.startTime} - {slot.endTime}
-                  </Button>
-                </Grid>
-              ))}
+              {availableSlots.map((slot, index) => {
+                const checked = goldenHourDetails.find(
+                  ({ startTime, endTime }) =>
+                    startTime === slot.startTime && endTime === slot.endTime
+                );
+                return (
+                  <Grid item key={index}>
+                    <Button
+                      variant={checked ? 'contained' : 'outlined'}
+                      onClick={() =>
+                        onTimeSlotSelect(slot.startTime, slot.endTime)
+                      }
+                      style={{ margin: '5px' }}
+                    >
+                      {slot.startTime} - {slot.endTime}
+                    </Button>
+                  </Grid>
+                );
+              })}
             </Grid>
             <Col md={4}>
               <label>
                 Phần trăm(%) giá tăng lên:
-                <input
-                  type="number"
+                <TextField
                   name="priceIncrease"
-                  value={goldenHourDetails?.priceIncrease}
-                  onChange={handleInputHourChange}
-                  min="0"
-                  max="100"
+                  type="number"
+                  variant="outlined"
+                  fullWidth
                   required
+                  min={1}
+                  max={100}
+                  value={priceIncrease}
+                  onChange={onPriceIncreaseChange}
+                  onBlur={onBlurToValidate}
+                  error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
+                  helperText={errors.priceIncrease}
+                  sx={{ mb: 4 }}
                 />
               </label>
             </Col>
