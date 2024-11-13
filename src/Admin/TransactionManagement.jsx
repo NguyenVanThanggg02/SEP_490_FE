@@ -13,6 +13,17 @@ export const TransactionManagement = () => {
     };
     const [data, setData] = useState()
 
+    const [rows, setRows] = useState(6);
+    const [first, setFirst] = useState(0);
+    const dataOnPage = spaces.slice(first, first + rows);
+    const [, setCurrentPage] = useState(1);
+    
+    const onPageChange = (event) => {
+        setFirst(event?.first);
+        setCurrentPage(event.page + 1);
+        setRows(event?.rows);
+      };
+
     async function fetchHistory() {
         try {
             const response = await axios.get('http://localhost:9999/transaction/admin/list', {
