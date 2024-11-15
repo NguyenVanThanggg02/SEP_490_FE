@@ -46,6 +46,7 @@ import Profile from "./screens/Profile";
 import StartToUp from "./screens/AddSpaces/StartToUp";
 import CreateReview from './screens/CreateReview';
 import AddFundsResult from "./screens/AddFundsResult";
+import Statistics from "./screens/Statistics";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -128,6 +129,7 @@ function Layout() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/welcome" element={<StartToUp />} />
           <Route path="/reviews/create/:spaceId" element={<CreateReview />} />
+          <Route path="/statistics" element={<Statistics />} />
 
         </Routes>
       </main>

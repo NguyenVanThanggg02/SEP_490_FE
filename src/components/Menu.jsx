@@ -24,8 +24,6 @@ import Notification from './Notification';
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     fullname: "",
     gmail: "",
@@ -107,30 +105,11 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate("/register");
   };
 
-  const handleProfileOpen = () => {
-    setOpenProfileModal(true);
-    handleClose();
-  };
-
-  const handleProfileClose = () => {
-    setOpenProfileModal(false);
-    setEditMode(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");
   };
-  const handleChangePass = () => {
-    handleClose();
-    navigate("/chang_pass");
-  };
+
   const handleMannaPost = () => {
     handleClose();
     navigate("/posted");
@@ -141,7 +120,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
   };
 
-
+  const handleStatistic = () => {
+    handleClose();
+    navigate('/statistics');
+  };
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -214,7 +196,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               />
               Quản Lí Bài Đăng
             </MenuItem>
-
+            <MenuItem onClick={handleStatistic}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Thống kê doanh thu
+            </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
               Nạp tiền
