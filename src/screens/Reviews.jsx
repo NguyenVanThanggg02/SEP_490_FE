@@ -9,7 +9,6 @@ import StartRating from './StartRating';
 export const calculateAverageRating = (reviews) => {
   if (!reviews.length) return 0;
   const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-  console.log(totalRating);
   
   return (totalRating / reviews.length).toFixed(2);
 };
