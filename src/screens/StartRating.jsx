@@ -24,7 +24,7 @@ export default function StartRating({ averageRating, onSetRating = () => {} }) {
 
         return (
           <div key={i} onClick={() => onSetRating(i + 1)}>
-            <Comp sx={{ color: 'yellow' }} />
+            <Comp sx={{ color: '#ffb742' }} />
           </div>
         );
       })}

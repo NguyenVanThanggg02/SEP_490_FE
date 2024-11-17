@@ -1,73 +1,81 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import {
-  Card,
-  Carousel,
-  Col,
-  Container,
-  FormSelect,
-  Row,
-} from "react-bootstrap";
-import { Search, Star, StarFill } from "react-bootstrap-icons";
-import { Link } from "react-router-dom";
-import { Paginator } from "primereact/paginator";
-import "primereact/resources/themes/saga-blue/theme.css";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import "../style/listSpace.css";
-import { priceFormatter } from "../utils/numberFormatter";
-import { InputAdornment, TextField } from "@mui/material";
+  Box,
+  CardContent,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { Paginator } from 'primereact/paginator';
+import 'primereact/resources/themes/saga-blue/theme.css';
+import React, { useEffect, useState } from 'react';
+import { Card, Carousel, Col, Container, Row } from 'react-bootstrap';
+import { StarFill } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom';
+import '../style/listSpace.css';
+import { priceFormatter } from '../utils/numberFormatter';
+import { calculateAverageRating } from './Reviews';
+import { SpaceFilter } from './SpaceFilter';
 
 const ListSpace = () => {
-  const [categories, setCategories] = useState([]);
+  const filterDefault = {
+    name: '',
+    cateId: 'all',
+    applianceNames: [],
+    minArea: '',
+    maxArea: '',
+    typeOfPrice: 'pricePerHour',
+    minPrice: '',
+    maxPrice: '',
+    district: '',
+  };
   const [listSpace, setListSpace] = useState([]);
-  const [search, setSearch] = useState("");
-  const [noResult, setNoResult] = useState(false);
+
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(9);
   const [curentPage, setCurrentPage] = useState(1);
   const [, setSpaceFavos] = useState([]);
-  const [appliances, setAppliances] = useState([]);
   const productsOnPage = listSpace.slice(first, first + rows);
   const [districts, setDistricts] = useState([]);
-  const [districtSearch, setDistrictSearch] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false); 
-  const [, setSelectedCate] = useState(null);
-  const [minPrice, setMinPrice] = useState('');
-  const [areaMin, setAreaMin] = useState('');
-  const [areaMax, setAreaMax] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-  const [areaList, setAreaList] = useState([]);
-  const [selectedAreas, setSelectedAreas] = useState([]);
-  const [selectedAppliance, setSelectedAppliance] = useState([]);
   const [distances, setDistances] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const MAPBOX_TOKEN = "pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q";
-  
-  const getRoute = async (start, end) => {     // tính distance 2 location [lng, lat]
+  const [filter, setFilter] = useState(filterDefault);
+
+  const MAPBOX_TOKEN =
+    'pk.eyJ1Ijoic21hbGxtb25rZXkyMDIzIiwiYSI6ImNsdGpxeWc2YjBweWoybXA2OHZ4Zmt0NjAifQ.bRMFGPTFKgsW8XkmAqX84Q';
+
+  const getRoute = async (start, end) => {
+    // tính distance 2 location [lng, lat]
     const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
     try {
       const response = await axios.get(url);
       const data = response.data;
-      
+
       const route = data.routes[0];
-      return (route.distance / 1000).toFixed(2)
+      return (route.distance / 1000).toFixed(2);
     } catch (error) {
-      console.error("Error getting route:", error);
+      console.error('Error getting route:', error);
     }
   };
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await fetch("http://localhost:9999/spaces");
-        const data = await response.json();
-        
-        if (Array.isArray(data)) {
-          setListSpace(data);
-          
-          if (navigator?.geolocation) {
-            navigator.geolocation.getCurrentPosition(async (position) => {
-              const currentPosition = [position.coords.latitude, position.coords.longitude];
+  // get all space and cal route
+  const loadInitData = async () => {
+    try {
+      const response = await fetch('http://localhost:9999/spaces');
+      const data = await response.json();
+
+      if (Array.isArray(data)) {
+        setListSpace(data);
+
+        if (navigator?.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const currentPosition = [
+                position.coords.latitude,
+                position.coords.longitude,
+              ];
               const calculatedDistances = [];
 
               for (const space of data) {
@@ -76,121 +84,26 @@ const ListSpace = () => {
               }
 
               setDistances(calculatedDistances); // Lưu khoảng cách đã tính vào trạng thái
-            }, (error) => {
-              console.error("Lỗi khi lấy vị trí hiện tại:", error);
-            });
-          } else {
-            console.warn("Geolocation is not supported by this browser.");
-          }
+            },
+            (error) => {
+              console.error('Lỗi khi lấy vị trí hiện tại:', error);
+            }
+          );
         } else {
-          setListSpace([]);
+          console.warn('Geolocation is not supported by this browser.');
         }
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setListSpace([]);
-      }
-    };
-
-    loadData();
-  }, []);
-  useEffect(() => {
-    fetch("http://localhost:9999/spaces")
-      .then((response) => response.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setListSpace(data);
-        } else {
-          setListSpace([]);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        setListSpace([]);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:9999/categories")
-      .then((response) => setCategories(response?.data))
-      .catch((error) => console.error("Error fetching brands:", error));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:9999/appliances")
-      .then((response) => setAppliances(response?.data))
-      .catch((error) => console.error("Error fetching appliances:", error));
-  }, []);
-
-  const applianceNames = [
-    ...new Set(
-      appliances.flatMap((item) =>
-        item.appliances.map((appliance) => appliance.name)
-      )
-    ),
-  ];
-
-  const loadData = async () => {
-    try {
-      let response;
-      if (search) {
-        response = await axios.get(
-          `http://localhost:9999/spaces/search/${search}`
-        );
-      }else if (filteredDistricts){
-         response = await axios.get("http://localhost:9999/spaces/filter", {
-          params: {
-            location: districtSearch,
-      }})}
-      else {
-        response = await axios.get("http://localhost:9999/spaces");
-      }
-      const spaces = response.data;
-
-      if (spaces.length === 0) {
-        setNoResult(true);
       } else {
-        setNoResult(false);
-        setListSpace(spaces);
+        setListSpace([]);
       }
     } catch (error) {
-      alert("Lỗi khi load dữ liệu");
+      console.error('Error fetching data: ', error);
+      setListSpace([]);
     }
   };
-  const handleSearch = () => {
-    loadData();
-  };
-
   useEffect(() => {
-    if (search === "") {
-      loadData();
-    }
-  }, [search]);
-  
+    loadInitData();
+  }, []);
 
-  const handleSelectedAppliance = (e) => {
-    const app = e.target.value;
-    const isChecked = e.target.checked;
-  
-    if (isChecked) {
-      setSelectedAppliance((prev) => [...prev, app]);
-    } else {
-      setSelectedAppliance((prev) => prev.filter((a) => a !== app));
-    }
-  };
-
-  const handleChooseCate = (e) => {
-    const selectedCateId = e?.target?.value;
-    if (selectedCateId !== "0") {
-      const selectedBrand = categories.find((b) => b?._id === selectedCateId);
-      setSelectedCate(selectedBrand);
-      getSpaceByCate(selectedCateId);
-    } else {
-      setSelectedCate(null);
-      loadData();
-    }
-  };
   const changeFavorite = async (id) => {
     try {
       const response = await axios.put(
@@ -200,36 +113,17 @@ const ListSpace = () => {
         ...prevSpace,
         favorite: response?.data?.favorite,
       }));
-      loadData();
+      loadInitData()
     } catch (error) {
-      console.error("Error change favorite:", error);
+      console.error('Error change favorite:', error);
     }
   };
-  const getSpaceByCate = async (selectedCateId) => {
-    try {
-      let response;
-      if (selectedCateId) {
-        response = await axios.get(
-          `http://localhost:9999/spaces/cate/${selectedCateId}`
-        );
-      } else {
-        response = await axios.get("http://localhost:9999/spaces");
-      }
-      setListSpace(response?.data);
-      if (response?.data?.length === 0) {
-        setNoResult(true);
-    } else {
-        setNoResult(false);
-    }
-    } catch (error) {
-      alert("Lỗi khi gọi API lấy danh sách sản phẩm theo cate ", error);
-    }
-  };
+
   const onPageChange = async (event) => {
     setFirst(event?.first);
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
-  
+
     // Tính toán khoảng cách cho các không gian mới trên trang
     const currentPosition = await new Promise((resolve) => {
       if (navigator?.geolocation) {
@@ -237,405 +131,107 @@ const ListSpace = () => {
           resolve([position.coords.latitude, position.coords.longitude]);
         });
       } else {
-        console.warn("Geolocation is not supported by this browser.");
+        console.warn('Geolocation is not supported by this browser.');
         resolve(null);
       }
     });
-  
+
     if (currentPosition) {
       const calculatedDistances = [];
-      const currentSpaces = listSpace.slice(event.first, event.first + event.rows);
-  
+      const currentSpaces = listSpace.slice(
+        event.first,
+        event.first + event.rows
+      );
+
       for (const space of currentSpaces) {
         const distance = await getRoute(currentPosition, space.latLng);
         calculatedDistances.push(distance);
       }
-  
-      setDistances(calculatedDistances); 
+
+      setDistances(calculatedDistances);
     }
   };
-  
 
   // lấy thành phố
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await axios.get("https://esgoo.net/api-tinhthanh/1/0.htm");
+        const response = await axios.get(
+          'https://esgoo.net/api-tinhthanh/1/0.htm'
+        );
         // https://provinces.open-api.vn/api/
-        setDistricts(response.data.data); 
-        
+        setDistricts(response.data.data);
       } catch (error) {
-        console.error("Error fetching districts:", error);
+        console.error('Error fetching districts:', error);
       }
     };
     fetchDistricts();
   }, []);
-
-  const filteredDistricts = districts.filter((district) =>
-    district?.name?.toLowerCase()?.includes(districtSearch?.toLowerCase())
-  );
-  useEffect(() => {
-    if (districtSearch === "") {
-      loadData(); 
-    }
-  }, [districtSearch]); 
-  useEffect(() => {
-    handleFilter(districtSearch); 
-  }, [selectedAreas, districtSearch, selectedAppliance]);
-  
-  const handleFilter = async (districtName) => {
-  try {
-      const response = await axios.get("http://localhost:9999/spaces/filter", {
-        params: {
-          location: districtName,
-          minPrice,
-          maxPrice,
-          // area: selectedAreas,
-          areaMin,
-          areaMax,
-          applianceNames: selectedAppliance,
-        },
-      });
-      if (response.data && response.data.length > 0) {
-        setListSpace(response.data);
-        setNoResult(false); 
-      } else {
-        setListSpace([]); 
-        setNoResult(true); 
-      }
-
-  } catch (error) {
-    console.error("Error fetching filtered spaces:", error);
-  }
-};
-
-const handleDistrictSelect = (districtName) => {
-  setDistrictSearch(districtName); 
-  setShowSuggestions(false); 
-  handleFilter(districtName); 
-};
-
   return (
     <Container>
-      <Row>
-        <Col md={3}>
+      <Grid container spacing={3}>
+        {/* filter */}
+        <Grid item md={3}>
+          <SpaceFilter filter={filter} setLoading={setLoading} setListSpace={setListSpace} setFilter={setFilter} loadInitData={loadInitData} filterDefault={filterDefault} />
+        </Grid>
+
+        {/* list spaces */}
+        <Grid item md={9}>
           <Row>
-            <div class="filter-container">
-              <Col md={7} style={{ display: "flex" }}>
-                <div style={{ position: "relative" }}>
-                  <input
-                    type="text"
-                    placeholder="  Tìm kiếm...."
-                    onChange={(e) => setSearch(e.target.value)}
-                    style={{
-                      height: "50px",
-                      border: "solid #CCC 1px",
-                      borderRadius: "10px",
-                      width: "276px",
-                    }}
-                  ></input>
-                  <Search
-                    onClick={handleSearch}
-                    style={{
-                      height: "50px",
-                      position: "absolute",
-                      right: "5%",
-                      borderLeft: "1px solid #ddd",
-                      cursor: "pointer",
-                      paddingLeft: "11px",
-                      fontSize: "30px",
-                    }}
-                  />
-                </div>
-              </Col>
-              <FormSelect
-                className="items_option"
-                style={{
-                  height: "50px",
-                  width: "99%",
-                  padding: "0px 5px 0 10px",
-                  border: "solid #CCC 1px",
-                  borderRadius: "10px",
-                  margin: "20px 0",
-                }}
-                onChange={handleChooseCate}
-              >
-                <option value="0">Tất cả địa điểm</option>
-                {categories.map((c) => (
-                  <option key={c?._id} value={c?._id}>
-                    {c?.name}
-                  </option>
-                ))}
-              </FormSelect>
-
-              <div className="custom-filter-section">
-                <div className="filter-section-title">Tiện nghi: </div>
-                <div className="custom-scrollable-filter">
-                  {applianceNames.map((name, index) => (
-                    <div className="custom-filter-item" key={index}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          value={name}
-                          style={{ marginRight: "7px" }}
-                          onChange={handleSelectedAppliance}
-                        />
-                        {name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="filter-section" style={{ border: "none" }}>
-                <div
-                  className="filter-section-title"
-                  style={{ marginRight: "10px" }}
-                >
-                  Diện tích:
-                </div>
-                <div
-                  style={{
-                    borderBottom: "none",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <TextField
-                    name="area"
-                    variant="outlined"
-                    value={areaMin}
-                    onChange={(e) => setAreaMin(e.target.value)}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          / m<sup>2</sup>
-                        </InputAdornment>
-                      ),
-                    }}
-                    onKeyDown={(e) => {
-                      if (
-                        !/[0-9]/.test(e.key) &&
-                        e.key !== "Backspace" &&
-                        e.key !== "Delete" &&
-                        e.key !== "."
-                      ) {
-                        e.preventDefault();
-                      }
-                    }}
-                    sx={{
-                      height: "40px",
-                      "& .MuiOutlinedInput-root": {
-                        height: "100%",
-                      },
-                      width: "118px",
-                      marginRight: "10px",
-                    }}
-                  />
-
-                  <TextField
-                    name="area"
-                    variant="outlined"
-                    required
-                    value={areaMax}
-                    onChange={(e) => setAreaMax(e.target.value)}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          / m<sup>2</sup>
-                        </InputAdornment>
-                      ),
-                    }}
-                    onKeyDown={(e) => {
-                      if (
-                        !/[0-9]/.test(e.key) &&
-                        e.key !== "Backspace" &&
-                        e.key !== "Delete" &&
-                        e.key !== "."
-                      ) {
-                        e.preventDefault();
-                      }
-                    }}
-                    sx={{
-                      height: "40px",
-                      "& .MuiOutlinedInput-root": {
-                        height: "100%",
-                      },
-                      width: "118px",
-                    }}
-                  />
-                  <Search
-                    onClick={handleFilter}
-                    style={{
-                      height: "50px",
-                      cursor: "pointer",
-                      paddingLeft: "11px",
-                      fontSize: "30px",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="filter-section" style={{ border: "none" }}>
-                <div
-                  className="filter-section-title"
-                  style={{ marginRight: "10px" }}
-                >
-                  Giá:
-                </div>
-                <div
-                  style={{
-                    borderBottom: "none",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <input
-                    type="text"
-                    placeholder="  Từ"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    style={{
-                      height: "40px",
-                      border: "solid #CCC 1px",
-                      borderRadius: "5px",
-                      width: "118px",
-                      marginRight: "10px",
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="  Đến"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    style={{
-                      height: "40px",
-                      border: "solid #CCC 1px",
-                      borderRadius: "5px",
-                      width: "118px",
-                    }}
-                  />
-                  <Search
-                    onClick={handleFilter}
-                    style={{
-                      height: "50px",
-                      cursor: "pointer",
-                      paddingLeft: "11px",
-                      fontSize: "30px",
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="filter-section" style={{ borderBottom: "none" }}>
-                <div className="filter-section-title">Thành phố: </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div style={{ position: "relative" }}>
-                    <input
-                      type="text"
-                      placeholder=" Nhập quận...."
-                      value={districtSearch}
-                      onChange={(e) => setDistrictSearch(e.target.value)}
-                      onFocus={() => setShowSuggestions(true)}
-                      onBlur={() => setShowSuggestions(false)}
-                      style={{
-                        height: "50px",
-                        border: "solid #CCC 1px",
-                        borderRadius: "10px",
-                        width: "285px",
-                      }}
-                    />
-                    {showSuggestions && districtSearch && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          zIndex: 1000,
-                          backgroundColor: "white",
-                          border: "1px solid #CCC",
-                          width: "285px",
-                          maxHeight: "200px",
-                          overflowY: "scroll",
-                        }}
-                      >
-                        {filteredDistricts.map((district) => (
-                          <div
-                            key={district.code}
-                            style={{
-                              padding: "5px",
-                              cursor: "pointer",
-                            }}
-                            onMouseDown={() =>
-                              handleDistrictSelect(district.name)
-                            }
-                          >
-                            {district.name}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Row>
-        </Col>
-
-        <Col md={9}>
-          <Row>
-            {noResult ? (
+            {loading ? <p>Loading...</p> : null}
+            {!listSpace?.length ? (
               <Col md={12}>
-                <h4 style={{ margin: "20px", textAlign: "center" }}>
+                <h4 style={{ margin: '20px', textAlign: 'center' }}>
                   Không có địa điểm nào !!!
                 </h4>
               </Col>
             ) : (
+                <Grid container spacing={2}>
+                  {
+
               productsOnPage.map((l, index) => (
-                <Col key={l._id} md={4} sm={6} xs={12} className="mb-4">
-                  <div
-                    style={{
-                      width: "100%",
-                      border: "none",
-                      borderRadius: "15px",
-                      overflow: "hidden",
-                      boxShadow: "0 0 30px rgba(0, 0, 0, 0.04)", // Soft shadow for a cozy effect
-                      position: "relative",
-                      height: "443px",
-                      backgroundColor: "#f5f5f5", // Soft background to resemble the cozy theme
+                <Grid key={l._id} item xs={12} sm={6} lg={4}>
+
+                  <Box
+                    key={l._id}
+                    component="div"
+                    sx={{
+                      width: '100%',
+                      borderRadius: '15px',
+                      overflow: 'hidden',
+                      boxShadow: '0 0 30px rgba(0, 0, 0, 0.1)', // Soft shadow
+                      position: 'relative',
+                      height: '483px',
+                      backgroundColor: '#f5f5f5',
+                      '&:hover': {
+                        boxShadow: '0 4px 40px rgba(0, 0, 0, 0.2)', // Hover shadow effect
+                        transform: 'translateY(-10px)', // Slight upward movement
+                      },
+                      transition: 'all 0.3s ease', // Smooth transition on hover
                     }}
                   >
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
+                    {/* Favorite Icon */}
+                    <IconButton
+                      sx={{
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
                         zIndex: 1,
-                        cursor: "pointer",
+                        color: l.favorite ? '#FF385C' : 'white',
+                        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Slight transparent background
+                        borderRadius: '50%', // Make it circular
+                        padding: '8px', // Add some padding for better touch area
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Darker background on hover
+                        },
                       }}
                       onClick={() => changeFavorite(l?._id)}
                     >
-                      {l.favorite ? (
-                        <FavoriteIcon style={{ color: "#FF385C" }} />
-                      ) : (
-                        <FavoriteBorderIcon style={{ color: "white" }} />
-                      )}
-                    </div>
-                    <Carousel
-                      interval={null}
-                      controls={false}
-                      indicators={true}
-                      prevIcon={
-                        <span
-                          aria-hidden="true"
-                          className="carousel-control-prev-icon"
-                        />
-                      }
-                      nextIcon={
-                        <span
-                          aria-hidden="true"
-                          className="carousel-control-next-icon"
-                        />
-                      }
-                    >
+                      {l.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                    </IconButton>
+
+                    {/* Carousel for images */}
+                    <Carousel interval={null} controls={false} indicators={true}>
                       {l.images && l.images.length > 0 ? (
                         l.images.map((img, index) => (
                           <Carousel.Item key={index}>
@@ -645,11 +241,9 @@ const handleDistrictSelect = (districtName) => {
                               alt={`Ảnh slide ${index + 1}`}
                               height="270"
                               style={{
-                                objectFit: "cover",
-                                borderTopLeftRadius: "15px",
-                                borderTopRightRadius: "15px",
-                                borderBottomLeftRadius: "15px",
-                                borderBottomRightRadius: "15px",
+                                objectFit: 'cover',
+                                borderTopLeftRadius: '15px',
+                                borderTopRightRadius: '15px',
                               }}
                             />
                           </Carousel.Item>
@@ -661,110 +255,78 @@ const handleDistrictSelect = (districtName) => {
                             src="default-image-url.png"
                             alt="Ảnh mặc định"
                             height="220"
+                              style={{
+                                objectFit: 'cover',
+                                borderTopLeftRadius: '15px',
+                                borderTopRightRadius: '15px',
+                              }}
                           />
                         </Carousel.Item>
                       )}
                     </Carousel>
-                    <Link
-                      to={`/spaces/${l?._id}`}
-                      style={{ textDecoration: "none", marginTop: "10px" }}
-                    >
-                      <Card.Body>
-                        <Card.Title
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "bold",
-                            color: "#2d2d2d",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {l.name}
-                        </Card.Title>
 
-                        <Card.Text
-                          style={{
-                            fontSize: "14px",
-                            color: "#757575",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            marginTop: "6px",
-                          }}
-                        >
+                    {/* Card Content */}
+                    <Link to={`/spaces/${l?._id}`} style={{ textDecoration: 'none' }}>
+                      <CardContent sx={{ padding: 2 }}>
+                        <Grid container direction="column" sx={{ height: '100%' }} rowSpacing={1}>
+                          <Grid item xs>
+                            <Typography variant="h6" sx={{
+                              fontWeight: 'bold', color: '#2d2d2d', display: '-webkit-box',
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              WebkitLineClamp: 2,
+                              textOverflow: 'ellipsis',
+                              minHeight: "64px"
+                            }}>
+                          {l.name}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography variant="body2" sx={{ color: '#757575', minHeight: '40px' }}>
                           Địa điểm: {l.location}
-                        </Card.Text>
-                        <Card.Text
-                          style={{
-                            fontSize: "14px",
-                            color: "#757575",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          Quãng đường:{" "}
-                          {distances[index]
-                            ? `${distances[index]} km`
-                            : "Không xác định."}
-                        </Card.Text>
-                        {/* <Card.Text
-                          style={{
-                            fontSize: "15px",
-                            color: "#2d2d2d",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          <p> Trạng thái: {l.status}</p>
-                        </Card.Text> */}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Card.Text
-                            style={{
-                              marginLeft: "5px",
-                              fontSize: "15px",
-                              color: "#2d2d2d",
-                              fontWeight: "bold",
-                            }}
-                          >
+                            </Typography>
+                          </Grid>
+                          <Grid item xs>
+                            <Typography variant="body2" sx={{ color: '#757575', fontWeight: 'bold' }}>
+                          Quãng đường:{' '}
+                              {distances[index] ? `${distances[index]} km` : 'Không xác định.'}
+                            </Typography>
+                          </Grid>
+
+                          <Grid item xs>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#2d2d2d' }}>
                             Giá: {priceFormatter(l.pricePerHour)} / VND
-                          </Card.Text>
-                          <Card.Text
-                            style={{ color: "#2d2d2d", display: "flex" }}
-                          >
-                            <StarFill
-                              style={{
-                                color: "#FFCC00",
-                                margin: "3px 15px 15px 0",
-                              }}
-                            />
-                            <span style={{ margin: "0 10px 17px -7px" }}>
-                              4.5
-                            </span>
-                          </Card.Text>
-                        </div>
-                      </Card.Body>
+                              </Typography>
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                              <StarFill style={{ color: '#ffb742', marginRight: '8px' }} />
+                              <Typography variant="body2" sx={{ color: '#2d2d2d' }}>
+                              {calculateAverageRating(l.reviews)}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </CardContent>
                     </Link>
-                  </div>
-                </Col>
+                  </Box>
+                </Grid>
               ))
+                  }
+                </Grid>
             )}
           </Row>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
       <Row
         style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '20px',
         }}
       >
         <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
+          style={{ backgroundColor: '#f9f9f9' }}
           first={first}
           rows={rows}
           totalRecords={listSpace.length}

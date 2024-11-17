@@ -127,18 +127,6 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        {isLoggedIn && (
-          <>
-            <Link to={"/welcome"} className="linkk">
-              <Typography sx={{ marginRight: 1 }}>
-                <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-                  Cho thuê địa điểm qua SpaceHub
-                </p>
-              </Typography>
-            </Link>
-            <Notification />
-          </>
-        )}
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}

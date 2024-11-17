@@ -47,6 +47,7 @@ import StartToUp from "./screens/AddSpaces/StartToUp";
 import CreateReview from './screens/CreateReview';
 import AddFundsResult from "./screens/AddFundsResult";
 import Statistics from "./screens/Statistics";
+import { Box } from '@mui/material';
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -81,8 +82,8 @@ function Layout() {
       {shouldShowHeader && (
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       )}
-      <main>
-        <Routes>
+      <Box component={'main'} sx={{ mt: 4 }}>
+      <Routes>
           <Route
             path="/"
             element={
@@ -132,8 +133,8 @@ function Layout() {
           <Route path="/statistics" element={<Statistics />} />
 
         </Routes>
-      </main>
-      {shouldShowHeader && (
+        </Box>
+        {shouldShowHeader && (
         <Footer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       )}
     </>

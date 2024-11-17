@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TextField, Dialog, DialogTitle, DialogContent, Select, MenuItem, DialogActions, Box } from '@mui/material';
+import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TextField, Dialog, DialogTitle, DialogContent, Select, MenuItem, DialogActions, Box, TablePagination, Pagination } from '@mui/material';
 import axios from 'axios';
 import { useUser } from '../hooks/useUser';
 import { toast } from 'react-toastify';
@@ -15,16 +15,37 @@ const AddFunds = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useUser()
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalElement: undefined,
+    totalPage: undefined,
+    limit: 10
+  })
 
   async function fetchHistory() {
+    if (!user) return
     try {
       const response = await axios.get('http://localhost:9999/transaction/list', {
         params: {
-          userId: user.id
+          userId: user.id,
+          page: pagination.page,
+          limit: pagination.limit
         }
       });
       setData(response.data);
+      setPagination(prev => {
+        return {
+          ...prev,
+          totalPage: response.data.pagination.totalPage,
+          totalElement: response.data.pagination.totalElement
+        }
+      })
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     } catch (error) {
+      console.log(error)
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
     }
   }
@@ -71,6 +92,12 @@ const AddFunds = () => {
     }
   };
 
+  useEffect(() => {
+    // if (pagination.totalElement) {
+    fetchHistory()
+    // }
+  }, [pagination.page])
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" gutterBottom>
@@ -108,7 +135,7 @@ const AddFunds = () => {
           <TableBody>
             {data?.transactionList && data.transactionList.length > 0 && data.transactionList.map((transaction, index) => (
               <TableRow key={transaction.transactionId} hover >
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>{pagination.limit * (pagination.page - 1) + index + 1}</TableCell>
                 <TableCell>{transaction.type}</TableCell>
                 <TableCell>{formatMoney(transaction.amount)}</TableCell>
                 <TableCell>{transaction.createdAt}</TableCell>
@@ -118,6 +145,18 @@ const AddFunds = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      {
+        pagination.totalPage &&
+        <Container sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
+          <Pagination
+            count={pagination.totalPage} // Total number of pages
+            page={pagination.page} // Current page
+            onChange={(_, newPage) => { setPagination(prev => { return { ...prev, page: newPage } }) }}
+            color="primary"
+            sx={{ justifyContent: "center" }}
+          />
+        </Container>
+      }
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
         <DialogTitle>Tạo giao dịch mới</DialogTitle>
@@ -171,53 +210,6 @@ const AddFunds = () => {
       </Dialog>
     </Container>
   );
-  //   <Container maxWidth="md">
-  //     <Typography variant="h4" gutterBottom align="center">Transfer History</Typography>
-
-  //     <TextField
-  //       label="Enter Amount"
-  //       variant="outlined"
-  //       value={amount}
-  //       onChange={(e) => setAmount(e.target.value)}
-  //       type="number"
-  //       fullWidth
-  //       sx={{ mb: 3 }}
-  //     />
-
-  //     <Button
-  //       variant="contained"
-  //       color="primary"
-  //       onClick={handleCreateTransaction}
-  //       disabled={loading || !amount || amount === ''}
-  //       sx={{ mb: 3 }}
-  //     >
-  //       {loading ? 'Processing...' : 'Create Transaction'}
-  //     </Button>
-
-  //     <TableContainer component={Paper}>
-  //       <Table>
-  //         <TableHead>
-  //           <TableRow>
-  //             <TableCell>Date</TableCell>
-  //             <TableCell>Amount</TableCell>
-  //             <TableCell>Description</TableCell>
-  //             <TableCell>Status</TableCell>
-  //           </TableRow>
-  //         </TableHead>
-  //         <TableBody>
-  //           {history.map((transaction) => (
-  //             <TableRow key={transaction.id}>
-  //               <TableCell>{transaction.date}</TableCell>
-  //               <TableCell>{transaction.amount}</TableCell>
-  //               <TableCell>{transaction.description}</TableCell>
-  //               <TableCell>{transaction.status}</TableCell>
-  //             </TableRow>
-  //           ))}
-  //         </TableBody>
-  //       </Table>
-  //     </TableContainer>
-  //   </Container>
-  // );
 };
 
 export default AddFunds;
