@@ -4,94 +4,94 @@ import { Container, Col, Row } from 'react-bootstrap';
 const App = () => {
   return (
     <Row>
-      <Col md={11} style={{ margin: '0 auto' }}>
-        <div style={{ margin: '20px', fontFamily: 'Arial, sans-serif' }}>
-          <h1 style={{ color: '#007bff', marginBottom: '20px' }}>Nạp tiền bằng quét mã QR</h1>
+      <Col md={11} className="mx-auto">
+        <div className="content-container">
+          <h1 className="main-heading">Nạp tiền bằng quét mã QR</h1>
 
-          <div style={{ width: '60%', float: 'left' }}>
-            <table style={tableStyle}>
+          <div className="table-container-left">
+            <table className="styled-table">
               <tbody>
                 <tr>
-                  <th style={thStyle}>Ngân hàng</th>
-                  <td style={tdStyle}>NGAN HANG TMCP A CHAU (ACB)</td>
-                  <td rowSpan="3" style={{ textAlign: 'center' }}>
+                  <th>Ngân hàng</th>
+                  <td>NGAN HANG TMCP A CHAU (ACB)</td>
+                  <td rowSpan="3" className="qr-cell">
                     <img
                       src="https://storage.googleapis.com/a1aa/image/zjECoHXmYCavLpk8ELb76nRrRuKlb68cth0rrfe72z3dShnTA.jpg"
                       alt="QR code for payment"
-                      style={imgStyle}
+                      className="qr-image"
                     />
                   </td>
                 </tr>
                 <tr>
-                  <th style={thStyle}>Số tài khoản</th>
-                  <td style={tdStyle}>
-                    17507461 <i className="fa fa-copy" style={iconStyle}></i>
+                  <th>Số tài khoản</th>
+                  <td>
+                    17507461 <i className="fa fa-copy copy-icon"></i>
                   </td>
                 </tr>
                 <tr>
-                  <th style={thStyle}>Tên tài khoản</th>
-                  <td style={tdStyle}>NGUYEN THANH THAO</td>
+                  <th>Tên tài khoản</th>
+                  <td>NGUYEN THANH THAO</td>
                 </tr>
                 <tr>
-                  <th style={thStyle}>Nội dung thanh toán</th>
-                  <td colSpan="2" style={tdStyle}>doithecao anthinhdz1 tk</td>
+                  <th>Nội dung thanh toán</th>
+                  <td colSpan="2">doithecao anthinhdz1 tk</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div style={{ width: '35%', float: 'right' }}>
-            <table style={tableStyle}>
+          <div className="table-container-right">
+            <table className="styled-table">
               <tbody>
                 <tr>
-                  <th colSpan="2" style={thStyle}>Hạn mức và phí:</th>
+                  <th colSpan="2">Hạn mức và phí:</th>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Tổng hạn mức ngày</td>
-                  <td style={tdStyle}>200,000,000 VND</td>
+                  <td>Tổng hạn mức ngày</td>
+                  <td>200,000,000 VND</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Số tiền tối thiểu</td>
-                  <td style={tdStyle}>5,000 VND</td>
+                  <td>Số tiền tối thiểu</td>
+                  <td>5,000 VND</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Số tiền tối đa</td>
-                  <td style={tdStyle}>30,000,000 VND</td>
+                  <td>Số tiền tối đa</td>
+                  <td>30,000,000 VND</td>
                 </tr>
                 <tr>
-                  <th colSpan="2" style={thStyle}>Cổng thanh toán</th>
+                  <th colSpan="2">Cổng thanh toán</th>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Ngân hàng ACB</td>
-                  <td style={tdStyle}></td>
+                  <td>Ngân hàng ACB</td>
+                  <td></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div style={{ clear: 'both' }}></div>
+          <div className="clearfix"></div>
 
-          <p style={{ marginTop: '20px', fontSize: '14px', color: '#555' }}>
+          <p className="note-text">
             Bạn hãy chuyển tiền với nội dung bên trên vào một trong các số tài khoản
             dưới đây. Lưu ý số tiền chuyển không được lớn hơn hạn mức cho phép.
             Giao dịch sẽ được hoàn thành trong vòng 1-2 phút.
           </p>
 
-          <h2 style={{ fontSize: '24px', marginBottom: '15px', color: '#007bff' }}>Lịch sử nạp tiền</h2>
-          <table style={{ ...tableStyle, width: '100%' }} className="history-table">
+          <h2 className="history-heading">Lịch sử nạp tiền</h2>
+          <table className="styled-table full-width">
             <thead>
               <tr>
-                <th style={thStyle}>Mã đơn</th>
-                <th style={thStyle}>Nạp vào quỹ</th>
-                <th style={thStyle}>Số tiền</th>
-                <th style={thStyle}>Cổng thanh toán</th>
-                <th style={thStyle}>Ngày tạo</th>
-                <th style={thStyle}>Trạng thái</th>
-                <th style={thStyle}>Thao tác</th>
+                <th>Mã đơn</th>
+                <th>Nạp vào quỹ</th>
+                <th>Số tiền</th>
+                <th>Cổng thanh toán</th>
+                <th>Ngày tạo</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
-              {/* Add rows here dynamically if needed */}
+              {/* Add rows dynamically if needed */}
             </tbody>
           </table>
         </div>
@@ -100,45 +100,93 @@ const App = () => {
   );
 };
 
-const tableStyle = {
-  width: '100%',
-  borderCollapse: 'separate',
-  borderSpacing: '0',
-  marginBottom: '20px',
-  border: '1px solid #ddd',
-  borderRadius: '12px',
-  overflow: 'hidden',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-};
+// CSS Modules or Scoped Styles (Preferred Approach for Cleaner Code)
+const styles = `
+  .content-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+  }
 
-const thStyle = {
-  backgroundColor: '#f7f7f7',
-  padding: '15px',
-  textAlign: 'left',
-  fontWeight: 'bold',
-  color: '#333',
-  borderBottom: '1px solid #ddd',
-};
+  .main-heading {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
 
-const tdStyle = {
-  padding: '15px',
-  color: '#555',
-  borderBottom: '1px solid #ddd',
-  textAlign: 'left',
-};
+  .table-container-left,
+  .table-container-right {
+    width: 48%;
+    display: inline-block;
+    vertical-align: top;
+  }
 
-const imgStyle = {
-  width: '150px',
-  height: '150px',
-  borderRadius: '12px',
-  border: '1px solid #ddd',
-  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-};
+  .table-container-left {
+    float: left;
+  }
 
-const iconStyle = {
-  marginLeft: '5px',
-  cursor: 'pointer',
-  color: '#007bff',
-};
+  .table-container-right {
+    float: right;
+  }
+
+  .styled-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .styled-table th,
+  .styled-table td {
+    padding: 15px;
+    text-align: left;
+    color: #555;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .styled-table th {
+    background-color: #f7f7f7;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .qr-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .copy-icon {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #007bff;
+  }
+
+  .note-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .history-heading {
+    font-size: 24px;
+    margin-bottom: 15px;
+    color: #007bff;
+  }
+
+  .clearfix {
+    clear: both;
+  }
+`;
+
+// Inject styles dynamically into the page for demonstration purposes
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
 
 export default App;
