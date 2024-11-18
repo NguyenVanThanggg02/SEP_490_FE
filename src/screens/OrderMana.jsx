@@ -2,50 +2,22 @@ import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { Button, Dialog, DialogActions, DialogContentText, DialogTitle, DialogContent, FormControlLabel, Switch, TextField } from '@mui/material';
-import Slide from '@mui/material/Slide';
-import { Row } from 'react-bootstrap';
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const listReason = [
-    "Lí do 1",
-    "Lí do 2",
-    "Lí do 3",
-    "Lí do 4",
-    "Lí do 5",
-]
-
-
+import { Button } from '@mui/material';
 const paginationModel = { page: 0, pageSize: 5 };
 const OrderMana = () => {
     const userId = localStorage.getItem('userId');
     const [order, setOrder] = useState([]);
-    const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const fetchOrderData = async () => {
         const response = await axios.get(`http://localhost:9999/bookings/spaces/${userId}`);
         setOrder(response.data);
     };
     fetchOrderData();
     console.log(order);
-
     useEffect(() => {
         if (userId) {
             fetchOrderData();
         }
     }, [userId]);
-
     const updateBookingStatus = async (id, status, cancelReason = "") => {
         try {
             await axios.put(`http://localhost:9999/bookings/updatestatus/${id}`, {
@@ -57,7 +29,6 @@ const OrderMana = () => {
             console.error("Lỗi khi cập nhật trạng thái đơn hàng", error);
         }
     };
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, disableColumnMenu: true, resizable: false },
         { field: 'trangthai', headerName: 'Trạng thái', width: 100, disableColumnMenu: true, resizable: false },
@@ -82,7 +53,6 @@ const OrderMana = () => {
                         console.error("Lỗi khi chấp nhận đơn hàng", error);
                     }
                 };
-
                 const handleReject = async () => {
                     const reason = prompt("Nhập lý do từ chối:");
                     if (reason) {
@@ -94,14 +64,12 @@ const OrderMana = () => {
                         }
                     }
                 };
-
-
                 return (
                     <div>
                         <Button variant="contained" color="success" onClick={handleAccept} sx={{ marginRight: 1 }}>
                             Chấp nhận
                         </Button>
-                        <Button variant="contained" color="error" onClick={handleClickOpen}>
+                        <Button variant="contained" color="error" onClick={handleReject}>
                             Từ chối
                         </Button>
                     </div>
@@ -109,8 +77,6 @@ const OrderMana = () => {
             },
         },
     ];
-
-
     const rows = order.map((orderItem, index) => ({
         id: orderItem._id,
         trangthai: orderItem.ownerApprovalStatus,
@@ -122,66 +88,17 @@ const OrderMana = () => {
         danhgia: orderItem.rating || '', // Giả sử có trường `rating` cho đánh giá
         hanhdong: '', // Thêm hành động nếu cần, ví dụ: "Chấp nhận" hoặc "Hủy"
     }));
-
-
     return (
-        <>
-            <Paper sx={{ height: 400, width: '68%', margin: "0 auto" }}>
-                <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{ pagination: { paginationModel } }}
-                    pageSizeOptions={[5, 10]}
-                    getRowId={(row) => row.id}  // Thiết lập getRowId để sử dụng _id làm id
-                    sx={{ border: 0 }}
-                />
-                {/* <Dialog
-                    open={open}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={handleClose}
-                    aria-describedby="alert-dialog-slide-description"
-                >
-                    <DialogTitle>{"Hãy cho người dùng biết lí do mà bạn từ chối đơn của họ!"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                        <div className="container">
-                        <Row className="header text-center">
-                            <h4>Lí do từ chối</h4>
-                        </Row>
-                        {listReason.map((reason) => (
-                            <FormControlLabel
-                                key={reason}
-                                control={<Switch
-                                    color="warning"
-                                    onChange={(e) => handleToggleReason(reason, e.target.checked)} />}
-                                label={reason}
-                            />
-                        ))}
-                        <TextField
-                            className='mt-2'
-                            label="Thêm lí do từ chối"
-                            fullWidth
-                            value={customReason}
-                            onChange={handleCustomReasonChange}
-                            helperText="Các lí do riêng lẻ có thể tách nhau bằng dấu ';'"
-                            FormHelperTextProps={{
-                                style: {
-                                    fontSize: '13px', // Kích thước chữ helperText
-                                },
-                            }}
-                        />
-                    </div>
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Disagree</Button>
-                        <Button onClick={handleClose}>Agree</Button>
-                    </DialogActions>
-                </Dialog> */}
-            </Paper>
-        </>
+        <Paper sx={{ height: 400, width: '68%', margin: "0 auto" }}>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                initialState={{ pagination: { paginationModel } }}
+                pageSizeOptions={[5, 10]}
+                getRowId={(row) => row.id}  // Thiết lập getRowId để sử dụng _id làm id
+                sx={{ border: 0 }}
+            />
+        </Paper>
     );
 };
-
 export default OrderMana;

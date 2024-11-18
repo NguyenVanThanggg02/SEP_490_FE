@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
@@ -110,32 +110,44 @@ const History = () => {
               />
             </Grid>
             <Grid item md={3}>
-              <Select
-                value={rentalType}
-                onChange={(e) => setRentalType(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="hour">Giờ</MenuItem>
-                <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
-                <MenuItem value="month">Tháng</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="rental-type-select-label">
+                  Hình thức thuê
+                </InputLabel>
+                <Select
+                  labelId="rental-type-select-label"
+                  id="rental-type-select"
+                  value={rentalType}
+                  onChange={(e) => setRentalType(e.target.value)}
+                  label="Hình thức thuê"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="hour">Giờ</MenuItem>
+                  <MenuItem value="day">Ngày</MenuItem>
+                  <MenuItem value="week">Tuần</MenuItem>
+                  <MenuItem value="month">Tháng</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={3}>
-              <Select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
-                <MenuItem value="completed">Đã thanh toán</MenuItem>
-                <MenuItem value="canceled">Đã huỷ</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                <Select
+                  labelId="status-select-label"
+                  id="status-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  label="Trạng thái"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
+                  <MenuItem value="completed">Đã thanh toán</MenuItem>
+                  <MenuItem value="canceled">Đã huỷ</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={2} container alignItems="flex-end">
               <Button
                 variant="contained"
@@ -258,7 +270,9 @@ const History = () => {
                                 fontSize: "15px",
                               }}
                             >
-                              <span style={{fontWeight:'bold'}}>Trạng thái: </span>
+                              <span style={{ fontWeight: "bold" }}>
+                                Trạng thái:{" "}
+                              </span>
                               {item.status === "awaiting payment"
                                 ? "Chờ thanh toán"
                                 : item.status === "completed"

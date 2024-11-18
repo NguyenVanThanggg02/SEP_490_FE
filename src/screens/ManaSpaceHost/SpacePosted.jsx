@@ -11,6 +11,7 @@ import { Pane, Spinner } from "evergreen-ui";
 import { Link } from "react-router-dom";
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import { Paginator } from 'primereact/paginator';
+import { priceFormatter } from '../../utils/numberFormatter';
 
 const SpacePosted = () => {
     const [listPosted, setlistPosted] = useState([]);
@@ -177,7 +178,15 @@ const SpacePosted = () => {
                       sx={{ color: "text.secondary" }}
                       noWrap
                     >
-                      {lpost.pricePerHour} VNĐ/giờ
+                      {lpost.pricePerHour
+                        ? `${priceFormatter(lpost.pricePerHour)} VND/Giờ`
+                        : lpost.pricePerDay
+                          ? `${priceFormatter(lpost.pricePerDay)} VND/Ngày`
+                          : lpost.pricePerWeek
+                            ? `${priceFormatter(lpost.pricePerWeek)} VND/Tuần`
+                            : lpost.pricePerWeek
+                              ? `${priceFormatter(lpost.pricePerWeek)} VND/Tháng`
+                              : ""}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -255,9 +264,11 @@ const SpacePosted = () => {
               alignItems="center"
               mb={1}
             >
-              <ExclamationCircleFill style={{ fontSize: "50px", color: "#ff8080" }} />
+              <ExclamationCircleFill
+                style={{ fontSize: "50px", color: "#ff8080" }}
+              />
             </Box>
-            <Typography variant="h5" sx={{ color: "red"}}>
+            <Typography variant="h5" sx={{ color: "red" }}>
               Xác nhận xóa
             </Typography>
           </DialogTitle>
@@ -293,7 +304,7 @@ const SpacePosted = () => {
                 "&:hover": { borderColor: "darkred", color: "darkred" },
                 textTransform: "none",
                 width: "100px",
-                backgroundColor:"#fde7e9"
+                backgroundColor: "#fde7e9",
               }}
             >
               Hủy bỏ
@@ -301,20 +312,20 @@ const SpacePosted = () => {
           </DialogActions>
         </Dialog>
         <Row
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
-          first={first}
-          rows={rows}
-          totalRecords={listPosted.length}
-          onPageChange={onPageChange}
-        />
-      </Row>
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <Paginator
+            style={{ backgroundColor: "#f9f9f9" }}
+            first={first}
+            rows={rows}
+            totalRecords={listPosted.length}
+            onPageChange={onPageChange}
+          />
+        </Row>
       </Container>
     );
 };

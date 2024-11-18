@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import axios from "axios";
 import {
   BoxArrowInRight,
@@ -19,8 +17,7 @@ import {
   Wallet,
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
-import Notification from './Notification';
-
+import ListAltIcon from '@mui/icons-material/ListAlt';
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -32,6 +29,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     phone: "",
     address: "",
   });
+  const role = localStorage.getItem("role");
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -56,6 +54,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
+      console.log(userInfo.role);
 
       setFormData({
         fullname: response.data.fullname,
@@ -102,45 +101,32 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/register");
   };
-    
+
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");
   };
-  
+
   const handleMannaPost = () => {
     handleClose();
     navigate("/posted");
-  };
-  const handleMannaOrder = () => {
-    handleClose();
-    navigate("/order");
   };
 
   const handleNavigation = (path) => {
     navigate(path);
     handleClose();
   };
+  const handleMannaOrder = () => {
+    handleClose();
+    navigate("/order");
+  };
   const handleStatistic = () => {
     handleClose();
     navigate('/statistics');
   };
-
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        {isLoggedIn && (
-          <>
-            <Link to={"/welcome"} className="linkk">
-              <Typography sx={{ marginRight: 1 }}>
-                <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-                  Cho thuê địa điểm qua SpaceHub
-                </p>
-              </Typography>
-            </Link>
-            <Notification />
-          </>
-        )}
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -198,21 +184,21 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               />
               Quản Lí Bài Đăng
             </MenuItem>
-              <MenuItem onClick={handleStatistic}>
-                <Calendar2Check
-                  style={{ fontSize: '20px', marginRight: '10px' }}
-                />
-                Thống kê doanh thu
-              </MenuItem>
             <MenuItem onClick={handleMannaOrder}>
               <ListAltIcon
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
               Quản Lí Đơn
             </MenuItem>
+            <MenuItem onClick={handleStatistic}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Thống kê doanh thu
+            </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
-              Nạp tiền
+              Ví 
             </MenuItem>
             <MenuItem onClick={handleHistory}>
               <Clipboard2Check

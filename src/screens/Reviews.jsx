@@ -6,10 +6,10 @@ import { useParams } from 'react-router-dom';
 import Review from './Review';
 import StartRating from './StartRating';
 
-const calculateAverageRating = (reviews) => {
+export const calculateAverageRating = (reviews) => {
   if (!reviews.length) return 0;
   const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-
+  
   return (totalRating / reviews.length).toFixed(2);
 };
 

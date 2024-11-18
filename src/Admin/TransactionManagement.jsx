@@ -12,7 +12,6 @@ export const TransactionManagement = () => {
         setSearchParams(event.target.value);
     };
     const [data, setData] = useState()
-
     async function fetchHistory() {
         try {
             const response = await axios.get('http://localhost:9999/transaction/admin/list', {
