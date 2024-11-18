@@ -7,31 +7,34 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import Header from "./components/Header";
-import Home from "./screens/Home";
-import LoginForm from "./screens/LoginForm";
-import RegisterForm from "./screens/RegisterForm";
-import UserNeedsForm from "./screens/UserNeed";
-import HostProfile from "./screens/HostProfile";
-import ChangePass from "./screens/ChangePass";
-import ResetPass from "./screens/ResetPass";
-import Forgot_Pass from "./screens/Forgot_Pass";
-import Message from "./screens/Message";
-import SpaceDetails from "./screens/SpaceDetails";
-import NotFound from "./screens/NotFound";
-import ChangePassAdmin from "./Admin/profile/ChangePassAdmin";
-import Favorites from "./screens/Favorites";
-import AddSpaceCategories from "./screens/AddSpaces/AddSpaceCategories";
-import AddSpaceLocation from "./screens/AddSpaces/AddSpaceLocation";
-import AddSpaceInforSpace from "./screens/AddSpaces/AddSpaceInforSpace";
-import AllAdd from "./screens/AddSpaces/AllAdd";
-import Compare from "./screens/Compare";
-import DetailForAdmin from "./Admin/DetailForAdmin";
-import DashBoard from "./Admin/DashBoard";
-import Landing from "./screens/Landing";
-import ListSpace from "./screens/ListSpace";
-import AddSpaceFlow from "./screens/AddSpaces/AllAdd";
-import Footer from "./components/Footer"; 
-import Addfuns from "./screens/Addfuns";
+import Footer from "./components/Footer";
+
+// Screens and Components
+import {
+  Home,
+  LoginForm,
+  RegisterForm,
+  UserNeedsForm,
+  HostProfile,
+  ChangePass,
+  ResetPass,
+  Forgot_Pass,
+  Message,
+  SpaceDetails,
+  NotFound,
+  Favorites,
+  Compare,
+  Landing,
+  ListSpace,
+  Addfuns,
+} from "./screens";
+import {
+  AddSpaceCategories,
+  AddSpaceLocation,
+  AddSpaceInforSpace,
+  AllAdd as AddSpaceFlow,
+} from "./screens/AddSpaces";
+import { ChangePassAdmin, DetailForAdmin, DashBoard } from "./Admin";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,10 +42,7 @@ function Layout() {
   const role = localStorage.getItem("role");
 
   useEffect(() => {
-    const loggedInStatus = localStorage.getItem("isLoggedIn");
-    if (loggedInStatus === "true") {
-      setIsLoggedIn(true);
-    }
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
   }, []);
 
   const hiddenPaths = [
@@ -62,7 +62,12 @@ function Layout() {
       )}
       <main>
         <Routes>
-          <Route path="/" element={<Landing isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+          <Route
+            path="/"
+            element={
+              <Landing isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            }
+          />
           <Route
             path="/login"
             element={
@@ -94,11 +99,11 @@ function Layout() {
           />
         </Routes>
       </main>
-      <Footer /> 
-
+      <Footer />
     </>
   );
 }
+
 function App() {
   return (
     <BrowserRouter>
@@ -106,4 +111,5 @@ function App() {
     </BrowserRouter>
   );
 }
+
 export default App;
