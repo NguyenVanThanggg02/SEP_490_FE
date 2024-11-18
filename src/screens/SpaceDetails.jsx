@@ -998,7 +998,7 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
-                  Vị trí không gian
+                  Vị trí không gian: {spaceData?.location || ""}
                 </Typography>
                 <MapShopDetail
                   lat={spaceData?.latLng?.[0]}

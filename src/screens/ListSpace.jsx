@@ -172,7 +172,14 @@ const ListSpace = () => {
       <Grid container spacing={3}>
         {/* filter */}
         <Grid item md={3}>
-          <SpaceFilter filter={filter} setLoading={setLoading} setListSpace={setListSpace} setFilter={setFilter} loadInitData={loadInitData} filterDefault={filterDefault} />
+          <SpaceFilter
+            filter={filter}
+            setLoading={setLoading}
+            setListSpace={setListSpace}
+            setFilter={setFilter}
+            loadInitData={loadInitData}
+            filterDefault={filterDefault}
+          />
         </Grid>
 
         {/* list spaces */}
@@ -181,152 +188,203 @@ const ListSpace = () => {
             {loading ? <p>Loading...</p> : null}
             {!listSpace?.length ? (
               <Col md={12}>
-                <h4 style={{ margin: '20px', textAlign: 'center' }}>
+                <h4 style={{ margin: "20px", textAlign: "center" }}>
                   Không có địa điểm nào !!!
                 </h4>
               </Col>
             ) : (
-                <Grid container spacing={2}>
-                  {
-
-              productsOnPage.map((l, index) => (
-                <Grid key={l._id} item xs={12} sm={6} lg={4}>
-
-                  <Box
-                    key={l._id}
-                    component="div"
-                    sx={{
-                      width: '100%',
-                      borderRadius: '15px',
-                      overflow: 'hidden',
-                      boxShadow: '0 0 30px rgba(0, 0, 0, 0.1)', // Soft shadow
-                      position: 'relative',
-                      height: '483px',
-                      backgroundColor: '#f5f5f5',
-                      '&:hover': {
-                        boxShadow: '0 4px 40px rgba(0, 0, 0, 0.2)', // Hover shadow effect
-                        transform: 'translateY(-10px)', // Slight upward movement
-                      },
-                      transition: 'all 0.3s ease', // Smooth transition on hover
-                    }}
-                  >
-                    {/* Favorite Icon */}
-                    <IconButton
+              <Grid container spacing={2}>
+                {productsOnPage.map((l, index) => (
+                  <Grid key={l._id} item xs={12} sm={6} lg={4}>
+                    <Box
+                      key={l._id}
+                      component="div"
                       sx={{
-                        position: 'absolute',
-                        top: 10,
-                        right: 10,
-                        zIndex: 1,
-                        color: l.favorite ? '#FF385C' : 'white',
-                        backgroundColor: 'rgba(0, 0, 0, 0.2)', // Slight transparent background
-                        borderRadius: '50%', // Make it circular
-                        padding: '8px', // Add some padding for better touch area
-                        '&:hover': {
-                          backgroundColor: 'rgba(0, 0, 0, 0.4)', // Darker background on hover
+                        width: "100%",
+                        borderRadius: "15px",
+                        overflow: "hidden",
+                        boxShadow: "0 0 30px rgba(0, 0, 0, 0.1)", // Soft shadow
+                        position: "relative",
+                        height: "483px",
+                        backgroundColor: "#f5f5f5",
+                        "&:hover": {
+                          boxShadow: "0 4px 40px rgba(0, 0, 0, 0.2)", // Hover shadow effect
+                          transform: "translateY(-10px)", // Slight upward movement
                         },
+                        transition: "all 0.3s ease", // Smooth transition on hover
                       }}
-                      onClick={() => changeFavorite(l?._id)}
                     >
-                      {l.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                    </IconButton>
+                      {/* Favorite Icon */}
+                      <IconButton
+                        sx={{
+                          position: "absolute",
+                          top: 10,
+                          right: 10,
+                          zIndex: 1,
+                          color: l.favorite ? "#FF385C" : "white",
+                          backgroundColor: "rgba(0, 0, 0, 0.2)", // Slight transparent background
+                          borderRadius: "50%", // Make it circular
+                          padding: "8px", // Add some padding for better touch area
+                          "&:hover": {
+                            backgroundColor: "rgba(0, 0, 0, 0.4)", // Darker background on hover
+                          },
+                        }}
+                        onClick={() => changeFavorite(l?._id)}
+                      >
+                        {l.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                      </IconButton>
 
-                    {/* Carousel for images */}
-                    <Carousel interval={null} controls={false} indicators={true}>
-                      {l.images && l.images.length > 0 ? (
-                        l.images.map((img, index) => (
-                          <Carousel.Item key={index}>
+                      {/* Carousel for images */}
+                      <Carousel
+                        interval={null}
+                        controls={false}
+                        indicators={true}
+                      >
+                        {l.images && l.images.length > 0 ? (
+                          l.images.map((img, index) => (
+                            <Carousel.Item key={index}>
+                              <img
+                                className="d-block w-100"
+                                src={img.url}
+                                alt={`Ảnh slide ${index + 1}`}
+                                height="270"
+                                style={{
+                                  objectFit: "cover",
+                                  borderTopLeftRadius: "15px",
+                                  borderTopRightRadius: "15px",
+                                }}
+                              />
+                            </Carousel.Item>
+                          ))
+                        ) : (
+                          <Carousel.Item>
                             <img
                               className="d-block w-100"
-                              src={img.url}
-                              alt={`Ảnh slide ${index + 1}`}
-                              height="270"
+                              src="default-image-url.png"
+                              alt="Ảnh mặc định"
+                              height="220"
                               style={{
-                                objectFit: 'cover',
-                                borderTopLeftRadius: '15px',
-                                borderTopRightRadius: '15px',
+                                objectFit: "cover",
+                                borderTopLeftRadius: "15px",
+                                borderTopRightRadius: "15px",
                               }}
                             />
                           </Carousel.Item>
-                        ))
-                      ) : (
-                        <Carousel.Item>
-                          <img
-                            className="d-block w-100"
-                            src="default-image-url.png"
-                            alt="Ảnh mặc định"
-                            height="220"
-                              style={{
-                                objectFit: 'cover',
-                                borderTopLeftRadius: '15px',
-                                borderTopRightRadius: '15px',
-                              }}
-                          />
-                        </Carousel.Item>
-                      )}
-                    </Carousel>
+                        )}
+                      </Carousel>
 
-                    {/* Card Content */}
-                    <Link to={`/spaces/${l?._id}`} style={{ textDecoration: 'none' }}>
-                      <CardContent sx={{ padding: 2 }}>
-                        <Grid container direction="column" sx={{ height: '100%' }} rowSpacing={1}>
-                          <Grid item xs>
-                            <Typography variant="h6" sx={{
-                              fontWeight: 'bold', color: '#2d2d2d', display: '-webkit-box',
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              WebkitLineClamp: 2,
-                              textOverflow: 'ellipsis',
-                              minHeight: "64px"
-                            }}>
-                          {l.name}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs>
-                            <Typography variant="body2" sx={{ color: '#757575', minHeight: '40px' }}>
-                          Địa điểm: {l.location}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs>
-                            <Typography variant="body2" sx={{ color: '#757575', fontWeight: 'bold' }}>
-                          Quãng đường:{' '}
-                              {distances[index] ? `${distances[index]} km` : 'Không xác định.'}
-                            </Typography>
-                          </Grid>
-
-                          <Grid item xs>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', pb: 1 }}>
-                              <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#2d2d2d' }}>
-                            Giá: {priceFormatter(l.pricePerHour)} / VND
+                      {/* Card Content */}
+                      <Link
+                        to={`/spaces/${l?._id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <CardContent sx={{ padding: 2 }}>
+                          <Grid
+                            container
+                            direction="column"
+                            sx={{ height: "100%" }}
+                            rowSpacing={1}
+                          >
+                            <Grid item xs>
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  fontWeight: "bold",
+                                  color: "#2d2d2d",
+                                  display: "-webkit-box",
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  WebkitLineClamp: 2,
+                                  textOverflow: "ellipsis",
+                                  minHeight: "64px",
+                                }}
+                              >
+                                {l.name}
                               </Typography>
-                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                              <StarFill style={{ color: '#ffb742', marginRight: '8px' }} />
-                              <Typography variant="body2" sx={{ color: '#2d2d2d' }}>
-                              {calculateAverageRating(l.reviews)}
+                            </Grid>
+                            <Grid item xs>
+                              <Typography
+                                variant="body2"
+                                sx={{ color: "#757575", minHeight: "40px" }}
+                              >
+                                Địa điểm: {l.location}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs>
+                              <Typography
+                                variant="body2"
+                                sx={{ color: "#757575", fontWeight: "bold" }}
+                              >
+                                Quãng đường:{" "}
+                                {distances[index]
+                                  ? `${distances[index]} km`
+                                  : "Không xác định."}
+                              </Typography>
+                            </Grid>
+
+                            <Grid item xs>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  pb: 1,
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: "bold", color: "#2d2d2d" }}
+                                >
+                                  Giá:
+                                  {l.pricePerHour
+                                    ? `${priceFormatter(l.pricePerHour)} VND/Giờ`
+                                    : l.pricePerDay
+                                      ? `${priceFormatter(l.pricePerDay)} VND/Ngày`
+                                      : l.pricePerWeek
+                                        ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
+                                        : l.pricePerWeek
+                                          ? `${priceFormatter(l.pricePerWeek)} VND/Tháng`
+                                          : ""}
                                 </Typography>
+
+                                <Box
+                                  sx={{ display: "flex", alignItems: "center" }}
+                                >
+                                  <StarFill
+                                    style={{
+                                      color: "#ffb742",
+                                      marginRight: "8px",
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ color: "#2d2d2d" }}
+                                  >
+                                    {calculateAverageRating(l.reviews)}
+                                  </Typography>
+                                </Box>
                               </Box>
-                            </Box>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Link>
-                  </Box>
-                </Grid>
-              ))
-                  }
-                </Grid>
+                        </CardContent>
+                      </Link>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
             )}
           </Row>
         </Grid>
       </Grid>
       <Row
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '20px',
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "20px",
         }}
       >
         <Paginator
-          style={{ backgroundColor: '#f9f9f9' }}
+          style={{ backgroundColor: "#f9f9f9" }}
           first={first}
           rows={rows}
           totalRecords={listSpace.length}
