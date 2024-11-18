@@ -4,7 +4,7 @@ import "../style/blog.css";
 const Blog = () => {
     return (
         <div className="container">
-            <div className=" title1">
+            <div className="title1">
                 Văn phòng &amp; Study Working
             </div>
             <div className="row featured-article">
@@ -16,8 +16,8 @@ const Blog = () => {
                         src="https://storage.googleapis.com/a1aa/image/F2rcMrRTjdLmLhtGJTeom5HVI9X0I1ew6DiA9Dh0BSYxkWpTA.jpg"
                         width="800"
                     />
-                </div> 
-                <div className="col-md-6" style={{margin:'auto',paddingLeft:'20px'}}>
+                </div>
+                <div className="col-md-6" style={{ margin: 'auto', paddingLeft: '20px' }}>
                     <h2>
                         SPACEHUB
                     </h2>
@@ -34,45 +34,64 @@ const Blog = () => {
                 </button>
             </div>
 
-
             <div className="container containerblog">
                 <div className="title2">Địa điểm làm việc lý tưởng để tối ưu công việc</div>
                 <div className="row g-4">
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Vị trí đắc địa"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-map-marker-alt"></i>
                             </div>
                             <div className="card-title">Vị trí đắc địa</div>
                             <div className="card-text">
-                            SPACEHUB nằm ở các điểm chiến lược, cung cấp sự lựa chọn linh hoạt cho mọi nhu cầu làm việc.
+                                SPACEHUB nằm ở các điểm chiến lược, cung cấp sự lựa chọn linh hoạt cho mọi nhu cầu làm việc.
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Thiết kế hiện đại"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-th-large"></i>
                             </div>
                             <div className="card-title">Thiết kế</div>
                             <div className="card-text">
-                                Phong cách hiện đại và cổ điển, tối ưu ánh sáng tự nhiên, tăng cảm hứng sáng tạo
+                                Phong cách hiện đại và cổ điển, tối ưu ánh sáng tự nhiên, tăng cảm hứng sáng tạo.
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Mở cửa 24/7"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-clock"></i>
                             </div>
                             <div className="card-title">Mở cửa 24/7</div>
                             <div className="card-text">
-                                Thời gian làm việc 24/7 với hệ thống cửa từ an ninh và đội ngũ bảo vệ
+                                Thời gian làm việc 24/7 với hệ thống cửa từ an ninh và đội ngũ bảo vệ.
                             </div>
                         </div>
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Internet tốc độ cao"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-paper-plane"></i>
                             </div>
@@ -84,6 +103,11 @@ const Blog = () => {
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Cộng đồng văn minh"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-handshake"></i>
                             </div>
@@ -95,6 +119,11 @@ const Blog = () => {
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center cardblog">
+                            <img
+                                src="https://via.placeholder.com/150"
+                                alt="Dịch vụ trọn gói"
+                                className="card-img-top"
+                            />
                             <div className="card-icon">
                                 <i className="fas fa-box"></i>
                             </div>
@@ -107,7 +136,6 @@ const Blog = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
