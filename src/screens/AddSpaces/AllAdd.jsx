@@ -1,66 +1,81 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
 import Button from '@mui/material/Button';
-import AddSpaceCategories from "./AddSpaceCategories";
-import AddSpaceLocation from "./AddSpaceLocation";
-import AddSpaceInforSpace from "./AddSpaceInforSpace";
-import AddSpacePageAppliances from "./AddSpacePageAppliances";
+import AddSpaceCategories from './AddSpaceCategories';
+import AddSpaceLocation from './AddSpaceLocation';
+import AddSpaceInforSpace from './AddSpaceInforSpace';
+import AddSpacePageAppliances from './AddSpacePageAppliances';
 import { SpaceContext } from '../../Context/SpaceContext ';
 import axios from 'axios';
-import StepConnector from '@mui/material/StepConnector';  // Import StepConnector
-import { styled } from '@mui/material/styles';  // Import styled from MUI
+import StepConnector from '@mui/material/StepConnector'; // Import StepConnector
+import { styled } from '@mui/material/styles'; // Import styled from MUI
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const steps = ['Chọn thể loại', 'Chọn tiện ích', 'Vị trí', 'Thông tin chi tiết'];
+const steps = [
+  'Chọn thể loại',
+  'Chọn tiện ích',
+  'Vị trí',
+  'Thông tin chi tiết',
+];
 const CustomStepConnector = styled(StepConnector)(({ theme }) => ({
   [`& .${StepConnector.line}`]: {
-    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+    borderColor:
+      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
     borderTopWidth: 3,
     borderRadius: 1,
   },
   [`& .${StepConnector.lineCompleted}`]: {
-    borderColor: 'green',  // Màu xanh khi hoàn thành
-  }
+    borderColor: 'green', // Màu xanh khi hoàn thành
+  },
 }));
-
 
 export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
-  const { selectedCategoryId, selectedApplianceId, spaceInfo, location, selectedAppliances, setSelectedApplianceId, customRule, selectedRules, setSpaceInfo,
-    isGoldenHour, goldenHourDetails
-   } = useContext(SpaceContext);
+  const {
+    selectedCategoryId,
+    selectedApplianceId,
+    spaceInfo,
+    location,
+    selectedAppliances,
+    setSelectedApplianceId,
+    customRule,
+    selectedRules,
+    setSpaceInfo,
+    isGoldenHour,
+    goldenHourDetails,
+  } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
   const navigate = useNavigate();
-
+  const editorRef = useRef();
   const handleFinish = async () => {
-
     const ruleId = await addRules();
-    
-      // Sau khi thêm quy định thành công, thêm thiết bị
-      const applianceId = await addAppliances();
+    // Sau khi thêm quy định thành công, thêm thiết bị
+    const applianceId = await addAppliances();
 
     const spaceData = {
       userId: userId,
       categoriesId: selectedCategoryId,
       appliancesId: applianceId,
-      rulesId: ruleId,
+      description: editorRef.current?.editor?.getData(),
       location,
       ...spaceInfo,
+      rulesId: ruleId,
       isGoldenHour: isGoldenHour,
-      goldenHourDetails: goldenHourDetails
+      goldenHourDetails: goldenHourDetails,
     };
-
     try {
-      const response = await axios.post('http://localhost:9999/spaces', spaceData);
+      const response = await axios.post(
+        'http://localhost:9999/spaces',
+        spaceData
+      );
       toast.success('Thêm không gian thành công!');
       setTimeout(() => {
         navigate('/posted');
       }, 3000);
-
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
       alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
@@ -69,71 +84,69 @@ export default function AddSpaceFlow() {
 
   const addRules = async () => {
     try {
-      const customRulesArray =
-        customRule.split(';').map(rule => rule.trim()).filter(rule => rule.length > 0)
+      const customRulesArray = customRule
+        .split(';')
+        .map((rule) => rule.trim())
+        .filter((rule) => rule.length > 0);
 
       const data = {
         selectedRules,
-        customRules: customRulesArray, 
+        customRules: customRulesArray,
       };
-      console.log("Custom rules array:", customRulesArray);  // Kiểm tra sau 
+      console.log('Custom rules array:', customRulesArray); // Kiểm tra sau
 
+      const response = await axios.post(
+        'http://localhost:9999/rules/addRule',
+        data
+      );
 
-      const response = await axios.post("http://localhost:9999/rules/addRule", data);
+      const ruleId = response.data._id;
 
-      const ruleId = response.data._id;  
-      
-      setSpaceInfo(prev => ({
+      setSpaceInfo((prev) => ({
         ...prev,
-        rulesId: ruleId  
+        rulesId: ruleId,
       }));
-        return ruleId;
+      return ruleId;
     } catch (error) {
       console.error('Error adding rule:', error);
     }
   };
 
   const addAppliances = async () => {
-
     const appliancesToAdd = {
-      name: "",
+      name: '',
       appliances: selectedAppliances,
       categoryId: selectedCategoryId,
     };
 
     try {
-      const response = await axios.post('http://localhost:9999/appliances', appliancesToAdd);
+      const response = await axios.post(
+        'http://localhost:9999/appliances',
+        appliancesToAdd
+      );
       if (response.data.success) {
         const newApplianceId = response.data.appliance._id;
 
         setSelectedApplianceId(newApplianceId);
 
-        return newApplianceId
+        return newApplianceId;
       } else {
         console.error('Failed to add appliance:', response.data.message);
       }
     } catch (error) {
       console.error('Error adding appliance:', error);
     }
-
-
   };
-
 
   // Hàm gửi dữ liệu lên server
-  
-
 
   const handleNext = async () => {
-    setActiveStep(prevStep => Math.min(prevStep + 1, steps.length - 1));
+    setActiveStep((prevStep) => Math.min(prevStep + 1, steps.length - 1));
   };
-
 
   const handleBack = () => {
-    setActiveStep(prevStep => Math.max(prevStep - 1, 0));
+    setActiveStep((prevStep) => Math.max(prevStep - 1, 0));
   };
-
-
 
   const renderStepContent = (step) => {
     switch (step) {
@@ -144,7 +157,7 @@ export default function AddSpaceFlow() {
       case 2:
         return <AddSpaceLocation />;
       case 3:
-        return <AddSpaceInforSpace />;
+        return <AddSpaceInforSpace editorRef={editorRef} />;
       default:
         return 'Unknown step';
     }
@@ -154,25 +167,24 @@ export default function AddSpaceFlow() {
     (activeStep === 0 && !selectedCategoryId) ||
     (activeStep === 1 && selectedAppliances.length === 0);
 
-
-
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ padding: '20px' }}>
-        {renderStepContent(activeStep)}
-      </Box>
+      <Box sx={{ padding: '20px' }}>{renderStepContent(activeStep)}</Box>
 
-      <Box sx={{
-        width: '100%',
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        backgroundColor: 'white',
-        zIndex: 1000,
-        padding: '10px',
-        boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)'
-      }}>
-        <Stepper nonLinear
+      <Box
+        sx={{
+          width: '100%',
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          backgroundColor: 'white',
+          zIndex: 1000,
+          padding: '10px',
+          boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Stepper
+          nonLinear
           activeStep={activeStep}
           connector={<CustomStepConnector />}
         >
@@ -198,9 +210,7 @@ export default function AddSpaceFlow() {
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
           {activeStep === steps.length - 1 ? (
-            <Button onClick={handleFinish}>
-              Hoàn thành
-            </Button>
+            <Button onClick={handleFinish}>Hoàn thành</Button>
           ) : (
             <Button
               onClick={handleNext}
@@ -210,7 +220,6 @@ export default function AddSpaceFlow() {
                 opacity: isNextDisabled ? 0.5 : 1,
               }}
               variant="contained"
-
             >
               Tiếp tục
             </Button>

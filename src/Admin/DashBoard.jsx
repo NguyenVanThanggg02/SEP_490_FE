@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Nav, Row, Tab } from "react-bootstrap";
 import PostManagement from "./PostManagement";
 import UserManagement from "./UserManagement ";
@@ -7,12 +7,25 @@ import {
   GearFill,
   HouseGearFill,
   PersonFillGear,
+  Receipt,
   Speedometer,
 } from "react-bootstrap-icons";
 import StatCards from "./Chart/StartCard";
 import HomeAdmin from "./HomeAdmin";
+import { TransactionManagement } from "./TransactionManagement";
+
 const DashBoard = () => {
   const [activeKey, setActiveKey] = useState("one");
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const segment = hash.replace('#', '');
+    if (segment === "manage-spaces") {
+      setActiveKey("three");
+    }
+
+    window.history.pushState({}, '', window.location.href.replace(/#manage-spaces/, ''));
+  }, [])
 
   return (
     <Tab.Container
@@ -48,6 +61,12 @@ const DashBoard = () => {
             </Nav.Item>
 
             <Nav.Item>
+              <Nav.Link eventKey="transaction" style={{ color: "white" }}>
+                <Receipt style={{ fontSize: "25px" }} /> Quản lí giao dịch
+              </Nav.Link>
+            </Nav.Item>
+
+            <Nav.Item>
               <Nav.Link eventKey="four" style={{ color: "white" }}>
                 <PersonFillGear style={{ fontSize: "25px" }} /> Quản lí người
                 dùng
@@ -76,6 +95,10 @@ const DashBoard = () => {
 
             <Tab.Pane eventKey="four">
               <UserManagement />
+            </Tab.Pane>
+
+            <Tab.Pane eventKey="transaction">
+              <TransactionManagement />
             </Tab.Pane>
 
             <Tab.Pane eventKey="five">

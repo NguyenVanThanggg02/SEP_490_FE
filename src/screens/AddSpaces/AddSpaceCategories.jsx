@@ -8,7 +8,6 @@ import { SpaceContext } from '../../Context/SpaceContext ';
 
 export const AddSpaceCategories = () => {
     const [categories, setCategories] = useState([]);
-    // const [selectedCategoryId, setSelectedCategoryIdState] = useState(null); 
     const { selectedCategoryId, setSelectedCategoryId ,setSelectedAppliances  } = useContext(SpaceContext); // Sử dụng context để lưu categoryId
 
 

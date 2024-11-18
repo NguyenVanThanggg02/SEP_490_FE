@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import {
-  ArrowRepeat,
   BoxArrowInRight,
   Calendar2Check,
   Clipboard2Check,
@@ -20,11 +17,10 @@ import {
   Wallet,
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
+import ListAltIcon from '@mui/icons-material/ListAlt';
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     fullname: "",
     gmail: "",
@@ -84,7 +80,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.clear();
+    setUserInfo(null);
     handleClose();
+    navigate("/");
+
   };
   const handleAddFunds = () => {
     navigate("/addfund");
@@ -103,6 +102,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate("/register");
   };
 
+<<<<<<< HEAD
   const handleProfileOpen = () => {
     setOpenProfileModal(true);
     handleClose();
@@ -124,14 +124,13 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
       [e.target.name]: e.target.value,
     });
   };
+=======
+>>>>>>> 47514b67648931813a98242d365754072c066489
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");
   };
-  const handleChangePass = () => {
-    handleClose();
-    navigate("/chang_pass");
-  };
+
   const handleMannaPost = () => {
     handleClose();
     navigate("/posted");
@@ -141,18 +140,17 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate(path);
     handleClose();
   };
-
-
+  const handleMannaOrder = () => {
+    handleClose();
+    navigate("/order");
+  };
+  const handleStatistic = () => {
+    handleClose();
+    navigate('/statistics');
+  };
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={"/alladd"} className="linkk">
-          <Typography sx={{ marginRight: 1 }}>
-            <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-              Cho thuê địa điểm qua SpaceHub
-            </p>
-          </Typography>
-        </Link>
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -197,25 +195,34 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         {isLoggedIn ? (
           <>
             <MenuItem onClick={() => handleNavigation("/profile")}>
-            <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
+              <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
               Thông tin cá nhân
             </MenuItem>
             <MenuItem onClick={handleFavorites}>
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={handleMannaPost}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
-
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
+            </MenuItem>
+            <MenuItem onClick={handleMannaOrder}>
+              <ListAltIcon
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Đơn
+            </MenuItem>
+            <MenuItem onClick={handleStatistic}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Thống kê doanh thu
+            </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
-              Nạp tiền
+              Ví 
             </MenuItem>
             <MenuItem onClick={handleHistory}>
               <Clipboard2Check

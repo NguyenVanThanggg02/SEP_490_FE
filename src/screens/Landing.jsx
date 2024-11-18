@@ -5,11 +5,16 @@ import HotSpace from "../components/HotSpace";
 import HowWork from "../components/HowWork";
 import UserFeed from "../components/UserFeed";
 import "../style/landing.css";
+import NearSpace from "../components/NearSpace";
+import ProposedSpaces from './ProposedSpaces';
+
 const Landing = ({isLoggedIn, setIsLoggedIn}) => {
   return (
     <div>
       <Hero isLoggedIn={isLoggedIn}></Hero>
       <Features></Features>
+      <ProposedSpaces />
+      <NearSpace />
       <HotSpace></HotSpace>
       <HowWork></HowWork>
     </div>

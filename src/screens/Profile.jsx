@@ -68,12 +68,39 @@ const Profile = () => {
     const files = target.files;
   
     if (files && files.length > 0) {
+      const formData = new FormData();
+      formData.append('imageUser', files[0]); // Thêm file vào FormData
+      formData.append('userId', userId); // Giả sử bạn đã lưu userId trong state
+
+      try {
+        const response = await axios.post(`http://localhost:9999/users/upload-image`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log(response);
+        
+        const newAvatar = response.data.images.url; // Sửa ở đây, lấy URL từ trường images
+
+            // Cập nhật userData trong state
+            setUserData((prevData) => ({
+                ...prevData,
+                avatar: newAvatar,
+            }));
+
   
-      
+        setSuccess(response.data.message);
+        setError(null);
+        fetchUserData(); 
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setError("Không thể upload ảnh.");
+      }
     } else {
       console.log("No files selected.");
     }
   };
+  
   
 
   const handleSaveUser = () => {
@@ -180,7 +207,9 @@ const Profile = () => {
                             borderRadius: "50%",
                             padding: "6px",
                           }}
-                          onClick={() => document.getElementById("chooseFile")?.click()}
+                          onClick={() =>
+                            document.getElementById("chooseFile")?.click()
+                          }
                         >
                           <CameraFill
                             style={{ fontSize: "25px", color: "white" }}
@@ -213,11 +242,15 @@ const Profile = () => {
                           onChange={(e) =>
                             handleChange(field.field, e.target.value)
                           }
-                          disabled={!isEditingUser}
+                          disabled={
+                            !isEditingUser || field.field === "username"
+                          } 
+                          readOnly={field.field === "username"} 
                           style={{ borderRadius: "0.25rem" }}
                         />
                       </Form.Group>
                     ))}
+
                     <div className="d-flex justify-content-end mt-4">
                       {!isEditingUser ? (
                         <Button

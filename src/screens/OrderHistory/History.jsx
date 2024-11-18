@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
+import CancelBooking from "./CancelBooking";
 
 const History = () => {
   const [date, setDate] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [service, setService] = useState("Tất cả");
   const [status, setStatus] = useState("Tất cả");
   const [rentalType, setRentalType] = useState("Tất cả"); // Thêm state cho rentalType
   const [bookings, setBookings] = useState([]);
@@ -18,19 +17,21 @@ const History = () => {
   const [rows, setRows] = useState(6);
   const [curentPage, setCurrentPage] = useState(1);
   const productsOnPage = filteredBookings.slice(first, first + rows);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [visible, setVisible] = useState(false);
 
   const user = localStorage.getItem("userId");
-
+  const statusBook = bookings.map((m) => m.status);
   useEffect(() => {
-      axios
-        .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
-        .then((res) => {
-          setBookings(res.data);
-          setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+    axios
+      .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
+      .then((res) => {
+        setBookings(res.data);
+        setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   }, [user]);
 
   const handleSearch = () => {
@@ -66,6 +67,30 @@ const History = () => {
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
   };
+
+  const handleViewToCancel = (bookingId) => {
+    const booking = bookings.find((b) => b._id === bookingId);
+    setSelectedBooking(booking);
+    setVisible(true);
+  };
+
+  const updateBookingStatus = (bookingId, newStatus) => {
+    setBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+    setFilteredBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+  };
+
   return (
     <div className="container containerhistory">
       <Card className="cardhistory" elevation={3}>
@@ -85,32 +110,44 @@ const History = () => {
               />
             </Grid>
             <Grid item md={3}>
-              <Select
-                value={rentalType}
-                onChange={(e) => setRentalType(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="hour">Giờ</MenuItem>
-                <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
-                <MenuItem value="month">Tháng</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="rental-type-select-label">
+                  Hình thức thuê
+                </InputLabel>
+                <Select
+                  labelId="rental-type-select-label"
+                  id="rental-type-select"
+                  value={rentalType}
+                  onChange={(e) => setRentalType(e.target.value)}
+                  label="Hình thức thuê"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="hour">Giờ</MenuItem>
+                  <MenuItem value="day">Ngày</MenuItem>
+                  <MenuItem value="week">Tuần</MenuItem>
+                  <MenuItem value="month">Tháng</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={3}>
-              <Select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
-                <MenuItem value="completed">Đã thanh toán</MenuItem>
-                <MenuItem value="canceled">Đã huỷ</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                <Select
+                  labelId="status-select-label"
+                  id="status-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  label="Trạng thái"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
+                  <MenuItem value="completed">Đã thanh toán</MenuItem>
+                  <MenuItem value="canceled">Đã huỷ</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={2} container alignItems="flex-end">
               <Button
                 variant="contained"
@@ -154,7 +191,7 @@ const History = () => {
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",
@@ -169,7 +206,7 @@ const History = () => {
                               variant="h6"
                               style={{ color: "#1976d2", fontWeight: "bold" }}
                             >
-                              {item.items[0].spaceId.name}
+                              {item.items[0]?.spaceId.name}
                             </Typography>
                             <Typography
                               variant="body2"
@@ -233,7 +270,9 @@ const History = () => {
                                 fontSize: "15px",
                               }}
                             >
-                              <span style={{fontWeight:'bold'}}>Trạng thái: </span>
+                              <span style={{ fontWeight: "bold" }}>
+                                Trạng thái:{" "}
+                              </span>
                               {item.status === "awaiting payment"
                                 ? "Chờ thanh toán"
                                 : item.status === "completed"
@@ -247,11 +286,12 @@ const History = () => {
                         <Button
                           variant="contained"
                           color="secondary"
-                          disabled={item.status !== "awaiting payment"}
+                          disabled={item.status === "canceled"}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
                           }}
+                          onClick={() => handleViewToCancel(item._id)}
                         >
                           Huỷ lịch
                         </Button>
@@ -279,6 +319,14 @@ const History = () => {
           onPageChange={onPageChange}
         />
       </Row>
+      {visible && (
+        <CancelBooking
+          visible={visible}
+          setVisible={setVisible}
+          booking={selectedBooking}
+          updateBookingStatus={updateBookingStatus}
+        />
+      )}
     </div>
   );
 };

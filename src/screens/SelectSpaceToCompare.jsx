@@ -56,7 +56,7 @@ const SelectSpaceToCompare = (props) => {
           {spaces.map((s) => (
             <Col md={4}>
               <Card
-                style={{ position: "relative" }}
+                style={{ position: "relative", marginBottom: "10px" }}
                 onClick={() => handleSpaceSelect(s._id)}
               >
                 <CardMedia
@@ -66,7 +66,9 @@ const SelectSpaceToCompare = (props) => {
                 />
                 <CardContent>
                   <Typography variant="p" sx={{ color: "text.secondary" }}>
-                    {s.name}
+                    {s.name.length > 28
+                      ? `${s.name.slice(0, 25)}  ...`
+                      : s.name}
                   </Typography>
                 </CardContent>
               </Card>
