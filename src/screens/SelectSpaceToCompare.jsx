@@ -12,14 +12,14 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const SelectSpaceToCompare = (props) => {
-  const { visibleCompare, setVisibleCompare, id, onValueChange  } = props;
+  const { visibleCompare, setVisibleCompare, id, onValueChange,setCategoryId  } = props;
   const [spaces, setSpaces] = useState([]);
   const [selectedSpace, setSelectedSpace] = useState(null);
   console.log(selectedSpace);
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces")
+      .get(`http://localhost:9999/spaces/cate/${setCategoryId}`)
       .then((response) => {
         const filterItems = filterSapces(response.data);
         setSpaces(filterItems);
@@ -56,7 +56,7 @@ const SelectSpaceToCompare = (props) => {
           {spaces.map((s) => (
             <Col md={4}>
               <Card
-                style={{ position: "relative" }}
+                style={{ position: "relative", marginBottom: "10px" }}
                 onClick={() => handleSpaceSelect(s._id)}
               >
                 <CardMedia
@@ -66,7 +66,9 @@ const SelectSpaceToCompare = (props) => {
                 />
                 <CardContent>
                   <Typography variant="p" sx={{ color: "text.secondary" }}>
-                    {s.name}
+                    {s.name.length > 28
+                      ? `${s.name.slice(0, 25)}  ...`
+                      : s.name}
                   </Typography>
                 </CardContent>
               </Card>

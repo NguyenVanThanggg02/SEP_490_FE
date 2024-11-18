@@ -1,112 +1,213 @@
-import React from "react";
-import { Container, Col, Row } from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
+import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TextField, Dialog, DialogTitle, DialogContent, Select, MenuItem, DialogActions, Box, TablePagination, Pagination } from '@mui/material';
+import axios from 'axios';
+import { useUser } from '../hooks/useUser';
+import { toast } from 'react-toastify';
+import { formatMoney } from '../utils/moneyFormatter';
+import { LoadingButton } from '@mui/lab';
 
 const AddFunds = () => {
-    
-    const tableStyle = {
-        width: "100%",
-        borderCollapse: "collapse",
-        marginBottom: "20px",
-        border: "1px solid #ddd",
-      };
+  const [data, setData] = useState();
+  const [amount, setAmount] = useState('');
+  const [transactionType, setTransactionType] = useState('Nạp tiền');
+  const [beneficiaryAccountNumber, setBeneficiaryAccountNumber] = useState('');
+  const [beneficiaryBankCode, setBeneficiaryBankCode] = useState('MOMO');
+  const [loading, setLoading] = useState(false);
+  const { user } = useUser()
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalElement: undefined,
+    totalPage: undefined,
+    limit: 10
+  })
+
+  async function fetchHistory() {
+    if (!user) return
+    try {
+      const response = await axios.get('http://localhost:9999/transaction/list', {
+        params: {
+          userId: user.id,
+          page: pagination.page,
+          limit: pagination.limit
+        }
+      });
+      setData(response.data);
+      setPagination(prev => {
+        return {
+          ...prev,
+          totalPage: response.data.pagination.totalPage,
+          totalElement: response.data.pagination.totalElement
+        }
+      })
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    } catch (error) {
+      console.log(error)
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
+    }
+  }
+
+  // Fetch transfer history data
+  useEffect(() => {
+    if (!user) return;
+    fetchHistory();
+  }, [user]);
+
+  // Handle Create Transaction and Redirect
+  const handleCreateTransaction = async () => {
+    if (!amount || Number(amount) <= 0) {
+      return;
+    }
+    setLoading(true);
+    if (transactionType === "Nạp tiền") {
+      try {
+        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
+        const { payUrl } = response.data;
+        if (payUrl) {
+          window.location.href = payUrl;
+        } else {
+          toast.error("Thao tác thất bại, vui lòng thử lại sau");
+        }
+      } catch (error) {
+        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (transactionType === "Rút tiền") {
+      try {
+        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber, beneficiaryBankCode });
+        toast.success(response.data?.message)
+        fetchHistory()
+        setDialogOpen(false)
+      } catch (error) {
+        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // if (pagination.totalElement) {
+    fetchHistory()
+    // }
+  }, [pagination.page])
 
   return (
-    <Container>
-      <Row>
-        <Col md={11} style={{ margin: "0 auto" }}>
-          <div style={{ margin: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1>Nạp tiền bằng quét mã QR</h1>
-            <div style={{ width: "60%", float: "left" }}>
-              <table style={tableStyle}>
-                <tbody>
-                  <tr>
-                    <th>Ngân hàng</th>
-                    <td>NGAN HANG TMCP A CHAU (ACB)</td>
-                    <td rowSpan="3" style={{ textAlign: "center" }}>
-                      <img
-                        src="https://storage.googleapis.com/a1aa/image/zjECoHXmYCavLpk8ELb76nRrRuKlb68cth0rrfe72z3dShnTA.jpg"
-                        alt="QR code for payment"
-                        style={{ width: "150px", height: "150px" }}
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Số tài khoản</th>
-                    <td>
-                      17507461
-                      <i className="fa fa-copy"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Tên tài khoản</th>
-                    <td>NGUYEN THANH THAO</td>
-                  </tr>
-                  <tr>
-                    <th>Nội dung thanh toán</th>
-                    <td colSpan="2">doithecao anthinhdz1 tk</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+    <Container maxWidth="lg">
+      <Typography variant="h4" gutterBottom>
+        Danh sách giao dịch
+      </Typography>
 
-            <div style={{ width: "35%", float: "right" }}>
-              <table style={tableStyle}>
-                <tbody>
-                  <tr>
-                    <th colSpan="2">Hạn mức và phí:</th>
-                  </tr>
-                  <tr>
-                    <td>Tổng hạn mức ngày</td>
-                    <td>200,000,000 VND</td>
-                  </tr>
-                  <tr>
-                    <td>Số tiền tối thiểu</td>
-                    <td>5,000 VND</td>
-                  </tr>
-                  <tr>
-                    <td>Số tiền tối đa</td>
-                    <td>30,000,000 VND</td>
-                  </tr>
-                  <tr>
-                    <th colSpan="2">Cổng thanh toán</th>
-                  </tr>
-                  <tr>
-                    <td>Ngân hàng ACB</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+      <Box display="flex" alignItems="center" justifyContent={"space-between"} fullWidth>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setDialogOpen(true)}
+          style={{ marginBottom: '20px' }}
+        >
+          Khởi tạo giao dịch
+        </Button>
+        <Typography variant="h6" gutterBottom>
+          {
+            data?.balanceAmount !== undefined && <>{`Số dư ví khả dụng: ${formatMoney(data.balanceAmount)}`}</>
+          }
+        </Typography>
 
-            <div style={{ clear: "both" }}></div>
+      </Box>
 
-            <p style={{ marginTop: "20px", fontSize: "14px" }}>
-              Bạn hãy chuyển tiền với nội dung bên trên vào một trong các số tài
-              khoản dưới đây. Lưu ý số tiền chuyển không được lớn hơn hạn mức
-              cho phép. Giao dịch sẽ được hoàn thành trong vòng 1-2 phút.
-            </p>
+      <TableContainer component={Paper}>
+        <Table stickyHeader >
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Loại giao dịch</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Số tiền</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Ngày giao dịch</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data?.transactionList && data.transactionList.length > 0 && data.transactionList.map((transaction, index) => (
+              <TableRow key={transaction.transactionId} hover >
+                <TableCell>{pagination.limit * (pagination.page - 1) + index + 1}</TableCell>
+                <TableCell>{transaction.type}</TableCell>
+                <TableCell>{formatMoney(transaction.amount)}</TableCell>
+                <TableCell>{transaction.createdAt}</TableCell>
+                <TableCell>{transaction.status}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {
+        pagination.totalPage &&
+        <Container sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
+          <Pagination
+            count={pagination.totalPage} // Total number of pages
+            page={pagination.page} // Current page
+            onChange={(_, newPage) => { setPagination(prev => { return { ...prev, page: newPage } }) }}
+            color="primary"
+            sx={{ justifyContent: "center" }}
+          />
+        </Container>
+      }
 
-            <h2>Lịch sử nạp tiền</h2>
-            <table
-              style={{ ...tableStyle, width: "100%" }}
-              className="history-table"
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>Tạo giao dịch mới</DialogTitle>
+        <DialogContent>
+          <Select
+            value={transactionType}
+            onChange={(e) => setTransactionType(e.target.value)}
+            fullWidth
+          >
+            <MenuItem value="Nạp tiền">Nạp tiền</MenuItem>
+            <MenuItem value="Rút tiền">Rút tiền</MenuItem>
+          </Select>
+          <TextField
+            label="Số tiền"
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          {
+            transactionType === "Rút tiền" && <>
+              <TextField
+                label="Số tài khoản ngân hàng"
+                type="text"
+                value={beneficiaryAccountNumber}
+                onChange={(e) => setBeneficiaryAccountNumber(e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <Select
+                value={beneficiaryBankCode}
+                onChange={(e) => setBeneficiaryBankCode(e.target.value)}
+                fullWidth
             >
-              <thead>
-                <tr>
-                  <th>Mã đơn</th>
-                  <th>Nạp vào quỹ</th>
-                  <th>Số tiền</th>
-                  <th>Cổng thanh toán</th>
-                  <th>Ngày tạo</th>
-                  <th>Trạng thái</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>{/* Add rows here dynamically if needed */}</tbody>
-            </table>
-          </div>
-        </Col>
-      </Row>
+                <MenuItem value="MOMO">Momo</MenuItem>
+                <MenuItem value="Vietcombank">Vietcombank</MenuItem>
+                <MenuItem value="BIDV">BIDV</MenuItem>
+                <MenuItem value="Vietinbank">Vietinbank</MenuItem>
+              </Select></>
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)} color="primary" variant='outlined'>
+            Hủy
+          </Button>
+          <LoadingButton onClick={handleCreateTransaction} color="primary" loading={loading} variant='contained'>
+            Xác nhận
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

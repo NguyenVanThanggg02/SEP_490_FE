@@ -1,41 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { priceFormatter } from "../utils/numberFormatter";
 
 const HotSpace = () => {
+  const [topSpaces, setTopSpaces] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:9999/bookings/top-spaces")
+      .then((resp) => resp.json())
+      .then((data) => {
+        setTopSpaces(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
+  
   return (
     <div className="highlighted-spaces">
       <h2>Không Gian Nổi Bật</h2>
-      <div className="space-item">
-        <img
-          src="https://storage.googleapis.com/a1aa/image/VtuIZevCBN2FQyw09c15dJzwCTiHjR2jnle03m3ZHL04HXmTA.jpg"
-          alt="Không gian 1"
-        />
-        <h3>Không Gian 1</h3>
-        <p>
-          Không gian rộng rãi, tiện nghi và hiện đại, phù hợp cho các sự kiện
-          lớn.
-        </p>
-      </div>
-      <div className="space-item">
-        <img
-          src="https://storage.googleapis.com/a1aa/image/KSfqvpDAynyhNyKMrnleHSJidSnRWfUIfDGAEhi8hoUnf4ycC.jpg"
-          alt="Không gian 2"
-        />
-        <h3>Không Gian 2</h3>
-        <p>
-          Không gian ấm cúng, lý tưởng cho các buổi họp mặt gia đình và bạn bè.
-        </p>
-      </div>
-      <div className="space-item">
-        <img
-          src="https://storage.googleapis.com/a1aa/image/cylhRPmQU8KUL5uvMUfUEovY6ej3geSUJhItBjybahepf4ycC.jpg"
-          alt="Không gian 3"
-        />
-        <h3>Không Gian 3</h3>
-        <p>
-          Không gian sang trọng, đẳng cấp, hoàn hảo cho các buổi tiệc và sự kiện
-          quan trọng.
-        </p>
-      </div>
+      {topSpaces.length === 0 ? (
+        <p>Không có địa điểm nổi bật nào.</p>
+      ) : (
+        Array.isArray(topSpaces) &&
+        topSpaces.map((s) => (
+          <div className="space-item">
+            <Link to={`/spaces/${s?._id}`} style={{ textDecoration: "none" }}>
+              <img
+                className="d-block w-100"
+                src={s.images?.[0]?.url}
+                alt="Ảnh"
+                height="370"
+                style={{
+                  borderTopLeftRadius: "15px",
+                  borderTopRightRadius: "15px",
+                  borderBottomLeftRadius: "15px",
+                  borderBottomRightRadius: "15px",
+                }}
+              />
+
+              <h2
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {s.name}
+              </h2>
+              <h3
+                style={{
+                  color: "#ADD8E6",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                Địa điểm: {s.location}
+              </h3>
+              <h4
+                style={{
+                  marginLeft: "5px",
+                  color: "#ADD8E6",
+                }}
+              >
+                Giá: {priceFormatter(s.pricePerHour)} / VND
+              </h4>
+            </Link>
+          </div>
+        ))
+      )}
     </div>
   );
 };

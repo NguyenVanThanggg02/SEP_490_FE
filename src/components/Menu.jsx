@@ -1,25 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
 import {
-  ArrowRepeat,
   BoxArrowInRight,
   Calendar2Check,
   Clipboard2Check,
@@ -29,11 +17,10 @@ import {
   Wallet,
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
+import ListAltIcon from '@mui/icons-material/ListAlt';
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     fullname: "",
     gmail: "",
@@ -93,7 +80,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.clear();
+    setUserInfo(null);
     handleClose();
+    navigate("/");
+
   };
   const handleAddFunds = () => {
     navigate("/addfund");
@@ -112,59 +102,31 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate("/register");
   };
 
-  const handleProfileOpen = () => {
-    setOpenProfileModal(true);
-    handleClose();
-  };
-
-  const handleProfileClose = () => {
-    setOpenProfileModal(false);
-    setEditMode(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");
   };
-  const handleChangePass = () => {
-    handleClose();
-    navigate("/chang_pass");
-  };
+
   const handleMannaPost = () => {
     handleClose();
-    navigate("/manaspace");
+    navigate("/posted");
   };
 
-  const handleSave = async () => {
-    const userId = localStorage.getItem("userId");
-    try {
-      await axios.put(`http://localhost:9999/users/${userId}`, formData);
-      setUserInfo((prev) => ({ ...prev, ...formData }));
-
-      setEditMode(false);
-      toast.success("Cập nhật thông tin thành công!");
-    } catch (error) {
-      console.error("Lỗi khi cập nhật thông tin người dùng:", error);
-      toast.error("Cập nhật thông tin thất bại.");
-    }
+  const handleNavigation = (path) => {
+    navigate(path);
+    handleClose();
   };
-
+  const handleMannaOrder = () => {
+    handleClose();
+    navigate("/order");
+  };
+  const handleStatistic = () => {
+    handleClose();
+    navigate('/statistics');
+  };
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={'/alladd'}  className="linkk">
-          <Typography sx={{ marginRight: 1 }}>
-            <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-              Cho thuê địa điểm qua SpaceHub
-            </p>
-          </Typography>
-        </Link>
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -190,7 +152,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             <i class="bi bi-list" style={{ marginLeft: "8px" }}>
               <List />
             </i>
-            <Avatar sx={{ width: 32, height: 32 }} />
+            <Avatar
+              src={userInfo?.avatar || "/default-avatar.png"}
+              sx={{ width: 56, height: 56 }}
+            />
           </IconButton>
         </Tooltip>
       </Box>
@@ -205,7 +170,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
       >
         {isLoggedIn ? (
           <>
-            <MenuItem onClick={handleProfileOpen}>
+            <MenuItem onClick={() => handleNavigation("/profile")}>
               <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
               Thông tin cá nhân
             </MenuItem>
@@ -213,22 +178,27 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            <MenuItem onClick={handleChangePass}>
-              <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
-              Thay đổi mật khẩu
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={handleMannaPost}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
-
+            <MenuItem onClick={handleMannaOrder}>
+              <ListAltIcon
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Đơn
+            </MenuItem>
+            <MenuItem onClick={handleStatistic}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Thống kê doanh thu
+            </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
-              Nạp tiền
+              Ví 
             </MenuItem>
             <MenuItem onClick={handleHistory}>
               <Clipboard2Check
@@ -250,97 +220,6 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
           </>
         )}
       </Menu>
-
-      <Dialog open={openProfileModal} onClose={handleProfileClose}>
-        <DialogTitle>Thông tin chi tiết</DialogTitle>
-        <ToastContainer />
-        <DialogContent>
-          {userInfo ? (
-            <div>
-              <TextField
-                label="Họ và tên"
-                name="fullname"
-                value={formData.fullname}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Email"
-                name="gmail"
-                value={formData.gmail}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <FormControl fullWidth margin="normal" disabled={!editMode}>
-                <InputLabel>Giới tính</InputLabel>
-                <Select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="Male">Nam</MenuItem>
-                  <MenuItem value="Female">Nữ</MenuItem>
-                  <MenuItem value="">Chưa xác định</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                label="Ngày sinh"
-                name="birthday"
-                type="date"
-                value={formData.birthday}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <TextField
-                label="Số điện thoại"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                label="Địa chỉ"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                disabled={!editMode}
-                fullWidth
-                margin="normal"
-              />
-            </div>
-          ) : (
-            <Typography>Đang tải...</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          {editMode ? (
-            <>
-              <Button onClick={handleSave} color="primary">
-                Lưu
-              </Button>
-              <Button onClick={() => setEditMode(false)} color="secondary">
-                Hủy
-              </Button>
-            </>
-          ) : (
-            <Button onClick={() => setEditMode(true)} color="primary">
-              Chỉnh sửa
-            </Button>
-          )}
-          <Button onClick={handleProfileClose}>Đóng</Button>
-        </DialogActions>
-      </Dialog>
     </React.Fragment>
   );
 };

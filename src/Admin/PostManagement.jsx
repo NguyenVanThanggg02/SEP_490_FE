@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Card, Button } from "react-bootstrap";
-import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
+import { Eye, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
+import { Paginator } from "primereact/paginator";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -11,7 +12,10 @@ const PostManagement = () => {
   const [currentPostId, setCurrentPostId] = useState(null);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
-
+  const [rows, setRows] = useState(6);
+  const [first, setFirst] = useState(0);
+  const productsOnPage = spaces.slice(first, first + rows);
+  const [, setCurrentPage] = useState(1);
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces/all")
@@ -49,11 +53,13 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = (postId, communityStandardsId) => {
+  const handleReject = (postId, selectedReasons, customReason) => {
     axios
       .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
-        communityStandardsId: communityStandardsId,
+        reasons: selectedReasons,
+        customReason: customReason ? [customReason] : [],
+
       })
       .then(() => {
         setSpaces((prevSpaces) =>
@@ -80,7 +86,11 @@ const PostManagement = () => {
   const handleBackToList = () => {
     setShowDetail(false);
   };
-
+  const onPageChange = (event) => {
+    setFirst(event?.first);
+    setCurrentPage(event.page + 1);
+    setRows(event?.rows);
+  };
   return (
     <Container fluid className="py-4">
       {!showDetail ? (
@@ -98,7 +108,7 @@ const PostManagement = () => {
                   justifyContent: "center",
                 }}
               >
-                <p><Person style={{fontSize:'30px'}}/>Chủ cho thuê</p>
+                <p><Person style={{ fontSize: '30px' }} />Chủ cho thuê</p>
               </div>
               <div
                 style={{
@@ -150,17 +160,17 @@ const PostManagement = () => {
               </div>
             </div>
             <Row>
-              {spaces.map((s, index) => (
+            {productsOnPage.map((s, index) => (
                 <Col md={4} key={s._id} className="mb-4">
                   <Card className="shadow-sm h-100">
                     <Card.Img
                       variant="top"
                       src={s.images[0]?.url || "placeholder.jpg"}
                       style={{
-                        height: "200px",
+                        height: "220px",
                         objectFit: "cover",
-                        borderTopLeftRadius: "10px",
-                        borderTopRightRadius: "10px",
+                        borderTopLeftRadius: "5px",
+                        borderTopRightRadius: "5px",
                       }}
                     />
                     <Card.Body className="d-flex flex-column">
@@ -190,8 +200,7 @@ const PostManagement = () => {
                           variant="success"
                           onClick={() => handleAccept(s._id)}
                           disabled={
-                            s.censorship === "Chấp nhận" ||
-                            s.censorship === "Từ chối"
+                            s.censorship === "Chấp nhận"
                           }
                         >
                           Chấp Nhận
@@ -233,6 +242,22 @@ const PostManagement = () => {
       ) : (
         <DetailForAdmin id={selectedSpaceId} onBack={handleBackToList} />
       )}
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {!showDetail && (
+          <Paginator
+            style={{ backgroundColor: "#f9f9f9" }}
+            first={first}
+            rows={rows}
+            totalRecords={spaces.length}
+            onPageChange={onPageChange}
+          />
+        )}
+      </Row>
     </Container>
   );
 };
