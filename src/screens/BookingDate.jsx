@@ -19,7 +19,7 @@ import {
 import axios from 'axios';
 import { Col, Container, Row } from 'react-bootstrap';
 import 'react-calendar/dist/Calendar.css';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   checkDayAvailability,
@@ -83,7 +83,7 @@ const BookingForm = () => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [selectedFirstDayMonths, setSelectedFirstDayMonths] = useState([]);
   const [selectedSlots, setSelectedSlots] = useState([]);
-
+  const nav = useNavigate()
   const [selectedWeeks, setSelectedWeeks] = useState({});
 
   const {
@@ -109,6 +109,25 @@ const BookingForm = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (pricePerHour > 0) {
+      setRentalType('hour')
+      return
+    }
+    if (pricePerDay > 0) {
+      setRentalType('day')
+      return
+    }
+    if (pricePerWeek > 0) {
+      setRentalType('week')
+      return
+    }
+    if (pricePerMonth > 0) {
+      setRentalType('month')
+      return
+    }
+  }, [pricePerHour, pricePerDay, pricePerWeek, pricePerMonth])
 
   const fetchAvailableSlots = async (dates, newRentalType) => {
     return new Promise(async (resolve, reject) => {
@@ -464,18 +483,19 @@ const BookingForm = () => {
 
       const response = await createBooking(bookingData);
       toast.success('Đặt địa điểm thành công.');
+      nav('/history')
     } catch (error) {
       if (error.response && error.response.status === 409) {
         // Nếu có xung đột ngày/slot, thông báo cho người dùng
         toast.warning(
-          'Lịch bạn chọn đã có người đặt trước. Vui lòng chọn ngày hoặc slot khác.'
+          "Lịch bạn chọn đã có người đặt trước. Vui lòng chọn ngày hoặc slot khác."
         );
       } else {
-        console.error(
-          'Error creating booking:',
-          error.response ? error.response.data : error.message
-        );
-        toast.error('Lỗi khi đặt địa điểm.');
+        const errorMessage =
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
+        toast.error(errorMessage);
       }
     }
   };

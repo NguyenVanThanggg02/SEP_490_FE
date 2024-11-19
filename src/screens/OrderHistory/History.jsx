@@ -21,18 +21,23 @@ const History = () => {
   const [visible, setVisible] = useState(false);
 
   const user = localStorage.getItem("userId");
-  const statusBook = bookings.map((m) => m.status);
+
   useEffect(() => {
     axios
       .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
       .then((res) => {
-        setBookings(res.data);
-        setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
+        const updatedBookings = res.data.map((booking) => ({
+          ...booking,
+          status: booking.reasonOwnerRejected ? "canceled" : booking.status,
+        }));
+        setBookings(updatedBookings);
+        setFilteredBookings(updatedBookings); 
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, [user]);
+  
 
   const handleSearch = () => {
       let filteredData = bookings;
@@ -183,7 +188,7 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          height: "250px",
+                          height: "270px",
                           display: "flex",
                           flexDirection: "column",
                         }}
@@ -281,6 +286,17 @@ const History = () => {
                                     ? "Đã huỷ"
                                     : "Khác"}
                             </Typography>
+                            {item.reasonOwnerRejected && (
+                              <Typography
+                                variant="body2"
+                                style={{ color: "gray", fontSize: "15px" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Lí do bị hủy:
+                                </span>
+                                {item.reasonOwnerRejected}
+                              </Typography>
+                            )}
                           </Grid>
                         </Grid>
                         <Button
