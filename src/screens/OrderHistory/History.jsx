@@ -194,7 +194,7 @@ const History = () => {
                         }}
                       >
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item md={4}>
+                          <Grid item md={4} style={{marginTop:'20px'}}>
                             <img
                               src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
@@ -307,9 +307,54 @@ const History = () => {
                             marginTop: "auto",
                             marginLeft: "auto",
                           }}
-                          onClick={() => handleViewToCancel(item._id)}
+                          onClick={() => {
+                            // Chuẩn hóa ngày hiện tại (đặt giờ về 0:00:00)
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            // Chuẩn hóa ngày kết thúc (đặt giờ về 0:00:00)
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            if (
+                              today > endDate || // Ngày hiện tại đã qua ngày kết thúc
+                              (item.rentalType === "hour" &&
+                                item.selectedSlots.some(
+                                  (slot) =>
+                                    new Date(
+                                      `${item.endDate}T${slot.endTime}`
+                                    ) < new Date() // Giờ kết thúc đã qua
+                                ))
+                            ) {
+                              const spaceId = item.items[0]?.spaceId?._id;
+                              if (spaceId) {
+                                window.location.href = `/reviews/create/${spaceId}`;
+                              } else {
+                                alert("Không tìm thấy không gian để đánh giá.");
+                              }
+                            } else {
+                              handleViewToCancel(item._id);
+                            }
+                          }}
                         >
-                          Huỷ lịch
+                          {(() => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            return today > endDate ||
+                              (item.rentalType === "hour" &&
+                                item.selectedSlots.some(
+                                  (slot) =>
+                                    new Date(
+                                      `${item.endDate}T${slot.endTime}`
+                                    ) < new Date()
+                                ))
+                              ? "Đánh giá"
+                              : "Huỷ lịch";
+                          })()}
                         </Button>
                       </Card>
                     </Grid>
