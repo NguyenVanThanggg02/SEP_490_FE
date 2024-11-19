@@ -21,18 +21,23 @@ const History = () => {
   const [visible, setVisible] = useState(false);
 
   const user = localStorage.getItem("userId");
-  const statusBook = bookings.map((m) => m.status);
+
   useEffect(() => {
     axios
       .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
       .then((res) => {
-        setBookings(res.data);
-        setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
+        const updatedBookings = res.data.map((booking) => ({
+          ...booking,
+          status: booking.reasonOwnerRejected ? "canceled" : booking.status,
+        }));
+        setBookings(updatedBookings);
+        setFilteredBookings(updatedBookings); 
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, [user]);
+  
 
   const handleSearch = () => {
       let filteredData = bookings;
@@ -183,13 +188,13 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          height: "250px",
+                          height: "270px",
                           display: "flex",
                           flexDirection: "column",
                         }}
                       >
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item md={4}>
+                          <Grid item md={4} style={{marginTop:'20px'}}>
                             <img
                               src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
@@ -281,6 +286,17 @@ const History = () => {
                                     ? "Đã huỷ"
                                     : "Khác"}
                             </Typography>
+                            {item.reasonOwnerRejected && (
+                              <Typography
+                                variant="body2"
+                                style={{ color: "gray", fontSize: "15px" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Lí do bị hủy:
+                                </span>
+                                {item.reasonOwnerRejected}
+                              </Typography>
+                            )}
                           </Grid>
                         </Grid>
                         <Button
@@ -291,9 +307,54 @@ const History = () => {
                             marginTop: "auto",
                             marginLeft: "auto",
                           }}
-                          onClick={() => handleViewToCancel(item._id)}
+                          onClick={() => {
+                            // Chuẩn hóa ngày hiện tại (đặt giờ về 0:00:00)
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            // Chuẩn hóa ngày kết thúc (đặt giờ về 0:00:00)
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            if (
+                              today > endDate || // Ngày hiện tại đã qua ngày kết thúc
+                              (item.rentalType === "hour" &&
+                                item.selectedSlots.some(
+                                  (slot) =>
+                                    new Date(
+                                      `${item.endDate}T${slot.endTime}`
+                                    ) < new Date() // Giờ kết thúc đã qua
+                                ))
+                            ) {
+                              const spaceId = item.items[0]?.spaceId?._id;
+                              if (spaceId) {
+                                window.location.href = `/reviews/create/${spaceId}`;
+                              } else {
+                                alert("Không tìm thấy không gian để đánh giá.");
+                              }
+                            } else {
+                              handleViewToCancel(item._id);
+                            }
+                          }}
                         >
-                          Huỷ lịch
+                          {(() => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            return today > endDate ||
+                              (item.rentalType === "hour" &&
+                                item.selectedSlots.some(
+                                  (slot) =>
+                                    new Date(
+                                      `${item.endDate}T${slot.endTime}`
+                                    ) < new Date()
+                                ))
+                              ? "Đánh giá"
+                              : "Huỷ lịch";
+                          })()}
                         </Button>
                       </Card>
                     </Grid>

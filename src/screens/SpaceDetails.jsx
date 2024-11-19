@@ -19,7 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
-import { FlagFill, PlusCircle } from "react-bootstrap-icons";
+import { FlagFill, PlusCircle, Textarea } from "react-bootstrap-icons";
 import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
@@ -687,9 +687,6 @@ function SpaceDetails({ onSelectChat }) {
               <Col item xs={12} md={8}>
                 <Typography variant="h5">
                   {spaceData.location}
-                  <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}m2
-                  </p>
                   <Row item md={12}>
                     <Divider
                       sx={{
@@ -945,6 +942,25 @@ function SpaceDetails({ onSelectChat }) {
                     </Typography>
                   )}
                 </List>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
+                  Diện tích 
+                </Typography>
+                <div style={{ flexDirection: "row" }}>
+                  <Textarea style={{fontWeight:'bold', fontSize:'25px'}} />
+                  <b style={{ fontSize: "18px", marginLeft:'20px' }}>{spaceData.area}m2</b>
+                </div>
                 <Divider
                   sx={{
                     bgcolor: "gray",
