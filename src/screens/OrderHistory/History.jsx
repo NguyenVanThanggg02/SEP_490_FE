@@ -10,9 +10,9 @@ import CancelBooking from "./CancelBooking";
 const History = () => {
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("Tất cả");
-  const [rentalType, setRentalType] = useState("Tất cả"); // Thêm state cho rentalType
+  const [rentalType, setRentalType] = useState("Tất cả"); 
   const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]); // State cho danh sách đã lọc
+  const [filteredBookings, setFilteredBookings] = useState([]); 
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(6);
   const [curentPage, setCurrentPage] = useState(1);
@@ -194,7 +194,7 @@ const History = () => {
                         }}
                       >
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item md={4} style={{marginTop:'20px'}}>
+                          <Grid item md={4} style={{ marginTop: "20px" }}>
                             <img
                               src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
@@ -308,24 +308,29 @@ const History = () => {
                             marginLeft: "auto",
                           }}
                           onClick={() => {
-                            // Chuẩn hóa ngày hiện tại (đặt giờ về 0:00:00)
+                            const now = new Date(); // Thời gian hiện tại
                             const today = new Date();
                             today.setHours(0, 0, 0, 0);
 
-                            // Chuẩn hóa ngày kết thúc (đặt giờ về 0:00:00)
                             const endDate = new Date(item.endDate);
                             endDate.setHours(0, 0, 0, 0);
 
-                            if (
-                              today > endDate || // Ngày hiện tại đã qua ngày kết thúc
-                              (item.rentalType === "hour" &&
-                                item.selectedSlots.some(
-                                  (slot) =>
-                                    new Date(
-                                      `${item.endDate}T${slot.endTime}`
-                                    ) < new Date() // Giờ kết thúc đã qua
-                                ))
-                            ) {
+                            // Kiểm tra nếu là loại thuê theo giờ
+                            const isHourlyExpired =
+                              item.rentalType === "hour" &&
+                              item.selectedSlots.every((slot) => {
+                                // Chuyển slot.date thành Date
+                                const slotDate = new Date(slot.date);
+                                const slotEndTime = new Date(
+                                  `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                );
+                                return now > slotEndTime; // Kiểm tra giờ kết thúc đã qua
+                              });
+
+                            // Nếu là thuê theo ngày và đã qua ngày kết thúc
+                            const isDailyExpired = today > endDate;
+
+                            if (isHourlyExpired || isDailyExpired) {
                               const spaceId = item.items[0]?.spaceId?._id;
                               if (spaceId) {
                                 window.location.href = `/reviews/create/${spaceId}`;
@@ -338,20 +343,27 @@ const History = () => {
                           }}
                         >
                           {(() => {
+                            const now = new Date();
                             const today = new Date();
                             today.setHours(0, 0, 0, 0);
 
                             const endDate = new Date(item.endDate);
                             endDate.setHours(0, 0, 0, 0);
 
-                            return today > endDate ||
-                              (item.rentalType === "hour" &&
-                                item.selectedSlots.some(
-                                  (slot) =>
-                                    new Date(
-                                      `${item.endDate}T${slot.endTime}`
-                                    ) < new Date()
-                                ))
+                            const isHourlyExpired =
+                              item.rentalType === "hour" &&
+                              item.selectedSlots.every((slot) => {
+                                // Chuyển slot.date thành Date
+                                const slotDate = new Date(slot.date);
+                                const slotEndTime = new Date(
+                                  `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                );
+                                return now > slotEndTime;
+                              });
+
+                            const isDailyExpired = today > endDate;
+
+                            return isHourlyExpired || isDailyExpired
                               ? "Đánh giá"
                               : "Huỷ lịch";
                           })()}

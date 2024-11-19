@@ -1,190 +1,247 @@
 import React, { useEffect, useState } from 'react';
-import Paper from '@mui/material/Paper';
-import { DataGrid } from '@mui/x-data-grid';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Avatar,
+  Box,
+} from '@mui/material';
 import axios from 'axios';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
-
-const paginationModel = { page: 0, pageSize: 5 };
+import { formatNumberToVND } from '../utils/numberFormatter';
 
 const OrderMana = () => {
-    const userId = localStorage.getItem('userId');
-    const [order, setOrder] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [selectedOrderId, setSelectedOrderId] = useState(null);
-    const [reasonOwnerRejected, setreasonOwnerRejected] = useState("");
+  const userId = localStorage.getItem('userId');
+  const [order, setOrder] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [reasonOwnerRejected, setReasonOwnerRejected] = useState('');
 
-    useEffect(() => {
-        const fetchOrderData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:9999/bookings/spaces/${userId}`);
-                setOrder(response.data);
-            } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setOrder([]);
-                } else {
-                    console.error("Lỗi khi lấy dữ liệu đơn hàng:", error);
+  useEffect(() => {
+    const fetchOrderData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9999/bookings/spaces/${userId}`);
+        const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sắp xếp giảm dần
+        setOrder(sortedOrders);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          setOrder([]);
+        } else {
+          console.error('Lỗi khi lấy dữ liệu đơn hàng:', error);
+        }
+      }
+    };
+  
+    fetchOrderData();
+  }, [userId]);
+  
+
+  const updateBookingStatus = async (id, status, reasonOwnerRejected = '') => {
+    try {
+      await axios.put(`http://localhost:9999/bookings/updatestatus/${id}`, {
+        ownerApprovalStatus: status,
+        reasonOwnerRejected: reasonOwnerRejected,
+      });
+
+      setOrder((prevOrder) =>
+        prevOrder.map((orderItem) =>
+          orderItem._id === id
+            ? { ...orderItem, ownerApprovalStatus: status }
+            : orderItem
+        )
+      );
+
+      console.log(`Cập nhật trạng thái đơn hàng ${id}: ${status}`);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái đơn hàng', error);
+    }
+  };
+
+  const handleOpenDialog = (orderId) => {
+    setSelectedOrderId(orderId);
+    setReasonOwnerRejected('');
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedOrderId(null);
+  };
+
+  const handleConfirmReject = async () => {
+    if (reasonOwnerRejected.trim() === '') {
+      toast.warning('Vui lòng nhập lý do từ chối.');
+      return;
+    }
+    await updateBookingStatus(selectedOrderId, 'declined', reasonOwnerRejected);
+    handleCloseDialog();
+  };
+
+  const translateStatus = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'Đang chờ';
+      case 'accepted':
+        return 'Chấp nhận';
+      case 'declined':
+        return 'Từ chối';
+      default:
+        return 'Không xác định';
+    }
+  };
+
+  return (
+    <Grid container spacing={3} sx={{ padding: 3 }}>
+      {order.map((orderItem) => (
+        <Grid item xs={12} sm={6} md={4} key={orderItem._id}>
+          <Card
+            sx={{
+              borderRadius: "16px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              "&:hover": {
+                transform: "scale(1.03)",
+                boxShadow: "0 6px 15px rgba(0, 0, 0, 0.15)",
+              },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" mb={2}>
+                <Avatar
+                  src={orderItem.userId?.avatar || "/default-avatar.png"}
+                  alt={orderItem.userId?.fullname || "Không có tên"}
+                  sx={{ width: 48, height: 48, marginRight: 2 }}
+                />
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: "bold", color: "#1976d2" }}
+                  >
+                    {orderItem.userId?.fullname || "Không có tên"}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color:
+                        orderItem.ownerApprovalStatus === "accepted"
+                          ? "green"
+                          : orderItem.ownerApprovalStatus === "declined"
+                            ? "red"
+                            : "orange",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {translateStatus(orderItem.ownerApprovalStatus)}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Typography variant="body1">
+                <strong>Tên không gian: </strong>
+                <strong><i>{orderItem.spaceId ? orderItem.spaceId.name : "Không có tên"}</i></strong>
+              </Typography>
+              <Typography variant="body1">
+                <strong>SĐT: </strong>
+                {orderItem.userId ? orderItem.userId.phone : "Không có SĐT"}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Ngày đặt phòng: </strong>
+                {new Date(orderItem.createdAt).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Ngày đến: </strong>
+                {new Date(orderItem.startDate).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Giá đặt phòng: </strong>
+                {formatNumberToVND(orderItem.totalAmount)} VNĐ
+              </Typography>
+            </CardContent>
+            <CardContent sx={{ textAlign: "center" }}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={() => updateBookingStatus(orderItem._id, "accepted")}
+                sx={{
+                  borderRadius: "24px",
+                  marginRight: 1,
+                  paddingX: 3,
+                  paddingY: 1,
+                }}
+                disabled={
+                  orderItem.ownerApprovalStatus === "accepted" ||
+                  orderItem.ownerApprovalStatus === "declined"
                 }
-            }
-        };
+              >
+                Chấp nhận
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleOpenDialog(orderItem._id)}
+                sx={{
+                  borderRadius: "24px",
+                  paddingX: 3,
+                  paddingY: 1,
+                }}
+                disabled={
+                  orderItem.ownerApprovalStatus === "accepted" ||
+                  orderItem.ownerApprovalStatus === "declined"
+                }
+              >
+                Từ chối
+              </Button>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
 
-        fetchOrderData();
-    }, [userId]);
-
-    const updateBookingStatus = async (id, status, reasonOwnerRejected = "") => {
-        try {
-            await axios.put(`http://localhost:9999/bookings/updatestatus/${id}`, {
-                ownerApprovalStatus: status,
-                reasonOwnerRejected: reasonOwnerRejected,
-            });
-
-            setOrder((prevOrder) =>
-                prevOrder.map((orderItem) =>
-                    orderItem._id === id
-                        ? { ...orderItem, ownerApprovalStatus: status }
-                        : orderItem
-                )
-            );
-
-            console.log(`Cập nhật trạng thái đơn hàng ${id}: ${status}`);
-        } catch (error) {
-            console.error("Lỗi khi cập nhật trạng thái đơn hàng", error);
-        }
-    };
-
-    const handleOpenDialog = (orderId) => {
-        setSelectedOrderId(orderId);
-        setreasonOwnerRejected("");
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-        setSelectedOrderId(null);
-    };
-
-    const handleConfirmReject = async () => {
-        if (reasonOwnerRejected.trim() === "") {
-            toast.warning("Vui lòng nhập lý do từ chối.");
-            return;
-        }
-        await updateBookingStatus(selectedOrderId, "declined", reasonOwnerRejected);
-        handleCloseDialog();
-    };
-    
-    const translateStatus = (status) => {
-        switch (status) {
-            case 'pending':
-                return 'Đang chờ';
-            case 'accepted':
-                return 'Chấp nhận';
-            case 'declined':
-                return 'Từ chối';
-            default:
-                return 'Không xác định';
-        }
-    };
-    
-    const columns = [
-        { field: 'trangthai', headerName: 'Trạng thái', width: 100, disableColumnMenu: true, resizable: false },
-        { field: 'khach', headerName: 'Khách', width: 130, disableColumnMenu: true, resizable: false },
-        { field: 'sdt', headerName: 'SĐT', width: 90, disableColumnMenu: true, sortable: false, resizable: false },
-        { field: 'ngayden', headerName: 'Ngày đến', width: 160, disableColumnMenu: true, resizable: false },
-        { field: 'ngaydatphong', headerName: 'Ngày đặt phòng', width: 160, disableColumnMenu: true, resizable: false },
-        { field: 'gia', headerName: 'Giá đặt phòng', width: 120, disableColumnMenu: true, resizable: false },
-        { field: 'danhgia', headerName: 'Đánh giá', width: 200, disableColumnMenu: true, resizable: false, sortable: false },
-        {
-            field: 'hanhdong',
-            headerName: 'Hành động',
-            width: 250,
-            disableColumnMenu: true,
-            sortable: false,
-            renderCell: (params) => {
-                const isDisabled = params.row.trangthai === "Chấp nhận" || params.row.trangthai === "Từ chối";
-
-                const handleAccept = async () => {
-                    await updateBookingStatus(params.row.id, "accepted");
-                    console.log(`Chấp nhận đơn hàng ${params.row.id}`);
-                };
-
-                return (
-                    <div>
-                        <Button
-                            variant="contained"
-                            color="success"
-                            onClick={handleAccept}
-                            sx={{ marginRight: 1 }}
-                            disabled={isDisabled}
-                        >
-                            Chấp nhận
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => handleOpenDialog(params.row.id)}
-                            disabled={isDisabled}
-                        >
-                            Từ chối
-                        </Button>
-                    </div>
-                );
-            },
-        },
-    ];
-
-    const rows = order?.map((orderItem, index) => ({
-        id: orderItem._id,
-        trangthai: translateStatus(orderItem.ownerApprovalStatus),
-        khach: orderItem.userId ? orderItem.userId.fullname : 'Không có tên khách',
-        sdt: orderItem.userId ? orderItem.userId.phone : 'Không có SĐT',
-        ngayden: new Date(orderItem.startDate).toLocaleDateString(),
-        ngaydatphong: new Date(orderItem.createdAt).toLocaleDateString(),
-        gia: orderItem.totalAmount,
-        danhgia: orderItem.rating || '',
-        hanhdong: '',
-    }));
-
-    return (
-      <Paper sx={{ height: 400, width: "68%", margin: "0 auto" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{ pagination: { paginationModel } }}
-          pageSizeOptions={[5, 10]}
-          getRowId={(row) => row.id}
-          sx={{ border: 0 }}
-        />
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          sx={{
-            "& .MuiDialog-paper": {
-              width: "400px",
-            },
-          }}
-        >
-          <DialogTitle>Từ chối lịch book</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Lý do từ chối"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={reasonOwnerRejected}
-              onChange={(e) => setreasonOwnerRejected(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Hủy</Button>
-            <Button onClick={handleConfirmReject} color="error">
-              Xác nhận
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Paper>
-    );
+      {/* Dialog for rejecting orders */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "16px",
+            width: "400px",
+          },
+        }}
+      >
+        <DialogTitle>Từ chối lịch book</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Lý do từ chối"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={reasonOwnerRejected}
+            onChange={(e) => setReasonOwnerRejected(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} sx={{ borderRadius: "16px" }}>
+            Hủy
+          </Button>
+          <Button
+            onClick={handleConfirmReject}
+            color="error"
+            sx={{ borderRadius: "16px" }}
+          >
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Grid>
+  );
 };
 
 export default OrderMana;
