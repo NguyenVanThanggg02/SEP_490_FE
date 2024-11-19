@@ -149,7 +149,7 @@ export default function Notification() {
                   : "#e0f7fa",
               }}
             >
-              <img
+              <Avatar
                 src={
                   notification.imageUrl ||
                   "https://res.cloudinary.com/degpdpheb/image/upload/v1732010263/newlogo_2_xlrq0d.png"

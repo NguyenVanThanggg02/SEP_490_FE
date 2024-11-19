@@ -15,7 +15,7 @@ const History = () => {
   const [filteredBookings, setFilteredBookings] = useState([]); 
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(6);
-  const [curentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
   const productsOnPage = filteredBookings.slice(first, first + rows);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [visible, setVisible] = useState(false);
