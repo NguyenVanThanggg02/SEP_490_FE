@@ -1,10 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper, TextField, Dialog, DialogTitle, DialogContent, Select, MenuItem, DialogActions, Box, TablePagination, Pagination } from '@mui/material';
+import {
+  Button,
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  Box,
+  Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Select,
+  MenuItem,
+  DialogActions,
+  Divider,
+  IconButton,
+} from '@mui/material';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useUser } from '../hooks/useUser';
-import { toast } from 'react-toastify';
 import { formatMoney } from '../utils/moneyFormatter';
 import { LoadingButton } from '@mui/lab';
+import { Visibility, VisibilityOff, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 const AddFunds = () => {
   const [data, setData] = useState();
@@ -13,158 +33,201 @@ const AddFunds = () => {
   const [beneficiaryAccountNumber, setBeneficiaryAccountNumber] = useState('');
   const [beneficiaryBankCode, setBeneficiaryBankCode] = useState('MOMO');
   const [loading, setLoading] = useState(false);
-  const { user } = useUser()
+  const { user } = useUser();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     totalElement: undefined,
     totalPage: undefined,
-    limit: 10
-  })
-
-  async function fetchHistory() {
-    if (!user) return
+    limit: 9,
+  });
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false); 
+  
+  const fetchHistory = async () => {
+    if (!user) return;
     try {
       const response = await axios.get('http://localhost:9999/transaction/list', {
         params: {
           userId: user.id,
           page: pagination.page,
-          limit: pagination.limit
-        }
+          limit: pagination.limit,
+        },
       });
       setData(response.data);
-      setPagination(prev => {
-        return {
-          ...prev,
-          totalPage: response.data.pagination.totalPage,
-          totalElement: response.data.pagination.totalElement
-        }
-      })
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
+      setPagination((prev) => ({
+        ...prev,
+        totalPage: response.data.pagination.totalPage,
+        totalElement: response.data.pagination.totalElement,
+      }));
     } catch (error) {
-      console.log(error)
-      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
-    }
-  }
-
-  // Fetch transfer history data
-  useEffect(() => {
-    if (!user) return;
-    fetchHistory();
-  }, [user]);
-
-  // Handle Create Transaction and Redirect
-  const handleCreateTransaction = async () => {
-    if (!amount || Number(amount) <= 0) {
-      return;
-    }
-    setLoading(true);
-    if (transactionType === "Nạp tiền") {
-      try {
-        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
-        const { payUrl } = response.data;
-        if (payUrl) {
-          window.location.href = payUrl;
-        } else {
-          toast.error("Thao tác thất bại, vui lòng thử lại sau");
-        }
-      } catch (error) {
-        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    if (transactionType === "Rút tiền") {
-      try {
-        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber, beneficiaryBankCode });
-        toast.success(response.data?.message)
-        fetchHistory()
-        setDialogOpen(false)
-      } catch (error) {
-        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
-      } finally {
-        setLoading(false);
-      }
+      console.error(error);
+      toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
     }
   };
 
   useEffect(() => {
-    // if (pagination.totalElement) {
-    fetchHistory()
-    // }
-  }, [pagination.page])
+    if (user) fetchHistory();
+  }, [user, pagination.page]);
+
+  const handleCreateTransaction = async () => {
+    if (!amount || Number(amount) <= 0) return;
+
+    setLoading(true);
+    try {
+      const payload =
+        transactionType === 'Nạp tiền'
+          ? { amount, userId: user.id, type: transactionType }
+          : { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber, beneficiaryBankCode };
+
+      const response = await axios.post('http://localhost:9999/transaction/create', payload);
+      if (transactionType === 'Nạp tiền' && response.data.payUrl) {
+        window.location.href = response.data.payUrl;
+      } else {
+        toast.success(response.data?.message);
+        fetchHistory();
+        setDialogOpen(false);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data.message || 'Thao tác thất bại, vui lòng thử lại sau');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" gutterBottom>
-        Danh sách giao dịch
+      <Typography
+        variant="h4"
+        gutterBottom
+        color="primary"
+        fontWeight="bold"
+        align="center"
+      >
+        Lịch Sử Giao Dịch
       </Typography>
-
-      <Box display="flex" alignItems="center" justifyContent={"space-between"} fullWidth>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom={3}
+      >
         <Button
           variant="contained"
-          color="primary"
+          color="success"
           onClick={() => setDialogOpen(true)}
-          style={{ marginBottom: '20px' }}
         >
-          Khởi tạo giao dịch
+          + Tạo Giao Dịch
         </Button>
-        <Typography variant="h6" gutterBottom>
-          {
-            data?.balanceAmount !== undefined && <>{`Số dư ví khả dụng: ${formatMoney(data.balanceAmount)}`}</>
-          }
-        </Typography>
-
-      </Box>
-
-      <TableContainer component={Paper}>
-        <Table stickyHeader >
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Loại giao dịch</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Số tiền</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Ngày giao dịch</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data?.transactionList && data.transactionList.length > 0 && data.transactionList.map((transaction, index) => (
-              <TableRow key={transaction.transactionId} hover >
-                <TableCell>{pagination.limit * (pagination.page - 1) + index + 1}</TableCell>
-                <TableCell>{transaction.type}</TableCell>
-                <TableCell>{formatMoney(transaction.amount)}</TableCell>
-                <TableCell>{transaction.createdAt}</TableCell>
-                <TableCell>{transaction.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {
-        pagination.totalPage &&
-        <Container sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
-          <Pagination
-            count={pagination.totalPage} // Total number of pages
-            page={pagination.page} // Current page
-            onChange={(_, newPage) => { setPagination(prev => { return { ...prev, page: newPage } }) }}
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography variant="h6">
+            {data?.balanceAmount !== undefined && (
+              <span style={{ color: "#1e88e5", fontWeight: "bold" }}>
+                Số dư:{" "}
+                {isBalanceVisible
+                  ? formatMoney(data.balanceAmount)
+                  : "********"}{" "}
+                {/* Hiển thị hoặc ẩn số dư */}
+              </span>
+            )}
+          </Typography>
+          <IconButton
+            onClick={() => setIsBalanceVisible(!isBalanceVisible)}
             color="primary"
-            sx={{ justifyContent: "center" }}
+          >
+            {isBalanceVisible ? <Visibility /> : <VisibilityOff />}{" "}
+            {/* Icon mắt */}
+          </IconButton>
+        </Box>
+      </Box>
+      <Grid container spacing={3}>
+        {data?.transactionList &&
+          data.transactionList.map((transaction) => (
+            <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
+              <Card
+                elevation={3}
+                sx={{
+                  borderLeft: `4px solid ${
+                    transaction.status === "Thành công" ? "#4caf50" : "#f44336"
+                  }`,
+                  height:'145px'
+                }}
+              >
+                <CardContent
+                  sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                >
+                  {transaction.type === "Nạp tiền" ||
+                  transaction.type === "Cộng tiền" ? (
+                    <ArrowDownward sx={{ color: "#4caf50" }} />
+                  ) : (
+                    <ArrowUpward sx={{ color: "#f44336" }} />
+                  )}
+                  <Box>
+                    <Typography variant="h6" gutterBottom>
+                      {transaction.type} -{" "}
+                      <span style={{ color: "#ff9800" }}>
+                        {formatMoney(transaction.amount)}
+                      </span>
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Ngày: {transaction.createdAt}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      fontWeight="bold"
+                      color={
+                        transaction.status === "Thành công"
+                          ? "#4caf50"
+                          : "#f44336"
+                      }
+                    >
+                      Trạng thái: {transaction.status}
+                    </Typography>
+                    {transaction.reasonRejected && (
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        color="#CC33FF"
+                      >
+                        Lý do: {transaction.reasonRejected}
+                      </Typography>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+      </Grid>
+      {pagination.totalPage && (
+        <Box display="flex" justifyContent="center" mt={4}>
+          <Pagination
+            count={pagination.totalPage}
+            page={pagination.page}
+            onChange={(_, newPage) =>
+              setPagination((prev) => ({ ...prev, page: newPage }))
+            }
+            color="primary"
           />
-        </Container>
-      }
-
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>Tạo giao dịch mới</DialogTitle>
-        <DialogContent>
+        </Box>
+      )}
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold" align="center">
+            Tạo Giao Dịch
+          </Typography>
+        </DialogTitle>
+        <Divider />
+        <DialogContent sx={{ padding: "16px" }}>
           <Select
             value={transactionType}
             onChange={(e) => setTransactionType(e.target.value)}
             fullWidth
+            margin="dense"
+            sx={{ marginBottom: "16px" }}
           >
             <MenuItem value="Nạp tiền">Nạp tiền</MenuItem>
             <MenuItem value="Rút tiền">Rút tiền</MenuItem>
@@ -175,35 +238,47 @@ const AddFunds = () => {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             fullWidth
-            margin="normal"
+            margin="dense"
+            sx={{ marginBottom: "16px" }}
           />
-          {
-            transactionType === "Rút tiền" && <>
+          {transactionType === "Rút tiền" && (
+            <>
               <TextField
                 label="Số tài khoản ngân hàng"
-                type="text"
                 value={beneficiaryAccountNumber}
                 onChange={(e) => setBeneficiaryAccountNumber(e.target.value)}
                 fullWidth
-                margin="normal"
+                margin="dense"
+                sx={{ marginBottom: "16px" }}
               />
               <Select
                 value={beneficiaryBankCode}
                 onChange={(e) => setBeneficiaryBankCode(e.target.value)}
                 fullWidth
-            >
+                margin="dense"
+              >
                 <MenuItem value="MOMO">Momo</MenuItem>
                 <MenuItem value="Vietcombank">Vietcombank</MenuItem>
                 <MenuItem value="BIDV">BIDV</MenuItem>
                 <MenuItem value="Vietinbank">Vietinbank</MenuItem>
-              </Select></>
-          }
+              </Select>
+            </>
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="primary" variant='outlined'>
+        <DialogActions sx={{ padding: "16px" }}>
+          <Button
+            onClick={() => setDialogOpen(false)}
+            color="error"
+            variant="outlined"
+          >
             Hủy
           </Button>
-          <LoadingButton onClick={handleCreateTransaction} color="primary" loading={loading} variant='contained'>
+          <LoadingButton
+            onClick={handleCreateTransaction}
+            loading={loading}
+            color="primary"
+            variant="contained"
+          >
             Xác nhận
           </LoadingButton>
         </DialogActions>
