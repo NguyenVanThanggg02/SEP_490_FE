@@ -24,7 +24,7 @@ import axios from 'axios';
 import { useUser } from '../hooks/useUser';
 import { formatMoney } from '../utils/moneyFormatter';
 import { LoadingButton } from '@mui/lab';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 
 const AddFunds = () => {
   const [data, setData] = useState();
@@ -96,79 +96,138 @@ const AddFunds = () => {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" gutterBottom color="primary" fontWeight="bold" align="center">
+      <Typography
+        variant="h4"
+        gutterBottom
+        color="primary"
+        fontWeight="bold"
+        align="center"
+      >
         Lịch Sử Giao Dịch
       </Typography>
-
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom={3}>
-        <Button variant="contained" color="success" onClick={() => setDialogOpen(true)}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom={3}
+      >
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => setDialogOpen(true)}
+        >
           + Tạo Giao Dịch
         </Button>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h6">
             {data?.balanceAmount !== undefined && (
-              <span style={{ color: '#1e88e5', fontWeight: 'bold' }}>
-                Số dư:{' '}
-                {isBalanceVisible ? formatMoney(data.balanceAmount) : '********'} {/* Hiển thị hoặc ẩn số dư */}
+              <span style={{ color: "#1e88e5", fontWeight: "bold" }}>
+                Số dư:{" "}
+                {isBalanceVisible
+                  ? formatMoney(data.balanceAmount)
+                  : "********"}{" "}
+                {/* Hiển thị hoặc ẩn số dư */}
               </span>
             )}
           </Typography>
-          <IconButton onClick={() => setIsBalanceVisible(!isBalanceVisible)} color="primary">
-            {isBalanceVisible ? <Visibility /> : <VisibilityOff />} {/* Icon mắt */}
+          <IconButton
+            onClick={() => setIsBalanceVisible(!isBalanceVisible)}
+            color="primary"
+          >
+            {isBalanceVisible ? <Visibility /> : <VisibilityOff />}{" "}
+            {/* Icon mắt */}
           </IconButton>
         </Box>
       </Box>
-
       <Grid container spacing={3}>
         {data?.transactionList &&
           data.transactionList.map((transaction) => (
             <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
-              <Card elevation={3} sx={{ borderLeft: `4px solid ${transaction.status === 'Hoàn thành' ? '#4caf50' : '#f44336'}` }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    {transaction.type} - <span style={{ color: '#ff9800' }}>{formatMoney(transaction.amount)}</span>
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Ngày: {transaction.createdAt}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    fontWeight="bold"
-                    color={transaction.status === 'Hoàn thành' ? '#4caf50' : '#f44336'}
-                  >
-                    Trạng thái: {transaction.status}
-                  </Typography>
+              <Card
+                elevation={3}
+                sx={{
+                  borderLeft: `4px solid ${
+                    transaction.status === "Thành công" ? "#4caf50" : "#f44336"
+                  }`,
+                  height:'145px'
+                }}
+              >
+                <CardContent
+                  sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                >
+                  {transaction.type === "Nạp tiền" ||
+                  transaction.type === "Cộng tiền" ? (
+                    <ArrowDownward sx={{ color: "#4caf50" }} />
+                  ) : (
+                    <ArrowUpward sx={{ color: "#f44336" }} />
+                  )}
+                  <Box>
+                    <Typography variant="h6" gutterBottom>
+                      {transaction.type} -{" "}
+                      <span style={{ color: "#ff9800" }}>
+                        {formatMoney(transaction.amount)}
+                      </span>
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Ngày: {transaction.createdAt}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      fontWeight="bold"
+                      color={
+                        transaction.status === "Thành công"
+                          ? "#4caf50"
+                          : "#f44336"
+                      }
+                    >
+                      Trạng thái: {transaction.status}
+                    </Typography>
+                    {transaction.reasonRejected && (
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        color="#CC33FF"
+                      >
+                        Lý do: {transaction.reasonRejected}
+                      </Typography>
+                    )}
+                  </Box>
                 </CardContent>
               </Card>
             </Grid>
           ))}
       </Grid>
-
       {pagination.totalPage && (
         <Box display="flex" justifyContent="center" mt={4}>
           <Pagination
             count={pagination.totalPage}
             page={pagination.page}
-            onChange={(_, newPage) => setPagination((prev) => ({ ...prev, page: newPage }))}
+            onChange={(_, newPage) =>
+              setPagination((prev) => ({ ...prev, page: newPage }))
+            }
             color="primary"
           />
         </Box>
       )}
-
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>
           <Typography variant="h5" fontWeight="bold" align="center">
             Tạo Giao Dịch
           </Typography>
         </DialogTitle>
         <Divider />
-        <DialogContent sx={{ padding: '16px' }}>
+        <DialogContent sx={{ padding: "16px" }}>
           <Select
             value={transactionType}
             onChange={(e) => setTransactionType(e.target.value)}
             fullWidth
             margin="dense"
-            sx={{ marginBottom: '16px' }}
+            sx={{ marginBottom: "16px" }}
           >
             <MenuItem value="Nạp tiền">Nạp tiền</MenuItem>
             <MenuItem value="Rút tiền">Rút tiền</MenuItem>
@@ -180,9 +239,9 @@ const AddFunds = () => {
             onChange={(e) => setAmount(e.target.value)}
             fullWidth
             margin="dense"
-            sx={{ marginBottom: '16px' }}
+            sx={{ marginBottom: "16px" }}
           />
-          {transactionType === 'Rút tiền' && (
+          {transactionType === "Rút tiền" && (
             <>
               <TextField
                 label="Số tài khoản ngân hàng"
@@ -190,7 +249,7 @@ const AddFunds = () => {
                 onChange={(e) => setBeneficiaryAccountNumber(e.target.value)}
                 fullWidth
                 margin="dense"
-                sx={{ marginBottom: '16px' }}
+                sx={{ marginBottom: "16px" }}
               />
               <Select
                 value={beneficiaryBankCode}
@@ -206,11 +265,20 @@ const AddFunds = () => {
             </>
           )}
         </DialogContent>
-        <DialogActions sx={{ padding: '16px' }}>
-          <Button onClick={() => setDialogOpen(false)} color="error" variant="outlined">
+        <DialogActions sx={{ padding: "16px" }}>
+          <Button
+            onClick={() => setDialogOpen(false)}
+            color="error"
+            variant="outlined"
+          >
             Hủy
           </Button>
-          <LoadingButton onClick={handleCreateTransaction} loading={loading} color="primary" variant="contained">
+          <LoadingButton
+            onClick={handleCreateTransaction}
+            loading={loading}
+            color="primary"
+            variant="contained"
+          >
             Xác nhận
           </LoadingButton>
         </DialogActions>

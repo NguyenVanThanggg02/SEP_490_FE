@@ -6,6 +6,7 @@ import '../../style/History.css';
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
 import CancelBooking from "./CancelBooking";
+import Reports from "../Reports";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -19,7 +20,8 @@ const History = () => {
   const productsOnPage = filteredBookings.slice(first, first + rows);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [visible, setVisible] = useState(false);
-
+  const [visibleReport, setVisibleReport] = useState(false);
+  const [idSpace, setIdSpace] = useState("");
   const user = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const History = () => {
           ...booking,
           status: booking.reasonOwnerRejected ? "canceled" : booking.status,
         }));
+        updatedBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setBookings(updatedBookings);
         setFilteredBookings(updatedBookings); 
       })
@@ -78,7 +81,10 @@ const History = () => {
     setSelectedBooking(booking);
     setVisible(true);
   };
-
+  const handleReport = (spaceId) => {
+    setVisibleReport(true);
+    setIdSpace(spaceId);
+  };
   const updateBookingStatus = (bookingId, newStatus) => {
     setBookings((prevBookings) =>
       prevBookings.map((booking) =>
@@ -299,49 +305,87 @@ const History = () => {
                             )}
                           </Grid>
                         </Grid>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          disabled={item.status === "canceled"}
+                        {/* button đánh giá - hủy lịch */}
+                        <Grid
+                          container
+                          spacing={2}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
-                          }}
-                          onClick={() => {
-                            const now = new Date(); // Thời gian hiện tại
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-
-                            const endDate = new Date(item.endDate);
-                            endDate.setHours(0, 0, 0, 0);
-
-                            // Kiểm tra nếu là loại thuê theo giờ
-                            const isHourlyExpired =
-                              item.rentalType === "hour" &&
-                              item.selectedSlots.every((slot) => {
-                                // Chuyển slot.date thành Date
-                                const slotDate = new Date(slot.date);
-                                const slotEndTime = new Date(
-                                  `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
-                                );
-                                return now > slotEndTime; // Kiểm tra giờ kết thúc đã qua
-                              });
-
-                            // Nếu là thuê theo ngày và đã qua ngày kết thúc
-                            const isDailyExpired = today > endDate;
-
-                            if (isHourlyExpired || isDailyExpired) {
-                              const spaceId = item.items[0]?.spaceId?._id;
-                              if (spaceId) {
-                                window.location.href = `/reviews/create/${spaceId}`;
-                              } else {
-                                alert("Không tìm thấy không gian để đánh giá.");
-                              }
-                            } else {
-                              handleViewToCancel(item._id);
-                            }
+                            justifyContent: "flex-end",
                           }}
                         >
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              style={{ marginRight: "10px" }}
+                              disabled={item.status === "canceled"}
+                              onClick={() => {
+                                const now = new Date(); // Thời gian hiện tại
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                const endDate = new Date(item.endDate);
+                                endDate.setHours(0, 0, 0, 0);
+
+                                // Kiểm tra nếu là loại thuê theo giờ
+                                const isHourlyExpired =
+                                  item.rentalType === "hour" &&
+                                  item.selectedSlots.every((slot) => {
+                                    // Chuyển slot.date thành Date
+                                    const slotDate = new Date(slot.date);
+                                    const slotEndTime = new Date(
+                                      `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                    );
+                                    return now > slotEndTime; // Kiểm tra giờ kết thúc đã qua
+                                  });
+
+                                // Nếu là thuê theo ngày và đã qua ngày kết thúc
+                                const isDailyExpired = today > endDate;
+
+                                if (isHourlyExpired || isDailyExpired) {
+                                  const spaceId = item.items[0]?.spaceId?._id;
+                                  if (spaceId) {
+                                    window.location.href = `/reviews/create/${spaceId}`;
+                                  } else {
+                                    alert(
+                                      "Không tìm thấy không gian để đánh giá."
+                                    );
+                                  }
+                                } else {
+                                  handleViewToCancel(item._id);
+                                }
+                              }}
+                            >
+                              {(() => {
+                                const now = new Date();
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                const endDate = new Date(item.endDate);
+                                endDate.setHours(0, 0, 0, 0);
+
+                                const isHourlyExpired =
+                                  item.rentalType === "hour" &&
+                                  item.selectedSlots.every((slot) => {
+                                    // Chuyển slot.date thành Date
+                                    const slotDate = new Date(slot.date);
+                                    const slotEndTime = new Date(
+                                      `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                    );
+                                    return now > slotEndTime;
+                                  });
+
+                                const isDailyExpired = today > endDate;
+
+                                return isHourlyExpired || isDailyExpired
+                                  ? "Đánh giá"
+                                  : "Huỷ lịch";
+                              })()}
+                            </Button>
+                          </Grid>
+                              {/* button báo cáo */}
                           {(() => {
                             const now = new Date();
                             const today = new Date();
@@ -353,7 +397,6 @@ const History = () => {
                             const isHourlyExpired =
                               item.rentalType === "hour" &&
                               item.selectedSlots.every((slot) => {
-                                // Chuyển slot.date thành Date
                                 const slotDate = new Date(slot.date);
                                 const slotEndTime = new Date(
                                   `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
@@ -363,11 +406,20 @@ const History = () => {
 
                             const isDailyExpired = today > endDate;
 
-                            return isHourlyExpired || isDailyExpired
-                              ? "Đánh giá"
-                              : "Huỷ lịch";
+                            return (isHourlyExpired || isDailyExpired) &&
+                              item.status === "completed" ? (
+                              <Grid item style={{ marginRight: "10px" }}>
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  onClick={() => handleReport(item.items[0]?.spaceId?._id)}  
+                                  >
+                                  Báo cáo
+                                </Button>
+                              </Grid>
+                            ) : null;
                           })()}
-                        </Button>
+                        </Grid>
                       </Card>
                     </Grid>
                   ))
@@ -392,6 +444,8 @@ const History = () => {
           onPageChange={onPageChange}
         />
       </Row>
+      {visibleReport && <Reports visibleReport={visibleReport} setVisibleReport={setVisibleReport} idSpace={idSpace} />}
+
       {visible && (
         <CancelBooking
           visible={visible}

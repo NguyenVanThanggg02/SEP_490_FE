@@ -34,7 +34,7 @@ const DashBoard = () => {
       activeKey={activeKey}
       onSelect={(k) => setActiveKey(k)}
     >
-      <Row>
+      <Row style={{marginTop:'-32px'}}>
         <Col
           sm={2}
           style={{

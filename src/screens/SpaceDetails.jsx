@@ -20,7 +20,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
 import { FlagFill, PlusCircle, Textarea } from "react-bootstrap-icons";
-import Reports from "./Reports";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
@@ -38,7 +37,6 @@ function SpaceDetails({ onSelectChat }) {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [visible, setVisible] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState('');
@@ -1156,32 +1154,13 @@ function SpaceDetails({ onSelectChat }) {
                       </Box>
                     )}
                 </Box>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setVisible(true)}
-                  className={userId === spaceData.userId?._id ? "d-none" : ""}
-                >
-                  <FlagFill
-                    style={{
-                      color: "gray",
-                      marginRight: "15px",
-                      marginTop: "6px",
-                    }}
-                  />
-                  Báo cáo nhà/phòng cho thuê này
-                </div>
+                
               </Col>
             </Row>
           </Container>
           {/* Display Images */}
         </>
       )}
-      {visible && <Reports visible={visible} setVisible={setVisible} />}
       <Drawer
         anchor="bottom"
         open={openDrawer}
