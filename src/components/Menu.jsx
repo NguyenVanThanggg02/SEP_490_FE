@@ -6,7 +6,8 @@ import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import { toast, ToastContainer } from "react-toastify";
+import MenuItem from "@mui/material/MenuItem";
+import axios from "axios";
 import {
   ArrowRepeat,
   BoxArrowInRight,
@@ -17,9 +18,9 @@ import {
   PersonVcard,
   Wallet,
 } from "react-bootstrap-icons";
-import axios from "axios";
+
 import "../style/Menu.css";
-import { MenuItem } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
 
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -135,8 +136,13 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <List style={{ marginLeft: "8px" }} />
-            <Avatar sx={{ width: 32, height: 32 }} />
+            <i class="bi bi-list" style={{ marginLeft: "8px" }}>
+              <List />
+            </i>
+            <Avatar
+              src={userInfo?.avatar || "/default-avatar.png"}
+              sx={{ width: 56, height: 56 }}
+            />
           </IconButton>
         </Tooltip>
       </Box>

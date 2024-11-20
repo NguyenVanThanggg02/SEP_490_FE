@@ -8,8 +8,6 @@ import { Paginator } from "primereact/paginator";
 
 const History = () => {
   const [date, setDate] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [service, setService] = useState("Tất cả");
   const [status, setStatus] = useState("Tất cả");
   const [rentalType, setRentalType] = useState("Tất cả"); // Thêm state cho rentalType
   const [bookings, setBookings] = useState([]);
@@ -154,7 +152,7 @@ const History = () => {
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",

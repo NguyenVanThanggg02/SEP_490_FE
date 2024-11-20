@@ -4,6 +4,7 @@ import InputEmoji from "react-input-emoji";
 import { getUser } from "../Api/UserRequests";
 import { addMessage, getMessages } from "../Api/MessageRequests";
 import "../style/chatbox.css";
+import { Avatar } from "@mui/material";
 
 const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   const [userData, setUserData] = useState(null);
@@ -11,7 +12,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   const [newMessage, setNewMessage] = useState("");
   const scroll = useRef();
 
-  // Fetch user data for the chat header
   useEffect(() => {
     const userId = chat?.members?.find((id) => id !== currentUser);
     const getUserData = async () => {
@@ -26,7 +26,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     if (chat) getUserData();
   }, [chat, currentUser]);
 
-  // Fetch messages for the chat
   useEffect(() => {
     const fetchMessages = async () => {
       if (chat) {
@@ -42,12 +41,10 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     fetchMessages();
   }, [chat]);
 
-  // Scroll to the last message
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Send new message
   const handleSend = async (e) => {
     e.preventDefault();
     const message = {
@@ -57,11 +54,8 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     };
 
     const receiverId = chat.members.find((id) => id !== currentUser);
-
-    // Send message to socket server
     setSendMessage({ ...message, receiverId });
 
-    // Save message to database
     try {
       const { data } = await addMessage(message);
       setMessages((prevMessages) => [...prevMessages, data]);
@@ -71,7 +65,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     }
   };
 
-  // Update messages when receiving new one
   useEffect(() => {
     if (receivedMessage && chat && receivedMessage.chatId === chat._id) {
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
@@ -82,26 +75,74 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     <div className="ChatBox-container" style={{ height: "100vh" }}>
       {chat ? (
         <>
-          <div className="chat-header">
-            <div className="follower">
-              <div>
-                <img
-                  alt="Profile"
-                  className="followerImage"
-                  style={{ width: "50px", height: "50px" }}
-                />
-                <div className="name" style={{ fontSize: "0.9rem" }}>
-                  <span>{userData?.fullname}</span>
-                </div>
+          {/* Header section */}
+          <div
+            className="chat-header d-flex justify-content-between"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 10px",
+            }}
+          >
+            {/* User Avatar and Name */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Avatar
+                src={userData?.avatar || "/default-avatar.png"}
+                sx={{ width: 56, height: 56 }}
+              />
+              <span
+                style={{
+                  marginLeft: "10px",
+                  fontSize: "1rem",
+                  fontWeight: "500",
+                }}
+              >
+                {userData?.fullname}
+              </span>
+            </div>
+
+            {/* Product Card Section */}
+            <div
+              className="product-card"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                padding: "5px 10px",
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
+                maxWidth: "500px",
+                height: "100px",
+                marginRight: "20px",
+              }}
+            >
+              <img
+                src={chat.spacesId?.images[0].url || "/default-product.png"}
+                alt="Product"
+                style={{
+                  width: "90px",
+                  height: "90px",
+                  borderRadius: "8px",
+                  marginRight: "10px",
+                }}
+              />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    color: "#859b50",
+                    fontSize: "0.9rem",
+                    fontWeight: "700",
+                  }}
+                >
+                  {chat.spacesId?.name || "N/A"}
+                </p>
+                <p style={{ margin: 0, fontSize: "0.8rem", color: "gray" }}>
+                  {chat.spacesId?.location || "N/A"}
+                </p>
               </div>
             </div>
-            <hr
-              style={{
-                width: "95%",
-                border: "0.1px solid #ececec",
-                marginTop: "20px",
-              }}
-            />
           </div>
 
           {/* Chat Body */}
@@ -109,51 +150,6 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             className="chat-body"
             style={{ overflowY: "auto", maxHeight: "400px", padding: "1.5rem" }}
           >
-            {/* Product Information */}
-            {chat?.spacesId && (
-              <div
-                className="product-info"
-                style={{
-                  padding: "5px",
-                  backgroundColor: "#f9f9f9",
-                  borderRadius: "5px",
-                  marginBottom: "10px",
-                }}
-              >
-                <strong style={{ fontSize: "1rem" }}>Product:</strong>
-                <div style={{ fontSize: "0.8rem" }}>
-                  <div>
-                    <strong>Name:</strong> {chat.spacesId.name || "N/A"}
-                  </div>
-                  <div>
-                    <strong>Location:</strong> {chat.spacesId.location || "N/A"}
-                  </div>
-                  <div>
-                    <strong>Price:</strong>{" "}
-                    {chat.spacesId.pricePerHour
-                      ? `$${chat.spacesId.pricePerHour}`
-                      : "N/A"}
-                  </div>
-                  {chat?.spacesId?.images &&
-                    chat.spacesId?.images?.length > 0 && (
-                      <div>
-                        <strong>Image:</strong>
-                        <img
-                          src={chat?.spacesId?.images?.[0].url} // Use the first image of the product
-                          alt="Product"
-                          style={{
-                            width: "80px",
-                            borderRadius: "5px",
-                            marginTop: "5px",
-                          }} // Adjust size and style of the image
-                        />
-                      </div>
-                    )}
-                </div>
-              </div>
-            )}
-
-            {/* Messages */}
             {messages.map((message) => (
               <div
                 ref={scroll}
@@ -162,7 +158,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                   message.senderId === currentUser ? "message own" : "message"
                 }
               >
-                <span>{message.text}</span>{" "}
+                <span>{message.text}</span>
                 <span>{format(message.createdAt)}</span>
               </div>
             ))}

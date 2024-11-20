@@ -67,6 +67,7 @@ function Layout() {
     "/login",
     "/register",
     "/alladd",
+    "/chat",
   ];
   const shouldShowHeader = !hiddenPaths.includes(location.pathname);
 

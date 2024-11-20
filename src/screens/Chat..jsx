@@ -99,7 +99,7 @@ const Chat = ({ selectedChat }) => {
     <div className="Chat">
       <div className="Left-side-chat">
         <div className="Chat-container">
-          <h2>Chats</h2>
+          <h2>Tin nhắn </h2>
           <div className="Chat-list">
             {chats.map((chat) => (
               <div key={chat._id} onClick={() => setCurrentChat(chat)}>

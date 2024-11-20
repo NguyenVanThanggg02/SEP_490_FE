@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getUser } from "../Api/UserRequests";
+import { Avatar } from "@mui/material";
 
 const Conversation = ({ data, currentUser, online, lastMessage }) => {
   const [userData, setUserData] = useState(null);
@@ -12,6 +13,8 @@ const Conversation = ({ data, currentUser, online, lastMessage }) => {
       try {
         const { data } = await getUser(userId);
         setUserData(data);
+        console.log(data);
+
         dispatch({ type: "SAVE_USER", data });
       } catch (error) {
         console.log(error);
@@ -26,10 +29,9 @@ const Conversation = ({ data, currentUser, online, lastMessage }) => {
       <div className="follower conversation">
         <div>
           {online && <div className="online-dot"></div>}
-          <img
-            alt="Profile"
-            className="followerImage"
-            style={{ width: "50px", height: "50px" }}
+          <Avatar
+            src={userData?.avatar || "/default-avatar.png"}
+            sx={{ width: 56, height: 56 }}
           />
           <div className="name" style={{ fontSize: "0.8rem" }}>
             <span>{userData?.fullname || "Unknown User"}</span>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row, Card, Button } from "react-bootstrap";
-import { Eye, House, HouseAddFill, Person } from "react-bootstrap-icons";
+import { Eye, HouseAddFill, Person } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
@@ -16,7 +16,6 @@ const PostManagement = () => {
   const [first, setFirst] = useState(0);
   const productsOnPage = spaces.slice(first, first + rows);
   const [, setCurrentPage] = useState(1);
-
   useEffect(() => {
     axios
       .get("http://localhost:9999/spaces/all")
@@ -54,24 +53,25 @@ const PostManagement = () => {
       });
   };
 
-  const handleReject = async (postId, { communityStandardsId, customComment }) => {
-    try {
-      const response = await axios.put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+  const handleReject = (postId, selectedReasons, customReason) => {
+    axios
+      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
-        communityStandardsId,
-        customComment, 
+        reasons: selectedReasons,
+        customReason: customReason ? [customReason] : [],
+
+      })
+      .then(() => {
+        setSpaces((prevSpaces) =>
+          prevSpaces.map((space) =>
+            space._id === postId ? { ...space, censorship: "Từ chối" } : space
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating censorship:", error);
       });
-  
-      setSpaces((prevSpaces) =>
-        prevSpaces.map((space) =>
-          space._id === postId ? { ...space, censorship: response.data.censorship, communityStandardsId: response.data.communityStandardsId, customComment: response.data.customComment } : space
-        )
-      );
-    } catch (error) {
-      console.error("Error updating censorship:", error);
-    }
   };
-  
 
   const openRejectDialog = (postId) => {
     setCurrentPostId(postId);
@@ -108,10 +108,7 @@ const PostManagement = () => {
                   justifyContent: "center",
                 }}
               >
-                <p>
-                  <Person style={{ fontSize: "30px" }} />
-                  Chủ cho thuê
-                </p>
+                <p><Person style={{ fontSize: '30px' }} />Chủ cho thuê</p>
               </div>
               <div
                 style={{
@@ -163,7 +160,7 @@ const PostManagement = () => {
               </div>
             </div>
             <Row>
-              {productsOnPage.map((s, index) => (
+            {productsOnPage.map((s, index) => (
                 <Col md={4} key={s._id} className="mb-4">
                   <Card className="shadow-sm h-100">
                     <Card.Img
@@ -202,7 +199,9 @@ const PostManagement = () => {
                         <Button
                           variant="success"
                           onClick={() => handleAccept(s._id)}
-                          disabled={s.censorship === "Chấp nhận"}
+                          disabled={
+                            s.censorship === "Chấp nhận"
+                          }
                         >
                           Chấp Nhận
                         </Button>

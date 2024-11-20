@@ -14,16 +14,15 @@ import {
 } from "react-bootstrap";
 import ChangePass from "./ChangePass";
 import BankAccount from "./BankAccount";
+import { CameraFill } from "react-bootstrap-icons";
 
-const ProfileTemplate = () => {
+const Profile = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [userData, setUserData] = useState({});
   const [editData, setEditData] = useState({});
-
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isEditingUser, setIsEditingUser] = useState(false);
-
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
@@ -31,6 +30,17 @@ const ProfileTemplate = () => {
       fetchUserData();
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (success || error) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+        setError(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success, error]);
 
   const fetchUserData = () => {
     axios
@@ -53,6 +63,47 @@ const ProfileTemplate = () => {
     }));
   };
 
+  const handleFileChange = async (event) => {
+    const target = event.target;
+    const files = target.files;
+
+    if (files && files.length > 0) {
+      const formData = new FormData();
+      formData.append("imageUser", files[0]); // Thêm file vào FormData
+      formData.append("userId", userId); // Giả sử bạn đã lưu userId trong state
+
+      try {
+        const response = await axios.post(
+          `http://localhost:9999/users/upload-image`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log(response);
+
+        const newAvatar = response.data.images.url; // Sửa ở đây, lấy URL từ trường images
+
+        // Cập nhật userData trong state
+        setUserData((prevData) => ({
+          ...prevData,
+          avatar: newAvatar,
+        }));
+
+        setSuccess(response.data.message);
+        setError(null);
+        fetchUserData();
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        setError("Không thể upload ảnh.");
+      }
+    } else {
+      console.log("No files selected.");
+    }
+  };
+
   const handleSaveUser = () => {
     axios
       .put(`http://localhost:9999/users/${userId}`, editData)
@@ -70,21 +121,34 @@ const ProfileTemplate = () => {
 
   return (
     <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-      <Container className="flex-grow-1 py-3">
+      <Container className="flex-grow-1 py-4">
         <h4
-          style={{ fontWeight: "bold", color: "#333", marginBottom: "1.5rem" }}
+          className="text-center mb-4"
+          style={{ fontWeight: "bold", color: "#343a40" }}
         >
           Cài đặt tài khoản
         </h4>
-        {error && <Alert variant="danger">{error}</Alert>}
-        {success && <Alert variant="success">{success}</Alert>}
-        <Card style={{ borderColor: "#ddd" }}>
-          <Row noGutters className="border-light">
-            <Col md={3} className="pt-0">
+        {error && (
+          <Alert variant="danger" className="text-center">
+            {error}
+          </Alert>
+        )}
+        {success && (
+          <Alert variant="success" className="text-center">
+            {success}
+          </Alert>
+        )}
+
+        <Card
+          className="border-0 shadow-sm rounded"
+          style={{ overflow: "hidden" }}
+        >
+          <Row noGutters>
+            <Col md={3} className="bg-light p-4">
               <Nav
                 variant="pills"
-                className="flex-column list-group-flush"
-                style={{ borderRight: "1px solid #ddd" }}
+                className="flex-column"
+                style={{ fontWeight: 500 }}
               >
                 {[
                   { key: "general", label: "Thông tin chung" },
@@ -95,12 +159,13 @@ const ProfileTemplate = () => {
                     <Nav.Link
                       eventKey={tab.key}
                       style={{
-                        color: activeTab === tab.key ? "#fff" : "#333",
+                        color: activeTab === tab.key ? "#fff" : "#495057",
                         backgroundColor:
-                          activeTab === tab.key ? "#333" : "transparent",
-                        borderColor: "transparent",
+                          activeTab === tab.key ? "#000" : "transparent",
                         padding: "0.85rem 1.5rem",
+                        borderRadius: "0.25rem",
                       }}
+                      className="mb-2"
                     >
                       {tab.label}
                     </Nav.Link>
@@ -108,14 +173,15 @@ const ProfileTemplate = () => {
                 ))}
               </Nav>
             </Col>
+
             <Col md={9}>
-              <Tab.Content>
+              <Tab.Content className="p-4">
                 {/* General Tab */}
                 <Tab.Pane eventKey="general">
                   <Card.Body>
                     <Form.Group
-                      className="text-center"
-                      style={{ position: "relative", display: "inline-block" }}
+                      className="text-center mb-4"
+                      style={{ position: "relative" }}
                     >
                       <Image
                         src={
@@ -123,23 +189,42 @@ const ProfileTemplate = () => {
                         }
                         roundedCircle
                         className="mb-3"
-                        style={{ width: "150px", height: "150px" }}
-                      />
-                      <Button
-                        variant="outline-secondary"
                         style={{
-                          position: "absolute",
-                          bottom: "10px",
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          opacity: 0,
-                          transition: "opacity 0.3s",
+                          width: "120px",
+                          height: "120px",
+                          objectFit: "cover",
                         }}
-                        className="edit-image-button"
-                      >
-                        Chỉnh sửa ảnh
-                      </Button>
+                      />
+                      {isEditingUser && (
+                        <div
+                          className="edit-image-button"
+                          style={{
+                            position: "absolute",
+                            bottom: "16px",
+                            left: "53%",
+                            transform: "translateX(-50%)",
+                            cursor: "pointer",
+                            backgroundColor: "#CCCCCC",
+                            borderRadius: "50%",
+                            padding: "6px",
+                          }}
+                          onClick={() =>
+                            document.getElementById("chooseFile")?.click()
+                          }
+                        >
+                          <CameraFill
+                            style={{ fontSize: "25px", color: "white" }}
+                          />
+                          <input
+                            type="file"
+                            id="chooseFile"
+                            hidden
+                            onChange={handleFileChange}
+                          />
+                        </div>
+                      )}
                     </Form.Group>
+
                     {[
                       { label: "Tên tài khoản", field: "username" },
                       { label: "Họ và tên", field: "fullname" },
@@ -148,8 +233,8 @@ const ProfileTemplate = () => {
                       { label: "Số điện thoại", field: "phone" },
                       { label: "Địa chỉ", field: "address" },
                     ].map((field, idx) => (
-                      <Form.Group key={idx}>
-                        <Form.Label style={{ color: "#333" }}>
+                      <Form.Group key={idx} className="mb-3">
+                        <Form.Label style={{ fontWeight: 500 }}>
                           {field.label}
                         </Form.Label>
                         <Form.Control
@@ -159,24 +244,33 @@ const ProfileTemplate = () => {
                             handleChange(field.field, e.target.value)
                           }
                           disabled={!isEditingUser}
+                          style={{ borderRadius: "0.25rem" }}
                         />
                       </Form.Group>
                     ))}
-                    <Button
-                      variant="dark"
-                      onClick={() => setIsEditingUser(true)}
-                    >
-                      Chỉnh sửa thông tin
-                    </Button>
-                    {isEditingUser && (
-                      <Button
-                        variant="dark"
-                        onClick={handleSaveUser}
-                        className="ml-2"
-                      >
-                        Lưu thông tin người dùng
-                      </Button>
-                    )}
+                    <div className="d-flex justify-content-end mt-4">
+                      {!isEditingUser ? (
+                        <Button
+                          variant="primary"
+                          onClick={() => setIsEditingUser(true)}
+                        >
+                          Chỉnh sửa thông tin
+                        </Button>
+                      ) : (
+                        <>
+                          <Button variant="success" onClick={handleSaveUser}>
+                            Lưu thông tin
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => setIsEditingUser(false)}
+                            className="ml-2"
+                          >
+                            Hủy
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </Card.Body>
                 </Tab.Pane>
 
@@ -188,7 +282,7 @@ const ProfileTemplate = () => {
                 {/* Bank Info Tab */}
                 <Tab.Pane eventKey="bank-info">
                   <Card.Body>
-                    <BankAccount></BankAccount>
+                    <BankAccount />
                   </Card.Body>
                 </Tab.Pane>
               </Tab.Content>
@@ -200,4 +294,4 @@ const ProfileTemplate = () => {
   );
 };
 
-export default ProfileTemplate;
+export default Profile;
