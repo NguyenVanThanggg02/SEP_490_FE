@@ -16,7 +16,7 @@ import { availableSlots } from '../AddSpaces/AddSpaceInforSpace';
 const labelForPricePer = {
   pricePerHour: 'Giờ',
   pricePerDay: 'Ngày',
-  pricePerWeek: 'Tuần',
+  // pricePerWeek: 'Tuần',
   pricePerMonth: ' Tháng',
 };
 
@@ -34,7 +34,7 @@ export default function Price({
   const [showPricePers, setShowPricePers] = useState({
     pricePerHour: !!spaceInfo.pricePerHour,
     pricePerDay: !!spaceInfo.pricePerDay,
-    pricePerWeek: !!spaceInfo.pricePerWeek,
+    // pricePerWeek: !!spaceInfo.pricePerWeek,
     pricePerMonth: !!spaceInfo.pricePerMonth,
   });
 

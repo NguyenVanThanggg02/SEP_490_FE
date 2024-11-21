@@ -117,7 +117,7 @@ const DetailForAdmin = ({ id, onBack }) => {
                   { label: "Diện tích", value: space.area },
                   { label: "Giá theo giờ", value: space.pricePerHour },
                   { label: "Giá theo ngày", value: space.pricePerDay },
-                  { label: "Giá theo tuần", value: space.pricePerWeek },
+                  // { label: "Giá theo tuần", value: space.pricePerWeek },
                   { label: "Giá theo tháng", value: space.pricePerMonth },
                 ].map((info, index) => (
                   <Grid item xs={6} key={index}>

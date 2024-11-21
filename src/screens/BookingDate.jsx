@@ -89,7 +89,7 @@ const BookingForm = () => {
   const {
     pricePerHour,
     pricePerDay,
-    pricePerWeek,
+    // pricePerWeek,
     pricePerMonth,
     goldenHourDetails,
   } = spaceData;
@@ -119,15 +119,15 @@ const BookingForm = () => {
       setRentalType('day')
       return
     }
-    if (pricePerWeek > 0) {
-      setRentalType('week')
-      return
-    }
+    // if (pricePerWeek > 0) {
+    //   setRentalType('week')
+    //   return
+    // }
     if (pricePerMonth > 0) {
       setRentalType('month')
       return
     }
-  }, [pricePerHour, pricePerDay, pricePerWeek, pricePerMonth])
+  }, [pricePerHour, pricePerDay, /*pricePerWeek*/, pricePerMonth])
 
   const fetchAvailableSlots = async (dates, newRentalType) => {
     return new Promise(async (resolve, reject) => {
@@ -363,9 +363,11 @@ const BookingForm = () => {
         : basePrice;
     } else if (rentalType === 'day') {
       return pricePerDay;
-    } else if (rentalType === 'week') {
-      return pricePerWeek;
-    } else {
+    } 
+    // else if (rentalType === 'week') {
+    //   return pricePerWeek;
+    // }
+     else {
       return pricePerMonth;
     }
   };
@@ -1290,7 +1292,7 @@ const BookingForm = () => {
               ) : (
                 <></>
               )}
-              {pricePerWeek > 0 ? (
+              {/* {pricePerWeek > 0 ? (
                 <FormControlLabel
                   value="week"
                   control={<Radio />}
@@ -1298,7 +1300,7 @@ const BookingForm = () => {
                 />
               ) : (
                 <></>
-              )}
+              )} */}
               {pricePerMonth > 0 ? (
                 <FormControlLabel
                   value="month"

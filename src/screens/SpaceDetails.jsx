@@ -1058,7 +1058,7 @@ function SpaceDetails({ onSelectChat }) {
                       </Typography>
                     )}
 
-                  {spaceData.pricePerWeek !== 0 &&
+                  {/* {spaceData.pricePerWeek !== 0 &&
                     spaceData.pricePerWeek !== null && (
                       <Typography
                         variant="h6"
@@ -1066,7 +1066,7 @@ function SpaceDetails({ onSelectChat }) {
                       >
                         {priceFormatter(spaceData.pricePerWeek)} VND / Tuần
                       </Typography>
-                    )}
+                    )} */}
 
                   {spaceData.pricePerMonth !== 0 &&
                     spaceData.pricePerMonth !== null && (

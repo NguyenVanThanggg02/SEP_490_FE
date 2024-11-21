@@ -340,10 +340,10 @@ const ListSpace = () => {
                                     ? `${priceFormatter(l.pricePerHour)} VND/Giờ`
                                     : l.pricePerDay
                                       ? `${priceFormatter(l.pricePerDay)} VND/Ngày`
-                                      : l.pricePerWeek
-                                        ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
-                                        : l.pricePerWeek
-                                          ? `${priceFormatter(l.pricePerWeek)} VND/Tháng`
+                                      // : l.pricePerWeek
+                                      //   ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
+                                        : l.pricePerMonth
+                                          ? `${priceFormatter(l.pricePerMonth)} VND/Tháng`
                                           : ""}
                                 </Typography>
 
@@ -384,7 +384,7 @@ const ListSpace = () => {
         }}
       >
         <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
+          style={{ backgroundColor: "white" }}
           first={first}
           rows={rows}
           totalRecords={listSpace.length}

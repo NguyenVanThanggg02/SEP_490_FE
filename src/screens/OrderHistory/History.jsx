@@ -437,7 +437,7 @@ const History = () => {
         }}
       >
         <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
+          style={{ backgroundColor: "white" }}
           first={first}
           rows={rows}
           totalRecords={filteredBookings.length}
