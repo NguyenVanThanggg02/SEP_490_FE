@@ -278,7 +278,7 @@ export default function Price({
             style={{ cursor: 'pointer' }}
           />
           <label class="form-check-label" for="flexCheckDefault">
-            Khung giờ vàng
+            Giờ cao điểm
           </label>
         </div>
 

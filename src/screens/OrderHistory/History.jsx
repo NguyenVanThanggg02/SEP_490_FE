@@ -292,7 +292,7 @@ const History = () => {
                                     ? "Đã huỷ"
                                     : "Khác"}
                             </Typography>
-                            {item.reasonOwnerRejected && (
+                            {/* {item.reasonOwnerRejected && (
                               <Typography
                                 variant="body2"
                                 style={{ color: "gray", fontSize: "15px" }}
@@ -302,7 +302,7 @@ const History = () => {
                                 </span>
                                 {item.reasonOwnerRejected}
                               </Typography>
-                            )}
+                            )} */}
                           </Grid>
                         </Grid>
                         {/* button đánh giá - hủy lịch */}

@@ -676,11 +676,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           name="isGoldenHour"
                         />
                       }
-                      label="Khung giờ vàng"
+                      label="Giờ cao điểm"
                     />
-                    {/* <label class="form-check-label" for="flexCheckDefault">
-                      Khung giờ vàng
-                    </label> */}
+                 
                   </div>
 
                   {isGoldenHour && (

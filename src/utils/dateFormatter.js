@@ -7,12 +7,12 @@ export const isToday = (someDate) => {
   );
 };
 
-export const dateFormatterYYYYMMDD = (date) => {
+export const dateFormatterDDMMYYY = (date) => {
   const dateFormatter = new Date(date);
 
   const year = dateFormatter.getFullYear();
   const month = String(dateFormatter.getMonth() + 1).padStart(2, "0");
   const day = String(dateFormatter.getDate()).padStart(2, "0");
 
-  return `${year}/${month}/${day}`;
+  return `${day}/${month}/${year}`;
 };
