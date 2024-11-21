@@ -38,7 +38,7 @@ const MenuAdmin = ({ setIsLoggedIn, isLoggedIn }) => {
     setUserInfo(null);
     handleClose();
     navigate("/");
-
+    window.location.reload();
   };
 
   const handleNavigation = (path) => {

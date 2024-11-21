@@ -176,7 +176,7 @@ const EditSpacePosted = () => {
           rulesId,
           pricePerHour,
           pricePerDay,
-          pricePerWeek,
+          // pricePerWeek,
           pricePerMonth,
           images,
           location,
@@ -209,7 +209,7 @@ const EditSpacePosted = () => {
           name,
           pricePerHour,
           pricePerDay,
-          pricePerWeek,
+          // pricePerWeek,
           pricePerMonth,
           images,
           rulesId: {

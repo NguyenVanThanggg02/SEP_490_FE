@@ -10,12 +10,18 @@ import axios from 'axios';
 import { Pane, Spinner } from "evergreen-ui";
 import { Link } from "react-router-dom";
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
+import { Paginator } from 'primereact/paginator';
+import { priceFormatter } from '../../utils/numberFormatter';
 
 const SpacePosted = () => {
     const [listPosted, setlistPosted] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedSpace, setSelectedSpace] = useState(null);
+    const [first, setFirst] = useState(0);
+    const [rows, setRows] = useState(8);
+    const [curentPage, setCurrentPage] = useState(1);
+    const listPostedOnPage = listPosted.slice(first, first + rows);
 
     const userId = localStorage.getItem('userId');
 
@@ -26,7 +32,8 @@ const SpacePosted = () => {
                     `http://localhost:9999/spaces/for/${userId}`
                 );
                 if (response.status === 200) {
-                    setlistPosted(response.data);
+                  const sortedSpaces = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                  setlistPosted(sortedSpaces);
                 }
             } catch (err) {
             } finally {
@@ -35,6 +42,12 @@ const SpacePosted = () => {
         };
         fetchSpaces();
     }, [userId]);
+
+    const onPageChange = async (event) => {
+      setFirst(event?.first);
+      setCurrentPage(event.page + 1);
+      setRows(event?.rows);
+    };
 
     if (loading) {
         return (
@@ -131,12 +144,12 @@ const SpacePosted = () => {
           </Col>
         </Row>
         <Row>
-          {listPosted.length === 0 ? (
+          {listPostedOnPage.length === 0 ? (
             <Typography variant="body1" align="center">
               Không có không gian nào được đăng.
             </Typography>
           ) : (
-            listPosted.map((lpost) => (
+            listPostedOnPage.map((lpost) => (
               <Col md={3} className="pb-5" key={lpost._id}>
                 <Card sx={{ maxWidth: 345, height: "100%" }}>
                   <CardMedia
@@ -165,7 +178,15 @@ const SpacePosted = () => {
                       sx={{ color: "text.secondary" }}
                       noWrap
                     >
-                      {lpost.pricePerHour} VNĐ/giờ
+                      {lpost.pricePerHour
+                        ? `${priceFormatter(lpost.pricePerHour)} VND/Giờ`
+                        : lpost.pricePerDay
+                          ? `${priceFormatter(lpost.pricePerDay)} VND/Ngày`
+                          // : lpost.pricePerWeek
+                          //   ? `${priceFormatter(lpost.pricePerWeek)} VND/Tuần`
+                            : lpost.pricePerMonth
+                              ? `${priceFormatter(lpost.pricePerMonth)} VND/Tháng`
+                              : ""}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -243,9 +264,11 @@ const SpacePosted = () => {
               alignItems="center"
               mb={1}
             >
-              <ExclamationCircleFill style={{ fontSize: "50px", color: "#ff8080" }} />
+              <ExclamationCircleFill
+                style={{ fontSize: "50px", color: "#ff8080" }}
+              />
             </Box>
-            <Typography variant="h5" sx={{ color: "red"}}>
+            <Typography variant="h5" sx={{ color: "red" }}>
               Xác nhận xóa
             </Typography>
           </DialogTitle>
@@ -281,13 +304,28 @@ const SpacePosted = () => {
                 "&:hover": { borderColor: "darkred", color: "darkred" },
                 textTransform: "none",
                 width: "100px",
-                backgroundColor:"#fde7e9"
+                backgroundColor: "#fde7e9",
               }}
             >
               Hủy bỏ
             </Button>
           </DialogActions>
         </Dialog>
+        <Row
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <Paginator
+            style={{ backgroundColor: "white" }}
+            first={first}
+            rows={rows}
+            totalRecords={listPosted.length}
+            onPageChange={onPageChange}
+          />
+        </Row>
       </Container>
     );
 };

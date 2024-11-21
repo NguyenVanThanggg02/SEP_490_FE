@@ -19,8 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
-import { FlagFill, PlusCircle } from "react-bootstrap-icons";
-import Reports from "./Reports";
+import { FlagFill, PlusCircle, Textarea } from "react-bootstrap-icons";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
@@ -29,7 +28,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
-
+import Reviews from './Reviews';
 import { userChats } from "../Api/ChatRequests";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
@@ -38,7 +37,6 @@ function SpaceDetails({ onSelectChat }) {
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [visible, setVisible] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState('');
@@ -453,36 +451,38 @@ function SpaceDetails({ onSelectChat }) {
               >
                 {spaceData.name}
               </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                  {spaceData.favorite ? (
-                    <FavoriteIcon
-                      style={{ color: "#FF385C", fontSize: "40px" }}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                  )}
-                </div>
+              {spaceData && spaceData.censorship === "Chấp nhận" && (
                 <div
-                  onClick={toggleDrawer(true)}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
                 >
-                  <PlusCircle
-                    style={{
-                      color: "blue",
-                      fontSize: "33px",
-                      marginRight: "5px",
-                    }}
-                  />
-                  So sánh
+                  <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                    {spaceData.favorite ? (
+                      <FavoriteIcon
+                        style={{ color: "#FF385C", fontSize: "40px" }}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                    )}
+                  </div>
+                  <div
+                    onClick={toggleDrawer(true)}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <PlusCircle
+                      style={{
+                        color: "blue",
+                        fontSize: "33px",
+                        marginRight: "5px",
+                      }}
+                    />
+                    So sánh
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <Grid
               container
@@ -685,9 +685,6 @@ function SpaceDetails({ onSelectChat }) {
               <Col item xs={12} md={8}>
                 <Typography variant="h5">
                   {spaceData.location}
-                  <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}m2
-                  </p>
                   <Row item md={12}>
                     <Divider
                       sx={{
@@ -956,6 +953,25 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
+                  Diện tích 
+                </Typography>
+                <div style={{ flexDirection: "row" }}>
+                  <Textarea style={{fontWeight:'bold', fontSize:'25px'}} />
+                  <b style={{ fontSize: "18px", marginLeft:'20px' }}>{spaceData.area}m2</b>
+                </div>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Nội quy
                 </Typography>
                 <List>
@@ -996,7 +1012,7 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
-                  Vị trí không gian
+                  Vị trí không gian: {spaceData?.location || ""}
                 </Typography>
                 <MapShopDetail
                   lat={spaceData?.latLng?.[0]}
@@ -1009,6 +1025,7 @@ function SpaceDetails({ onSelectChat }) {
                     width: "100%",
                   }}
                 />
+                <Reviews />
               </Col>
               <Col item xs={12} md={4}>
                 <Box
@@ -1041,7 +1058,7 @@ function SpaceDetails({ onSelectChat }) {
                       </Typography>
                     )}
 
-                  {spaceData.pricePerWeek !== 0 &&
+                  {/* {spaceData.pricePerWeek !== 0 &&
                     spaceData.pricePerWeek !== null && (
                       <Typography
                         variant="h6"
@@ -1049,7 +1066,7 @@ function SpaceDetails({ onSelectChat }) {
                       >
                         {priceFormatter(spaceData.pricePerWeek)} VND / Tuần
                       </Typography>
-                    )}
+                    )} */}
 
                   {spaceData.pricePerMonth !== 0 &&
                     spaceData.pricePerMonth !== null && (
@@ -1072,7 +1089,8 @@ function SpaceDetails({ onSelectChat }) {
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
                   {/* Community Standards Information */}
-                  { spaceData.censorship === "Từ chối" && spaceData.communityStandardsId && (
+                  {spaceData.censorship === "Từ chối" &&
+                    spaceData.communityStandardsId && (
                       <Box
                         mt={2}
                         sx={{
@@ -1136,32 +1154,13 @@ function SpaceDetails({ onSelectChat }) {
                       </Box>
                     )}
                 </Box>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setVisible(true)}
-                  className={userId === spaceData.userId?._id ? "d-none" : ""}
-                >
-                  <FlagFill
-                    style={{
-                      color: "gray",
-                      marginRight: "15px",
-                      marginTop: "6px",
-                    }}
-                  />
-                  Báo cáo nhà/phòng cho thuê này
-                </div>
+                
               </Col>
             </Row>
           </Container>
           {/* Display Images */}
         </>
       )}
-      {visible && <Reports visible={visible} setVisible={setVisible} />}
       <Drawer
         anchor="bottom"
         open={openDrawer}
@@ -1187,7 +1186,9 @@ function SpaceDetails({ onSelectChat }) {
           setCategoryId={spaceData.categoriesId._id}
         />
       )}
-      < Similar spaceData={spaceData} />
+      {spaceData.censorship === "Chấp nhận" && (
+        <Similar spaceData={spaceData} />
+      )}
     </Container>
   );
 }

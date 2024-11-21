@@ -207,7 +207,9 @@ const Profile = () => {
                             borderRadius: "50%",
                             padding: "6px",
                           }}
-                          onClick={() => document.getElementById("chooseFile")?.click()}
+                          onClick={() =>
+                            document.getElementById("chooseFile")?.click()
+                          }
                         >
                           <CameraFill
                             style={{ fontSize: "25px", color: "white" }}
@@ -240,11 +242,15 @@ const Profile = () => {
                           onChange={(e) =>
                             handleChange(field.field, e.target.value)
                           }
-                          disabled={!isEditingUser}
+                          disabled={
+                            !isEditingUser || field.field === "username"
+                          } 
+                          readOnly={field.field === "username"} 
                           style={{ borderRadius: "0.25rem" }}
                         />
                       </Form.Group>
                     ))}
+
                     <div className="d-flex justify-content-end mt-4">
                       {!isEditingUser ? (
                         <Button

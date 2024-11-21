@@ -1,38 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
 import CancelBooking from "./CancelBooking";
+import Reports from "../Reports";
 
 const History = () => {
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("Tất cả");
-  const [rentalType, setRentalType] = useState("Tất cả"); // Thêm state cho rentalType
+  const [rentalType, setRentalType] = useState("Tất cả"); 
   const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]); // State cho danh sách đã lọc
+  const [filteredBookings, setFilteredBookings] = useState([]); 
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(6);
-  const [curentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
   const productsOnPage = filteredBookings.slice(first, first + rows);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [visible, setVisible] = useState(false);
-
+  const [visibleReport, setVisibleReport] = useState(false);
+  const [idSpace, setIdSpace] = useState("");
   const user = localStorage.getItem("userId");
-  const statusBook = bookings.map((m) => m.status);
+
   useEffect(() => {
     axios
       .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
       .then((res) => {
-        setBookings(res.data);
-        setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
+        const updatedBookings = res.data.map((booking) => ({
+          ...booking,
+          status: booking.reasonOwnerRejected ? "canceled" : booking.status,
+        }));
+        updatedBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setBookings(updatedBookings);
+        setFilteredBookings(updatedBookings); 
       })
       .catch((err) => {
         console.log(err.message);
       });
   }, [user]);
+  
 
   const handleSearch = () => {
       let filteredData = bookings;
@@ -73,6 +81,26 @@ const History = () => {
     setSelectedBooking(booking);
     setVisible(true);
   };
+  const handleReport = (spaceId) => {
+    setVisibleReport(true);
+    setIdSpace(spaceId);
+  };
+  const updateBookingStatus = (bookingId, newStatus) => {
+    setBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+    setFilteredBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+  };
 
   return (
     <div className="container containerhistory">
@@ -93,32 +121,44 @@ const History = () => {
               />
             </Grid>
             <Grid item md={3}>
-              <Select
-                value={rentalType}
-                onChange={(e) => setRentalType(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="hour">Giờ</MenuItem>
-                <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
-                <MenuItem value="month">Tháng</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="rental-type-select-label">
+                  Hình thức thuê
+                </InputLabel>
+                <Select
+                  labelId="rental-type-select-label"
+                  id="rental-type-select"
+                  value={rentalType}
+                  onChange={(e) => setRentalType(e.target.value)}
+                  label="Hình thức thuê"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="hour">Giờ</MenuItem>
+                  <MenuItem value="day">Ngày</MenuItem>
+                  <MenuItem value="week">Tuần</MenuItem>
+                  <MenuItem value="month">Tháng</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={3}>
-              <Select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                fullWidth
-                variant="outlined"
-              >
-                <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
-                <MenuItem value="completed">Đã thanh toán</MenuItem>
-                <MenuItem value="canceled">Đã huỷ</MenuItem>
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                <Select
+                  labelId="status-select-label"
+                  id="status-select"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  label="Trạng thái"
+                >
+                  <MenuItem value="Tất cả">Tất cả</MenuItem>
+                  <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
+                  <MenuItem value="completed">Đã thanh toán</MenuItem>
+                  <MenuItem value="canceled">Đã huỷ</MenuItem>
+                </Select>
+              </FormControl>
             </Grid>
+
             <Grid item md={2} container alignItems="flex-end">
               <Button
                 variant="contained"
@@ -154,13 +194,13 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          height: "250px",
+                          height: "270px",
                           display: "flex",
                           flexDirection: "column",
                         }}
                       >
                         <Grid container spacing={2} alignItems="center">
-                          <Grid item md={4}>
+                          <Grid item md={4} style={{ marginTop: "20px" }}>
                             <img
                               src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
                               alt="Ảnh không gian"
@@ -241,7 +281,9 @@ const History = () => {
                                 fontSize: "15px",
                               }}
                             >
-                              <span style={{fontWeight:'bold'}}>Trạng thái: </span>
+                              <span style={{ fontWeight: "bold" }}>
+                                Trạng thái:{" "}
+                              </span>
                               {item.status === "awaiting payment"
                                 ? "Chờ thanh toán"
                                 : item.status === "completed"
@@ -250,20 +292,134 @@ const History = () => {
                                     ? "Đã huỷ"
                                     : "Khác"}
                             </Typography>
+                            {item.reasonOwnerRejected && (
+                              <Typography
+                                variant="body2"
+                                style={{ color: "gray", fontSize: "15px" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Lí do bị hủy:
+                                </span>
+                                {item.reasonOwnerRejected}
+                              </Typography>
+                            )}
                           </Grid>
                         </Grid>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          disabled={item.status === "canceled"}
+                        {/* button đánh giá - hủy lịch */}
+                        <Grid
+                          container
+                          spacing={2}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
+                            justifyContent: "flex-end",
                           }}
-                          onClick={() => handleViewToCancel(item._id)}
                         >
-                          Huỷ lịch
-                        </Button>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              style={{ marginRight: "10px" }}
+                              disabled={item.status === "canceled"}
+                              onClick={() => {
+                                const now = new Date(); // Thời gian hiện tại
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                const endDate = new Date(item.endDate);
+                                endDate.setHours(0, 0, 0, 0);
+
+                                // Kiểm tra nếu là loại thuê theo giờ
+                                const isHourlyExpired =
+                                  item.rentalType === "hour" &&
+                                  item.selectedSlots.every((slot) => {
+                                    // Chuyển slot.date thành Date
+                                    const slotDate = new Date(slot.date);
+                                    const slotEndTime = new Date(
+                                      `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                    );
+                                    return now > slotEndTime; // Kiểm tra giờ kết thúc đã qua
+                                  });
+
+                                // Nếu là thuê theo ngày và đã qua ngày kết thúc
+                                const isDailyExpired = today > endDate;
+
+                                if (isHourlyExpired || isDailyExpired) {
+                                  const spaceId = item.items[0]?.spaceId?._id;
+                                  if (spaceId) {
+                                    window.location.href = `/reviews/create/${spaceId}`;
+                                  } else {
+                                    alert(
+                                      "Không tìm thấy không gian để đánh giá."
+                                    );
+                                  }
+                                } else {
+                                  handleViewToCancel(item._id);
+                                }
+                              }}
+                            >
+                              {(() => {
+                                const now = new Date();
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                const endDate = new Date(item.endDate);
+                                endDate.setHours(0, 0, 0, 0);
+
+                                const isHourlyExpired =
+                                  item.rentalType === "hour" &&
+                                  item.selectedSlots.every((slot) => {
+                                    // Chuyển slot.date thành Date
+                                    const slotDate = new Date(slot.date);
+                                    const slotEndTime = new Date(
+                                      `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                    );
+                                    return now > slotEndTime;
+                                  });
+
+                                const isDailyExpired = today > endDate;
+
+                                return isHourlyExpired || isDailyExpired
+                                  ? "Đánh giá"
+                                  : "Huỷ lịch";
+                              })()}
+                            </Button>
+                          </Grid>
+                              {/* button báo cáo */}
+                          {(() => {
+                            const now = new Date();
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+
+                            const isHourlyExpired =
+                              item.rentalType === "hour" &&
+                              item.selectedSlots.every((slot) => {
+                                const slotDate = new Date(slot.date);
+                                const slotEndTime = new Date(
+                                  `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                );
+                                return now > slotEndTime;
+                              });
+
+                            const isDailyExpired = today > endDate;
+
+                            return (isHourlyExpired || isDailyExpired) &&
+                              item.status === "completed" ? (
+                              <Grid item style={{ marginRight: "10px" }}>
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  onClick={() => handleReport(item.items[0]?.spaceId?._id)}  
+                                  >
+                                  Báo cáo
+                                </Button>
+                              </Grid>
+                            ) : null;
+                          })()}
+                        </Grid>
                       </Card>
                     </Grid>
                   ))
@@ -281,18 +437,21 @@ const History = () => {
         }}
       >
         <Paginator
-          style={{ backgroundColor: "#f9f9f9" }}
+          style={{ backgroundColor: "white" }}
           first={first}
           rows={rows}
           totalRecords={filteredBookings.length}
           onPageChange={onPageChange}
         />
       </Row>
+      {visibleReport && <Reports visibleReport={visibleReport} setVisibleReport={setVisibleReport} idSpace={idSpace} />}
+
       {visible && (
         <CancelBooking
           visible={visible}
           setVisible={setVisible}
           booking={selectedBooking}
+          updateBookingStatus={updateBookingStatus}
         />
       )}
     </div>

@@ -16,7 +16,7 @@ import { availableSlots } from '../AddSpaces/AddSpaceInforSpace';
 const labelForPricePer = {
   pricePerHour: 'Giờ',
   pricePerDay: 'Ngày',
-  pricePerWeek: 'Tuần',
+  // pricePerWeek: 'Tuần',
   pricePerMonth: ' Tháng',
 };
 
@@ -34,7 +34,7 @@ export default function Price({
   const [showPricePers, setShowPricePers] = useState({
     pricePerHour: !!spaceInfo.pricePerHour,
     pricePerDay: !!spaceInfo.pricePerDay,
-    pricePerWeek: !!spaceInfo.pricePerWeek,
+    // pricePerWeek: !!spaceInfo.pricePerWeek,
     pricePerMonth: !!spaceInfo.pricePerMonth,
   });
 
@@ -236,7 +236,7 @@ export default function Price({
                   type="number"
                   variant="outlined"
                   required
-                  value={spaceInfo[pricePer]}
+                  value={spaceInfo[pricePer]|| ""}
                   onChange={onPricePerValChange} // Cập nhật khi người dùng nhập
                   onBlur={onBlurToValidate}
                   error={!!errors[pricePer]} // Hiển thị lỗi nếu có
@@ -316,7 +316,7 @@ export default function Price({
                   required
                   min={1}
                   max={100}
-                  value={priceIncrease}
+                  value={priceIncrease|| ""}
                   onChange={onPriceIncreaseChange}
                   onBlur={onBlurToValidate}
                   error={!!errors.priceIncrease} // Hiển thị lỗi nếu có

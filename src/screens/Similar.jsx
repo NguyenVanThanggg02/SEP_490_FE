@@ -32,8 +32,8 @@ const Similar = ({ spaceData }) => {
         borderRadius: "20px",
         marginTop: "20px",
         width: "100%",
-        padding:'0 30px',
-        backgroundColor:'white'
+        padding: "0 30px",
+        backgroundColor: "white",
       }}
     >
       <Row style={{ display: "flex", justifyContent: "center" }}>
@@ -68,12 +68,19 @@ const Similar = ({ spaceData }) => {
                   width="250"
                   preview
                 />
-                <div className="text-center m-2">
+                <div className="text-center mt-4" >
                   <div>
-                    <h6 style={{fontSize:'20px'}}>{s.name}</h6>
+                    <h6 style={{ fontSize: "20px" }}>
+                      {s.name.length > 28
+                        ? `${s.name.slice(0, 20)}  ...`
+                        : s.name}
+                    </h6>
                   </div>
                   <div>
-                    <span style={{fontSize:'15px', fontWeight:'bold'}}> Giá mỗi giờ: {priceFormatter(s.pricePerHour)} VND </span>
+                    <span style={{ fontSize: "15px", fontWeight: "bold" }}>
+                      {" "}
+                      Giá mỗi giờ: {priceFormatter(s.pricePerHour)} VND{" "}
+                    </span>
                   </div>
                 </div>
               </Link>

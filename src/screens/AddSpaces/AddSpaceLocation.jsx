@@ -1,9 +1,10 @@
-import { Typography } from '@mui/material';
-import { Select } from 'antd';
-import React, { useContext, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { TextField, Typography } from '@mui/material';
 import { MapSearch } from '../../components/Map';
+import { Select } from 'antd';
 import { SpaceContext } from '../../Context/SpaceContext ';
+import Autocomplete from '@mui/material/Autocomplete';
 import { getLatLngFromText } from '../ManaSpaceHost/EditLocation';
 
 const AddSpaceLocation = () => {

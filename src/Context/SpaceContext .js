@@ -17,7 +17,7 @@ export const SpaceProvider = ({ children }) => {
     rulesId: null,
     pricePerHour: 0,
     pricePerDay: 0,
-    pricePerWeek: 0,
+    // pricePerWeek: 0,
     pricePerMonth: 0,
     images: [],
     latLng: [],

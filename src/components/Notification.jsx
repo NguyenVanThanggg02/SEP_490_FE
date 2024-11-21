@@ -105,7 +105,7 @@ export default function Notification() {
                 .length
         }
         color="error"
-        sx={{ marginLeft: '8px' }}
+        sx={{ marginLeft: "8px" }}
       >
         <IconButton onClick={handleClick} size="small">
           <NotificationsIcon />
@@ -118,21 +118,20 @@ export default function Notification() {
         open={openMenu}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': 'basic-button',
+          "aria-labelledby": "basic-button",
         }}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+          vertical: "bottom",
+          horizontal: "right",
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         PaperProps={{
           style: {
-            width: '300px', // Fixed width
-            maxHeight: '300px', // Maximum height for scrolling
-            overflowY: 'auto', // Enable vertical scrolling
+            width: "400px", // Fixed width
+            overflowY: "auto", // Enable vertical scrolling
           },
         }}
       >
@@ -142,30 +141,36 @@ export default function Notification() {
               key={notification._id}
               onClick={() => handleNotificationClick(notification)}
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '10px',
+                display: "flex",
+                alignItems: "center",
+                padding: "10px",
                 backgroundColor: notification.isRead
-                  ? 'transparent'
-                  : '#e0f7fa',
+                  ? "transparent"
+                  : "#e0f7fa",
               }}
             >
-              <img
-                src={notification.imageUrl || '/default_noti.ico'}
+              <Avatar
+                src={
+                  notification.imageUrl ||
+                  "https://res.cloudinary.com/degpdpheb/image/upload/v1732010263/newlogo_2_xlrq0d.png"
+                }
                 alt="Icon"
-                style={{ width: '40px', height: '40px', marginRight: '10px' }}
+                style={{ width: "40px", height: "40px", marginRight: "10px" }}
               />
               <Box sx={{ flexGrow: 1 }}>
                 <Typography
                   variant="body1"
                   noWrap
                   sx={{
-                    display: '-webkit-box',
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                     WebkitLineClamp: 2,
-                    lineHeight: '1.2em',
-                    maxHeight: '2.4em',
+                    lineHeight: "1.2em",
+                    maxHeight: "2.4em",
+                    whiteSpace: "pre-wrap",
+                    wordWrap: "break-word",
+                    letterSpacing: "normal",
                   }}
                 >
                   {notification.content}
@@ -179,9 +184,9 @@ export default function Notification() {
         ) : (
           <MenuItem>
             <img
-              src={'/no-records.png'}
+              src={"/no-records.png"}
               alt="No records"
-              style={{ width: '60px', height: '60px', marginLeft: '10px' }}
+              style={{ width: "60px", height: "60px", marginLeft: "10px" }}
             />
           </MenuItem>
         )}

@@ -3,32 +3,39 @@ import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
+import TextField from "@mui/material/TextField";
 
 const CancelBooking = (props) => {
-  const { visible, setVisible, booking } = props;
-  const [cancelReason, setCancelReason] = useState("");
-
-  const cancelReasons = [
+  const { visible, setVisible, booking, updateBookingStatus } = props;
+  const [cancelReasons, setCancelReasons] = useState([]);
+  const [customReason, setCustomReason] = useState(""); 
+  const availableReasons = [
     "Thay đổi lịch trình hoặc kế hoạch",
     "Không còn nhu cầu sử dụng dịch vụ",
     "Vấn đề với chất lượng phòng hoặc tiện nghi",
     "Địa điểm không như mong đợi hoặc không phù hợp",
     "Vấn đề với dịch vụ khách hàng",
-    "Khác"
   ];
-  
 
   const onHide = () => {
     setVisible(false);
+    setCancelReasons([]);
+    setCustomReason("");
   };
 
   const handleCancelBooking = async () => {
-    try {
-      const response = await axios.put(`http://localhost:9999/bookings/${booking._id}/cancel`, {
-        cancelReason,
-      });
+    const allReasons = [...cancelReasons];
+    if (customReason.trim()) {
+      allReasons.push(customReason.trim()); 
+    }
 
+    try {
+      const response = await axios.put(
+        `http://localhost:9999/bookings/${booking._id}/cancel`,
+        { cancelReason: allReasons }
+      );
       toast.success(response.data.message || "Lịch book đã được hủy thành công");
+      updateBookingStatus(booking._id, "canceled");
       setVisible(false);
     } catch (error) {
       if (error.response) {
@@ -40,16 +47,27 @@ const CancelBooking = (props) => {
     }
   };
 
+  const handleCheckboxChange = (reason) => {
+    setCancelReasons((prev) => {
+      if (prev.includes(reason)) {
+        return prev.filter((r) => r !== reason);
+      } else {
+        return [...prev, reason];
+      }
+    });
+  };
+
   const dialogFooter = (
     <div style={{ display: "flex", justifyContent: "end" }}>
       <Button
         onClick={handleCancelBooking}
         className="btn btn-danger mr-2"
         disabled={
-          !cancelReason || 
-          booking.ownerApprovalStatus === "accepted" ||
-          booking.ownerApprovalStatus === "declined" ||
-          booking.status === "completed"
+          (cancelReasons.length === 0 && !customReason.trim()) 
+          // ||
+          // booking.ownerApprovalStatus === "accepted" ||
+          // booking.ownerApprovalStatus === "declined" 
+          // // ||           booking.status === "completed"
         }
       >
         Huỷ Lịch
@@ -63,7 +81,6 @@ const CancelBooking = (props) => {
         visible={visible}
         onHide={onHide}
         footer={dialogFooter}
-        className="bg-light"
         style={{ width: "30vw" }}
         modal
         header={
@@ -75,21 +92,28 @@ const CancelBooking = (props) => {
           </div>
         }
       >
-        <div className="bg-light p-3" style={{ margin: "15px" }}>
+        <div style={{ margin: "9px" }}>
           <h6>Lý do hủy</h6>
           <Form.Group>
-            {cancelReasons.map((reason) => (
+            {availableReasons.map((reason) => (
               <Form.Check
                 key={reason}
-                type="radio"
+                type="checkbox"
                 label={reason}
-                name="cancelReason"
                 value={reason}
-                checked={cancelReason === reason}
-                onChange={(e) => setCancelReason(e.target.value)}
+                checked={cancelReasons.includes(reason)}
+                onChange={() => handleCheckboxChange(reason)}
                 className="mb-2"
               />
             ))}
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Nhập lý do khác"
+              value={customReason}
+              onChange={(e) => setCustomReason(e.target.value)}
+              className="mt-2"
+            />
           </Form.Group>
         </div>
       </Dialog>
