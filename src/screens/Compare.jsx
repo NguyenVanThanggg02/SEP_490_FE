@@ -101,7 +101,7 @@ const Compare = () => {
   const hasData = data && Object.keys(data).length > 0;
 
   const isPriceField = (key) => {
-    const priceKeys = ['pricePerHour', 'pricePerDay', 'pricePerWeek', 'pricePerMonth'];
+    const priceKeys = ['pricePerHour', 'pricePerDay', /*'pricePerWeek'*/, 'pricePerMonth'];
     return priceKeys.includes(key);
   };
   const fieldLabels = {
@@ -110,7 +110,7 @@ const Compare = () => {
     area: "Diện tích (m²)",
     pricePerHour: "Giá theo giờ",
     pricePerDay: "Giá theo ngày",
-    pricePerWeek: "Giá theo tuần",
+    // pricePerWeek: "Giá theo tuần",
     pricePerMonth: "Giá theo tháng",
     status: "Trạng thái",
     images: "Hình ảnh",

@@ -338,7 +338,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const [stateSpacePriceWay, setStateSpacePriceWay] = React.useState({
     pricePerHour: true,
     pricePerDay: false,
-    pricePerWeek: false,
+    // pricePerWeek: false,
     pricePerMonth: false,
   });
 
@@ -372,7 +372,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setIsShowNotPermissionSpacePrice(false);
   };
 
-  const { pricePerHour, pricePerDay, pricePerWeek, pricePerMonth } =
+  const { pricePerHour, pricePerDay, /*pricePerWeek*/ pricePerMonth } =
     stateSpacePriceWay;
 
   const handleTimeSlotSelection = (slotStartTime, slotEndTime) => {
@@ -487,7 +487,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             }
                             label="Ngày"
                           />
-                          <FormControlLabel
+                          {/* <FormControlLabel
                             control={
                               <Checkbox
                                 checked={pricePerWeek}
@@ -496,7 +496,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                               />
                             }
                             label="Tuần"
-                          />
+                          /> */}
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -580,7 +580,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </Col>
                     )}
 
-                    {pricePerWeek && (
+                    {/* {pricePerWeek && (
                       <Col md={6}>
                         <TextField
                           name="pricePerWeek"
@@ -612,7 +612,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           }}
                         />
                       </Col>
-                    )}
+                    )} */}
 
                     {pricePerMonth && (
                       <Col md={6}>

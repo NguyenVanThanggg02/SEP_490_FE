@@ -37,7 +37,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
     const labelForPricePer = {
         pricePerHour: 'Giờ',
         pricePerDay: 'Ngày',
-        pricePerWeek: 'Tuần',
+        // pricePerWeek: 'Tuần',
         pricePerMonth: ' Tháng',
     };
 

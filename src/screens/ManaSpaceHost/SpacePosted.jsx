@@ -182,10 +182,10 @@ const SpacePosted = () => {
                         ? `${priceFormatter(lpost.pricePerHour)} VND/Giờ`
                         : lpost.pricePerDay
                           ? `${priceFormatter(lpost.pricePerDay)} VND/Ngày`
-                          : lpost.pricePerWeek
-                            ? `${priceFormatter(lpost.pricePerWeek)} VND/Tuần`
-                            : lpost.pricePerWeek
-                              ? `${priceFormatter(lpost.pricePerWeek)} VND/Tháng`
+                          // : lpost.pricePerWeek
+                          //   ? `${priceFormatter(lpost.pricePerWeek)} VND/Tuần`
+                            : lpost.pricePerMonth
+                              ? `${priceFormatter(lpost.pricePerMonth)} VND/Tháng`
                               : ""}
                     </Typography>
                     <Typography
@@ -319,7 +319,7 @@ const SpacePosted = () => {
           }}
         >
           <Paginator
-            style={{ backgroundColor: "#f9f9f9" }}
+            style={{ backgroundColor: "white" }}
             first={first}
             rows={rows}
             totalRecords={listPosted.length}

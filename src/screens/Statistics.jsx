@@ -12,6 +12,7 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import { formatNumberToVND } from '../utils/numberFormatter';
 
 const getTotalPlusTrans = (plusTransId) => {
   return plusTransId.reduce((acc, currVal) => {
@@ -283,12 +284,12 @@ export default function Statistics() {
             {/* some stat overall */}
             <Stack direction={'row'} spacing={2} justifyContent={'center'}>
               <Paper sx={{ flex: 1, p: 2 }}>
-                <Typography>Doanh thu tổng: {totalStats.avenue}đ</Typography>
+                <Typography>Doanh thu tổng: {formatNumberToVND(totalStats.avenue)} VND</Typography>
                 <Typography>Lượt đặt tổng: {totalStats.numOfBook}</Typography>
               </Paper>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
-                  Không gian có doanh thu cao nhất: {bestSpaces.avenue.name}đ
+                  Không gian có doanh thu cao nhất: {bestSpaces.avenue.name}
                 </Typography>
                 <Typography>
                   Không gian có lượt đặt cao nhất: {bestSpaces.numOfBook.name}
@@ -296,8 +297,8 @@ export default function Statistics() {
               </Paper>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
-                  Doanh thu T{filter.month}/{filter.year}:
-                  {totalStatsInMonth.avenue}đ
+                  Doanh thu T{filter.month}/{filter.year}: 
+                  {formatNumberToVND(totalStatsInMonth.avenue)} VND
                 </Typography>
                 <Typography>
                   Lượt đặt T{filter.month}/{filter.year}:{' '}
