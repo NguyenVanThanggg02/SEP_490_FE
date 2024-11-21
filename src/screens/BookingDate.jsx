@@ -2,8 +2,15 @@ import React, { useEffect, useState } from 'react';
 // import Calendar from 'react-calendar';
 import { Delete } from '@mui/icons-material';
 import {
+  Alert,
   Box,
   Button,
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
   FormControl,
   FormControlLabel,
   Grid,
@@ -285,10 +292,10 @@ const BookingForm = () => {
 
     const returnValue = spaceData.goldenHourDetails
       ? spaceData.goldenHourDetails.some((item, index) => {
-          return (
-            item.startTime === slotStartTime && item.endTime === slotEndTime
-          );
-        })
+        return (
+          item.startTime === slotStartTime && item.endTime === slotEndTime
+        );
+      })
       : false;
 
     // console.log('203 ============>', {
@@ -343,10 +350,10 @@ const BookingForm = () => {
 
     const priceIncrease = goldenHourDetails
       ? goldenHourDetails.find((item) => {
-          return (
-            item.startTime === slotStartTime && item.endTime === slotEndTime
-          );
-        })?.priceIncrease
+        return (
+          item.startTime === slotStartTime && item.endTime === slotEndTime
+        );
+      })?.priceIncrease
       : 0;
 
     // setGoldenHour({
@@ -1261,6 +1268,22 @@ const BookingForm = () => {
     }
   };
 
+  const [openWarning, setOpenWarning] = useState(false);
+  const [isAgreed, setIsAgreed] = useState(false);
+
+  useEffect(() => {
+    setOpenWarning(true);
+  }, []);
+
+  const handleWarningClose = () => {
+    setOpenWarning(false);
+  };
+
+  const handleAgreeChange = (event) => {
+    setIsAgreed(event.target.checked);
+  };
+
+
   return (
     <Container>
       <Row>
@@ -1376,7 +1399,7 @@ const BookingForm = () => {
                 <Grid container justifyContent="center" spacing={1} mt={1}>
                   {Array.isArray(
                     availableSlots[
-                      dayjs(date.toDateString()).format('dddd, D MMMM YYYY')
+                    dayjs(date.toDateString()).format('dddd, D MMMM YYYY')
                     ]
                   ) ? (
                     availableSlots[
@@ -1552,6 +1575,102 @@ const BookingForm = () => {
           </Paper>
         </Col>
       </Row>
+      <Dialog
+      open={openWarning}
+      onClose={(event, reason) => {
+        if (reason !== "backdropClick" && reason !== "escapeKeyDown") {
+          setOpenWarning(false);
+        }
+      }}
+      disableEscapeKeyDown
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>
+        <Typography variant='h4' align='center'>Chính sách hoàn tiền và lưu ý khi đặt không gian</Typography>
+      </DialogTitle>
+      <DialogContent dividers>
+        {/* Thông báo nhấn mạnh */}
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Vui lòng đọc kỹ chính sách hoàn tiền trước khi đặt không gian để đảm bảo quyền lợi của quý khách!
+        </Alert>
+
+        {/* Phần hoàn tiền 100% */}
+        <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}>
+          <Typography variant="h6" color="primary" gutterBottom>
+            Quý khách sẽ được hoàn 100% tiền khi:
+          </Typography>
+          <ul>
+            <li>
+              <Typography variant="body1">
+                <strong>Đặt theo slot:</strong> Hủy trước 24h với thời gian đặt phòng.
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1">
+                <strong>Đặt theo ngày:</strong> Hủy trước 24h với thời gian đặt phòng.
+              </Typography>
+            </li>
+            <li>
+              <Typography variant="body1">
+                <strong>Đặt theo tháng:</strong> Hủy trước 7 ngày với thời gian đặt phòng.
+              </Typography>
+            </li>
+          </ul>
+        </Paper>
+
+        {/* Phần hoàn tiền một phần */}
+        <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}>
+          <Typography variant="h6" color="secondary" gutterBottom>
+            Quý khách sẽ được hoàn một phần tiền khi:
+          </Typography>
+          <ul>
+            <li>
+              <Typography variant="body1">
+                <strong>Đặt theo tháng:</strong> <br></br>
+                Còn 1-7 ngày tới lịch nhận phòng thì được hoàn 80%.
+              </Typography>
+            </li>
+              <Typography variant="body1">
+                Nếu hủy ở tuần thứ 1 thì hoàn 60%, tuần thứ 2 thì hoàn 30%.
+              </Typography>
+              <Typography variant="body1">
+                Sang tuần thứ 3, quý khách không thể hủy được nữa.
+              </Typography>
+          </ul>
+        </Paper>
+
+        {/* Lời cảm ơn */}
+        <Typography variant="body1" align="center" sx={{ fontWeight: "bold", mt: 2 }}>
+          CẢM ƠN QUÝ KHÁCH ĐÃ SỬ DỤNG DỊCH VỤ CHÚNG TÔI
+        </Typography>
+
+        {/* Checkbox đồng ý chính sách */}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <FormControlLabel
+            control={<Checkbox checked={isAgreed} onChange={handleAgreeChange} color="primary" />}
+            label="Tôi đã hiểu và đồng ý với chính sách"
+            sx={{ userSelect: "none" }}
+          />
+        </Box>
+      </DialogContent>
+
+      {/* Nút đóng */}
+      <DialogActions>
+        <Button
+          onClick={handleWarningClose}
+          variant="contained"
+          color="primary"
+          disabled={!isAgreed}
+          sx={{
+            opacity: isAgreed ? 1 : 0.6,
+            transition: "opacity 0.3s",
+          }}
+        >
+          Đóng
+        </Button>
+      </DialogActions>
+    </Dialog>
     </Container>
   );
 };

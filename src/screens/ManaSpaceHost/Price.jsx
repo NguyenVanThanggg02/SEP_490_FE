@@ -236,7 +236,7 @@ export default function Price({
                   type="number"
                   variant="outlined"
                   required
-                  value={spaceInfo[pricePer]}
+                  value={spaceInfo[pricePer]|| ""}
                   onChange={onPricePerValChange} // Cập nhật khi người dùng nhập
                   onBlur={onBlurToValidate}
                   error={!!errors[pricePer]} // Hiển thị lỗi nếu có
@@ -316,7 +316,7 @@ export default function Price({
                   required
                   min={1}
                   max={100}
-                  value={priceIncrease}
+                  value={priceIncrease|| ""}
                   onChange={onPriceIncreaseChange}
                   onBlur={onBlurToValidate}
                   error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
