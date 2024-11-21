@@ -98,12 +98,12 @@ const OrderMana = () => {
 
   const translateStatus = (status) => {
     switch (status) {
-      case 'pending':
+      case 'awaiting payment':
         return 'Đang chờ';
-      case 'accepted':
-        return 'Chấp nhận';
-      case 'declined':
-        return 'Từ chối';
+      case 'completed':
+        return 'Hoàn thành';
+      case 'canceled':
+        return 'Đã hủy';
       default:
         return 'Không xác định';
     }
@@ -111,13 +111,19 @@ const OrderMana = () => {
 
   return (
     <>
+      <Typography
+        variant="h5"
+        sx={{ fontWeight: "bold", mb: 3, color: "#333", textAlign: "center" }}
+      >
+        Danh sách lịch book
+      </Typography>
       <Grid container spacing={3} sx={{ padding: 3 }}>
         {ordersOnPage.map((orderItem) => (
           <Grid item xs={12} sm={6} md={4} key={orderItem._id}>
             <Card
               sx={{
                 borderRadius: "16px",
-                height:"345px",
+                height: "335px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
                 transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
@@ -138,21 +144,24 @@ const OrderMana = () => {
                       variant="h6"
                       sx={{ fontWeight: "bold", color: "#1976d2" }}
                     >
-                      {orderItem.userId?.fullname || "Không có tên"} - {orderItem.userId ? orderItem.userId.phone : "Không có SĐT"}
+                      {orderItem.userId?.fullname || "Không có tên"} -{" "}
+                      {orderItem.userId
+                        ? orderItem.userId.phone
+                        : "Không có SĐT"}
                     </Typography>
                     <Typography
                       variant="body2"
                       sx={{
                         color:
-                          orderItem.ownerApprovalStatus === "accepted"
+                          orderItem.status === "completed"
                             ? "green"
-                            : orderItem.ownerApprovalStatus === "declined"
+                            : orderItem.status === "canceled"
                               ? "red"
                               : "orange",
                         fontWeight: "bold",
                       }}
                     >
-                      {translateStatus(orderItem.ownerApprovalStatus)}
+                      {translateStatus(orderItem.status)}
                     </Typography>
                   </Box>
                 </Box>
@@ -203,7 +212,7 @@ const OrderMana = () => {
                   {formatNumberToVND(orderItem.totalAmount)} VNĐ
                 </Typography>
               </CardContent>
-              <CardContent sx={{ textAlign: "center" }}>
+              {/* <CardContent sx={{ textAlign: "center" }}>
                 <Button
                   variant="contained"
                   color="success"
@@ -237,7 +246,7 @@ const OrderMana = () => {
                 >
                   Từ chối
                 </Button>
-              </CardContent>
+              </CardContent> */}
             </Card>
           </Grid>
         ))}

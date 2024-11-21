@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, InputBase, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material"
+import { Avatar, Box, Button, Card, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, InputBase, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material"
 import HeaderAdmin from "./HeaderAdmin"
 import { formatMoney } from "../utils/moneyFormatter"
 import { CheckCircle, Search as SearchIcon, BlockOutlined } from '@mui/icons-material';
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Paginator } from "primereact/paginator";
+import { Row } from "react-bootstrap";
 
 export const TransactionManagement = () => {
     const [searchParams, setSearchParams] = useState('');
@@ -14,6 +16,18 @@ export const TransactionManagement = () => {
         setSearchParams(event.target.value);
     };
     const [data, setData] = useState();
+
+    const [rows, setRows] = useState(9);
+    const [first, setFirst] = useState(0);
+    const productsOnPage = data?.transactionList?.slice(first, first + rows);
+    const [, setCurrentPage] = useState(1);
+
+    const onPageChange = (event) => {
+      setFirst(event?.first);
+      setCurrentPage(event.page + 1);
+      setRows(event?.rows);
+    };
+
     async function fetchHistory() {
         try {
             const response = await axios.get('http://localhost:9999/transaction/admin/list', {
@@ -99,97 +113,211 @@ export const TransactionManagement = () => {
       <Box>
         <HeaderAdmin />
         <Box
-          sx={{ mt: "24px", p: 2, display: "flex", flexDirection: "column" }}
+          sx={{
+            mt: -4,
+            p: 4,
+            backgroundColor: "#f3f4f6",
+            borderRadius: 2,
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          }}
         >
-          <Typography variant="h4">Quản lý giao dịch</Typography>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: "bold", mb: 3, color: "#333", textAlign: "center" }}
+          >
+            Quản lý giao dịch
+          </Typography>
 
           <Box
             sx={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              alignSelf: "flex-end",
-              backgroundColor: "rgba(0, 0, 0, 0.1)",
+              mb: 3,
+              p: 2,
+              backgroundColor: "#ffffff",
               borderRadius: 1,
-              padding: "0 10px",
-              width: "300px",
-              mt: 2,
-              mb: 2,
+              border: "1px solid #e0e0e0",
+              boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
             }}
           >
             <InputBase
-              placeholder="Nhập để tìm kiếm..."
+              placeholder="Tìm kiếm giao dịch..."
               value={searchParams}
               onChange={handleSearchChange}
-              sx={{ marginLeft: 1, flex: 1 }}
+              sx={{
+                flex: 1,
+                fontSize: "1rem",
+                padding: "3px 0",
+                pl: 2,
+              }}
             />
-            <IconButton sx={{ padding: 0 }} onClick={fetchHistory}>
+            <IconButton
+              onClick={fetchHistory}
+              sx={{
+                color: "#1565c0",
+                "&:hover": { backgroundColor: "rgba(21, 101, 192, 0.1)" },
+              }}
+            >
               <SearchIcon />
             </IconButton>
           </Box>
 
-          <TableContainer component={Paper}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Khách hàng</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Mã giao dịch</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Loại giao dịch</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Số tiền</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Ngày giao dịch</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Thao tác</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.transactionList &&
-                  data.transactionList.length > 0 &&
-                  data.transactionList.map((transaction, index) => (
-                    <TableRow key={transaction.transactionId} hover>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell sx={{ whiteSpace: "pre-wrap" }}>
-                        {transaction.userInfo}
-                      </TableCell>
-                      <TableCell>{transaction.orderId}</TableCell>
-                      <TableCell>{transaction.type}</TableCell>
-                      <TableCell>{formatMoney(transaction.amount)}</TableCell>
-                      <TableCell>{transaction.createdAt}</TableCell>
-                      <TableCell>{transaction.status}</TableCell>
-                      <TableCell>
-                        {" "}
-                        {transaction.status === "Khởi tạo" &&
-                          transaction.type === "Rút tiền" && (
-                            <Box>
-                              <Tooltip title="Đồng ý giao dịch">
-                                <IconButton
-                                  color="primary"
-                                  onClick={() => {
-                                    handleClickApproveButton(
-                                      transaction.transactionId
-                                    );
-                                  }}
-                                >
-                                  <CheckCircle />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Từ chối giao dịch">
-                                <IconButton
-                                  color="secondary"
-                                  onClick={() => {
-                                    handleOpenDialog2(transaction);
-                                  }}
-                                >
-                                  <BlockOutlined />
-                                </IconButton>
-                              </Tooltip>
-                            </Box>
-                          )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {productsOnPage?.length > 0 ? (
+            <Grid container spacing={3}>
+              {productsOnPage.map((transaction, index) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  key={transaction.transactionId}
+                >
+                  <Box
+                    sx={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: 2,
+                      p: 3,
+                      boxShadow: "0px 3px 8px rgba(0, 0, 0, 0.1)",
+                      border: "1px solid #e0e0e0",
+                      transition: "transform 0.3s, box-shadow 0.3s",
+                      "&:hover": {
+                        transform: "translateY(-5px)",
+                        boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.15)",
+                      },
+                      height: "325px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <Avatar
+                        alt="avatar"
+                        src={
+                          transaction.userInfoAvatar || "/default-avatar.png"
+                        }
+                        sx={{ width: 56, height: 56, ml: -1.5 }}
+                      />
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: "bold",
+                          mb: 1,
+                          color: "#2c387e",
+                          ml: -1.2,
+                        }}
+                      >
+                        {`${transaction.userInfo}`}
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#616161", mb: 0.5 }}
+                    >
+                      Mã giao dịch:  <strong>{transaction.orderId}</strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "text.secondary" }}
+                    >
+                      Loại giao dịch:{" "}
+                      <Chip
+                        label={transaction.type}
+                        sx={{
+                          fontWeight: "bold",
+                          color: "#ffffff",
+                          backgroundColor:
+                            transaction.type === "Rút tiền"
+                              ? "#f57c00"
+                              : "#2e7d32",
+                        }}
+                        size="small"
+                      />
+                    </Typography>
+
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        fontWeight: "bold",
+                        color: "#1565c0",
+                        mb: 1,
+                      }}
+                    >
+                      Số tiền: {formatMoney(transaction.amount)}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#757575", mb: 1 }}
+                    >
+                      Ngày giao dịch: {transaction.createdAt}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color:
+                          transaction.status === "Khởi tạo"
+                            ? "#f57c00"
+                            : transaction.status === "Thành công"
+                              ? "#2e7d32"
+                              : "#d32f2f",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Trạng thái: {transaction.status}
+                    </Typography>
+
+                    {transaction.status === "Khởi tạo" &&
+                      transaction.type === "Rút tiền" && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            mt: 2,
+                          }}
+                        >
+                          <Tooltip title="Đồng ý giao dịch">
+                            <IconButton
+                              color="primary"
+                              onClick={() =>
+                                handleClickApproveButton(
+                                  transaction.transactionId
+                                )
+                              }
+                              sx={{ mr: 1 }}
+                            >
+                              <CheckCircle />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Từ chối giao dịch">
+                            <IconButton
+                              color="error"
+                              onClick={() => handleOpenDialog2(transaction)}
+                            >
+                              <BlockOutlined />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Box
+              sx={{
+                textAlign: "center",
+                py: 5,
+                color: "#9e9e9e",
+                fontSize: "1.2rem",
+              }}
+            >
+              Không có dữ liệu giao dịch.
+            </Box>
+          )}
         </Box>
 
         <Dialog open={open} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
@@ -271,7 +399,7 @@ export const TransactionManagement = () => {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={open2} onClose={handleCloseDialog2}  fullWidth>
+        <Dialog open={open2} onClose={handleCloseDialog2} fullWidth>
           <DialogContent sx={{ justifyContent: "center" }}>
             <Typography>Nhập lý do từ chối:</Typography>
             <TextField
@@ -302,6 +430,20 @@ export const TransactionManagement = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+          <Paginator
+            style={{ backgroundColor: "white" }}
+            first={first}
+            rows={rows}
+            totalRecords={data?.transactionList?.length}
+            onPageChange={onPageChange}
+          />
+      </Row>
       </Box>
     );
 }

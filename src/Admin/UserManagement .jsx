@@ -2,10 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Container, Grid, Card, CardContent, Typography, Avatar, AvatarGroup, Box, Button, Stack } from "@mui/material";
 import { Block as BlockIcon, Undo as UndoIcon, Person as PersonIcon } from '@mui/icons-material';
 import axios from "axios";
+import { Row } from "react-bootstrap";
+import { Paginator } from "primereact/paginator";
 
 const UserManagement = () => {
   const [listUser, setListUser] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [rows, setRows] = useState(9);
+  const [first, setFirst] = useState(0);
+  const listUserOnPage = listUser.slice(first, first + rows);
+  const [, setCurrentPage] = useState(1);
+
+  const onPageChange = (event) => {
+    setFirst(event?.first);
+    setCurrentPage(event.page + 1);
+    setRows(event?.rows);
+  };
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -50,15 +62,15 @@ const UserManagement = () => {
   };
 
   return (
-    <Container>
-      <Box textAlign="center" mb={4}>
+    <Container style={{marginBottom:'55px'}}>
+      <Box textAlign="center" mb={4} mt={3}>
         <Typography variant="h4" component="h1">
           Quản Lí Khách Hàng
         </Typography>
       </Box>
 
       <Grid container spacing={3}>
-        {listUser.map((user) => (
+        {listUserOnPage.map((user) => (
           <Grid item xs={12} sm={6} md={4} key={user._id}>
             <Card 
               variant="outlined" 
@@ -131,6 +143,20 @@ const UserManagement = () => {
           </Grid>
         ))}
       </Grid>
+      <Row
+        style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+          <Paginator
+            style={{ backgroundColor: "white" }}
+            first={first}
+            rows={rows}
+            totalRecords={listUser.length}
+            onPageChange={onPageChange}
+          />
+      </Row>
     </Container>
   );
 };

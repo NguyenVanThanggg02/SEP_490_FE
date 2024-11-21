@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import "../style/login.css";
-import logo from "../assets/logo.png";
+import newlogo2 from "../assets/images/newlogo_2.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -86,7 +86,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
                 style={{ width: "100%" }}
               >
                 <img
-                  src={logo}
+                  src={newlogo2}
                   height={80}
                   alt="logo"
                   style={{ objectFit: "contain" }}

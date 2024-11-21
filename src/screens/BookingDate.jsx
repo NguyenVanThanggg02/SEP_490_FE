@@ -542,7 +542,7 @@ const BookingForm = () => {
   //         slotKey: slotKeyConvert,
   //         price: priceInfo?.isGolden ? priceInfo.basePrice : priceInfo,
   //         isGolden: priceInfo?.isGolden,
-  //         priceIncrease: goldenHour?.priceIncrease, // Lưu mức tăng giá trong thời gian khung giờ vàng (nếu có)
+  //         priceIncrease: goldenHour?.priceIncrease, // Lưu mức tăng giá trong thời gian Giờ cao điểm (nếu có)
   //       },
   //     ]);
   //   }
@@ -1175,7 +1175,7 @@ const BookingForm = () => {
             slotKey: slotKeyConvert,
             price: priceInfo?.isGolden ? priceInfo.basePrice : priceInfo,
             isGolden: priceInfo?.isGolden,
-            priceIncrease: priceInfo?.priceIncrease, // Lưu mức tăng giá trong thời gian khung giờ vàng (nếu có)
+            priceIncrease: priceInfo?.priceIncrease, // Lưu mức tăng giá trong thời gian Giờ cao điểm (nếu có)
           },
         ],
       ]);
@@ -1342,9 +1342,11 @@ const BookingForm = () => {
               <span> Chọn ngày và khung giờ trong ngày đó</span>
             ) : rentalType === 'day' ? (
               <span> Chọn ngày</span>
-            ) : rentalType === 'week' ? (
-              <span> Chọn tháng và tuần trong tháng đó</span>
-            ) : rentalType === 'month' ? (
+            ) 
+            // : rentalType === 'week' ? (
+            //   <span> Chọn tháng và tuần trong tháng đó</span>
+            // ) 
+            : rentalType === 'month' ? (
               <span> Chọn tháng</span>
             ) : (
               <></>
@@ -1527,7 +1529,7 @@ const BookingForm = () => {
                               {priceFormatter(summaryItem.price)} vnđ
                             </Typography>
                             {summaryItem?.isGolden && summaryItem?.priceIncrease
-                              ? ` - Khung giờ vàng (+${summaryItem?.priceIncrease}%)`
+                              ? ` - Giờ cao điểm (+${summaryItem?.priceIncrease}%)`
                               : ''}
 
                             {summaryItem?.weekObject
