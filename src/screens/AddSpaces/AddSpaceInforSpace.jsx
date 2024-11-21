@@ -517,7 +517,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour}
+                          value={spaceInfo.pricePerHour|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -552,7 +552,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay}
+                          value={spaceInfo.pricePerDay|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -587,7 +587,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerWeek}
+                          value={spaceInfo.pricePerWeek|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerWeek} // Hiển thị lỗi nếu có
@@ -621,7 +621,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth}
+                          value={spaceInfo.pricePerMonth|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -742,7 +742,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           required
                           min={0}
                           max={100}
-                          value={priceIncrease}
+                          value={priceIncrease|| ""}
                           onChange={handleInputHourChange}
                           onBlur={handleBlur}
                           error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
