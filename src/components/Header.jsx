@@ -45,7 +45,7 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
     { to: '/', label: 'Trang chủ' },
     { to: '/list_space', label: 'Danh sách địa điểm' },
     { to: '/blog', label: 'Bài viết' },
-    { to: '/#', label: 'Liên hệ' },
+    // { to: '/#', label: 'Liên hệ' },
     { to: '/welcome', label: 'Cho thuê địa điểm qua SpaceHub', needLogin: true },
   ];
   const [menuOpen, setMenuOpen] = useState(false); // State to manage menu visibility

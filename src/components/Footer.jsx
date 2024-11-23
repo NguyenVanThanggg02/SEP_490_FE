@@ -7,9 +7,9 @@ import LogoV2 from "../assets/images/newlogo.png";
 const Footer = () => {
     return (
         <footer className="text-center text-lg-start" style={{ backgroundColor: '#6c757d', marginTop: '20px'}}>
-            <Container >
-                <Row className="my-4 ">
-                    <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
+            <Container style={{marginBottom:'-45px'}}>
+                <Row className="my-4">
+                    <Col className="footer-column" style={{ textAlign: "left" }}>
                         <Link to={"/"}>
                             <img
                                 src={LogoV2}
@@ -18,18 +18,18 @@ const Footer = () => {
                             />
                         </Link>
                     </Col>
-                    <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
+                    <Col className="footer-column" style={{ textAlign: "left" }}>
                         <div className="d-flex align-items-start">
                             <div>
-                                <p className="text-start mt-4" style={{ color: '#000', fontSize: '18px' }}>
+                                <p className="text-start" style={{ color: '#000', fontSize: '18px' }}>
                                     Space Hub cung cấp dịch vụ kết nối giữa người thuê và chủ sở hữu không gian làm việc, phòng họp, studio, và không gian sự kiện, đảm bảo trải nghiệm thuê chuyên nghiệp và tiện lợi.
                                 </p>
                             </div>
                         </div>
                     </Col>
 
-                    <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
-                        <h5 className="text-uppercase mb-4" style={{ color: '#000' }}>Dịch Vụ</h5>
+                    <Col className="footer-column" style={{ textAlign: "left" }}>
+                        <h5 className="text-uppercase" style={{ color: '#000' }}>Dịch Vụ</h5>
                         <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
                             <li className="mb-2">
                                 <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
@@ -54,8 +54,8 @@ const Footer = () => {
                         </ul>
                     </Col>
 
-                    <Col className="footer-column mb-4" style={{ textAlign: "left" }}>
-                        <h5 className="text-uppercase mb-4" style={{ color: '#000' }}>TRUY CẬP</h5>
+                    <Col className="footer-column" style={{ textAlign: "left" }}>
+                        <h5 className="text-uppercase" style={{ color: '#000' }}>TRUY CẬP</h5>
                         <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
                             <li className="mb-2">
                                 <Link to="/" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
@@ -75,8 +75,8 @@ const Footer = () => {
                         </ul>
                     </Col>
 
-                    <Col lg={2} md={6} className="footer-column mb-4" style={{ textAlign: "left" }}>
-                        <h5 className="text-uppercase mb-4" style={{ color: '#000' }}>Liên Hệ</h5>
+                    <Col lg={2} md={6} className="footer-column" style={{ textAlign: "left" }}>
+                        <h5 className="text-uppercase" style={{ color: '#000' }}>Liên Hệ</h5>
                         <ul className="list-unstyled">
                             <li className="mb-2">
                                 <div className="d-flex align-items-center">

@@ -13,6 +13,7 @@ import {
 import StatCards from "./Chart/StartCard";
 import HomeAdmin from "./HomeAdmin";
 import { TransactionManagement } from "./TransactionManagement";
+import ProfileAdmin from "./profile/ProfileAdmin";
 
 const DashBoard = () => {
   const [activeKey, setActiveKey] = useState("one");
@@ -34,13 +35,12 @@ const DashBoard = () => {
       activeKey={activeKey}
       onSelect={(k) => setActiveKey(k)}
     >
-      <Row>
+      <Row style={{marginTop:'-32px'}}>
         <Col
           sm={2}
           style={{
             backgroundColor: "#23282d",
-            height: activeKey === "three" ? "auto" : "100vh",
-          }}
+            height: (activeKey === "three" || "transaction" || "five") ? "auto" : "100vh",          }}
         >
           <Nav variant="pills" className="flex-column mt-3">
             <Nav.Item>
@@ -102,7 +102,7 @@ const DashBoard = () => {
             </Tab.Pane>
 
             <Tab.Pane eventKey="five">
-              <h1>Settings Content</h1>
+              <ProfileAdmin/>
             </Tab.Pane>
           </Tab.Content>
         </Col>

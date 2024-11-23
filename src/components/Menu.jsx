@@ -18,6 +18,7 @@ import {
 } from "react-bootstrap-icons";
 import '../style/Menu.css'
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import Notification from './Notification';
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -151,6 +152,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
+      <Notification />
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}

@@ -338,7 +338,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const [stateSpacePriceWay, setStateSpacePriceWay] = React.useState({
     pricePerHour: true,
     pricePerDay: false,
-    pricePerWeek: false,
+    // pricePerWeek: false,
     pricePerMonth: false,
   });
 
@@ -372,7 +372,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setIsShowNotPermissionSpacePrice(false);
   };
 
-  const { pricePerHour, pricePerDay, pricePerWeek, pricePerMonth } =
+  const { pricePerHour, pricePerDay, /*pricePerWeek*/ pricePerMonth } =
     stateSpacePriceWay;
 
   const handleTimeSlotSelection = (slotStartTime, slotEndTime) => {
@@ -487,7 +487,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             }
                             label="Ngày"
                           />
-                          <FormControlLabel
+                          {/* <FormControlLabel
                             control={
                               <Checkbox
                                 checked={pricePerWeek}
@@ -496,7 +496,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                               />
                             }
                             label="Tuần"
-                          />
+                          /> */}
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -517,7 +517,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour}
+                          value={spaceInfo.pricePerHour|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -552,7 +552,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay}
+                          value={spaceInfo.pricePerDay|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -580,14 +580,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </Col>
                     )}
 
-                    {pricePerWeek && (
+                    {/* {pricePerWeek && (
                       <Col md={6}>
                         <TextField
                           name="pricePerWeek"
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerWeek}
+                          value={spaceInfo.pricePerWeek|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerWeek} // Hiển thị lỗi nếu có
@@ -612,7 +612,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           }}
                         />
                       </Col>
-                    )}
+                    )} */}
 
                     {pricePerMonth && (
                       <Col md={6}>
@@ -621,7 +621,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth}
+                          value={spaceInfo.pricePerMonth|| ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -676,11 +676,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           name="isGoldenHour"
                         />
                       }
-                      label="Khung giờ vàng"
+                      label="Giờ cao điểm"
                     />
-                    {/* <label class="form-check-label" for="flexCheckDefault">
-                      Khung giờ vàng
-                    </label> */}
+                 
                   </div>
 
                   {isGoldenHour && (
@@ -742,7 +740,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           required
                           min={0}
                           max={100}
-                          value={priceIncrease}
+                          value={priceIncrease|| ""}
                           onChange={handleInputHourChange}
                           onBlur={handleBlur}
                           error={!!errors.priceIncrease} // Hiển thị lỗi nếu có

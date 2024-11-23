@@ -63,10 +63,11 @@ const CancelBooking = (props) => {
         onClick={handleCancelBooking}
         className="btn btn-danger mr-2"
         disabled={
-          (cancelReasons.length === 0 && !customReason.trim()) ||
-          booking.ownerApprovalStatus === "accepted" ||
-          booking.ownerApprovalStatus === "declined" 
-          // ||           booking.status === "completed"
+          (cancelReasons.length === 0 && !customReason.trim()) 
+          // ||
+          // booking.ownerApprovalStatus === "accepted" ||
+          // booking.ownerApprovalStatus === "declined" 
+          // // ||           booking.status === "completed"
         }
       >
         Huỷ Lịch
