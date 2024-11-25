@@ -45,12 +45,12 @@ export default function MenuContent({ setMainContent }) {
   }, [])
 
   return (
-    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
+    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between', backgroundColor:'#23283a', color:'white' }}>
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
             <ListItemButton selected={index === selected} onClick={() => handleSelected(index)}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{color:'white'}}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
