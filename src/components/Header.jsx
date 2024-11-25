@@ -51,8 +51,8 @@ const Header = ({ setIsLoggedIn, isLoggedIn }) => {
 
       {!isLg && (
         <>
-          <IconButton sx={{ display: { sm: 'none', xs: 'block' } }} onClick={handleMenuToggle}>
-            <MenuIcon sx={{ color: '#333' }} />
+          <IconButton sx={{ display: { xs: 'block' } }} onClick={handleMenuToggle}>
+          <MenuIcon sx={{ color: '#333' }} />
           </IconButton>
 
 

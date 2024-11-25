@@ -31,9 +31,9 @@ export const TransactionManagement = () => {
     async function fetchHistory() {
         try {
             const response = await axios.get('http://localhost:9999/transaction/admin/list', {
-                params: {
-                    searchParams
-                }
+              params: {
+                searchParams: searchParams || undefined, 
+            },
             });
             setData(response.data);
         } catch (error) {
@@ -41,8 +41,8 @@ export const TransactionManagement = () => {
         }
     }
     useEffect(() => {
-        fetchHistory();
-    }, []);
+      fetchHistory();
+  }, [searchParams]);
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -110,11 +110,14 @@ export const TransactionManagement = () => {
 
     
     return (
-      <Box>
-        <HeaderAdmin />
+      <Box
+        sx={{
+          mt: 4,
+        }}
+      >
         <Box
           sx={{
-            mt: -4,
+            mt: 4,
             p: 4,
             backgroundColor: "#f3f4f6",
             borderRadius: 2,
@@ -123,7 +126,12 @@ export const TransactionManagement = () => {
         >
           <Typography
             variant="h5"
-            sx={{ fontWeight: "bold", mb: 3, color: "#333", textAlign: "center" }}
+            sx={{
+              fontWeight: "bold",
+              mb: 3,
+              color: "#333",
+              textAlign: "center",
+            }}
           >
             Quản lý giao dịch
           </Typography>
@@ -161,6 +169,16 @@ export const TransactionManagement = () => {
             >
               <SearchIcon />
             </IconButton>
+            {searchParams && (
+              <Button
+                onClick={() => setSearchParams("")}
+                variant="outlined"
+                color="secondary"
+                size="small"
+              >
+                Xóa tìm kiếm
+              </Button>
+            )}
           </Box>
 
           {productsOnPage?.length > 0 ? (
@@ -218,7 +236,7 @@ export const TransactionManagement = () => {
                       variant="body2"
                       sx={{ color: "#616161", mb: 0.5 }}
                     >
-                      Mã giao dịch:  <strong>{transaction.orderId}</strong>
+                      Mã giao dịch: <strong>{transaction.orderId}</strong>
                     </Typography>
                     <Typography
                       variant="body2"
@@ -431,11 +449,11 @@ export const TransactionManagement = () => {
           </DialogActions>
         </Dialog>
         <Row
-        style={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <Paginator
             style={{ backgroundColor: "white" }}
             first={first}
@@ -443,7 +461,7 @@ export const TransactionManagement = () => {
             totalRecords={data?.transactionList?.length}
             onPageChange={onPageChange}
           />
-      </Row>
+        </Row>
       </Box>
     );
 }
