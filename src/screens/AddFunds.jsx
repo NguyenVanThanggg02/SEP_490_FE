@@ -297,7 +297,7 @@ const AddFunds = () => {
           )}
           {transactionType === "Rút tiền" && bankAccounts.length <= 0 && (
             <Typography sx={{ color: "red" }}>
-              Hãy liên kết thông tin tài khoản ngân hàng trước
+              Hãy thêm thông tin tài khoản ngân hàng trước
             </Typography>
           )}
         </DialogContent>
@@ -309,14 +309,31 @@ const AddFunds = () => {
           >
             Hủy
           </Button>
-          <LoadingButton
-            onClick={handleCreateTransaction}
-            loading={loading}
-            color="primary"
-            variant="contained"
-          >
-            Xác nhận
-          </LoadingButton>
+          {transactionType === "Rút tiền" && bankAccounts.length <= 0 ? (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                window.location.href = "/profile";
+              }}
+            >
+              Thêm ngay
+            </Button>
+          ) : (
+            <LoadingButton
+              onClick={handleCreateTransaction}
+              loading={loading}
+              color="primary"
+              variant="contained"
+              disabled={
+                !amount ||
+                Number(amount) <= 0 ||
+                (transactionType === "Rút tiền" && !selectedBankAccountId)
+              } 
+            >
+              Xác nhận
+            </LoadingButton>
+          )}
         </DialogActions>
       </Dialog>
     </Container>
