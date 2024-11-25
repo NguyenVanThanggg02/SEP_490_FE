@@ -1,8 +1,10 @@
 import { Typography } from '@mui/material';
 import { Select } from 'antd';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import { MapSearch } from '../../components/Map';
+import { toast } from 'react-toastify';
+import { GooMap } from '../GooMap';
 
 const defaultLatLng = {
   lat: 21.027448753456103,
@@ -20,28 +22,55 @@ export const getLatLngFromText = (lngLatString) => {
 };
 
 const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
-  const [location2, setLocation2] = useState(''); // trường hợp click kéo thả marker
-  const [address, setAddress] = useState('');
-  const [locationSuggest, setLocationSuggest] = useState([]);
+  const [textSearch, setTextSearch] = useState('');
+  const [locationSuggests, setLocationSuggests] = useState([]);
 
-  const handleSetLocationSpace = (lngLatString) => {
-    console.log('handleSetLocationSpace input', lngLatString);
-    const suggest = locationSuggest.find(
-      (value) => value.value === lngLatString
-    );
-    if (!suggest) {
-      console.log('selectVal not correct format', lngLatString);
-      return;
+  const GOO_KEY = 'fxMWOQAGy0KR2fAJND6Gi360iGmqZvaOZWr49ePC';
+
+  const fetchPlaceDetail = async (placeId) => {
+    try {
+      const response = await axios.get(`https://rsapi.goong.io/place/detail`, {
+        params: {
+          place_id: placeId,
+          api_key: GOO_KEY,
+        },
+      });
+
+      console.log('response when fetchPlaceDetail', response);
+
+      return {
+        lat: response.data.result.geometry.location.lat,
+        lng: response.data.result.geometry.location.lng,
+      };
+    } catch (error) {
+      console.error('Lỗi khi lấy thong tin địa chỉ chi tiet:', error);
     }
-    console.log('full_address', suggest.label);
-    setLocation(suggest.label);
+  };
 
-    const { lat, lng } = getLatLngFromText(lngLatString);
-    setSpaceInfo((prev) => ({
-      ...prev,
-      location: suggest.label,
-      latLng: [lat, lng],
-    }));
+  const handleSetLocationSpace = async (e) => {
+    const locationSuggestString = e;
+    console.log('locationSuggests', e, locationSuggests);
+
+    const label = locationSuggestString.split('***')[0];
+    const placeId = locationSuggestString.split('***')[1];
+
+    const latLng = await fetchPlaceDetail(placeId);
+
+    if (latLng) {
+      const lat = latLng.lat;
+      const lng = latLng.lng;
+
+      console.log('set location and spaceInfo', label, lat, lng);
+      setTextSearch(label);
+      setLocation(label);
+      setSpaceInfo((prev) => ({ ...prev, latLng: [Number(lat), Number(lng)] }));
+    } else {
+      toast.error('Get place detail failed');
+    }
+  };
+  const onTextSearchChange = async (e) => {
+    const textSearch = e.target.value;
+    setTextSearch(textSearch);
   };
 
   return (
@@ -65,9 +94,7 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
             <Select
               size="large"
               style={{ marginBottom: 50, width: '100%' }}
-              onInputKeyDown={(e) => {
-                setAddress(e.target.value);
-              }}
+              onInputKeyDown={onTextSearchChange}
               showSearch
               placeholder="Nhập địa chỉ"
               filterOption={(input, option) =>
@@ -75,12 +102,11 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={locationSuggest}
+              options={locationSuggests}
               onChange={(e) => handleSetLocationSpace(e)}
-              value={location || location2}
+              value={location}
             >
-              {locationSuggest.map((item, index) => {
-                console.log('locationSuggest', item);
+              {locationSuggests.map((item, index) => {
                 return (
                   <Select.Option
                     value={item.value}
@@ -94,18 +120,17 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
           </Row>
         </Col>
       </Row>
-      <MapSearch
-        textSearch={address}
-        locationSuggest={locationSuggest}
-        setLocationSuggest={setLocationSuggest}
-        location={location}
-        setLocation={setLocation}
-        defaultMarker={{
-          latitude: spaceInfo?.latLng?.[0] || defaultLatLng.lat,
-          longitude: spaceInfo?.latLng?.[1] || defaultLatLng.lat,
+      <GooMap
+        {...{
+          textSearch,
+          setTextSearch,
+          setLocationSuggests,
+          locationSuggests,
+          location,
+          setLocation,
+          spaceInfo,
+          setSpaceInfo,
         }}
-        setLocation2={setLocation2}
-        handleSetLocationSpace={handleSetLocationSpace}
       />
     </Container>
   );
