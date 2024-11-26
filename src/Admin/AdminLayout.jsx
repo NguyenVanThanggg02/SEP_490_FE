@@ -44,7 +44,7 @@ export const AdminLayout = () => {
                 >
                     <Header mainContent={mainContent} />
                     <AdminMainContent>
-                        {mainContent.component}
+                        {mainContent?.component}
                     </AdminMainContent>
                 </Stack>
             </Box>
