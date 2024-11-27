@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { Select } from 'antd';
 import axios from 'axios';
 import React, { useContext, useState } from 'react';
@@ -10,7 +10,7 @@ import { GooMap } from '../GooMap';
 const AddSpaceLocation = () => {
   const [textSearch, setTextSearch] = useState('');
   const [locationSuggests, setLocationSuggests] = useState([]);
-  const { spaceInfo, setSpaceInfo, location, setLocation } =
+  const { spaceInfo, setSpaceInfo, location, setLocation ,detailAddress} =
     useContext(SpaceContext);
   const GOO_KEY = 'fxMWOQAGy0KR2fAJND6Gi360iGmqZvaOZWr49ePC';
 
@@ -49,7 +49,11 @@ const AddSpaceLocation = () => {
 
       setTextSearch(label);
       setLocation(label);
-      setSpaceInfo((prev) => ({ ...prev, latLng: [Number(lat), Number(lng)] }));
+      setSpaceInfo((prev) => ({
+        ...prev,
+        latLng: [Number(lat), Number(lng)],
+        detailAddress: prev.detailAddress || '', 
+      }));      
     } else {
       toast.error('Get place detail failed');
     }
@@ -72,10 +76,11 @@ const AddSpaceLocation = () => {
           <Row>
             <Typography
               variant="h6"
-              style={{ fontWeight: 700, fontSize: '20px' }}
+              style={{ fontWeight: 700, fontSize: "20px" }}
             >
-              Nhập địa chỉ <span style={{ color: 'red' }}>*</span>
+              Nhập địa chỉ <span style={{ color: "red" }}>*</span>
             </Typography>
+
             <style>
               {`
                                 .ant-select-selector{
@@ -85,12 +90,12 @@ const AddSpaceLocation = () => {
             </style>
             <Select
               size="large"
-              style={{ marginBottom: 50, width: '100%' }}
+              style={{ marginBottom: 50, width: "100%" }}
               onInputKeyDown={onTextSearchChange}
               showSearch
               placeholder="Nhập địa chỉ"
               filterOption={(input, option) =>
-                (option?.label ?? '')
+                (option?.label ?? "")
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
@@ -102,13 +107,33 @@ const AddSpaceLocation = () => {
                 return (
                   <Select.Option
                     value={item.value}
-                    key={index + '__' + item.label}
+                    key={index + "__" + item.label}
                   >
                     {item.label}
                   </Select.Option>
                 );
               })}
             </Select>
+          </Row>
+          <Row>
+            <TextField
+              className="mt-2"
+              label="Mô tả địa chỉ chi tiết của bạn"
+              value={spaceInfo.detailAddress ||''}
+              onChange={(e) => 
+                setSpaceInfo((prev) => ({
+                  ...prev,
+                  detailAddress: e.target.value,
+                }))
+              }
+              fullWidth
+              sx={{marginLeft:'10px',width:'716px', height:'39px', marginBottom:'20px'}}
+              FormHelperTextProps={{
+                style: {
+                  fontSize: "13px", 
+                },
+              }}
+            />
           </Row>
         </Col>
       </Row>

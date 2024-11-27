@@ -74,7 +74,7 @@ export default function Header({ mainContent }) {
           }}
           spacing={2}
         >
-          <NavbarBreadcrumbs text={mainContent.text} />
+          <NavbarBreadcrumbs text={mainContent?.text} />
           <Stack direction="row" sx={{ gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Notification />
