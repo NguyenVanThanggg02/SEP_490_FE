@@ -6,11 +6,12 @@ import "dayjs/locale/vi";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Col, Container, Row } from "react-bootstrap";
 import "react-calendar/dist/Calendar.css";
+import ".././style/BookingDate.css"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { createBooking } from "../Api/BookingRequests";
 import { availableSlots as allAvailableSlots } from "./AddSpaces/AddSpaceInforSpace";
-
+import { Info, ErrorOutline, Rule, CreditCard, Gavel, AccountBalance, CheckCircle, Warning, EventNote } from "@mui/icons-material"
 import AvailableSlots, { checkGoldenHour } from "./booking/AvailableSlots";
 import CalendarForEachRentalType from "./booking/CalendarForEachRentalType";
 import RadiosForChoseRentalType from "./booking/RadiosForChoseRentalType";
@@ -693,62 +694,348 @@ const BookingForm = () => {
         fullWidth
       >
         <DialogTitle>
-          <Typography variant="h4" align="center">
-            Chính sách hoàn tiền và lưu ý khi đặt không gian
+          <Typography variant="h4" align="center" sx={{ fontWeight: "bold" }}>
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <Info color="primary" sx={{ fontSize: 36, mr: 1 }} />
+              Chính sách hoàn tiền và lưu ý khi đặt không gian
+            </Box>
           </Typography>
         </DialogTitle>
         <DialogContent dividers>
           {/* Thông báo nhấn mạnh */}
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Vui lòng đọc kỹ chính sách hoàn tiền trước khi đặt không gian để đảm
-            bảo quyền lợi của quý khách!
+          <Alert
+            severity="info"
+            sx={{
+              mb: 3,
+              p: 2,
+              borderRadius: 2,
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            }}
+            icon={<ErrorOutline fontSize="large" />}
+          >
+            Vui lòng đọc kỹ chính sách hoàn tiền trước khi đặt không gian để đảm bảo
+            quyền lợi của quý khách!
           </Alert>
+          {/* Chính sách hoàn tiền 100%  */}
 
-          {/* Phần hoàn tiền 100% */}
-          <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}>
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              mb: 3,
+              bgcolor: "#e8f5e9",
+              borderLeft: "5px solid #4caf50",
+            }}
+          >
             <Typography variant="h6" color="primary" gutterBottom>
-              Quý khách sẽ được hoàn 100% tiền khi:
+              <Box display="flex" alignItems="center">
+                <CheckCircle sx={{ mr: 1 }} />
+                Chính sách hoàn tiền 100%
+              </Box>
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Quý khách sẽ được hoàn lại toàn bộ số tiền đã thanh toán trong các trường hợp sau đây:
             </Typography>
             <ul>
               <li>
                 <Typography variant="body1">
-                  <strong>Đặt theo slot:</strong> Hủy trước 24h với thời gian
-                  đặt phòng.
+                  <strong>Đặt theo slot:</strong> Nếu quý khách hủy đặt phòng ít nhất{" "}
+                  <Typography
+                    variant="body1"
+                    component="span"
+                    color="secondary"
+                    fontWeight="bold"
+                    sx={{
+                      animation: "blink 0.5s infinite", color: "#005005"
+                    }}
+
+                  >
+                    24 giờ
+                  </Typography>{" "}
+                  trước thời gian bắt đầu sử dụng.
                 </Typography>
               </li>
               <li>
                 <Typography variant="body1">
-                  <strong>Đặt theo ngày:</strong> Hủy trước 24h với thời gian
-                  đặt phòng.
+                  <strong>Đặt theo ngày:</strong> Nếu quý khách hủy đặt phòng ít nhất{" "}
+                  <Typography
+                    variant="body1"
+                    component="span"
+                    color="secondary"
+                    fontWeight="bold"
+                    sx={{
+                      animation: "blink 0.5s infinite", color: "#005005"
+                    }}
+                  >
+                    24 giờ
+                  </Typography>{" "}
+                  trước ngày bắt đầu sử dụng.
                 </Typography>
               </li>
               <li>
                 <Typography variant="body1">
-                  <strong>Đặt theo tháng:</strong> Hủy trước 7 ngày với thời
-                  gian đặt phòng.
+                  <strong>Đặt theo tháng:</strong> Nếu quý khách hủy đặt phòng ít nhất{" "}
+                  <Typography
+                    variant="body1"
+                    component="span"
+                    color="secondary"
+                    fontWeight="bold"
+                    sx={{
+                      animation: "blink 0.5s infinite", color: "#005005"
+                    }}
+                  >
+                    7 ngày
+                  </Typography>{" "}
+                  trước ngày bắt đầu sử dụng.
                 </Typography>
               </li>
             </ul>
           </Paper>
 
-          {/* Phần hoàn tiền một phần */}
-          <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: "#f5f5f5" }}>
+
+          {/* Chính sách hoàn tiền 1 phần */}
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              mb: 3,
+              bgcolor: "#fffde7",
+              borderLeft: "5px solid #ffeb3b",
+            }}
+          >
             <Typography variant="h6" color="secondary" gutterBottom>
-              Quý khách sẽ được hoàn một phần tiền khi:
+              <Box display="flex" alignItems="center">
+                <AccountBalance sx={{ mr: 1 }} />
+                Chính sách hoàn tiền một phần
+              </Box>
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              Trong một số trường hợp đặc biệt, quý khách vẫn có thể được hoàn lại một phần tiền đã thanh toán như sau:
             </Typography>
             <ul>
               <li>
                 <Typography variant="body1">
-                  <strong>Đặt theo tháng:</strong> <br></br>
-                  Còn 1-7 ngày tới lịch nhận phòng thì được hoàn 80%.
+                  <strong>Đặt theo tháng:</strong>
+                  <br />
+                  - Nếu quý khách hủy từ{" "}
+                  <Typography
+                    variant="body1"
+                    component="span"
+                    color="secondary"
+                    fontWeight="bold"
+                    sx={{
+                      animation: "blink 0.5s infinite", color: "#FF6F00"
+                    }}
+                  >
+                    1-7 ngày
+                  </Typography>{" "}
+                  trước ngày bắt đầu sử dụng, chúng tôi sẽ hoàn lại{" "}
+                  <Typography
+                    variant="body1"
+                    component="span"
+                    color="primary"
+                    fontWeight="bold"
+                  >
+                    80%
+                  </Typography>{" "}
+                  số tiền đã thanh toán.
                 </Typography>
               </li>
               <Typography variant="body1">
-                Nếu hủy ở tuần thứ 1 thì hoàn 60%, tuần thứ 2 thì hoàn 30%.
+                - Nếu quý khách hủy trong{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="secondary"
+                  fontWeight="bold"
+                  sx={{
+                    animation: "blink 0.5s infinite", color: "#FF6F00"
+                  }}
+                >
+                  tuần đầu tiên
+                </Typography>{" "}
+                của thời gian sử dụng, chúng tôi sẽ hoàn lại{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="primary"
+                  fontWeight="bold"
+                >
+                  60%
+                </Typography>.
               </Typography>
               <Typography variant="body1">
-                Sang tuần thứ 3, quý khách không thể hủy được nữa.
+                - Nếu quý khách hủy trong{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="secondary"
+                  fontWeight="bold"
+                  sx={{
+                    animation: "blink 0.5s infinite", color: "#FF6F00"
+                  }}
+                >
+                  tuần thứ hai
+                </Typography>{" "}
+                của thời gian sử dụng, chúng tôi sẽ hoàn lại{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="primary"
+                  fontWeight="bold"
+                >
+                  30%
+                </Typography>.
               </Typography>
+              <Typography variant="body1" >
+                <Typography variant="body1"
+                  fontWeight="bold"
+                  sx={{
+                    color: "red",display:"inline"
+                  }}
+                > <Warning /> Chú ý :</Typography> Sau{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="secondary"
+                  fontWeight="bold"
+                  sx={{
+                    animation: "blink 0.5s infinite", color: "#FF6F00"
+                  }}
+                >
+                  tuần thứ hai
+                </Typography>{" "}
+                của thời gian sử dụng, chúng tôi rất tiếc{" "}
+                <Typography
+                  variant="body1"
+                  component="span"
+                  color="primary"
+                  fontWeight="bold"
+                  sx={{
+                    color: "red", animation: "blink 0.5s infinite"
+                  }}
+                >
+                  không thể hoàn lại
+                </Typography>{" "}
+
+                tiền cho quý khách.
+              </Typography>
+            </ul>
+          </Paper>
+
+
+
+
+          {/* Quy định không gian */}
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              mb: 3,
+              bgcolor: "#e3f2fd",
+              borderLeft: "5px solid #2196f3",
+            }}
+          >
+            <Typography variant="h6" color="secondary" gutterBottom>
+              <Box display="flex" alignItems="center">
+                <Rule sx={{ mr: 1 }} />
+                Quy định không gian
+              </Box>
+            </Typography>
+            <ul>
+              <li>
+                <Typography variant="body1">
+                  Quý khách vui lòng tuân thủ các quy định riêng của không gian đặt ra.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body1">
+                  Quý khách sẽ bồi thường tổn thất cho không gian với những hành vi làm đổ vỡ hay hư hại trong quá trình sử dụng không gian.
+                </Typography>
+              </li>
+            </ul>
+          </Paper>
+          <Paper
+  elevation={4}
+  sx={{
+    p: 3,
+    mb: 3,
+    bgcolor: "#f5f5f5",
+    borderLeft: "5px solid #ff9800",
+  }}
+>
+  <Typography variant="h6" color="warning" gutterBottom>
+    <Box display="flex" alignItems="center">
+      <EventNote sx={{ mr: 1 }} />
+      Trả và nhận phòng
+    </Box>
+  </Typography>
+
+  <ul>
+    <li>
+      <Typography variant="body1">
+        Quý khách nhớ nhận không gian đúng thời gian để đảm bảo quyền lợi.
+      </Typography>
+    </li>
+    <li>
+      <Typography variant="body1">
+        Sau khi trả không gian, hãy đánh giá về không gian để chúng tôi phục vụ quý khách tốt hơn vào lần tiếp theo.
+      </Typography>
+    </li>
+  </ul>
+</Paper>
+          {/* Phương thức thanh toán */}
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              mb: 3,
+              bgcolor: "#fff3e0",
+              borderLeft: "5px solid #ff9800",
+            }}
+          >
+            <Typography variant="h6" color="info" gutterBottom>
+              <Box display="flex" alignItems="center">
+                <CreditCard sx={{ mr: 1 }} />
+                Phương thức thanh toán
+              </Box>
+            </Typography>
+            <Typography variant="body1">
+              Thanh toán qua ngân hàng theo hướng dẫn trong quy trình đặt không gian.
+            </Typography>
+          </Paper>
+
+          {/* Quy định chung */}
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              bgcolor: "#f8d7da",
+              borderLeft: "5px solid #d32f2f",
+            }}
+          >
+            <Typography variant="h6" color="error" gutterBottom>
+              <Box display="flex" alignItems="center">
+                <Gavel sx={{ mr: 1 }} />
+                Quy định chung
+              </Box>
+            </Typography>
+            <ul>
+              <li>
+                <Typography variant="body1">
+                  Không gây ồn ào, ảnh hưởng đến các không gian khác.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body1">
+                  Bảo vệ tài sản và giữ vệ sinh sạch sẽ trong không gian.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body1">
+                  Tuân thủ quy định pháp luật và chính sách an toàn.
+                </Typography>
+              </li>
             </ul>
           </Paper>
 
@@ -756,13 +1043,18 @@ const BookingForm = () => {
           <Typography
             variant="body1"
             align="center"
-            sx={{ fontWeight: "bold", mt: 2 }}
+            sx={{
+              fontWeight: "bold",
+              mt: 3,
+              color: "#4caf50",
+              textTransform: "uppercase",
+            }}
           >
-            CẢM ƠN QUÝ KHÁCH ĐÃ SỬ DỤNG DỊCH VỤ CHÚNG TÔI
+            Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi
           </Typography>
 
           {/* Checkbox đồng ý chính sách */}
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -771,7 +1063,11 @@ const BookingForm = () => {
                   color="primary"
                 />
               }
-              label="Tôi đã hiểu và đồng ý với chính sách"
+              label={
+                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                  Tôi đã hiểu và đồng ý với chính sách
+                </Typography>
+              }
               sx={{ userSelect: "none" }}
             />
           </Box>
@@ -786,13 +1082,15 @@ const BookingForm = () => {
             disabled={!isAgreed}
             sx={{
               opacity: isAgreed ? 1 : 0.6,
-              transition: "opacity 0.3s",
+              transition: "opacity 0.3s ease",
             }}
           >
             Đóng
           </Button>
         </DialogActions>
       </Dialog>
+
+
     </Container>
   );
 };
