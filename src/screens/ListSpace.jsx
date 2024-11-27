@@ -29,7 +29,7 @@ const ListSpace = () => {
     typeOfPrice: 'pricePerHour',
     minPrice: '',
     maxPrice: '',
-    district: '',
+    province: '',
   };
   const [listSpace, setListSpace] = useState([]);
 
@@ -172,13 +172,15 @@ const ListSpace = () => {
       <Grid container spacing={3}>
         {/* filter */}
         <Grid item md={3}>
-          <SpaceFilter
-            filter={filter}
-            setLoading={setLoading}
-            setListSpace={setListSpace}
-            setFilter={setFilter}
-            loadInitData={loadInitData}
-            filterDefault={filterDefault}
+        <SpaceFilter
+            {...{
+              filter,
+              setLoading,
+              setListSpace,
+              setFilter,
+              loadInitData,
+              filterDefault,
+            }}
           />
         </Grid>
 
