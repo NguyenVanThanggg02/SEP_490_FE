@@ -7,6 +7,7 @@ import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
 import { toast } from "react-toastify";
 import { formatMoney } from "../../utils/moneyFormatter";
+import Reports from "../Reports";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -20,7 +21,10 @@ const History = () => {
   const productsOnPage = filteredBookings.slice(first, first + rows);
   const [selectedReason, setSelectedReason] = useState("");
   const [customReason, setCustomReason] = useState("");
-
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [visibleReport, setVisibleReport] = useState(false);
+  const [idSpace, setIdSpace] = useState("");
   const availableReasons = [
     "Thay đổi lịch trình hoặc kế hoạch",
     "Không còn nhu cầu sử dụng dịch vụ",
@@ -142,6 +146,68 @@ const History = () => {
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
   };
+
+  const handleViewToCancel = (bookingId) => {
+    const booking = bookings.find((b) => b._id === bookingId);
+    setSelectedBooking(booking);
+    setVisible(true);
+  };
+  const handleReport = (spaceId) => {
+    setVisibleReport(true);
+    setIdSpace(spaceId);
+  };
+  const updateBookingStatus = (bookingId, newStatus) => {
+    setBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+    setFilteredBookings((prevBookings) =>
+      prevBookings.map((booking) =>
+        booking._id === bookingId
+          ? { ...booking, status: newStatus }
+          : booking
+      )
+    );
+  };
+
+
+  const handleButtonClickCheck = (item) => {
+    const now = new Date(); // Thời gian hiện tại
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endDate = new Date(item.endDate);
+    endDate.setHours(0, 0, 0, 0);
+  
+    // Kiểm tra nếu là loại thuê theo giờ
+    const isHourlyExpired =
+      item.rentalType === "hour" &&
+      item.selectedSlots.every((slot) => {
+        const slotDate = new Date(slot.date);
+        const slotEndTime = new Date(
+          `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+        );
+        return now > slotEndTime; // Kiểm tra giờ kết thúc đã qua
+      });
+  
+    // Kiểm tra nếu là thuê theo ngày và đã qua ngày kết thúc
+    const isDailyExpired = today > endDate;
+  
+    if (isHourlyExpired || isDailyExpired) {
+      const spaceId = item.items[0]?.spaceId?._id;
+      if (spaceId) {
+        window.location.href = `/reviews/create/${spaceId}`;
+      } else {
+        alert("Không tìm thấy không gian để đánh giá.");
+      }
+    } else {
+      handleOpenDialog(item._id); // Gọi hàm mở dialog
+    }
+  };
+  
+
   return (
     <div className="container containerhistory">
       <Card className="cardhistory" elevation={3}>
@@ -222,7 +288,7 @@ const History = () => {
                           marginBottom: "10px",
                           borderRadius: "8px",
                           boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                          height: "250px",
+                          height: "100%",
                           display: "flex",
                           flexDirection: "column",
                         }}
@@ -320,18 +386,78 @@ const History = () => {
                             </Typography>
                           </Grid>
                         </Grid>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          disabled={!item.isAllowCancel}
+                       {/* button đánh giá - hủy lịch */}
+                       <Grid
+                          container
+                          spacing={2}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
+                            justifyContent: "flex-end",
                           }}
-                          onClick={() => handleOpenDialog(item._id)}
                         >
-                          Huỷ lịch
-                        </Button>
+                            <Grid item>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              style={{ marginRight: "10px" }}
+                              disabled={item.status === "canceled"}
+                              onClick={() => handleButtonClickCheck(item)} 
+                              >
+                              {(() => {
+                                const now = new Date();
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+                                const endDate = new Date(item.endDate);
+                                endDate.setHours(0, 0, 0, 0);
+                                const isHourlyExpired =
+                                  item.rentalType === "hour" &&
+                                  item.selectedSlots.every((slot) => {
+                                    // Chuyển slot.date thành Date
+                                    const slotDate = new Date(slot.date);
+                                    const slotEndTime = new Date(
+                                      `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                    );
+                                    return now > slotEndTime;
+                                  });
+                                const isDailyExpired = today > endDate;
+                                return isHourlyExpired || isDailyExpired
+                                  ? "Đánh giá"
+                                  : "Huỷ lịch";
+                              })()}
+                            </Button>
+                          </Grid>
+                              {/* button báo cáo */}
+                          {(() => {
+                            const now = new Date();
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            const endDate = new Date(item.endDate);
+                            endDate.setHours(0, 0, 0, 0);
+                            const isHourlyExpired =
+                              item.rentalType === "hour" &&
+                              item.selectedSlots.every((slot) => {
+                                const slotDate = new Date(slot.date);
+                                const slotEndTime = new Date(
+                                  `${slotDate.toISOString().split("T")[0]}T${slot.endTime}`
+                                );
+                                return now > slotEndTime;
+                              });
+                            const isDailyExpired = today > endDate;
+                            return (isHourlyExpired || isDailyExpired) &&
+                              item.status === "completed" ? (
+                              <Grid item style={{ marginRight: "10px" }}>
+                                <Button
+                                  variant="contained"
+                                  color="error"
+                                  onClick={() => handleReport(item.items[0]?.spaceId?._id)}  
+                                  >
+                                  Báo cáo
+                                </Button>
+                              </Grid>
+                            ) : null;
+                          })()}
+                        </Grid>
                       </Card>
                     </Grid>
                   ))
@@ -356,7 +482,6 @@ const History = () => {
           onPageChange={onPageChange}
         />
       </Row>
-
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
         <DialogContent>
           <Typography>{bookingCheckCancel?.contentDialog}</Typography>
@@ -394,6 +519,8 @@ const History = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      {visibleReport && <Reports visibleReport={visibleReport} setVisibleReport={setVisibleReport} idSpace={idSpace} />}
+
     </div>
   );
 };
