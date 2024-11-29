@@ -6,8 +6,9 @@ import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useTheme } from '@mui/material/styles';
+import { RangeOfMonthSelect } from './RangeOfMonthSelect';
 
-export default function TransactionBarChart({ title, data, content, subContent, axis }) {
+export default function TransactionBarChart({ title, data, content, subContent, axis, handleMonthRangeChange }) {
   const theme = useTheme();
   const colorPalette = [
     (theme.vars || theme).palette.primary.dark,
@@ -16,7 +17,10 @@ export default function TransactionBarChart({ title, data, content, subContent, 
   ];
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
-      <CardContent>
+      <CardContent sx={{
+        position: 'relative'
+      }}>
+        <RangeOfMonthSelect onRangeOfMonthChange={handleMonthRangeChange} />
         <Typography component="h2" variant="subtitle2" gutterBottom>
           {title}
         </Typography>

@@ -77,7 +77,7 @@ export function ChartApproveStatus({ title, data, total }) {
                           {d.label}
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                          {Math.round(d.value / total * 100)}%
+                          {d.value}
                         </Typography>
                       </Stack>
                       <LinearProgress
