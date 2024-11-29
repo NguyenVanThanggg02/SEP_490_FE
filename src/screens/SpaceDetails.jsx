@@ -1014,6 +1014,14 @@ function SpaceDetails({ onSelectChat }) {
                 >
                   Vị trí không gian: {spaceData?.location || ""}
                 </Typography>
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
+                   Mô tả vị trí cụ thể : {spaceData?.detailAddress || ""}
+                </Typography>
                 <MapShopDetail
                   lat={spaceData?.latLng?.[0]}
                   lng={spaceData?.latLng?.[1]}
