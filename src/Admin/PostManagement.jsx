@@ -42,9 +42,9 @@ const PostManagement = () => {
   })
   .sort((a, b) => {
     if (startDate || endDate) {
-      return new Date(a.createdAt) - new Date(b.createdAt); // Tăng dần
+      return new Date(a.createdAt) - new Date(b.createdAt); 
     }
-    return new Date(b.createdAt) - new Date(a.createdAt); // Mới nhất trước
+    return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
 
@@ -190,8 +190,7 @@ const PostManagement = () => {
                     sx={{
                       minWidth: "120px",
                       height: "110px",
-                      backgroundColor: "#4c68a1",
-                      display: "flex",
+                      backgroundColor: owner === selectedOwner ? "#2c4871" : "#4c68a1",                      display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: "8px",
@@ -225,7 +224,7 @@ const PostManagement = () => {
             <Grid item xs={12} sm={12} md={12} sx={{ mb: 4 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
                 {/* Bộ lọc trạng thái */}
-                <FormControl sx={{ width: "30%" }}>
+                <FormControl sx={{ width: "30.5%" }}>
                   <InputLabel id="status-filter-label">
                     Lọc theo trạng thái
                   </InputLabel>
@@ -243,14 +242,14 @@ const PostManagement = () => {
                 </FormControl>
 
                 {/* Bộ lọc ngày */}
-                <Box sx={{ display: "flex", gap: 2, flexGrow: 1 }}>
+                <Box sx={{ display: "flex", gap: 4, flexGrow: 1}}>
                   <TextField
                     label="Từ ngày"
                     type="date"
                     InputLabelProps={{ shrink: true }}
                     value={startDate || ""}
                     onChange={(e) => setStartDate(e.target.value)}
-                    fullWidth
+                    sx={{ width: "46%" }}
                   />
                   <TextField
                     label="Đến ngày"
@@ -258,7 +257,7 @@ const PostManagement = () => {
                     InputLabelProps={{ shrink: true }}
                     value={endDate || ""}
                     onChange={(e) => setEndDate(e.target.value)}
-                    fullWidth
+                    sx={{ width: "46%" }}
                   />
                 </Box>
               </Box>
