@@ -251,7 +251,11 @@ export const TransactionManagement = () => {
                           backgroundColor:
                             transaction.type === "Rút tiền"
                               ? "#f57c00"
-                              : "#2e7d32",
+                              : transaction.type === "Trừ tiền"
+                                ? "#d32f2f"
+                                : transaction.type === "Hoàn tiền"
+                                  ? "#1976d2"
+                                  : "#2e7d32",
                         }}
                         size="small"
                       />
@@ -371,10 +375,14 @@ export const TransactionManagement = () => {
                     }}
                   />
                   <TextField
-                    label="Số tiền"
+                    label="Số tiền (sau khi trừ phí 5%)"
                     fullWidth
                     margin="dense"
-                    value={withdrawTransaction?.amount || ""}
+                    value={
+                      withdrawTransaction?.amount
+                        ? formatMoney(withdrawTransaction.amount)
+                        : ""
+                    } 
                     InputProps={{
                       readOnly: true,
                     }}
