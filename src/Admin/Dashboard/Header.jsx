@@ -92,7 +92,6 @@ export default function Header({ mainContent }) {
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
-              <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
               <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
             </Menu>
           </Stack>

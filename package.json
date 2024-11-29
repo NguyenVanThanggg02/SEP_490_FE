@@ -19,6 +19,7 @@
     "@mui/material": "^6.1.0",
     "@mui/x-charts": "^7.19.0",
     "@mui/x-data-grid": "^7.22.1",
+    "@mui/x-date-pickers": "^7.23.0",
     "@pandacss/dev": "^0.46.1",
     "@pandacss/preset-base": "^0.46.1",
     "@radix-ui/react-accordion": "^1.2.0",
