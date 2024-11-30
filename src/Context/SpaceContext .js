@@ -15,41 +15,52 @@ export const SpaceProvider = ({ children }) => {
     description: '',
     area: '',
     rulesId: null,
-    pricePerHour: '',
-    pricePerDay: '',
-    pricePerWeek: '',
-    pricePerMonth: '',
+    pricePerHour: 0,
+    pricePerDay: 0,
+    // pricePerWeek: 0,
+    pricePerMonth: 0,
     images: [],
-    latLng: []
+    latLng: [],
   });
   const [isGoldenHour, setIsGoldenHour] = useState(false);
-  const [goldenHourDetails, setGoldenHourDetails] = useState({
-    startTime: '',
-    endTime: '',
-    priceIncrease: 0,
-  });
+  // {
+  //   startTime: '',
+  //   endTime: '',
+  //   priceIncrease: 0,
+  // }
+  const [goldenHourDetails, setGoldenHourDetails] = useState([]);
   const [rules, setRules] = useState([]);
   const [selectedRules, setSelectedRules] = useState([]);
   const [customRule, setCustomRule] = useState('');
+  const [priceIncrease, setPriceIncrease] = useState(0);
 
   return (
-    <SpaceContext.Provider value={{
-      selectedCategoryId,
-      setSelectedCategoryId,
-      selectedApplianceId,
-      setSelectedApplianceId,
-      selectedAppliances,
-      setSelectedAppliances, // Cập nhật hàm này để lưu toàn bộ appliance object
-      location,
-      setLocation,
-      spaceInfo,
-      setSpaceInfo,
-      rules, setRules,
-      selectedRules, setSelectedRules,
-      customRule, setCustomRule,
-      isGoldenHour, setIsGoldenHour,
-      goldenHourDetails, setGoldenHourDetails
-    }}>
+    <SpaceContext.Provider
+      value={{
+        selectedCategoryId,
+        setSelectedCategoryId,
+        selectedApplianceId,
+        setSelectedApplianceId,
+        selectedAppliances,
+        setSelectedAppliances, // Cập nhật hàm này để lưu toàn bộ appliance object
+        location,
+        setLocation,
+        spaceInfo,
+        setSpaceInfo,
+        rules,
+        setRules,
+        selectedRules,
+        setSelectedRules,
+        customRule,
+        setCustomRule,
+        isGoldenHour,
+        setIsGoldenHour,
+        goldenHourDetails,
+        setGoldenHourDetails,
+        priceIncrease,
+        setPriceIncrease,
+      }}
+    >
       {children}
     </SpaceContext.Provider>
   );

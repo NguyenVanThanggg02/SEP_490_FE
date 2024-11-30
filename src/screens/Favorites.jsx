@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { priceFormatter } from '../utils/numberFormatter';
 import { StarFill } from 'react-bootstrap-icons';
+import { calculateAverageRating } from './Reviews';
 export const Favorites = () => {
   const [spaceFavo, setSpaceFavos] = useState([]);
 
@@ -77,7 +78,7 @@ export const Favorites = () => {
                   </div>
                   <CardMedia
                     sx={{ height: 250 }}
-                    image={spaceF.images[0].url}
+                    image={spaceF?.images?.[0]?.url}
                     title="image spaceF"
                     style={{
                       objectFit: "cover",
@@ -98,15 +99,20 @@ export const Favorites = () => {
                         color: "#2d2d2d",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
-                        textOverflow: "ellipsis"
+                        textOverflow: "ellipsis",
                       }}
                     >
                       {spaceF.name}
                     </Typography>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <Typography
                         variant="body2"
-                        sx={{ color: "text.secondary", marginRight: 2 }} 
+                        sx={{ color: "text.secondary", marginRight: 2 }}
                         style={{
                           marginLeft: "5px",
                           fontSize: "15px",
@@ -114,7 +120,7 @@ export const Favorites = () => {
                           fontWeight: "bold",
                         }}
                       >
-                       Giá: {priceFormatter(spaceF.pricePerHour)} VND / Giờ
+                        Giá: {priceFormatter(spaceF.pricePerHour)} VND / Giờ
                       </Typography>
                       <Typography
                         gutterBottom
@@ -126,7 +132,9 @@ export const Favorites = () => {
                             margin: "3px 15px 15px 0",
                           }}
                         />
-                        <span style={{ margin: "0 10px 13px -7px" }}>4.5</span>
+                        <span style={{ margin: "0 10px 13px -7px" }}>
+                          {calculateAverageRating(spaceF.reviews)}
+                        </span>
                       </Typography>
                     </div>
                   </CardContent>

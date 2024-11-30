@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
-import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import axios from "axios";
 import {
-  ArrowRepeat,
   BoxArrowInRight,
   Calendar2Check,
   Clipboard2Check,
@@ -18,10 +16,9 @@ import {
   PersonVcard,
   Wallet,
 } from "react-bootstrap-icons";
-
 import "../style/Menu.css";
-import { toast, ToastContainer } from "react-toastify";
-
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import Notification from "./Notification";
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -58,6 +55,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         }
       );
       setUserInfo(response.data);
+      console.log(userInfo.role);
+
       setFormData({
         fullname: response.data.fullname,
         gmail: response.data.gmail,
@@ -84,36 +83,51 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     localStorage.clear();
     setUserInfo(null);
     handleClose();
+    navigate("/");
+  };
+  const handleAddFunds = () => {
+    navigate("/addfund");
+  };
+  const handleHistory = () => {
+    navigate("/history");
+  };
+
+  const handleLogin = () => {
+    handleClose();
+    navigate("/login");
+  };
+
+  const handleRegister = () => {
+    handleClose();
+    navigate("/register");
+  };
+
+  const handleFavorites = () => {
+    handleClose();
+    navigate("/favorites");
+  };
+
+  const handleMannaPost = () => {
+    handleClose();
+    navigate("/posted");
   };
 
   const handleNavigation = (path) => {
     navigate(path);
     handleClose();
   };
-
-  const handleSave = async () => {
-    const userId = localStorage.getItem("userId");
-    try {
-      await axios.put(`http://localhost:9999/users/${userId}`, formData);
-      setUserInfo((prev) => ({ ...prev, ...formData }));
-      toast.success("Cập nhật thông tin thành công!");
-    } catch (error) {
-      console.error("Lỗi khi cập nhật thông tin người dùng:", error);
-      toast.error("Cập nhật thông tin thất bại.");
-    }
+  const handleMannaOrder = () => {
+    handleClose();
+    navigate("/order");
   };
-
+  const handleStatistic = () => {
+    handleClose();
+    navigate("/statistics");
+  };
   return (
     <React.Fragment>
-      <ToastContainer />
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Link to={"/alladd"} className="linkk">
-          <Typography sx={{ marginRight: 1 }}>
-            <p style={{ fontWeight: "bold", color: "#0f5a4f" }}>
-              Cho thuê địa điểm qua SpaceHub
-            </p>
-          </Typography>
-        </Link>
+        <Notification />
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -151,6 +165,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
         id="account-menu"
         open={open}
         onClose={handleClose}
+        onClick={handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
@@ -160,27 +175,31 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               <PersonVcard style={{ fontSize: "20px", marginRight: "10px" }} />
               Thông tin cá nhân
             </MenuItem>
-            <MenuItem onClick={() => handleNavigation("/favorites")}>
+            <MenuItem onClick={handleFavorites}>
               <Heart style={{ fontSize: "20px", marginRight: "10px" }} />
               Danh sách yêu thích
             </MenuItem>
-            <MenuItem onClick={() => handleNavigation("/chat")}>
-              <ArrowRepeat style={{ fontSize: "20px", marginRight: "10px" }} />
-              Tin nhắn
+            <MenuItem onClick={handleMannaPost}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Bài Đăng
             </MenuItem>
-            {role === "2" && (
-              <MenuItem onClick={() => handleNavigation("/manaspace")}>
-                <Calendar2Check
-                  style={{ fontSize: "20px", marginRight: "10px" }}
-                />
-                Quản Lí Bài Đăng
-              </MenuItem>
-            )}
-            <MenuItem onClick={() => handleNavigation("/addfund")}>
+            <MenuItem onClick={handleMannaOrder}>
+              <ListAltIcon style={{ fontSize: "20px", marginRight: "10px" }} />
+              Quản Lí Đơn
+            </MenuItem>
+            <MenuItem onClick={handleStatistic}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Thống kê doanh thu
+            </MenuItem>
+            <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
-              Nạp tiền
+              Ví
             </MenuItem>
-            <MenuItem onClick={() => handleNavigation("/history")}>
+            <MenuItem onClick={handleHistory}>
               <Clipboard2Check
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
@@ -195,12 +214,8 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
           </>
         ) : (
           <>
-            <MenuItem onClick={() => handleNavigation("/login")}>
-              Đăng nhập
-            </MenuItem>
-            <MenuItem onClick={() => handleNavigation("/register")}>
-              Đăng ký
-            </MenuItem>
+            <MenuItem onClick={handleLogin}>Đăng nhập</MenuItem>
+            <MenuItem onClick={handleRegister}>Đăng ký</MenuItem>
           </>
         )}
       </Menu>

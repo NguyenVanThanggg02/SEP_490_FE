@@ -49,7 +49,7 @@ const NearSpace = () => {
                 >
                   <img
                     className="d-block w-100"
-                    src={s.images[0].url}
+                    src={s.images?.[0]?.url}
                     alt="Ảnh"
                     height="370"
                     style={{

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem } from "@mui/material";
+import { Card, CardContent, CardHeader, Grid, Typography, TextField, Button, Select, MenuItem, Dialog, DialogContent, DialogActions, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { formatNumberToVND } from "../../utils/numberFormatter";
 import '../../style/History.css';
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
+import { toast } from "react-toastify";
+import { formatMoney } from "../../utils/moneyFormatter";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -14,21 +16,78 @@ const History = () => {
   const [filteredBookings, setFilteredBookings] = useState([]); // State cho danh sách đã lọc
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(6);
-  const [curentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
   const productsOnPage = filteredBookings.slice(first, first + rows);
+  const [selectedReason, setSelectedReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
+
+  const availableReasons = [
+    "Thay đổi lịch trình hoặc kế hoạch",
+    "Không còn nhu cầu sử dụng dịch vụ",
+    "Vấn đề với dịch vụ khách hàng",
+  ];
+  const [bookingCheckCancel, setBookingCheckCancel] = useState({
+    bookingId: undefined,
+    contentDialog: undefined,
+  })
+  const [openDialog, setOpenDialog] = useState(undefined)
+
+  const handleOpenDialog = async (bookingId) => {
+    if (!user) return;
+    try {
+      const response = await axios
+        .post(`http://localhost:9999/bookings/cancel-booking-precheck`, {
+          userId: user,
+          bookingId: bookingId
+        });
+      if (response.data) {
+        if (!response.data.isAllowCancel) {
+          toast.error("Không thể hủy đặt không gian");
+          loadHistory();
+          return;
+        } else {
+          setBookingCheckCancel({
+            contentDialog: `Bạn có muốn hủy đặt không gian và nhận lại ${formatMoney(response.data.amount)}?`,
+            bookingId: bookingId,
+          })
+          setOpenDialog(true);
+        }
+      } else {
+        toast.error("Có lỗi xảy ra vui lòng thử lại sau")
+        return;
+      }
+    } catch (e) {
+      toast.error("Có lỗi xảy ra vui lòng thử lại sau")
+    }
+  };
+  const handleCloseDialog = () => {
+    setBookingCheckCancel(undefined)
+    setOpenDialog(false);
+  };
 
   const user = localStorage.getItem("userId");
 
+  const loadHistory = () => {
+    axios
+      .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
+      .then((res) => {
+        const updatedBookings = res.data.map((booking) => ({
+          ...booking,
+          status: booking.reasonOwnerRejected ? "canceled" : booking.status,
+        }));
+        updatedBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setBookings(updatedBookings);
+        setFilteredBookings(updatedBookings);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
   useEffect(() => {
-      axios
-        .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
-        .then((res) => {
-          setBookings(res.data);
-          setFilteredBookings(res.data); // Đặt danh sách đã lọc bằng danh sách đặt ban đầu
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+    if (user) {
+      loadHistory()
+    }
   }, [user]);
 
   const handleSearch = () => {
@@ -47,10 +106,29 @@ const History = () => {
         filteredData = filteredData.filter((item) => item.status === status);
     }
 
-      // Cập nhật state của bookings đã lọc
       setFilteredBookings(filteredData);
-      console.log(filteredData); // In ra kết quả lọc
   };
+
+  const handleCancelBooking = () => {
+    const reason = selectedReason === 'Khác' ? customReason : selectedReason;
+
+    axios
+      .post(`http://localhost:9999/bookings/cancel-booking`, {
+        userId: user,
+        bookingId: bookingCheckCancel.bookingId,
+        cancelReason: reason,
+      })
+      .then((_res) => {
+        toast.success('Hủy đặt không gian thành công');
+        loadHistory();
+      })
+      .catch((_err) => {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+      });
+
+    handleCloseDialog();
+  };
+  
 
   const formatDate = (inputDate) => {
       const dateObject = new Date(inputDate);
@@ -152,7 +230,7 @@ const History = () => {
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item?.items?.[0]?.spaceId?.images?.[0]?.url}
+                              src={item.items[0].spaceId.images[0].url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",
@@ -245,11 +323,12 @@ const History = () => {
                         <Button
                           variant="contained"
                           color="secondary"
-                          disabled={item.status !== "awaiting payment"}
+                          disabled={!item.isAllowCancel}
                           style={{
                             marginTop: "auto",
                             marginLeft: "auto",
                           }}
+                          onClick={() => handleOpenDialog(item._id)}
                         >
                           Huỷ lịch
                         </Button>
@@ -277,6 +356,44 @@ const History = () => {
           onPageChange={onPageChange}
         />
       </Row>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
+        <DialogContent>
+          <Typography>{bookingCheckCancel?.contentDialog}</Typography>
+          <FormControl  fullWidth margin="normal">
+            <InputLabel>Lý do hủy</InputLabel>
+            <Select
+              value={selectedReason}
+              onChange={(e) => setSelectedReason(e.target.value)}
+            >
+              {availableReasons.map((reason, index) => (
+                <MenuItem key={index} value={reason}>
+                  {reason}
+                </MenuItem>
+              ))}
+              <MenuItem value="Khác">Khác</MenuItem>
+            </Select>
+          </FormControl>
+          {selectedReason === "Khác" && (
+            <TextField
+              fullWidth
+              multiline
+              rows={3}
+              placeholder="Nhập lý do hủy..."
+              value={customReason}
+              onChange={(e) => setCustomReason(e.target.value)}
+            />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary" variant="outlined">
+            Hủy
+          </Button>
+          <Button onClick={handleCancelBooking} color="primary" variant="contained">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

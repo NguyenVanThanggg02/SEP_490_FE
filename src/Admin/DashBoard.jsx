@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Nav, Row, Tab } from "react-bootstrap";
 import PostManagement from "./PostManagement";
 import UserManagement from "./UserManagement ";
@@ -7,12 +7,26 @@ import {
   GearFill,
   HouseGearFill,
   PersonFillGear,
+  Receipt,
   Speedometer,
 } from "react-bootstrap-icons";
 import StatCards from "./Chart/StartCard";
 import HomeAdmin from "./HomeAdmin";
+import { TransactionManagement } from "./TransactionManagement";
+import ProfileAdmin from "./profile/ProfileAdmin";
+
 const DashBoard = () => {
   const [activeKey, setActiveKey] = useState("one");
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    const segment = hash.replace('#', '');
+    if (segment === "manage-spaces") {
+      setActiveKey("three");
+    }
+
+    window.history.pushState({}, '', window.location.href.replace(/#manage-spaces/, ''));
+  }, [])
 
   return (
     <Tab.Container
@@ -21,13 +35,12 @@ const DashBoard = () => {
       activeKey={activeKey}
       onSelect={(k) => setActiveKey(k)}
     >
-      <Row>
+      <Row style={{marginTop:'-32px'}}>
         <Col
           sm={2}
           style={{
             backgroundColor: "#23282d",
-            height: activeKey === "three" ? "auto" : "100vh",
-          }}
+            height: (activeKey === "three" || "transaction" || "five") ? "auto" : "100vh",          }}
         >
           <Nav variant="pills" className="flex-column mt-3">
             <Nav.Item>
@@ -44,6 +57,12 @@ const DashBoard = () => {
             <Nav.Item>
               <Nav.Link eventKey="three" style={{ color: "white" }}>
                 <Check2Square style={{ fontSize: "25px" }} /> Quản lí bài đăng
+              </Nav.Link>
+            </Nav.Item>
+
+            <Nav.Item>
+              <Nav.Link eventKey="transaction" style={{ color: "white" }}>
+                <Receipt style={{ fontSize: "25px" }} /> Quản lí giao dịch
               </Nav.Link>
             </Nav.Item>
 
@@ -78,8 +97,12 @@ const DashBoard = () => {
               <UserManagement />
             </Tab.Pane>
 
+            <Tab.Pane eventKey="transaction">
+              <TransactionManagement />
+            </Tab.Pane>
+
             <Tab.Pane eventKey="five">
-              <h1>Settings Content</h1>
+              <ProfileAdmin/>
             </Tab.Pane>
           </Tab.Content>
         </Col>

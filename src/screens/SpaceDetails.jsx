@@ -27,7 +27,6 @@ import {
   Chip,
 } from "@mui/material";
 import * as MuiIcons from "@mui/icons-material"; // Import all MUI icons
-import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BlockIcon from "@mui/icons-material/Block";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -37,14 +36,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from "antd";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  FlagFill,
-  Plus,
-  PlusCircle,
-} from "react-bootstrap-icons";
-import Reports from "./Reports";
+import { FlagFill, PlusCircle, Textarea } from "react-bootstrap-icons";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
@@ -53,17 +45,15 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
-
+import Reviews from "./Reviews";
 import { userChats } from "../Api/ChatRequests";
 function SpaceDetails({ onSelectChat }) {
-  const [chat, setChat] = useState(null);
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [visible, setVisible] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [visibleCompare, setVisibleCompare] = useState(false);
   const [valueFromChild, setValueFromChild] = useState("");
@@ -71,8 +61,11 @@ function SpaceDetails({ onSelectChat }) {
   const [openGallery, setOpenGallery] = useState(false);
   const [category, setCategory] = useState(null);
   const [openGalleryPreview, setOpenGalleryPreview] = useState(false);
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [chat, setChat] = useState(null);
+
   const nav = useNavigate();
   const userId = localStorage.getItem("userId");
   const handleValueChange = (newValue) => {
@@ -136,7 +129,6 @@ function SpaceDetails({ onSelectChat }) {
         const response = await axios.get(
           `http://localhost:9999/spaces/${valueFromChild}`
         );
-        console.log(response.data);
         setCompare(response.data);
       } catch (err) {
         setError(err);
@@ -292,11 +284,16 @@ function SpaceDetails({ onSelectChat }) {
               style={{ objectFit: "cover" }}
             />
             <CardContent>
-              <Typography gutterBottom variant="h6" component="div"style={{
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="div"
+                style={{
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                }}>
+                }}
+              >
                 {compare.name}
               </Typography>
             </CardContent>
@@ -465,7 +462,6 @@ function SpaceDetails({ onSelectChat }) {
     );
   };
 
-  console.log(chatData);
   return (
     <Container fluid spacing={3} style={{ padding: "20px" }}>
       {spaceData && (
@@ -485,36 +481,38 @@ function SpaceDetails({ onSelectChat }) {
               >
                 {spaceData.name}
               </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                  {spaceData.favorite ? (
-                    <FavoriteIcon
-                      style={{ color: "#FF385C", fontSize: "40px" }}
-                    />
-                  ) : (
-                    <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                  )}
-                </div>
+              {spaceData && spaceData.censorship === "Chấp nhận" && (
                 <div
-                  onClick={toggleDrawer(true)}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
                 >
-                  <PlusCircle
-                    style={{
-                      color: "blue",
-                      fontSize: "33px",
-                      marginRight: "5px",
-                    }}
-                  />
-                  So sánh
+                  <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
+                    {spaceData.favorite ? (
+                      <FavoriteIcon
+                        style={{ color: "#FF385C", fontSize: "40px" }}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                    )}
+                  </div>
+                  <div
+                    onClick={toggleDrawer(true)}
+                    style={{ display: "flex", alignItems: "center" }}
+                  >
+                    <PlusCircle
+                      style={{
+                        color: "blue",
+                        fontSize: "33px",
+                        marginRight: "5px",
+                      }}
+                    />
+                    So sánh
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <Grid
               container
@@ -717,9 +715,6 @@ function SpaceDetails({ onSelectChat }) {
               <Col item xs={12} md={8}>
                 <Typography variant="h5">
                   {spaceData.location}
-                  <p style={{ fontSize: "18px" }}>
-                    10 người • {spaceData.area}m2
-                  </p>
                   <Row item md={12}>
                     <Divider
                       sx={{
@@ -757,7 +752,7 @@ function SpaceDetails({ onSelectChat }) {
                           <p style={{ color: "gray", fontSize: "14px" }}>
                             Được đăng bởi:
                           </p>
-                          {spaceData.userId?.username || "Unknown"}
+                          {displayName}
                         </div>
                       </div>
 
@@ -988,6 +983,27 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
+                  Diện tích
+                </Typography>
+                <div style={{ flexDirection: "row" }}>
+                  <Textarea style={{ fontWeight: "bold", fontSize: "25px" }} />
+                  <b style={{ fontSize: "18px", marginLeft: "20px" }}>
+                    {spaceData.area}m2
+                  </b>
+                </div>
+                <Divider
+                  sx={{
+                    bgcolor: "gray",
+                    margin: "20px auto",
+                    width: "100%",
+                  }}
+                />
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
                   Nội quy
                 </Typography>
                 <List>
@@ -1022,6 +1038,14 @@ function SpaceDetails({ onSelectChat }) {
                     width: "100%",
                   }}
                 />
+                <Typography
+                  variant="h6"
+                  className="pb-2"
+                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  gutterBottom
+                >
+                  Vị trí không gian: {spaceData?.location || ""}
+                </Typography>
                 <MapShopDetail
                   lat={spaceData?.latLng?.[0]}
                   lng={spaceData?.latLng?.[1]}
@@ -1033,14 +1057,7 @@ function SpaceDetails({ onSelectChat }) {
                     width: "100%",
                   }}
                 />
-                <Typography
-                  variant="h6"
-                  className="pb-2"
-                  sx={{ fontSize: "20px", fontWeight: "700" }}
-                  gutterBottom
-                >
-                  Đánh giá
-                </Typography>
+                <Reviews />
               </Col>
               <Col item xs={12} md={4}>
                 <Box
@@ -1053,13 +1070,45 @@ function SpaceDetails({ onSelectChat }) {
                     border: "1px solid #ddd",
                   }}
                 >
-                  {/* Giá theo đêm */}
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
-                  >
-                    {priceFormatter(spaceData.pricePerHour)} VND / giờ
-                  </Typography>
+                  {spaceData.pricePerHour !== 0 &&
+                    spaceData.pricePerHour !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerHour)} VND / giờ
+                      </Typography>
+                    )}
+
+                  {spaceData.pricePerDay !== 0 &&
+                    spaceData.pricePerDay !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerDay)} VND / Ngày
+                      </Typography>
+                    )}
+
+                  {/* {spaceData.pricePerWeek !== 0 &&
+                    spaceData.pricePerWeek !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerWeek)} VND / Tuần
+                      </Typography>
+                    )} */}
+
+                  {spaceData.pricePerMonth !== 0 &&
+                    spaceData.pricePerMonth !== null && (
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", mb: 2, textAlign: "center" }}
+                      >
+                        {priceFormatter(spaceData.pricePerMonth)} VND / Tháng
+                      </Typography>
+                    )}
 
                   {/* Nút đặt phòng */}
                   <Button
@@ -1071,35 +1120,78 @@ function SpaceDetails({ onSelectChat }) {
                   >
                     <Typography variant="button">Đặt phòng </Typography>
                   </Button>
-
-                  {/* Chi tiết giá */}
+                  {/* Community Standards Information */}
+                  {spaceData.censorship === "Từ chối" &&
+                    spaceData.communityStandardsId && (
+                      <Box
+                        mt={2}
+                        sx={{
+                          backgroundColor: "#f9f9f9",
+                          padding: "10px",
+                          borderRadius: "5px",
+                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                          border: "2px solid #4CAF50",
+                          transition: "all 0.3s ease-in-out",
+                          ":hover": {
+                            backgroundColor: "#eaf1e4",
+                            borderColor: "#388e3c",
+                            boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                          },
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: "bold",
+                            color: "#4CAF50",
+                          }}
+                        >
+                          Lý do từ chối
+                        </Typography>
+                        {spaceData.communityStandardsId.reasons &&
+                          spaceData.communityStandardsId.reasons.length > 0 && (
+                            <ul>
+                              {spaceData.communityStandardsId.reasons.map(
+                                (reason, index) => (
+                                  <li key={index}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "black" }}
+                                    >
+                                      {reason}
+                                    </Typography>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                        {spaceData.communityStandardsId.customReason &&
+                          spaceData.communityStandardsId.customReason.length >
+                            0 && (
+                            <ul>
+                              {spaceData.communityStandardsId.customReason.map(
+                                (customReason, index) => (
+                                  <li key={index}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: "black" }}
+                                    >
+                                      {customReason}
+                                    </Typography>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          )}
+                      </Box>
+                    )}
                 </Box>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "20px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setVisible(true)}
-                  className={userId === spaceData.userId?._id ? "d-none" : ""}
-                >
-                  <FlagFill
-                    style={{
-                      color: "gray",
-                      marginRight: "15px",
-                      marginTop: "6px",
-                    }}
-                  />
-                  Báo cáo nhà/phòng cho thuê này
-                </div>
               </Col>
             </Row>
           </Container>
           {/* Display Images */}
         </>
       )}
-      {visible && <Reports visible={visible} setVisible={setVisible} />}
       <Drawer
         anchor="bottom"
         open={openDrawer}
@@ -1125,7 +1217,9 @@ function SpaceDetails({ onSelectChat }) {
           setCategoryId={spaceData.categoriesId._id}
         />
       )}
-      < Similar spaceData={spaceData} />
+      {spaceData.censorship === "Chấp nhận" && (
+        <Similar spaceData={spaceData} />
+      )}
     </Container>
   );
 }
