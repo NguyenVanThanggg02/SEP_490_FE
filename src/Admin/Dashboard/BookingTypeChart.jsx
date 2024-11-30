@@ -1,12 +1,13 @@
+/* eslint-disable react/prop-types */
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { RangeOfMonthSelect } from './RangeOfMonthSelect';
 
 function AreaGradient({ color, id }) {
   return (
@@ -24,7 +25,7 @@ AreaGradient.propTypes = {
   id: PropTypes.string.isRequired,
 };
 
-export function BookingTypeChart({ title, data, axis, total, interval }) {
+export function BookingTypeChart({ title, data, axis, total, interval, handleMonthRangeChange }) {
   const theme = useTheme();
 
   const colorPalette = [
@@ -35,7 +36,10 @@ export function BookingTypeChart({ title, data, axis, total, interval }) {
 
   return (
     <Card variant="outlined" sx={{ width: '100%' }}>
-      <CardContent>
+      <CardContent sx={{
+        position: 'relative'
+      }}>
+        <RangeOfMonthSelect onRangeOfMonthChange={handleMonthRangeChange} defaultRange={1} />
         <Typography component="h2" variant="subtitle2" gutterBottom>
           {title}
         </Typography>
@@ -62,7 +66,13 @@ export function BookingTypeChart({ title, data, axis, total, interval }) {
             {
               scaleType: 'point',
               data: axis,
-              tickInterval: (index, i) => (i + 1) % 5 === 0,
+              tickInterval: (index, i) => {
+                if (axis.length > 300) {
+                  return (i + 1) % 40 === 0
+                } else if (axis.length > 100) {
+                  return (i + 1) % 15
+                } else return (i + 1) % 5
+              },
             },
           ]}
           series={data.map(d => {

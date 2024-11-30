@@ -22,7 +22,7 @@ const Footer = () => {
                         <div className="d-flex align-items-start">
                             <div>
                                 <p className="text-start" style={{ color: '#000', fontSize: '18px' }}>
-                                    Space Hub cung cấp dịch vụ kết nối giữa người thuê và chủ sở hữu không gian làm việc, phòng họp, studio, và không gian sự kiện, đảm bảo trải nghiệm thuê chuyên nghiệp và tiện lợi.
+                                    Space Hub cung cấp dịch vụ kết nối giữa người thuê và chủ sở hữu không gian làm việc, phòng họp, đảm bảo trải nghiệm thuê chuyên nghiệp và tiện lợi.
                                 </p>
                             </div>
                         </div>
@@ -30,25 +30,15 @@ const Footer = () => {
 
                     <Col className="footer-column" style={{ textAlign: "left" }}>
                         <h5 className="text-uppercase" style={{ color: '#000' }}>Dịch Vụ</h5>
-                        <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
+                        <ul className="list-unstyled" style={{ paddingLeft: 0,  }}>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold', textDecoration:'none' }}>
                                     <i className="bi bi-brightness-high"></i>Cho thuê không gian làm việc
                                 </Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold',textDecoration:'none' }}>
                                     <i className="bi bi-brightness-high"></i> Phòng họp tiện nghi
-                                </Link>
-                            </li>
-                            <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
-                                    <i className="bi bi-brightness-high"></i> Studio chụp ảnh, quay phim
-                                </Link>
-                            </li>
-                            <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
-                                    <i className="bi bi-brightness-high"></i> Không gian sự kiện và workshop
                                 </Link>
                             </li>
                         </ul>
@@ -58,17 +48,17 @@ const Footer = () => {
                         <h5 className="text-uppercase" style={{ color: '#000' }}>TRUY CẬP</h5>
                         <ul className="list-unstyled" style={{ paddingLeft: 0 }}>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold',textDecoration:'none' }}>
                                     <i className="bi bi-house"></i> Trang chủ
                                 </Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="/blog" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold',textDecoration:'none' }}>
                                     <i className="bi bi-house"></i> Giới thiệu về SPACEHUB
                                 </Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold' }}>
+                                <Link to="#!" className="text-dark d-flex align-items-center" style={{ color: '#000', fontWeight: 'bold',textDecoration:'none' }}>
                                     <i className="bi bi-house"></i> Chia sẻ kinh nghiệm và kiến thức
                                 </Link>
                             </li>

@@ -101,7 +101,7 @@ const OrderMana = () => {
       case 'awaiting payment':
         return 'Đang chờ';
       case 'completed':
-        return 'Hoàn thành';
+        return 'Đã đặt';
       case 'canceled':
         return 'Đã hủy';
       default:
@@ -146,6 +146,14 @@ const OrderMana = () => {
                     >
                       {orderItem.userId?.fullname || "Không có tên"} -{" "}
                       {orderItem.userId
+                        ? orderItem.userId.phone
+                        : "Không có SĐT"}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", color: "#1976d2" }}
+                    >
+                     SĐT: {orderItem.userId
                         ? orderItem.userId.phone
                         : "Không có SĐT"}
                     </Typography>

@@ -11,3 +11,8 @@
 .custom-calendar button {
   width: 70px;  /* Increase the width of day buttons */
 }
+@keyframes blink {
+  50% {
+    opacity: 0.6;
+  }
+}

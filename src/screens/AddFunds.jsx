@@ -43,8 +43,9 @@ const AddFunds = () => {
     totalPage: undefined,
     limit: 9,
   });
-  const [isBalanceVisible, setIsBalanceVisible] = useState(false); 
-  
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
+  const [showFeeWarning, setShowFeeWarning] = useState(false);
+
   const fetchHistory = async () => {
     if (!user) return;
     try {
@@ -92,6 +93,15 @@ const AddFunds = () => {
     if (!amount || Number(amount) <= 0) {
       return;
     }
+
+    if (transactionType === "Rút tiền") {
+      setShowFeeWarning(true); 
+    } else {
+      performTransaction(); 
+    }
+  };
+
+  const performTransaction = async () => {
     setLoading(true);
     if (transactionType === "Nạp tiền") {
       try {
@@ -197,7 +207,10 @@ const AddFunds = () => {
                   )}
                   <Box>
                     <Typography variant="h6" gutterBottom>
-                      {transaction.type} -{" "}
+                      {transaction.type}{" "}
+                      <span style={{ margin: "0 5px" }}>
+                        {transaction.type === "Cộng tiền" || transaction.type === 'Hoàn tiền' ? "+" : "-"}
+                      </span>
                       <span style={{ color: "#ff9800" }}>
                         {formatMoney(transaction.amount)}
                       </span>
@@ -243,6 +256,42 @@ const AddFunds = () => {
           />
         </Box>
       )}
+
+      <Dialog
+        open={showFeeWarning}
+        onClose={() => setShowFeeWarning(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          <Typography variant="h5" fontWeight="bold" align="center">
+            Lưu ý phí giao dịch
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" color="textSecondary" align="center">
+            Sau khi trừ phí giao dịch, bạn chỉ nhận lại 95% số tiền yêu cầu rút.
+            Bạn có chắc chắn muốn tiếp tục không?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowFeeWarning(false)} color="error">
+            Hủy
+          </Button>
+          <Button
+            onClick={() => {
+              setShowFeeWarning(false);
+              performTransaction();
+            }}
+            color="primary"
+            variant="contained"
+          >
+            Đồng ý
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog for creating transaction */}
       <Dialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
@@ -329,7 +378,7 @@ const AddFunds = () => {
                 !amount ||
                 Number(amount) <= 0 ||
                 (transactionType === "Rút tiền" && !selectedBankAccountId)
-              } 
+              }
             >
               Xác nhận
             </LoadingButton>

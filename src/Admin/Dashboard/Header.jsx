@@ -74,7 +74,7 @@ export default function Header({ mainContent }) {
           }}
           spacing={2}
         >
-          <NavbarBreadcrumbs text={mainContent.text} />
+          <NavbarBreadcrumbs text={mainContent?.text} />
           <Stack direction="row" sx={{ gap: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Notification />
@@ -92,7 +92,6 @@ export default function Header({ mainContent }) {
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             >
-              <MenuItem onClick={handleChangePass}>Thay đổi mật khẩu</MenuItem>
               <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
             </Menu>
           </Stack>
