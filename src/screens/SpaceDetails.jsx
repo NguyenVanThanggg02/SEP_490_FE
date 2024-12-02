@@ -151,6 +151,12 @@ function SpaceDetails({ onSelectChat }) {
         Error loading data.
       </Typography>
     );
+
+  if (spaceData.censorship !== 'Chấp nhận' && spaceData.userId._id !== userId) {
+    nav('/notfound');
+    return null;
+  }
+
   const mainImage = spaceData?.images?.[0]?.url;
    const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
 
