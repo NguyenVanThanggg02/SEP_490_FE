@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container, Button, Modal, ProgressBar } from "react-bootstrap";
 import { Image } from "antd";
+import { formatNumberToVND } from "../utils/numberFormatter";
 
 const DetailForAdmin = ({ id, onBack }) => {
   const [space, setSpace] = useState({});
@@ -125,7 +126,7 @@ const DetailForAdmin = ({ id, onBack }) => {
                       <Typography variant="subtitle1" color="textSecondary">
                         {info.label}
                       </Typography>
-                      <Typography variant="h6">{info.value}</Typography>
+                      <Typography variant="h6">{formatNumberToVND(info.value)}</Typography>
                     </Card>
                   </Grid>
                 ))}
@@ -136,13 +137,6 @@ const DetailForAdmin = ({ id, onBack }) => {
           <Typography variant="body1" color="textSecondary" mt={4}>
             {space.description}
           </Typography>
-
-          <ProgressBar
-            style={{ padding: "0", marginTop: "20px" }}
-            variant="info"
-            now={now}
-            label={`${now}%`}
-          />
         </CardContent>
       </Card>
 

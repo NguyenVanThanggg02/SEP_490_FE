@@ -28,6 +28,9 @@ const Forgot_Pass = () => {
     <Container fluid>
       <div className="form-container">
         <div className="logo-container">Quên mật khẩu</div>
+        <p className="text-center text-secondary mb-4">
+          Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
+        </p>
         <form className="form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
