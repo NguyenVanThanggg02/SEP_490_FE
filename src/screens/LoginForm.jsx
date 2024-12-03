@@ -60,7 +60,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
           setError(error.response.data.error || "Đăng nhập không thành công!");
           toast.error(
             error.response.data.error ||
-              "Tên người dùng hoặc mật khẩu không chính xác!"
+              "Tên đăng nhập hoặc mật khẩu không chính xác!"
           );
         }
       } else {

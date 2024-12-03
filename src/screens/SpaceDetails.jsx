@@ -30,6 +30,7 @@ import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
 import Reviews from './Reviews';
 import { userChats } from "../Api/ChatRequests";
+import { toast } from "react-toastify";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -90,7 +91,7 @@ function SpaceDetails({ onSelectChat }) {
           (chat) =>
             chat._id &&
             chat.members.includes(userId) &&
-            chat.members.includes(spaceData?.userId._id)
+            chat.members.includes(spaceData?.userId?._id)
         );
 
         if (existingChat) {
@@ -959,7 +960,7 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
-                  Diện tích 
+                  Diện tích
                 </Typography>
                 <div style={{ flexDirection: "row" }}>
                   <Textarea style={{fontWeight:'bold', fontSize:'25px'}} />
@@ -1089,10 +1090,17 @@ function SpaceDetails({ onSelectChat }) {
                     fullWidth
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
-                    onClick={() => nav(`/booking/${spaceData?._id}`)}
+                    onClick={() => {
+                      if (!userId) {
+                        toast.warning("Vui lòng đăng nhập để đặt phòng."); 
+                        nav("/login"); 
+                      } else {
+                        nav(`/booking/${spaceData?._id}`); 
+                      }
+                    }}
                     className={userId === spaceData.userId?._id ? "d-none" : ""}
                   >
-                    <Typography variant="button">Đặt phòng </Typography>
+                    <Typography variant="button">Đặt phòng</Typography>
                   </Button>
                   {/* Community Standards Information */}
                   {spaceData.censorship === "Từ chối" &&

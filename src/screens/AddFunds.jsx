@@ -270,8 +270,11 @@ const AddFunds = () => {
         </DialogTitle>
         <DialogContent>
           <Typography variant="body1" color="textSecondary" align="center">
-            Sau khi trừ phí giao dịch, bạn chỉ nhận lại 95% số tiền yêu cầu rút.
-            Bạn có chắc chắn muốn tiếp tục không?
+            Sau khi trừ phí giao dịch (5%), bạn sẽ nhận lại 95% là:{" "}
+            <span style={{ color: "#1e88e5", fontWeight: "bold" }}>
+              {formatMoney(amount * 0.95)}
+            </span>
+            số tiền yêu cầu rút. Bạn có chắc chắn muốn tiếp tục không?
           </Typography>
         </DialogContent>
         <DialogActions>
