@@ -732,33 +732,34 @@ function SpaceDetails({ onSelectChat }) {
                           {displayName}
                         </div>
                       </div>
-
-                      <Link
-                        onClick={handleCreateChat}
-                        state={{ id }}
-                        className={
-                          userId === spaceData.userId?._id ? "d-none" : ""
-                        }
-                      >
-                        <Button
-                          sx={{
-                            backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
-                            color: "black",
-                            boxShadow: "none",
-                            border: "1px solid #ccc", // Đường viền
-                            "&:hover": {
-                              backgroundColor: "#e0e0e0", // Màu nền khi hover
-                              boxShadow: "none",
-                            },
-                          }}
+                      {userId && (
+                        <Link
+                          onClick={handleCreateChat}
+                          state={{ id }}
+                          className={
+                            userId === spaceData.userId?._id ? "d-none" : ""
+                          }
                         >
-                          <Typography variant="button">
-                            <b style={{ fontSize: "12px" }}>
-                              Nhắn tin cho chủ không gian
-                            </b>
-                          </Typography>
-                        </Button>
-                      </Link>
+                          <Button
+                            sx={{
+                              backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
+                              color: "black",
+                              boxShadow: "none",
+                              border: "1px solid #ccc", // Đường viền
+                              "&:hover": {
+                                backgroundColor: "#e0e0e0", // Màu nền khi hover
+                                boxShadow: "none",
+                              },
+                            }}
+                          >
+                            <Typography variant="button">
+                              <b style={{ fontSize: "12px" }}>
+                                Nhắn tin cho chủ không gian
+                              </b>
+                            </Typography>
+                          </Button>
+                        </Link>
+                      )}
                     </Typography>
 
                     <Divider
@@ -963,8 +964,10 @@ function SpaceDetails({ onSelectChat }) {
                   Diện tích
                 </Typography>
                 <div style={{ flexDirection: "row" }}>
-                  <Textarea style={{fontWeight:'bold', fontSize:'25px'}} />
-                  <b style={{ fontSize: "18px", marginLeft:'20px' }}>{spaceData.area}m2</b>
+                  <Textarea style={{ fontWeight: "bold", fontSize: "25px" }} />
+                  <b style={{ fontSize: "18px", marginLeft: "20px" }}>
+                    {spaceData.area}m2
+                  </b>
                 </div>
                 <Divider
                   sx={{
@@ -1092,10 +1095,10 @@ function SpaceDetails({ onSelectChat }) {
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
                     onClick={() => {
                       if (!userId) {
-                        toast.warning("Vui lòng đăng nhập để đặt phòng."); 
-                        nav("/login"); 
+                        toast.warning("Vui lòng đăng nhập để đặt phòng.");
+                        nav("/login");
                       } else {
-                        nav(`/booking/${spaceData?._id}`); 
+                        nav(`/booking/${spaceData?._id}`);
                       }
                     }}
                     className={userId === spaceData.userId?._id ? "d-none" : ""}
@@ -1168,7 +1171,6 @@ function SpaceDetails({ onSelectChat }) {
                       </Box>
                     )}
                 </Box>
-                
               </Col>
             </Row>
           </Container>
