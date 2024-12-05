@@ -47,7 +47,7 @@ const Reports = (props) => {
 
       })
       .catch((error) => {
-        toast.error("Hãy thử lại");
+        toast.warning(error.response.data.message || "Hãy thử lại");
         console.error({ error: error.message });
       });
   };
