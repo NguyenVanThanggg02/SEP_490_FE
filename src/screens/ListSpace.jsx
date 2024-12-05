@@ -13,11 +13,12 @@ import 'primereact/resources/themes/saga-blue/theme.css';
 import React, { useEffect, useState } from 'react';
 import { Card, Carousel, Col, Container, Row } from 'react-bootstrap';
 import { StarFill } from 'react-bootstrap-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../style/listSpace.css';
 import { priceFormatter } from '../utils/numberFormatter';
 import { calculateAverageRating } from './Reviews';
 import { SpaceFilter } from './SpaceFilter';
+import { toast } from 'react-toastify';
 
 const ListSpace = () => {
   const filterDefault = {
@@ -41,6 +42,8 @@ const ListSpace = () => {
   const [districts, setDistricts] = useState([]);
   const [distances, setDistances] = useState([]);
   const [loading, setLoading] = useState(false);
+  const userId = localStorage.getItem("userId");
+  const nav = useNavigate()
 
   const [filter, setFilter] = useState(filterDefault);
 
@@ -229,7 +232,14 @@ const ListSpace = () => {
                             backgroundColor: "rgba(0, 0, 0, 0.4)", // Darker background on hover
                           },
                         }}
-                        onClick={() => changeFavorite(l?._id)}
+                        onClick={() => {
+                          if (!userId) {
+                            toast.warning("Vui lòng đăng nhập để yêu thích.");
+                            nav("/login");
+                          } else {
+                            changeFavorite(l?._id);
+                          }
+                        }}
                       >
                         {l.favorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                       </IconButton>
@@ -340,11 +350,11 @@ const ListSpace = () => {
                                     ? `${priceFormatter(l.pricePerHour)} VND/Giờ`
                                     : l.pricePerDay
                                       ? `${priceFormatter(l.pricePerDay)} VND/Ngày`
-                                      // : l.pricePerWeek
-                                      //   ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
-                                        : l.pricePerMonth
-                                          ? `${priceFormatter(l.pricePerMonth)} VND/Tháng`
-                                          : ""}
+                                      : // : l.pricePerWeek
+                                        //   ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
+                                        l.pricePerMonth
+                                        ? `${priceFormatter(l.pricePerMonth)} VND/Tháng`
+                                        : ""}
                                 </Typography>
 
                                 <Box

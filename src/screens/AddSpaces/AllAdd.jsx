@@ -14,6 +14,7 @@ import StepConnector from '@mui/material/StepConnector'; // Import StepConnector
 import { styled } from '@mui/material/styles'; // Import styled from MUI
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { LoadingButton } from '@mui/lab';
 
 const steps = [
   'Chọn thể loại',
@@ -51,8 +52,12 @@ export default function AddSpaceFlow() {
   const userId = localStorage.getItem('userId');
   const navigate = useNavigate();
   const editorRef = useRef();
+  const [isLoading, setIsLoading] = useState(false)
+
   const handleFinish = async () => {
-    const ruleId = await addRules();
+    setIsLoading(true);
+    try {
+      const ruleId = await addRules();
     // Sau khi thêm quy định thành công, thêm thiết bị
     const applianceId = await addAppliances();
 
@@ -73,12 +78,13 @@ export default function AddSpaceFlow() {
         spaceData
       );
       toast.success('Thêm không gian thành công!');
-      setTimeout(() => {
-        navigate('/posted');
-      }, 3000);
+      navigate('/posted');
     } catch (error) {
       console.error('Lỗi khi thêm không gian:', error);
-      alert('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
+      toast.error('Đã xảy ra lỗi khi thêm không gian. Vui lòng thử lại.');
+    }
+    } catch (error) {
+      setIsLoading(false);
     }
   };
 
@@ -210,7 +216,7 @@ export default function AddSpaceFlow() {
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
           {activeStep === steps.length - 1 ? (
-            <Button onClick={handleFinish}>Hoàn thành</Button>
+            <LoadingButton onClick={handleFinish} variant='contained' loading={isLoading}>Hoàn thành</LoadingButton>
           ) : (
             <Button
               onClick={handleNext}

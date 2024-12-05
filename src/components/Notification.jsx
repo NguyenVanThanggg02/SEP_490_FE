@@ -107,7 +107,7 @@ export default function Notification() {
         color="error"
         sx={{ marginLeft: "8px" }}
       >
-        <IconButton onClick={handleClick} size="small">
+        <IconButton onClick={handleClick}>
           <NotificationsIcon />
         </IconButton>
       </Badge>

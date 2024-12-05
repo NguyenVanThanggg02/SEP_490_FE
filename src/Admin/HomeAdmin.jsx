@@ -1,81 +1,95 @@
-import React, { useState } from "react";
-import HeaderAdmin from "./HeaderAdmin";
-import { Col, Container, Row } from "react-bootstrap";
-import { Select } from "antd";
-import RevenueChart from "./Chart/RevenueChartByMonth";
+import React, { useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid2';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TransactionBarChart from './Dashboard/TransactionBarChart';
+import StatCard from './Dashboard/StatCard';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { formatMoney } from '../utils/moneyFormatter';
+import { ChartApproveStatus } from './Dashboard/ChartApproveStatus';
+import { BookingTypeChart } from './Dashboard/BookingTypeChart';
 
 const HomeAdmin = () => {
-  const [month, setMonth] = useState(1);
-  const [year, setYear] = useState(new Date().getFullYear());
 
-  const handleMonthChange = (value) => {
-    setMonth(value);
-    fetchMonthlyRevenue(value, year);
-  };
+  const [userData, setUserData] = useState()
+  const [spaceData, setSpaceData] = useState()
+  const [transactionData, setTransactionData] = useState()
+  const [spaceCensorship, setSpaceCensorship] = useState()
+  const [bookingRentalType, setBookingRentalType] = useState()
 
-  const handleYearChange = (value) => {
-    setYear(value);
-    fetchYearlyRevenue(month, value);
-  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.post('http://localhost:9999/dashboard');
+      setUserData(response.data.user)
+      setSpaceData(response.data.space)
+      setTransactionData({
+        ...response.data.transaction,
+        content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
+        subContent: `Doanh thu các tháng - Tổng doanh thu`
+      })
+      setSpaceCensorship(response.data.spaceCensorship)
+      setBookingRentalType(response.data.bookingRentalType)
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
+    }
+  }
 
-  const fetchMonthlyRevenue = (month, year) => {
-    console.log(`Fetching revenue for month: ${month}, year: ${year}`);
-    // Gọi API để lấy doanh thu
-  };
+  useEffect(() => {
+    fetchData()
+  }, [])
 
-  const fetchYearlyRevenue = (month, year) => {
-    console.log(`Fetching revenue for year: ${year}`);
-    // Gọi API để lấy doanh thu
-  };
+  const handleTransactionBarChartMonthRangeChange = async (startMonth, endMonth) => {
+    const response = await axios.post('http://localhost:9999/dashboard', { transactionFilter: { from: startMonth, to: endMonth } });
+    setTransactionData({
+      ...response.data.transaction,
+      content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
+      subContent: `Doanh thu các tháng - Tổng doanh thu`
+    })
+  }
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: 21 },
-    (_, index) => currentYear - 10 + index
-  );
+  const handlBookingRentalTypeMonthRangeChange = async (startMonth, endMonth) => {
+    const response = await axios.post('http://localhost:9999/dashboard', { bookingRentalTypeFilter: { from: startMonth, to: endMonth } });
+    setBookingRentalType(response.data.bookingRentalType)
+  }
 
   return (
-    <Container>
-      <Row>
-        <HeaderAdmin />
-      </Row>
-      <Row className="mt-3">
-        <Col md={6}>
-        <RevenueChart />
-          <div className="d-flex align-items-center justify-content-center">
-            <h6 className="mb-0 me-2">Doanh thu theo tháng: </h6>
-            <Select
-              style={{ width: "100px" }}
-              defaultValue={month}
-              onChange={handleMonthChange}
-            >
-              {[...Array(12).keys()].map((index) => (
-                <Select.Option key={index + 1} value={index + 1}>
-                  {index + 1}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-        </Col>
-        <Col md={6}>
-        <RevenueChart />
-          <div className="d-flex align-items-center justify-content-center">
-            <h6 className="mb-0 me-2">Doanh thu theo năm: </h6>
-            <Select
-              style={{ width: "100px" }}
-              defaultValue={year}
-              onChange={handleYearChange}
-            >
-              {years.map((yearOption) => (
-                <Select.Option key={yearOption} value={yearOption}>
-                  {yearOption}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+    <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
+      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+        Tổng quan
+      </Typography>
+      <Grid
+        container
+        spacing={2}
+        columns={12}
+        sx={{ mb: (theme) => theme.spacing(2) }}
+      >
+        {
+          userData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <StatCard {...userData} />
+          </Grid>
+        }
+        {
+          spaceData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <StatCard {...spaceData} />
+          </Grid>
+        }
+        {
+          spaceCensorship && <Grid size={{ xs: 12, lg: 6 }}>
+            {<ChartApproveStatus {...spaceCensorship} />}
+          </Grid>
+        }
+        {
+          bookingRentalType &&
+          <Grid size={{ xs: 12, lg: 6 }}>
+              <BookingTypeChart {...bookingRentalType} handleMonthRangeChange={handlBookingRentalTypeMonthRangeChange} />
+          </Grid>
+        }
+        <Grid size={{ xs: 12, lg: 6 }}>
+          {transactionData && <TransactionBarChart {...transactionData} handleMonthRangeChange={handleTransactionBarChartMonthRangeChange} />}
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

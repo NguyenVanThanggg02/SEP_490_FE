@@ -137,6 +137,7 @@ const EditSpacePosted = () => {
           rules: selectedRules,
           customeRules: customRule ? customRule.split(';') : [],
         },
+        location,
         isGoldenHour,
         goldenHourDetails,
         categoriesId: selectedCategoryId,
@@ -180,6 +181,7 @@ const EditSpacePosted = () => {
           pricePerMonth,
           images,
           location,
+          latLng,
           locationPoint,
           categoriesId,
           appliancesId,
@@ -225,7 +227,7 @@ const EditSpacePosted = () => {
           },
 
           location,
-          latLng: [locationPoint.coordinates[1], locationPoint.coordinates[0]],
+          latLng,
         });
       } catch (err) {
         console.error(err);

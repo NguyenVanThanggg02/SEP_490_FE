@@ -43,6 +43,7 @@ import CreateReview from './screens/CreateReview';
 import AddFundsResult from "./screens/AddFundsResult";
 import Statistics from "./screens/Statistics";
 import { Box } from '@mui/material';
+import { AdminLayout } from './Admin/AdminLayout';
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -117,7 +118,9 @@ function Layout() {
           <Route path="/profile" element={<Profile />} />
           <Route
             path="/admin"
-            element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
+            element={
+              role === '1' ? <AdminLayout /> : <Navigate to="/notfound" />
+            }
           />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/posted" element={<SpacePosted />} />
