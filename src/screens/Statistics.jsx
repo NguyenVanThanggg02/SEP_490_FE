@@ -7,11 +7,11 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import StickyHeadTable from '../components/StickyHeaderTable';
 import { formatNumberToVND } from '../utils/numberFormatter';
 
 const getTotalPlusTrans = (plusTransId) => {
@@ -29,6 +29,7 @@ export default function Statistics() {
   });
   const [loading, setLoading] = useState(false);
   const [filteredStat, setFilteredStat] = useState([]);
+
   const onTimeChange = (e) => {
     const key = e.target.name;
     const value = e.target.value;
@@ -36,6 +37,7 @@ export default function Statistics() {
     setFilter((prev) => ({ ...prev, [key]: value }));
   };
 
+  // cal best stats
   const spacesWithStat = useMemo(
     () =>
       filteredStat.map((space) => {
@@ -90,7 +92,8 @@ export default function Statistics() {
     return { avenue: totalAvenue, numOfBook: totalNumOfBook };
   }, [spacesWithStat]);
 
-  const statsForEachSpaceInMonth = useMemo(() => {
+  // filter based on month, space have its own stats
+  const calStatsForEachSpaceInMonth = (filteredStat, filter) => {
     return filteredStat.map((space) => {
       const bookings = space?.bookings;
       // make sure that space have bookings field
@@ -145,19 +148,111 @@ export default function Statistics() {
         ...stat,
       };
     });
-  }, [filteredStat, filter.month, filter.year]);
-  console.log('statsForEachSpaceInMonth', statsForEachSpaceInMonth);
-  const totalStatsInMonth = useMemo(() => {
+  };
+
+  const statsForEachSpaceInMonth = useMemo(
+    () => calStatsForEachSpaceInMonth(filteredStat, filter),
+    [filteredStat, filter.month, filter.year]
+  );
+
+  // filter based on month, each month have its total stats this total stats is sum of stats of space in this month
+  const calTotalStatsInMonth = (filteredStat, filter) => {
     let totalAvenueInMonth = 0;
     let totalNumOfBookInMonth = 0;
+
+    const statsForEachSpaceInMonth = calStatsForEachSpaceInMonth(
+      filteredStat,
+      filter
+    );
 
     for (let i = 0; i < statsForEachSpaceInMonth.length; i++) {
       totalAvenueInMonth += statsForEachSpaceInMonth[i].avenue;
       totalNumOfBookInMonth += statsForEachSpaceInMonth[i].numOfBook;
     }
     return { avenue: totalAvenueInMonth, numOfBook: totalNumOfBookInMonth };
-  }, [filteredStat, filter]);
+  };
 
+  const totalStatsInMonth = useMemo(
+    () => calTotalStatsInMonth(filteredStat, filter),
+    [filteredStat, filter]
+  );
+
+  // filter based on year, each month have its total stats this total stats is sum of stats of space in this month
+  const totalStatsEachMonthInYear = useMemo(() => {
+    return [...Array(12).keys()].map((i) => {
+      const month = i + 1;
+      const cusFilter = { month, year: filter.year };
+      const stats = calTotalStatsInMonth(filteredStat, cusFilter);
+      return {
+        ...cusFilter,
+        ...stats,
+      };
+    });
+  }, [filteredStat, filter.year]);
+
+  // filter based on year, for each month, space have its own stats
+  const statsForEachSpaceEachMonthInYear = useMemo(() => {
+    return [...Array(12).keys()].map((i) => {
+      const month = i + 1;
+      const cusFilter = { month, year: filter.year };
+      const stats = calStatsForEachSpaceInMonth(filteredStat, cusFilter);
+      return {
+        ...cusFilter,
+        statsSpaces: stats,
+      };
+    });
+  }, [filteredStat, filter.year]);
+
+  // filter based on year, each spaces have its total stats this total stats is sum of stats of this space in each month
+  function calculateTotalAvenueAndBookings(data, year) {
+    const result = {};
+
+    data.forEach((entry) => {
+      if (entry.year === year) {
+        entry.statsSpaces.forEach((space) => {
+          const spaceId = space._id;
+          if (!result[spaceId]) {
+            result[spaceId] = {
+              _id: space._id,
+              name: space.name,
+              avenue: space.avenue,
+              numOfBook: space.numOfBook,
+            };
+          } else {
+            result[spaceId].avenue += space.avenue;
+            result[spaceId].numOfBook += space.numOfBook;
+          }
+        });
+      }
+    });
+
+    return Object.values(result);
+  }
+  const statsForEachSpaceInYear = useMemo(
+    () =>
+      calculateTotalAvenueAndBookings(
+        statsForEachSpaceEachMonthInYear,
+        filter.year
+      ),
+    [filteredStat, filter.year]
+  );
+
+  const totalStatsInYear = useMemo(
+    () =>
+      statsForEachSpaceInYear.reduce(
+        (acc, statsSpace) => {
+          const { numOfBook, avenue } = statsSpace;
+          acc.numOfBook = acc.numOfBook + numOfBook;
+          acc.avenue = acc.avenue + avenue;
+
+          return acc;
+        },
+        { numOfBook: 0, avenue: 0 }
+      ),
+    [statsForEachSpaceInYear]
+  );
+
+  // filter based on month, each day on month have its total stats
   const totalAvenueInDayOfMonth = useMemo(() => {
     const haveBookingSpaces = filteredStat.filter(
       (space) => space?.bookings?.length
@@ -177,9 +272,12 @@ export default function Statistics() {
           console.log('exist', tran, exist);
           if (exist) {
             const other = acc.filter((obj) => obj.date !== datePart);
-            return [...other, { date: datePart, num: tran.amount + exist.num }];
+            return [
+              ...other,
+              { date: datePart, avenue: tran.amount + exist.avenue },
+            ];
           }
-          return [...acc, { date: datePart, num: tran.amount }];
+          return [...acc, { date: datePart, avenue: tran.amount }];
         }
         return acc;
       }, []);
@@ -197,9 +295,11 @@ export default function Statistics() {
         return currDay === foundDay;
       });
 
-      return { day: currDay, num: foundObj ? foundObj.num : 0 };
+      return { day: currDay, avenue: foundObj ? foundObj.avenue : 0 };
     });
   }, [totalAvenueInDayOfMonth]);
+
+  console.log('filter', totalStatsInMonth, totalAvenueInDayOfMonth);
 
   useEffect(() => {
     const fetchSpaces = async () => {
@@ -285,11 +385,11 @@ export default function Statistics() {
             <Stack direction={'row'} spacing={2} justifyContent={'center'}>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>Doanh thu tổng: {formatNumberToVND(totalStats.avenue)} VND</Typography>
-                <Typography>Lượt đặt tổng: {totalStats.numOfBook}</Typography>
+                <Typography>Lượt đặt tổng: {formatNumberToVND(totalStats.numOfBook)} Đơn</Typography>
               </Paper>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
-                  Không gian có doanh thu cao nhất: {bestSpaces.avenue.name}
+                  Không gian có doanh thu cao nhất: {bestSpaces.avenue.name} VND
                 </Typography>
                 <Typography>
                   Không gian có lượt đặt cao nhất: {bestSpaces.numOfBook.name}
@@ -297,45 +397,49 @@ export default function Statistics() {
               </Paper>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
-                  Doanh thu T{filter.month}/{filter.year}: 
-                  {formatNumberToVND(totalStatsInMonth.avenue)} VND
+                  {filter.month !== 'all'
+                    ? `Doanh Thu T${filter.month}/${filter.year}:
+                  ${formatNumberToVND(totalStatsInMonth.avenue)} VND`
+                    : `Doanh Thu Năm ${filter.year}:
+                  ${formatNumberToVND(totalStatsInYear.avenue)} VND`}
                 </Typography>
                 <Typography>
-                  Lượt đặt T{filter.month}/{filter.year}:{' '}
-                  {totalStatsInMonth.numOfBook}
+                  {filter.month !== 'all'
+                    ? `Tổng Lượt Đặt T${filter.month}/${filter.year}:
+                  ${totalStatsInMonth.numOfBook} Đơn`
+                    : `Tổng Lượt Đặt ${filter.year}:
+                  ${totalStatsInYear.numOfBook} Đơn`}
                 </Typography>
               </Paper>
             </Stack>
             {/* line char for daily avenue in month  */}
             <Stack>
               <LineChart
-                dataset={fillOtherDay}
+                dataset={
+                  filter.month !== 'all'
+                    ? fillOtherDay
+                    : totalStatsEachMonthInYear
+                }
                 xAxis={[
                   {
-                    dataKey: 'day',
+                    dataKey: filter.month !== 'all' ? 'day' : 'month',
                   },
                 ]}
-                series={[{ dataKey: 'num', label: 'Doanh thu' }]}
+                series={[{ dataKey: 'avenue', label: 'Doanh thu' }]}
                 height={300}
                 margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
                 grid={{ vertical: true, horizontal: true }}
               />
             </Stack>
+
             {/* stats for each space */}
             <Stack direction={'row'} spacing={2}>
-              <BarChart
-                dataset={statsForEachSpaceInMonth}
-                xAxis={[{ scaleType: 'band', dataKey: 'name' }]}
-                series={[{ dataKey: 'avenue', label: 'Doanh thu' }]}
-                width={500}
-                height={300}
-              />
-              <BarChart
-                dataset={statsForEachSpaceInMonth}
-                xAxis={[{ scaleType: 'band', dataKey: 'name' }]}
-                series={[{ dataKey: 'numOfBook', label: 'Lượt đặt' }]}
-                width={500}
-                height={300}
+              <StickyHeadTable
+                rows={
+                  filter.month !== 'all'
+                    ? statsForEachSpaceInMonth
+                    : statsForEachSpaceInYear
+                }
               />
             </Stack>
           </Stack>

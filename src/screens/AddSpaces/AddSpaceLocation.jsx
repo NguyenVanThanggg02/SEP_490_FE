@@ -1,38 +1,63 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { TextField, Typography } from '@mui/material';
-import { MapSearch } from '../../components/Map';
+import { Typography } from '@mui/material';
 import { Select } from 'antd';
+import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { toast } from 'react-toastify';
 import { SpaceContext } from '../../Context/SpaceContext ';
-import Autocomplete from '@mui/material/Autocomplete';
-import { getLatLngFromText } from '../ManaSpaceHost/EditLocation';
+import { GooMap } from '../GooMap';
 
 const AddSpaceLocation = () => {
-  const [location, setLocation] = useState('');
-  const [location2, setLocation2] = useState(''); // trường hợp click kéo thả marker
+  const [textSearch, setTextSearch] = useState('');
+  const [locationSuggests, setLocationSuggests] = useState([]);
+  const { spaceInfo, setSpaceInfo, location, setLocation } =
+    useContext(SpaceContext);
+  const GOO_KEY = 'fxMWOQAGy0KR2fAJND6Gi360iGmqZvaOZWr49ePC';
 
-  const [address, setAddress] = useState('');
-  const [locationSuggest, setLocationSuggest] = useState([]);
-  const { setSpaceInfo } = useContext(SpaceContext);
+  const fetchPlaceDetail = async (placeId) => {
+    try {
+      const response = await axios.get(`https://rsapi.goong.io/place/detail`, {
+        params: {
+          place_id: placeId,
+          api_key: GOO_KEY,
+        },
+      });
 
-  const handleSetLocationSpace = (lngLatString) => {
-    console.log('handleSetLocationSpace input', lngLatString);
-    const suggest = locationSuggest.find(
-      (value) => value.value === lngLatString
-    );
-    if (!suggest) {
-      console.log('selectVal not correct format', lngLatString);
-      return;
+      console.log('response when fetchPlaceDetail', response);
+
+      return {
+        lat: response.data.result.geometry.location.lat,
+        lng: response.data.result.geometry.location.lng,
+      };
+    } catch (error) {
+      console.error('Lỗi khi lấy thong tin địa chỉ chi tiet:', error);
     }
-    console.log('full_address', suggest.label);
-    setLocation(suggest.label);
+  };
 
-    const { lat, lng } = getLatLngFromText(lngLatString);
-    setSpaceInfo((prev) => ({
-      ...prev,
-      location: suggest.label,
-      latLng: [lat, lng],
-    }));
+  const handleSetLocationSpace = async (e) => {
+    const locationSuggestString = e;
+    console.log('locationSuggests', e, locationSuggests);
+
+    const label = locationSuggestString.split('***')[0];
+    const placeId = locationSuggestString.split('***')[1];
+
+    const latLng = await fetchPlaceDetail(placeId);
+
+    if (latLng) {
+      const lat = latLng.lat;
+      const lng = latLng.lng;
+
+      setTextSearch(label);
+      setLocation(label);
+      setSpaceInfo((prev) => ({ ...prev, latLng: [Number(lat), Number(lng)] }));
+    } else {
+      toast.error('Get place detail failed');
+    }
+  };
+
+  const onTextSearchChange = async (e) => {
+    const textSearch = e.target.value;
+    setTextSearch(textSearch);
   };
 
   return (
@@ -61,10 +86,7 @@ const AddSpaceLocation = () => {
             <Select
               size="large"
               style={{ marginBottom: 50, width: '100%' }}
-              onInputKeyDown={(e) => {
-                // console.log("nhập", e.target.value);
-                setAddress(e.target.value);
-              }}
+              onInputKeyDown={onTextSearchChange}
               showSearch
               placeholder="Nhập địa chỉ"
               filterOption={(input, option) =>
@@ -72,11 +94,11 @@ const AddSpaceLocation = () => {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={locationSuggest}
-              onChange={(e) => handleSetLocationSpace(e)}
-              value={location || location2}
+              options={locationSuggests}
+              onChange={handleSetLocationSpace}
+              value={location}
             >
-              {locationSuggest.map((item, index) => {
+              {locationSuggests.map((item, index) => {
                 return (
                   <Select.Option
                     value={item.value}
@@ -87,42 +109,20 @@ const AddSpaceLocation = () => {
                 );
               })}
             </Select>
-            {/* <Autocomplete
-                            freeSolo
-                            id="free-solo-2-demo"
-                            disableClearable
-                            options={locationSuggest.map((option) => option.value)}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    placeholder="Nhập địa chỉ"
-                                    value={location || location2}
-
-                                    label="Search input"
-                                    onChange={(e) => handleSetLocationSpace(e)}
-                                    onInputKeyDown={(e) => {
-                                        console.log("nhập", e.target.value); setAddress(e.target.value)
-                                    }}
-                                    slotProps={{
-                                        input: {
-                                            ...params.InputProps,
-                                            type: 'search',
-                                        },
-                                    }}
-                                />
-                            )}
-                        /> */}
           </Row>
         </Col>
       </Row>
-      <MapSearch
-        textSearch={address}
-        setLocationSuggest={setLocationSuggest}
-        locationSuggest={locationSuggest}
-        location={location}
-        setLocation={setLocation}
-        setLocation2={setLocation2}
-        handleSetLocationSpace={handleSetLocationSpace}
+      <GooMap
+        {...{
+          textSearch,
+          setTextSearch,
+          setLocationSuggests,
+          locationSuggests,
+          location,
+          setLocation,
+          spaceInfo,
+          setSpaceInfo,
+        }}
       />
     </Container>
   );

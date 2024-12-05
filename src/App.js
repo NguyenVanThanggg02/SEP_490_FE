@@ -37,19 +37,14 @@ import {ToastContainer} from "react-toastify";
 
 import Blog from "./screens/Blog";
 import Profile from "./screens/Profile";
-<<<<<<< HEAD
-import AdmUI from "./screens/AdmUI";
-import CancellationPolicy from "./screens/CancellationPolicy";
-import Chatbox from "./screens/Chatbox";
-=======
 import StartToUp from "./screens/AddSpaces/StartToUp";
 import OrderMana from "./screens/OrderMana";
 import CreateReview from './screens/CreateReview';
 import AddFundsResult from "./screens/AddFundsResult";
 import Statistics from "./screens/Statistics";
 import { Box } from '@mui/material';
+import { AdminLayout } from './Admin/AdminLayout';
 
->>>>>>> 47514b67648931813a98242d365754072c066489
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
@@ -121,13 +116,11 @@ function Layout() {
           <Route path="/addfund" element={<AddFunds />} />
           <Route path="/addfund/result" element={<AddFundsResult />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cancellation" element={<CancellationPolicy />} />
-          <Route path="/chatbox" element={<Chatbox />} />
-
-
           <Route
             path="/admin"
-            element={role === "1" ? <DashBoard /> : <Navigate to="/notfound" />}
+            element={
+              role === '1' ? <AdminLayout /> : <Navigate to="/notfound" />
+            }
           />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/posted" element={<SpacePosted />} />

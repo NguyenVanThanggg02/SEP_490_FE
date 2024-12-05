@@ -1,82 +1,81 @@
-import React, { useState } from "react";
-import HeaderAdmin from "./HeaderAdmin";
-import { Container, Row } from "react-bootstrap";
-import { Select } from "antd";
-import RevenueChart from "./Chart/RevenueChartByMonth";
-import "../style/Homeadmin.css";
-import RevenueChartByOrder from "./Chart/RevenueChartByOrder";
+import React, { useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid2';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TransactionBarChart from './Dashboard/TransactionBarChart';
+import StatCard from './Dashboard/StatCard';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { formatMoney } from '../utils/moneyFormatter';
+import { ChartApproveStatus } from './Dashboard/ChartApproveStatus';
+import { BookingTypeChart } from './Dashboard/BookingTypeChart';
 
 const HomeAdmin = () => {
-  const [month, setMonth] = useState(1);
-  const [year, setYear] = useState(new Date().getFullYear());
 
-  const handleYearChange = (value) => {
-    setYear(value);
-    fetchYearlyRevenue(month, value);
-  };
+  const [userData, setUserData] = useState()
+  const [spaceData, setSpaceData] = useState()
+  const [transactionData, setTransactionData] = useState()
+  const [spaceCensorship, setSpaceCensorship] = useState()
+  const [bookingRentalType, setBookingRentalType] = useState()
 
-  const fetchYearlyRevenue = (month, year) => {
-    console.log(`Fetching revenue for year: ${year}`);
-    // Gọi API để lấy doanh thu
-  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:9999/dashboard');
+      setUserData(response.data.user)
+      setSpaceData(response.data.space)
+      setTransactionData({
+        ...response.data.transaction,
+        content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
+        subContent: `Doanh thu 6 tháng - Tổng doanh thu`
+      })
+      setSpaceCensorship(response.data.spaceCensorship)
+      setBookingRentalType(response.data.bookingRentalType)
+    } catch (error) {
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
+    }
+  }
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 21 }, (_, index) => currentYear - 10 + index);
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
-    <Container>
-      <Row>
-        <HeaderAdmin />
-      </Row>
-      <div className="container1 mt-3">
-        <div className="grid-container">
-          {/* Card Sale */}
-          <div className="card">
-            <div className="card-header">
-              Sale
-              <span className="float-end" style={{ color: "#007bff" }}>
-                $613.200
-              </span>
-            </div>
-            <div className="card-body">
-              <p>January - June</p>
-              <div className="chart"><RevenueChartByOrder /></div>
-              <div className="stats">
-                <StatItem icon="fas fa-users" value="44.725" change="(-12.4%)" label="Customers" />
-                <StatItem icon="fas fa-shopping-cart" value="385" change="(17.2%)" label="Orders" />
-              </div>
-            </div>
-          </div>
-
-          {/* Card Traffic */}
-          <div className="card traffic-card">
-            <div className="card-header">Traffic</div>
-            <div className="card-body">
-              <p>January 1 - December 31</p>
-              <div className="traffic-chart"><RevenueChart /></div>
-            </div>
-            <div className="d-flex align-items-center justify-content-center mt-3">
-          <h6 className="mb-0 me-2">Doanh thu theo năm:</h6>
-          <Select
-            style={{ width: "100px" }}
-            defaultValue={year}
-            onChange={handleYearChange}
-          >
-            {years.map((yearOption) => (
-              <Select.Option key={yearOption} value={yearOption}>
-                {yearOption}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-          </div>
-
-
-        </div>
-
-
-      </div>
-    </Container>
+    <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
+      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+        Tổng quan
+      </Typography>
+      <Grid
+        container
+        spacing={2}
+        columns={12}
+        sx={{ mb: (theme) => theme.spacing(2) }}
+      >
+        {
+          userData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <StatCard {...userData} />
+          </Grid>
+        }
+        {
+          spaceData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+            <StatCard {...spaceData} />
+          </Grid>
+        }
+        {
+          spaceCensorship && <Grid size={{ xs: 12, lg: 6 }}>
+            {<ChartApproveStatus {...spaceCensorship} />}
+          </Grid>
+        }
+        {
+          bookingRentalType &&
+          <Grid size={{ xs: 12, lg: 6 }}>
+            <BookingTypeChart {...bookingRentalType} />
+          </Grid>
+        }
+        <Grid size={{ xs: 12, lg: 6 }}>
+          {transactionData && <TransactionBarChart {...transactionData} />}
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 

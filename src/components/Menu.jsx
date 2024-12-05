@@ -103,30 +103,6 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     navigate("/register");
   };
 
-<<<<<<< HEAD
-  const handleProfileOpen = () => {
-    setOpenProfileModal(true);
-    handleClose();
-  };
-
-  const handleRentalHistory = () => {
-    handleClose();
-    navigate("/rentalhistory");
-  };
-
-  const handleProfileClose = () => {
-    setOpenProfileModal(false);
-    setEditMode(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-=======
->>>>>>> 47514b67648931813a98242d365754072c066489
   const handleFavorites = () => {
     handleClose();
     navigate("/favorites");

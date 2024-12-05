@@ -18,6 +18,8 @@ import {
   DialogActions,
   Divider,
   IconButton,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -30,8 +32,8 @@ const AddFunds = () => {
   const [data, setData] = useState();
   const [amount, setAmount] = useState('');
   const [transactionType, setTransactionType] = useState('Nạp tiền');
-  const [beneficiaryAccountNumber, setBeneficiaryAccountNumber] = useState('');
-  const [beneficiaryBankCode, setBeneficiaryBankCode] = useState('MOMO');
+  const [bankAccounts, setBankAccounts] = useState([])
+  const [selectedBankAccountId, setSelectedBankAccountId] = useState(undefined)
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -65,32 +67,64 @@ const AddFunds = () => {
     }
   };
 
+  async function fetchBankAccounts() {
+    if (!user) return
+    try {
+      const response = await axios.get(`http://localhost:9999/users/${user.id}`);
+      setBankAccounts(response.data.bankAccounts.map(bankAccount => { return { beneficiaryBankCode: bankAccount.bank.bankName, beneficiaryAccountNumber: bankAccount.accountNumber, id: bankAccount._id } }));
+    } catch (error) {
+      console.log(error)
+      toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
+    }
+  }
+
   useEffect(() => {
     if (user) fetchHistory();
   }, [user, pagination.page]);
 
+  useEffect(() => {
+    if (transactionType === 'Rút tiền') {
+      fetchBankAccounts()
+    }
+  }, [transactionType])
+
   const handleCreateTransaction = async () => {
-    if (!amount || Number(amount) <= 0) return;
-
+    if (!amount || Number(amount) <= 0) {
+      return;
+    }
     setLoading(true);
-    try {
-      const payload =
-        transactionType === 'Nạp tiền'
-          ? { amount, userId: user.id, type: transactionType }
-          : { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber, beneficiaryBankCode };
-
-      const response = await axios.post('http://localhost:9999/transaction/create', payload);
-      if (transactionType === 'Nạp tiền' && response.data.payUrl) {
-        window.location.href = response.data.payUrl;
-      } else {
-        toast.success(response.data?.message);
-        fetchHistory();
-        setDialogOpen(false);
+    if (transactionType === "Nạp tiền") {
+      try {
+        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
+        const { payUrl } = response.data;
+        if (payUrl) {
+          window.location.href = payUrl;
+        } else {
+          toast.error("Thao tác thất bại, vui lòng thử lại sau");
+        }
+      } catch (error) {
+        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error(error?.response?.data.message || 'Thao tác thất bại, vui lòng thử lại sau');
-    } finally {
-      setLoading(false);
+    }
+
+    if (transactionType === "Rút tiền") {
+      try {
+        const bankSelected = bankAccounts.filter(bankAccount => bankAccount.id === selectedBankAccountId);
+        if (bankSelected.length === 0) {
+          return;
+        }
+        const response = await axios.post('http://localhost:9999/transaction/create',
+          { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber: bankSelected[0].beneficiaryAccountNumber, beneficiaryBankCode: bankSelected[0].beneficiaryBankCode });
+        toast.success(response.data?.message)
+        fetchHistory()
+        setDialogOpen(false)
+      } catch (error) {
+        toast.error(error?.response?.data.message || "Thao tác thất bại, vui lòng thử lại sau");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -149,7 +183,7 @@ const AddFunds = () => {
                   borderLeft: `4px solid ${
                     transaction.status === "Thành công" ? "#4caf50" : "#f44336"
                   }`,
-                  height:'145px'
+                  height: "145px",
                 }}
               >
                 <CardContent
@@ -241,28 +275,30 @@ const AddFunds = () => {
             margin="dense"
             sx={{ marginBottom: "16px" }}
           />
-          {transactionType === "Rút tiền" && (
+          {transactionType === "Rút tiền" && bankAccounts.length > 0 && (
             <>
-              <TextField
-                label="Số tài khoản ngân hàng"
-                value={beneficiaryAccountNumber}
-                onChange={(e) => setBeneficiaryAccountNumber(e.target.value)}
-                fullWidth
-                margin="dense"
-                sx={{ marginBottom: "16px" }}
-              />
-              <Select
-                value={beneficiaryBankCode}
-                onChange={(e) => setBeneficiaryBankCode(e.target.value)}
-                fullWidth
-                margin="dense"
-              >
-                <MenuItem value="MOMO">Momo</MenuItem>
-                <MenuItem value="Vietcombank">Vietcombank</MenuItem>
-                <MenuItem value="BIDV">BIDV</MenuItem>
-                <MenuItem value="Vietinbank">Vietinbank</MenuItem>
-              </Select>
+              <FormControl fullWidth variant="outlined" margin="normal">
+                <InputLabel id="select-label">Chọn tài khoản</InputLabel>
+                <Select
+                  value={selectedBankAccountId}
+                  onChange={(e) => setSelectedBankAccountId(e.target.value)}
+                  fullWidth
+                  label="Chọn tài khoản"
+                >
+                  {bankAccounts.map((bankAccount) => (
+                    <MenuItem
+                      value={bankAccount.id}
+                      key={bankAccount.id}
+                    >{`${bankAccount.beneficiaryBankCode} - ${bankAccount.beneficiaryAccountNumber}`}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </>
+          )}
+          {transactionType === "Rút tiền" && bankAccounts.length <= 0 && (
+            <Typography sx={{ color: "red" }}>
+              Hãy thêm thông tin tài khoản ngân hàng trước
+            </Typography>
           )}
         </DialogContent>
         <DialogActions sx={{ padding: "16px" }}>
@@ -273,14 +309,31 @@ const AddFunds = () => {
           >
             Hủy
           </Button>
-          <LoadingButton
-            onClick={handleCreateTransaction}
-            loading={loading}
-            color="primary"
-            variant="contained"
-          >
-            Xác nhận
-          </LoadingButton>
+          {transactionType === "Rút tiền" && bankAccounts.length <= 0 ? (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                window.location.href = "/profile";
+              }}
+            >
+              Thêm ngay
+            </Button>
+          ) : (
+            <LoadingButton
+              onClick={handleCreateTransaction}
+              loading={loading}
+              color="primary"
+              variant="contained"
+              disabled={
+                !amount ||
+                Number(amount) <= 0 ||
+                (transactionType === "Rút tiền" && !selectedBankAccountId)
+              } 
+            >
+              Xác nhận
+            </LoadingButton>
+          )}
         </DialogActions>
       </Dialog>
     </Container>
