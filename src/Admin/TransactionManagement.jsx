@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Avatar, Box, Button, Card, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, InputBase, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material"
+import { Avatar, Box, Button, Card, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, IconButton, InputBase, InputLabel, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material"
 import HeaderAdmin from "./HeaderAdmin"
 import { formatMoney } from "../utils/moneyFormatter"
 import { CheckCircle, Search as SearchIcon, BlockOutlined } from '@mui/icons-material';
@@ -7,13 +7,33 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Paginator } from "primereact/paginator";
 import { Row } from "react-bootstrap";
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 export const TransactionManagement = () => {
     const [searchParams, setSearchParams] = useState('');
     const [reasonRejected, setReasonRejected] = useState('');
-
+    const typeOfTransactions = [
+      'Tất cả',
+      'Nạp tiền',
+      'Trừ tiền',
+      'Cộng tiền',
+      'Hoàn tiền',
+      'Rút tiền',
+    ];
+    const [timeFilter, setTimeFilter] = useState({
+      startTime: null,
+      endTime: null,
+    });
+    const [typeOfTransaction, setTypeOfTransaction] = useState(
+      typeOfTransactions[0]
+    );
     const handleSearchChange = (event) => {
         setSearchParams(event.target.value);
+    };
+    const onTypeOfTransactionChange = (event) => {
+      setTypeOfTransaction(event.target.value);
     };
     const [data, setData] = useState();
 
@@ -32,8 +52,10 @@ export const TransactionManagement = () => {
         try {
             const response = await axios.get('http://localhost:9999/transaction/admin/list', {
               params: {
-                searchParams: searchParams || undefined, 
-            },
+                searchParams,
+                ...timeFilter,
+                typeOfTransaction,
+              },
             });
             setData(response.data);
         } catch (error) {
@@ -42,7 +64,8 @@ export const TransactionManagement = () => {
     }
     useEffect(() => {
       fetchHistory();
-  }, [searchParams]);
+  }, [searchParams, timeFilter, typeOfTransaction]);
+  
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -181,6 +204,80 @@ export const TransactionManagement = () => {
             )}
           </Box>
 
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+            mb={3}
+          >
+            
+            <FormControl fullWidth>
+              <InputLabel id="type-of-transact-select-label">
+                Loại giao dịch
+              </InputLabel>
+              <Select
+                labelId="type-of-transact-select-label"
+                id="type-of-transact-select"
+                name="transactId"
+                value={typeOfTransaction}
+                label="Loại giao dịch"
+                onChange={onTypeOfTransactionChange}
+              >
+                {typeOfTransactions.map((typeOfTransaction, i) => (
+                  <MenuItem key={i} value={typeOfTransaction}>
+                    {typeOfTransaction}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Từ ngày"
+                maxDate={timeFilter.endTime}
+                views={["year", "month", "day"]}
+                value={timeFilter.startTime}
+                onChange={(newValue) => {
+                  if (newValue.isValid()) {
+                    setTimeFilter((prev) => ({ ...prev, startTime: newValue }));
+                  }
+                }}
+                disableFuture
+                renderInput={(props) => (
+                  <TextField {...props} placeholder="Chọn ngày bắt đầu" />
+                )}
+                format="DD/MM/YYYY"
+              />
+              <DatePicker
+                label="Tới ngày"
+                minDate={timeFilter.startTime}
+                views={["year", "month", "day"]}
+                value={timeFilter.endTime}
+                onChange={(newValue) => {
+                  if (newValue.isValid()) {
+                    setTimeFilter((prev) => ({
+                      ...prev,
+                      endTime: newValue,
+                    }));
+                  }
+                }}
+                disableFuture
+                renderInput={(props) => (
+                  <TextField {...props} placeholder="Chọn ngày kết thúc" />
+                )}
+                format="DD/MM/YYYY"
+              />
+            </LocalizationProvider>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => setTimeFilter({ startTime: null, endTime: null })}
+              sx={{height:"55px"}}
+            >
+              Xóa ngày
+            </Button>
+          </Stack>
+
           {productsOnPage?.length > 0 ? (
             <Grid container spacing={3}>
               {productsOnPage.map((transaction, index) => (
@@ -275,7 +372,8 @@ export const TransactionManagement = () => {
                       variant="body2"
                       sx={{ color: "#757575", mb: 1 }}
                     >
-                      Ngày giao dịch: {transaction.createdAt}
+                      Ngày giao dịch:{" "}
+                      {dayjs(transaction.createdAt).format("DD/MM/YYYY")}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -382,7 +480,7 @@ export const TransactionManagement = () => {
                       withdrawTransaction?.amount
                         ? formatMoney(withdrawTransaction.amount)
                         : ""
-                    } 
+                    }
                     InputProps={{
                       readOnly: true,
                     }}
