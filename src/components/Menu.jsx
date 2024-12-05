@@ -10,6 +10,7 @@ import axios from "axios";
 import {
   BoxArrowInRight,
   Calendar2Check,
+  Chat,
   Clipboard2Check,
   Heart,
   List,
@@ -112,6 +113,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/posted");
   };
+  const handleMessage = () => {
+    handleClose();
+    navigate("/chat");
+  };
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -185,6 +190,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
               Quản Lí Bài Đăng
+            </MenuItem>
+            <MenuItem onClick={handleMessage}>
+              <Chat
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Tin nhắn
             </MenuItem>
             <MenuItem onClick={handleMannaOrder}>
               <ListAltIcon
