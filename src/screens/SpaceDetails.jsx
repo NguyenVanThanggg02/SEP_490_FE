@@ -30,6 +30,7 @@ import CloseIcon from "@mui/icons-material/Close"; // Import Close icon
 import { MapShopDetail } from "../components/MapShopDetail";
 import Reviews from './Reviews';
 import { userChats } from "../Api/ChatRequests";
+import { toast } from "react-toastify";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -90,7 +91,7 @@ function SpaceDetails({ onSelectChat }) {
           (chat) =>
             chat._id &&
             chat.members.includes(userId) &&
-            chat.members.includes(spaceData?.userId._id)
+            chat.members.includes(spaceData?.userId?._id)
         );
 
         if (existingChat) {
@@ -151,6 +152,12 @@ function SpaceDetails({ onSelectChat }) {
         Error loading data.
       </Typography>
     );
+
+  if (spaceData.censorship !== 'Chấp nhận' && spaceData?.userId?._id !== userId) {
+    nav('/notfound');
+    return null;
+  }
+
   const mainImage = spaceData?.images?.[0]?.url;
    const otherImages = spaceData?.images ? spaceData.images.slice(1, 5).map(image => image.url) : [];
 
@@ -725,33 +732,34 @@ function SpaceDetails({ onSelectChat }) {
                           {displayName}
                         </div>
                       </div>
-
-                      <Link
-                        onClick={handleCreateChat}
-                        state={{ id }}
-                        className={
-                          userId === spaceData.userId?._id ? "d-none" : ""
-                        }
-                      >
-                        <Button
-                          sx={{
-                            backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
-                            color: "black",
-                            boxShadow: "none",
-                            border: "1px solid #ccc", // Đường viền
-                            "&:hover": {
-                              backgroundColor: "#e0e0e0", // Màu nền khi hover
-                              boxShadow: "none",
-                            },
-                          }}
+                      {userId && (
+                        <Link
+                          onClick={handleCreateChat}
+                          state={{ id }}
+                          className={
+                            userId === spaceData.userId?._id ? "d-none" : ""
+                          }
                         >
-                          <Typography variant="button">
-                            <b style={{ fontSize: "12px" }}>
-                              Nhắn tin cho chủ không gian
-                            </b>
-                          </Typography>
-                        </Button>
-                      </Link>
+                          <Button
+                            sx={{
+                              backgroundColor: "#f8f8f8", // Màu ban đầu (trắng)
+                              color: "black",
+                              boxShadow: "none",
+                              border: "1px solid #ccc", // Đường viền
+                              "&:hover": {
+                                backgroundColor: "#e0e0e0", // Màu nền khi hover
+                                boxShadow: "none",
+                              },
+                            }}
+                          >
+                            <Typography variant="button">
+                              <b style={{ fontSize: "12px" }}>
+                                Nhắn tin cho chủ không gian
+                              </b>
+                            </Typography>
+                          </Button>
+                        </Link>
+                      )}
                     </Typography>
 
                     <Divider
@@ -953,11 +961,13 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
-                  Diện tích 
+                  Diện tích
                 </Typography>
                 <div style={{ flexDirection: "row" }}>
-                  <Textarea style={{fontWeight:'bold', fontSize:'25px'}} />
-                  <b style={{ fontSize: "18px", marginLeft:'20px' }}>{spaceData.area}m2</b>
+                  <Textarea style={{ fontWeight: "bold", fontSize: "25px" }} />
+                  <b style={{ fontSize: "18px", marginLeft: "20px" }}>
+                    {spaceData.area}m2
+                  </b>
                 </div>
                 <Divider
                   sx={{
@@ -1083,10 +1093,17 @@ function SpaceDetails({ onSelectChat }) {
                     fullWidth
                     variant="contained"
                     sx={{ backgroundColor: "#F53D6B", color: "#fff", mb: 2 }}
-                    onClick={() => nav(`/booking/${spaceData?._id}`)}
+                    onClick={() => {
+                      if (!userId) {
+                        toast.warning("Vui lòng đăng nhập để đặt phòng.");
+                        nav("/login");
+                      } else {
+                        nav(`/booking/${spaceData?._id}`);
+                      }
+                    }}
                     className={userId === spaceData.userId?._id ? "d-none" : ""}
                   >
-                    <Typography variant="button">Đặt phòng </Typography>
+                    <Typography variant="button">Đặt phòng</Typography>
                   </Button>
                   {/* Community Standards Information */}
                   {spaceData.censorship === "Từ chối" &&
@@ -1154,7 +1171,6 @@ function SpaceDetails({ onSelectChat }) {
                       </Box>
                     )}
                 </Box>
-                
               </Col>
             </Row>
           </Container>

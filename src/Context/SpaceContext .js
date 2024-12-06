@@ -21,6 +21,7 @@ export const SpaceProvider = ({ children }) => {
     pricePerMonth: 0,
     images: [],
     latLng: [],
+    detailAddress:""
   });
   const [isGoldenHour, setIsGoldenHour] = useState(false);
   // {

@@ -38,7 +38,7 @@ export default function MenuContent({ setMainContent }) {
   React.useEffect(() => {
     const hash = window.location.hash;
     if (hash === "#manage-spaces") {
-      handleSelected(mainListItems[1]);
+      handleSelected(1);
     }
 
     window.history.pushState({}, '', window.location.href.replace(/#manage-spaces/, ''));
@@ -50,8 +50,8 @@ export default function MenuContent({ setMainContent }) {
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
             <ListItemButton selected={index === selected} onClick={() => handleSelected(index)}>
-              <ListItemIcon sx={{color:'white'}}>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
+            <ListItemIcon sx={{color:'white'}}>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}

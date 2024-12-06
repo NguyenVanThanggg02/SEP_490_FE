@@ -20,13 +20,13 @@ const HomeAdmin = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:9999/dashboard');
+      const response = await axios.post('http://localhost:9999/dashboard');
       setUserData(response.data.user)
       setSpaceData(response.data.space)
       setTransactionData({
         ...response.data.transaction,
         content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
-        subContent: `Doanh thu 6 tháng - Tổng doanh thu`
+        subContent: `Doanh thu các tháng - Tổng doanh thu`
       })
       setSpaceCensorship(response.data.spaceCensorship)
       setBookingRentalType(response.data.bookingRentalType)
@@ -38,6 +38,20 @@ const HomeAdmin = () => {
   useEffect(() => {
     fetchData()
   }, [])
+
+  const handleTransactionBarChartMonthRangeChange = async (startMonth, endMonth) => {
+    const response = await axios.post('http://localhost:9999/dashboard', { transactionFilter: { from: startMonth, to: endMonth } });
+    setTransactionData({
+      ...response.data.transaction,
+      content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
+      subContent: `Doanh thu các tháng - Tổng doanh thu`
+    })
+  }
+
+  const handlBookingRentalTypeMonthRangeChange = async (startMonth, endMonth) => {
+    const response = await axios.post('http://localhost:9999/dashboard', { bookingRentalTypeFilter: { from: startMonth, to: endMonth } });
+    setBookingRentalType(response.data.bookingRentalType)
+  }
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -68,11 +82,11 @@ const HomeAdmin = () => {
         {
           bookingRentalType &&
           <Grid size={{ xs: 12, lg: 6 }}>
-            <BookingTypeChart {...bookingRentalType} />
+              <BookingTypeChart {...bookingRentalType} handleMonthRangeChange={handlBookingRentalTypeMonthRangeChange} />
           </Grid>
         }
         <Grid size={{ xs: 12, lg: 6 }}>
-          {transactionData && <TransactionBarChart {...transactionData} />}
+          {transactionData && <TransactionBarChart {...transactionData} handleMonthRangeChange={handleTransactionBarChartMonthRangeChange} />}
         </Grid>
       </Grid>
     </Box>

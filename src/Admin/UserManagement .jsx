@@ -63,12 +63,6 @@ const UserManagement = () => {
 
   return (
     <Container style={{marginBottom:'55px'}}>
-      <Box textAlign="center" mb={4} mt={3}>
-        <Typography variant="h4" component="h1">
-          Quản Lí Khách Hàng
-        </Typography>
-      </Box>
-
       <Grid container spacing={3}>
         {listUserOnPage.map((user) => (
           <Grid item xs={12} sm={6} md={4} key={user._id}>
