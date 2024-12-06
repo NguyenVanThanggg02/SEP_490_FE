@@ -1032,10 +1032,10 @@ function SpaceDetails({ onSelectChat }) {
                 >
                    Mô tả vị trí cụ thể : {spaceData?.detailAddress || ""}
                 </Typography>
-                <MapShopDetail
+                {/* <MapShopDetail
                   lat={spaceData?.latLng?.[0]}
                   lng={spaceData?.latLng?.[1]}
-                />
+                /> */}
                 <Divider
                   sx={{
                     bgcolor: "gray",

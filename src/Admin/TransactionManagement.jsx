@@ -10,6 +10,7 @@ import { Row } from "react-bootstrap";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { formatNumberToVND } from "../utils/numberFormatter";
 
 export const TransactionManagement = () => {
     const [searchParams, setSearchParams] = useState('');
@@ -69,6 +70,7 @@ export const TransactionManagement = () => {
 
     const [open, setOpen] = useState(false);
     const [open2, setOpen2] = useState(false);
+    const [adminMoney, setadminMoney] = useState("");
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     const handleOpenDialog = () => {
         setOpen(true);
@@ -131,7 +133,17 @@ export const TransactionManagement = () => {
         }
     }
 
-    
+    useEffect(() => {
+      const fetchadminMoney = async () => {
+          try {
+              const response = await axios.get('http://localhost:9999/system');
+              setadminMoney(response?.data?.[0].value);
+          } catch (error) {
+              console.error('Error fetching report:', error);
+          }
+      };
+      fetchadminMoney();
+  }, []);
     return (
       <Box
         sx={{
@@ -147,6 +159,7 @@ export const TransactionManagement = () => {
             boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
           }}
         >
+          <p style={{textAlign:"end"}}>Tiền hệ thống :{formatNumberToVND(adminMoney)}</p>
           <Typography
             variant="h5"
             sx={{
