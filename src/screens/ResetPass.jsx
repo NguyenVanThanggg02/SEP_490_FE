@@ -9,7 +9,18 @@ const ResetPass = () => {
   const { id, token } = useParams();
   const nav = useNavigate();
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    if (!password) {
+      toast.error("Mật khẩu không được bỏ trống!");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("Mật khẩu phải có ít nhất 8 ký tự!");
+      return;
+    }
+
     axios
       .post(`http://localhost:9999/users/reset-password/${id}/${token}`, {
         password,
@@ -17,7 +28,6 @@ const ResetPass = () => {
       .then((res) => {
         if (res.data.Status === "Success") {
           console.log('success');
-          
           toast.success("Cập nhật mật khẩu mới thành công.");
           nav("/login");
         }
@@ -27,6 +37,7 @@ const ResetPass = () => {
         toast.error("Thất bại");
       });
   };
+
   return (
     <div className="form-container">
       <div className="logo-container">Cập nhật lại mật khẩu</div>
