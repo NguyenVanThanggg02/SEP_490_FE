@@ -69,8 +69,8 @@ const Profile = () => {
 
     if (files && files.length > 0) {
       const formData = new FormData();
-      formData.append("imageUser", files[0]); // Thêm file vào FormData
-      formData.append("userId", userId); // Giả sử bạn đã lưu userId trong state
+      formData.append("imageUser", files[0]);
+      formData.append("userId", userId);
 
       try {
         const response = await axios.post(
@@ -84,9 +84,8 @@ const Profile = () => {
         );
         console.log(response);
 
-        const newAvatar = response.data.images.url; // Sửa ở đây, lấy URL từ trường images
+        const newAvatar = response.data.images.url;
 
-        // Cập nhật userData trong state
         setUserData((prevData) => ({
           ...prevData,
           avatar: newAvatar,
@@ -176,7 +175,6 @@ const Profile = () => {
 
             <Col md={9}>
               <Tab.Content className="p-4">
-                {/* General Tab */}
                 <Tab.Pane eventKey="general">
                   <Card.Body>
                     <Form.Group
@@ -237,18 +235,48 @@ const Profile = () => {
                         <Form.Label style={{ fontWeight: 500 }}>
                           {field.label}
                         </Form.Label>
-                        <Form.Control
-                          type={field.label === "Email" ? "email" : "text"}
-                          value={editData[field.field] || ""}
-                          onChange={(e) =>
-                            handleChange(field.field, e.target.value)
-                          }
-                          disabled={
-                            !isEditingUser || field.field === "username"
-                          } 
-                          readOnly={field.field === "username"} 
-                          style={{ borderRadius: "0.25rem" }}
-                        />
+                        {field.field === "gender" ? (
+                          <Form.Control
+                            as="select"
+                            value={editData.gender || ""}
+                            onChange={(e) =>
+                              handleChange("gender", e.target.value)
+                            }
+                            disabled={!isEditingUser}
+                            style={{ borderRadius: "0.25rem" }}
+                          >
+                            <option value="">Chọn giới tính</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                            <option value="other">Khác</option>
+                          </Form.Control>
+                        ) : field.field === "phone" ? (
+                          <Form.Control
+                            type="number"
+                            value={editData.phone || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+
+                              handleChange("phone", value);
+                            }}
+                            disabled={!isEditingUser}
+                            style={{ borderRadius: "0.25rem" }}
+                            placeholder="Nhập số điện thoại"
+                          />
+                        ) : (
+                          <Form.Control
+                            type={field.label === "Email" ? "email" : "text"}
+                            value={editData[field.field] || ""}
+                            onChange={(e) =>
+                              handleChange(field.field, e.target.value)
+                            }
+                            disabled={
+                              !isEditingUser || field.field === "username"
+                            }
+                            readOnly={field.field === "username"}
+                            style={{ borderRadius: "0.25rem" }}
+                          />
+                        )}
                       </Form.Group>
                     ))}
 
@@ -277,17 +305,11 @@ const Profile = () => {
                     </div>
                   </Card.Body>
                 </Tab.Pane>
-
-                {/* Change Password Tab */}
                 <Tab.Pane eventKey="change-password">
                   <ChangePass />
                 </Tab.Pane>
-
-                {/* Bank Info Tab */}
                 <Tab.Pane eventKey="bank-info">
-                  <Card.Body>
-                    <BankAccount />
-                  </Card.Body>
+                  <BankAccount />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
