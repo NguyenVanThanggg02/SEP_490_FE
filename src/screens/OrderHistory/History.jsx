@@ -294,7 +294,7 @@ const History = () => {
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0].url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",
@@ -309,7 +309,7 @@ const History = () => {
                               variant="h6"
                               style={{ color: "#1976d2", fontWeight: "bold" }}
                             >
-                              {item.items[0].spaceId.name}
+                              {item?.items?.[0]?.spaceId?.name}
                             </Typography>
                             <Typography
                               variant="body2"
