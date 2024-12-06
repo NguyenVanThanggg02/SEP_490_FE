@@ -1,39 +1,62 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #f4f6f9; /* Làm sáng nền */
+    color: #343a40; /* Thêm độ tương phản */
 }
+
 .sidebar {
     height: 100vh;
-    background-color: #343a40;
+    width: 250px; /* Đặt chiều rộng sidebar */
+    background-color: #343a40; /* Màu nền đậm */
     color: #fff;
     padding: 20px;
+    overflow-y: auto; /* Thêm scroll nếu sidebar dài hơn chiều cao màn hình */
 }
+
 .sidebar a {
     color: #adb5bd;
     text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    display: block; /* Tạo nút */
 }
+
 .sidebar a:hover {
     color: #fff;
+    background-color: #495057; /* Hiệu ứng hover */
 }
+
 .sidebar .nav-link.active {
-    background-color: #495057;
+    background-color: #007bff; /* Màu xanh đậm */
     color: #fff;
 }
+
 .content {
+    margin-left: 250px; /* Phù hợp với chiều rộng sidebar */
     padding: 20px;
+    background-color: #fff; /* Tạo vùng sáng cho nội dung */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
 }
+
 .card {
     border: none;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-.card-header {
-    background-color: transparent;
-    border-bottom: none;
-}
+
 .card-body {
     padding: 20px;
 }
+
+.card h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
 .chart, .calendar, .real-time, .browser-usage {
-    height: 300px;
+    border-radius: 10px; /* Làm tròn các hình ảnh */
+    overflow: hidden;
+    background-color: #f8f9fa; /* Làm nổi bật nội dung */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
