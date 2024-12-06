@@ -236,7 +236,6 @@ const History = () => {
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
                 <MenuItem value="hour">Giờ</MenuItem>
                 <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
                 <MenuItem value="month">Tháng</MenuItem>
               </Select>
             </Grid>
@@ -248,7 +247,6 @@ const History = () => {
                 variant="outlined"
               >
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
                 <MenuItem value="completed">Đã thanh toán</MenuItem>
                 <MenuItem value="canceled">Đã huỷ</MenuItem>
               </Select>
@@ -322,7 +320,7 @@ const History = () => {
                                 ? "Giờ"
                                 : item.rentalType === "day"
                                   ? "Ngày"
-                                  : item.rentalType === "week"
+                                  : item.rentalType === ""
                                     ? "Tuần"
                                     : item.rentalType === "month"
                                       ? "Tháng"

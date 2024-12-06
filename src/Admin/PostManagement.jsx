@@ -5,7 +5,7 @@ import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
-import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete } from '@mui/material';
 import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
 
 const PostManagement = () => {
@@ -24,7 +24,7 @@ const PostManagement = () => {
   const [endDate, setEndDate] = useState(null);
 
   const uniqueOwners = Array.from(
-    new Set(spaces.map((space) => space.userId?.fullname || "Không rõ"))
+    new Set([ "Tất cả", ...spaces.map((space) => space.userId?.fullname || "Không rõ")])
   );
   
   const filteredSpaces = spaces
@@ -34,7 +34,7 @@ const PostManagement = () => {
     const end = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)) : null; 
 
     return (
-      (!selectedOwner || space.userId?.fullname === selectedOwner) &&
+      (!selectedOwner || selectedOwner === "Tất cả" || space.userId?.fullname === selectedOwner) &&
       (!selectedStatus || space.censorship === selectedStatus) &&
       (!start || createdAt >= start) && 
       (!end || createdAt <= end) 
@@ -131,59 +131,48 @@ const PostManagement = () => {
       {!showDetail ? (
         <>
           <Row>
-            <Grid container spacing={2} alignItems="center" sx={{marginBottom:'30px'}}>
+            <Grid
+              container
+              spacing={2}
+              alignItems="center"
+              sx={{ marginBottom: "30px" }}
+            >
               <Grid item xs={12} sm={4} md={3}>
                 <FormControl fullWidth>
-                  <InputLabel>Chủ cho thuê</InputLabel>
-                  <Select
+                  <Autocomplete
                     value={selectedOwner}
-                    label="Chủ cho thuê"
-                    onChange={(e) => {
-                      setSelectedOwner(e.target.value);
+                    options={uniqueOwners}
+                    onChange={(event, newValue) => {
+                      setSelectedOwner(newValue || "");
                       setFirst(0);
                     }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Chủ cho thuê"
+                        variant="outlined"
+                      />
+                    )}
                     sx={{
                       borderRadius: "8px",
                       boxShadow: 3,
                       "&:hover": { boxShadow: 6 },
                     }}
-                  >
-                    <MenuItem
-                      value=""
-                      onClick={() => {
-                        setSelectedOwner("");
-                        setFirst(0);
-                      }}
-                    >
-                      <Typography
-                        align="center"
-                        fontWeight="bold"
-                        sx={{ color: "black" }}
-                      >
-                        <PersonLinesFill
-                          style={{ fontSize: "40px", marginRight: "10px" }}
-                        />
-                        Tất cả chủ cho thuê
-                      </Typography>
-                    </MenuItem>
-                    {uniqueOwners.map((owner, index) => (
-                      <MenuItem key={index} value={owner}>
+                    disableClearable 
+                    renderOption={(props, option) => (
+                      <MenuItem {...props} key={option} value={option}>
                         <Typography
-                          sx={{
-                            fontWeight: "bold",
-                            color:
-                              owner === selectedOwner ? "#2c4871" : "#000000",
-                            textAlign: "center",
-                          }}
+                          sx={{ fontWeight: "bold", textAlign: "center" }}
                         >
                           <HouseAddFill
                             style={{ fontSize: "40px", marginRight: "10px" }}
                           />
-                          {owner}
+                          {option}
                         </Typography>
                       </MenuItem>
-                    ))}
-                  </Select>
+                    )}
+                    isOptionEqualToValue={(option, value) => option === value} // Handles value comparison
+                  />
                 </FormControl>
               </Grid>
 
@@ -223,7 +212,7 @@ const PostManagement = () => {
                       borderRadius: "8px",
                       boxShadow: 3,
                       "&:hover": { boxShadow: 6 },
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
                   <TextField
@@ -236,7 +225,7 @@ const PostManagement = () => {
                       borderRadius: "8px",
                       boxShadow: 3,
                       "&:hover": { boxShadow: 6 },
-                      width: "100%"
+                      width: "100%",
                     }}
                   />
                 </Box>
