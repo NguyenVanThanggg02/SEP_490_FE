@@ -131,100 +131,64 @@ const PostManagement = () => {
       {!showDetail ? (
         <>
           <Row>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={6} sm={3} md={2}>
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "110px",
-                    backgroundColor: "#cccccc",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "8px",
-                    boxShadow: 3,
-                    "&:hover": { boxShadow: 6 },
-                    cursor: "pointer",
-                    marginBottom:'20px',
-                    flexWrap: "wrap",
-                  }}
-                  onClick={() => {
-                    setSelectedOwner("");
-                    setFirst(0);
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    align="center"
-                    fontWeight="bold"
-                    sx={{color:'white'}}
-                  >
-                    <PersonLinesFill style={{ color: "white", fontSize: "40px", mb: 1 }} />
-                    <br />
-                    Tất cả chủ cho thuê
-                  </Typography>
-                </Box>
-              </Grid>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 2,
-                  overflowX: "auto",
-                  padding: 2,
-                  "&::-webkit-scrollbar": {
-                    height: 8,
-                  },
-                  "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: "#888",
-                    borderRadius: 4,
-                  },
-                  "&::-webkit-scrollbar-thumb:hover": {
-                    backgroundColor: "#555",
-                  },
-                }}
-              >
-                {uniqueOwners.map((owner, index) => (
-                  <Box
-                    key={index}
+            <Grid container spacing={2} alignItems="center" sx={{marginBottom:'30px'}}>
+              <Grid item xs={12} sm={4} md={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Chủ cho thuê</InputLabel>
+                  <Select
+                    value={selectedOwner}
+                    label="Chủ cho thuê"
+                    onChange={(e) => {
+                      setSelectedOwner(e.target.value);
+                      setFirst(0);
+                    }}
                     sx={{
-                      minWidth: "120px",
-                      height: "110px",
-                      backgroundColor: owner === selectedOwner ? "#2c4871" : "#4c68a1",                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                       borderRadius: "8px",
                       boxShadow: 3,
                       "&:hover": { boxShadow: 6 },
-                      cursor: "pointer",
-                      padding:'0px 10px'
-                    }}
-                    onClick={() => {
-                      setSelectedOwner(owner);
-                      setFirst(0);
                     }}
                   >
-                    <Typography
-                      sx={{
-                        color: "white",
-                        fontWeight: "bold",
-                        textAlign: "center",
+                    <MenuItem
+                      value=""
+                      onClick={() => {
+                        setSelectedOwner("");
+                        setFirst(0);
                       }}
                     >
-                      <HouseAddFill
-                        style={{ color: "white", fontSize: "40px" }}
-                      />
-                      <br />
-                      {owner}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={12} md={12} sx={{ mb: 4 }}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
-                {/* Bộ lọc trạng thái */}
-                <FormControl sx={{ width: "30.5%" }}>
+                      <Typography
+                        align="center"
+                        fontWeight="bold"
+                        sx={{ color: "black" }}
+                      >
+                        <PersonLinesFill
+                          style={{ fontSize: "40px", marginRight: "10px" }}
+                        />
+                        Tất cả chủ cho thuê
+                      </Typography>
+                    </MenuItem>
+                    {uniqueOwners.map((owner, index) => (
+                      <MenuItem key={index} value={owner}>
+                        <Typography
+                          sx={{
+                            fontWeight: "bold",
+                            color:
+                              owner === selectedOwner ? "#2c4871" : "#000000",
+                            textAlign: "center",
+                          }}
+                        >
+                          <HouseAddFill
+                            style={{ fontSize: "40px", marginRight: "10px" }}
+                          />
+                          {owner}
+                        </Typography>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={4} md={3}>
+                <FormControl fullWidth>
                   <InputLabel id="status-filter-label">
                     Lọc theo trạng thái
                   </InputLabel>
@@ -233,6 +197,11 @@ const PostManagement = () => {
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                     label="Lọc theo trạng thái"
+                    sx={{
+                      borderRadius: "8px",
+                      boxShadow: 3,
+                      "&:hover": { boxShadow: 6 },
+                    }}
                   >
                     <MenuItem value="">Tất cả</MenuItem>
                     <MenuItem value="Chấp nhận">Chấp nhận</MenuItem>
@@ -240,16 +209,22 @@ const PostManagement = () => {
                     <MenuItem value="Chờ duyệt">Chờ duyệt</MenuItem>
                   </Select>
                 </FormControl>
+              </Grid>
 
-                {/* Bộ lọc ngày */}
-                <Box sx={{ display: "flex", gap: 4, flexGrow: 1}}>
+              <Grid item xs={12} sm={4} md={6}>
+                <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
                   <TextField
                     label="Từ ngày"
                     type="date"
                     InputLabelProps={{ shrink: true }}
                     value={startDate || ""}
                     onChange={(e) => setStartDate(e.target.value)}
-                    sx={{ width: "46%" }}
+                    sx={{
+                      borderRadius: "8px",
+                      boxShadow: 3,
+                      "&:hover": { boxShadow: 6 },
+                      width: "100%"
+                    }}
                   />
                   <TextField
                     label="Đến ngày"
@@ -257,10 +232,15 @@ const PostManagement = () => {
                     InputLabelProps={{ shrink: true }}
                     value={endDate || ""}
                     onChange={(e) => setEndDate(e.target.value)}
-                    sx={{ width: "46%" }}
+                    sx={{
+                      borderRadius: "8px",
+                      boxShadow: 3,
+                      "&:hover": { boxShadow: 6 },
+                      width: "100%"
+                    }}
                   />
                 </Box>
-              </Box>
+              </Grid>
             </Grid>
 
             <Grid container spacing={4} style={{ marginBottom: "20px" }}>
