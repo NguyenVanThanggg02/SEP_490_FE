@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { priceFormatter } from "../utils/numberFormatter";
 
-const Similar = ({ spaceData }) => {
+const  = ({ spaceData }) => {
   const [similarSpace, setSimilarSpace] = useState([]);
 
   useEffect(() => {
