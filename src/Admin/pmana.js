@@ -8,57 +8,57 @@ import { Link } from "react-router-dom";
 const PMana = () => {
   const [spaces, setSpaces] = useState([]);
   const [visible, setVisible] = useState(false);
-  const [currentPostId, setCurrentPostId] = useState(null); 
-  
+  const [currentPostId, setCurrentPostId] = useState(null);
+
   useEffect(() => {
-    axios
-      .get("http://localhost:9999/spaces")
-      .then((response) => {
+    const fetchSpaces = async () => {
+      try {
+        const response = await axios.get("http://localhost:9999/spaces");
         setSpaces(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching spaces:", error);
-      });
+      }
+    };
+
+    fetchSpaces();
   }, []);
+
+  const updateCensorship = async (postId, censorship, communityStandardsId = null) => {
+    try {
+      const endpoint = communityStandardsId
+        ? `http://localhost:9999/spaces/update-censorship/${postId}`
+        : `http://localhost:9999/spaces/update/${postId}`;
+
+      const payload = communityStandardsId
+        ? { censorship, communityStandardsId }
+        : { censorship };
+
+      await axios.put(endpoint, payload);
+
+      setSpaces((prevSpaces) =>
+        prevSpaces.map((space) =>
+          space._id === postId ? { ...space, censorship } : space
+        )
+      );
+    } catch (error) {
+      console.error("Error updating censorship:", error);
+    }
+  };
 
   const handleAccept = (postId) => {
     const selectedSpace = spaces.find((space) => space._id === postId);
 
-    if (selectedSpace.censorship === "Chấp nhận") {
-      return;
+    if (selectedSpace?.censorship !== "Chấp nhận") {
+      updateCensorship(postId, "Chấp nhận");
     }
-
-    axios
-      .put(`http://localhost:9999/spaces/update/${postId}`, { censorship: "Chấp nhận" })
-      .then((response) => {
-        setSpaces((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating censorship:", error);
-      });
   };
 
   const handleReject = (postId, communityStandardsId) => {
-    axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, { censorship: "Từ chối", communityStandardsId: communityStandardsId }) 
-      .then((response) => {
-        setSpaces((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Từ chối" } : space
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error updating censorship:", error);
-      });
+    updateCensorship(postId, "Từ chối", communityStandardsId);
   };
 
   const openRejectDialog = (postId) => {
-    setCurrentPostId(postId); 
+    setCurrentPostId(postId);
     setVisible(true);
   };
 
@@ -92,8 +92,8 @@ const PMana = () => {
                   <td>{s.name}</td>
                   <td>{s.userId?.fullname || "Unknown"}</td>
                   <td>
-                  <Link to={'/detail-admin'} state={{ id: s._id }}>
-                  <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
+                    <Link to={"/detail-admin"} state={{ id: s._id }}>
+                      <Eye style={{ color: "#3399FF", fontSize: "30px" }} />
                     </Link>
                   </td>
                   <td>
@@ -101,8 +101,7 @@ const PMana = () => {
                       variant="success"
                       onClick={() => handleAccept(s._id)}
                       disabled={
-                        s.censorship === "Chấp nhận" ||
-                        s.censorship === "Từ chối"
+                        s.censorship === "Chấp nhận" || s.censorship === "Từ chối"
                       }
                     >
                       Chấp Nhận
@@ -113,8 +112,7 @@ const PMana = () => {
                       variant="danger"
                       onClick={() => openRejectDialog(s._id)}
                       disabled={
-                        s.censorship === "Chấp nhận" ||
-                        s.censorship === "Từ chối"
+                        s.censorship === "Chấp nhận" || s.censorship === "Từ chối"
                       }
                     >
                       Từ Chối
