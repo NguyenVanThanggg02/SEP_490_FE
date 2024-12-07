@@ -15,10 +15,12 @@ import UserManagement from '../UserManagement ';
 import { TransactionManagement } from '../TransactionManagement';
 import ProfileAdmin from '../profile/ProfileAdmin';
 import { GearFill } from 'react-bootstrap-icons';
+import PostReportMana from '../PostReportMana';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, component: <HomeAdmin /> },
   { text: 'Quản lí bài đăng', icon: <PostAddIcon />, component: <PostManagement /> },
+  { text: 'Quản lí bài báo cáo', icon: <PostAddIcon />, component: <PostReportMana /> },
   { text: 'Quản lí người dùng', icon: <PeopleAltIcon />, component: <UserManagement /> },
   { text: 'Quản lí giao dịch', icon: <PaymentIcon />, component: <TransactionManagement /> },
   { text: 'Cài đặt', icon: <GearFill />, component: <ProfileAdmin /> },
