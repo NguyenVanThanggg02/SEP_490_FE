@@ -261,7 +261,7 @@ const Profile = () => {
                             }}
                             disabled={!isEditingUser}
                             style={{ borderRadius: "0.25rem" }}
-                            placeholder="Nhập số điện thoại"
+                            placeholder="Nhập số điện thoại..."
                           />
                         ) : (
                           <Form.Control
