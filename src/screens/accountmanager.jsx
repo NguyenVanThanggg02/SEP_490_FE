@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
 import "../style/accountmanager.css";
 
 const AccountManager = () => {
   return (
     <div>
-      <nav className="navbar navbar-light bg-light">
+      {/* Navbar */}
+      <nav className="navbar navbar-light bg-light shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             <img
@@ -23,15 +24,17 @@ const AccountManager = () => {
         </div>
       </nav>
 
-      <div className="container">
-        <div className="account-header">
-          <h1>Tài khoản</h1>
+      {/* Header */}
+      <div className="container py-4">
+        <div className="account-header bg-primary text-white p-4 rounded shadow">
+          <h1 className="mb-2">Tài khoản</h1>
           <p>
-            Hoà, anhviphuong456@gmail.com · <a href="#">Truy cập hồ sơ</a>
+            Hoà, anhviphuong456@gmail.com · <a href="#" className="text-white text-decoration-underline">Truy cập hồ sơ</a>
           </p>
         </div>
 
-        <div className="row">
+        {/* Account Cards */}
+        <div className="row mt-4 gy-4">
           <AccountCard
             icon={faAddressCard}
             title="Thông tin cá nhân"
@@ -85,12 +88,12 @@ const AccountManager = () => {
 
 const AccountCard = ({ icon, title, text }) => (
   <div className="col-md-4">
-    <div className="card">
-      <div className="card-body">
-        <FontAwesomeIcon icon={icon} className="icon" />
+    <div className="card shadow-sm border-0 rounded">
+      <div className="card-body d-flex align-items-start">
+        <FontAwesomeIcon icon={icon} className="icon me-3 text-primary fs-3" />
         <div>
-          <h5 className="card-title">{title}</h5>
-          <p className="card-text">{text}</p>
+          <h5 className="card-title fw-bold">{title}</h5>
+          <p className="card-text text-muted">{text}</p>
         </div>
       </div>
     </div>
