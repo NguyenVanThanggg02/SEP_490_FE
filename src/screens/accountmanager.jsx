@@ -5,14 +5,12 @@ const AccountManager = () => {
   return (
     <div>
       {/* Navbar */}
-      <nav className="navbar navbar-light bg-light shadow-sm">
+      <nav className="navbar navbar-light bg-light">
         <div className="container-fluid">
           <a className="navbar-brand" href="#">
             <img
               src="https://storage.googleapis.com/a1aa/image/mrqiJfcZ6FVEHa4vCcrAjFkrZO1vRJv2IUf6yYk9fecKO0fdC.jpg"
               alt="Airbnb logo"
-              width="30"
-              height="30"
             />
           </a>
           <div className="d-flex align-items-center">
@@ -24,17 +22,17 @@ const AccountManager = () => {
         </div>
       </nav>
 
-      {/* Header */}
-      <div className="container py-4">
-        <div className="account-header bg-primary text-white p-4 rounded shadow">
-          <h1 className="mb-2">Tài khoản</h1>
+      {/* Account Header */}
+      <div className="container">
+        <div className="account-header">
+          <h1>Tài khoản</h1>
           <p>
-            Hoà, anhviphuong456@gmail.com · <a href="#" className="text-white text-decoration-underline">Truy cập hồ sơ</a>
+            Hoà, anhviphuong456@gmail.com · <a href="#">Truy cập hồ sơ</a>
           </p>
         </div>
 
         {/* Account Cards */}
-        <div className="row mt-4 gy-4">
+        <div className="row">
           <AccountCard
             icon={faAddressCard}
             title="Thông tin cá nhân"
@@ -88,12 +86,12 @@ const AccountManager = () => {
 
 const AccountCard = ({ icon, title, text }) => (
   <div className="col-md-4">
-    <div className="card shadow-sm border-0 rounded">
-      <div className="card-body d-flex align-items-start">
-        <FontAwesomeIcon icon={icon} className="icon me-3 text-primary fs-3" />
+    <div className="card">
+      <div className="card-body">
+        <FontAwesomeIcon icon={icon} className="icon" />
         <div>
-          <h5 className="card-title fw-bold">{title}</h5>
-          <p className="card-text text-muted">{text}</p>
+          <h5 className="card-title">{title}</h5>
+          <p className="card-text">{text}</p>
         </div>
       </div>
     </div>
