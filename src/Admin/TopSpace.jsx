@@ -33,8 +33,7 @@ const TopSpace = () => {
             <th>Tên</th>
             <th>Hình ảnh</th>
             <th>Địa chỉ</th>
-            <th>Số lượt book</th>
-            <th>Trạng thái</th>
+            
           </tr>
         </thead>
         <tbody>
