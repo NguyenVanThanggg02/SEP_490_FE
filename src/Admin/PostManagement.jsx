@@ -7,6 +7,7 @@ import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
 import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete } from '@mui/material';
 import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
+import { toast } from "react-toastify";
 
 const PostManagement = () => {
   const [spaces, setSpaces] = useState([]);
@@ -82,6 +83,7 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
           )
         );
+        toast.success("Địa điểm đã được chấp nhận")
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
@@ -102,6 +104,7 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
           )
         );
+        toast.success("Địa điểm đã bị từ chối")
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
