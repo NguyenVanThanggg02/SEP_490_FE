@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function ConfirmPassword({ setOpenConfirmPwd }) {
+export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +52,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd }) {
       });
   };
 
-  const checkOtp = () => {
+  const checkOtp = async () => {
     setIsLoading(true);
 
     axios
@@ -61,6 +61,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd }) {
         userId: userData._id,
       })
       .then((res) => {
+        handleSave();
         console.log('res when check otp', res);
         setOpenConfirmPwd(false);
       })
