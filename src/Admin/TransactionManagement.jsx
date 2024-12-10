@@ -36,6 +36,7 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { formatMoney } from '../utils/moneyFormatter';
+import { formatNumberToVND } from '../utils/numberFormatter';
 
 export const TransactionManagement = () => {
   const typeOfTransactions = [
@@ -253,9 +254,17 @@ export const TransactionManagement = () => {
               </Select>
             </FormControl>
           </Stack>
-          <IconButton sx={{ padding: 0 }} onClick={fetchHistory}>
-            <SearchIcon />
-          </IconButton>
+          {/* <IconButton sx={{ padding: 0 }} onClick={fetchHistory}>
+            <SearchIcon /> */}
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={fetchHistory}
+              sx={{height:"55px"}}
+            >
+              <SearchIcon />Tìm kiếm
+            </Button>
+          {/* </IconButton> */}
         </Stack>
 
         <TableContainer component={Paper}>
@@ -359,7 +368,7 @@ export const TransactionManagement = () => {
                   label="Số tiền"
                   fullWidth
                   margin="dense"
-                  value={withdrawTransaction?.amount || ''}
+                  value={formatNumberToVND(withdrawTransaction?.amount || '')}
                   InputProps={{
                     readOnly: true,
                   }}
