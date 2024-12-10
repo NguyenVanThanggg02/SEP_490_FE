@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { formatMoney } from '../utils/moneyFormatter';
 import { ChartApproveStatus } from './Dashboard/ChartApproveStatus';
 import { BookingTypeChart } from './Dashboard/BookingTypeChart';
+import { ProfitChart } from './Dashboard/ProfitChart';
 
 const HomeAdmin = () => {
 
@@ -17,6 +18,7 @@ const HomeAdmin = () => {
   const [transactionData, setTransactionData] = useState()
   const [spaceCensorship, setSpaceCensorship] = useState()
   const [bookingRentalType, setBookingRentalType] = useState()
+  const [profit, setProfit] = useState()
 
   const fetchData = async () => {
     try {
@@ -30,6 +32,7 @@ const HomeAdmin = () => {
       })
       setSpaceCensorship(response.data.spaceCensorship)
       setBookingRentalType(response.data.bookingRentalType)
+      setProfit(response.data.profit)
     } catch (error) {
       toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
     }
@@ -52,7 +55,10 @@ const HomeAdmin = () => {
     const response = await axios.post('http://localhost:9999/dashboard', { bookingRentalTypeFilter: { from: startMonth, to: endMonth } });
     setBookingRentalType(response.data.bookingRentalType)
   }
-
+  const handleProfitMonthRangeChange = async (startMonth, endMonth) => {
+    const response = await axios.post('http://localhost:9999/dashboard', { profitFilter: { from: startMonth, to: endMonth } });
+    setProfit(response.data.profit)
+  }
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -64,6 +70,12 @@ const HomeAdmin = () => {
         columns={12}
         sx={{ mb: (theme) => theme.spacing(2) }}
       >
+        {
+          profit &&
+          <Grid size={{ xs: 12, sm: 12, lg: 12, xl: 4 }}>
+            <ProfitChart {...profit} handleMonthRangeChange={handleProfitMonthRangeChange} total={formatMoney(profit.total)} />
+          </Grid>
+        }
         {
           userData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
             <StatCard {...userData} />

@@ -378,6 +378,16 @@ const AddFunds = () => {
           />
           {transactionType === "Rút tiền" && bankAccounts.length > 0 && (
             <>
+            <TextField
+                label="Thực nhận (chiết khấu 5%)"
+                type="number"
+                InputProps={{
+                  readOnly: true,
+                }}
+                value={Math.floor(amount ? amount * 95 / 100 : 0)}
+                fullWidth
+                margin="normal"
+              />
               <FormControl fullWidth variant="outlined" margin="normal">
                 <InputLabel id="select-label">Chọn tài khoản</InputLabel>
                 <Select

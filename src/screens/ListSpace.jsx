@@ -70,8 +70,9 @@ const ListSpace = () => {
       const data = await response.json();
 
       if (Array.isArray(data)) {
-        setListSpace(data);
-
+        const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setListSpace(sortedData);
+  
         if (navigator?.geolocation) {
           navigator.geolocation.getCurrentPosition(
             async (position) => {
