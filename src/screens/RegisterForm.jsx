@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/login.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import logo from "../assets/logo.png";
+import newlogo2 from "../assets/images/newlogo_2.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -66,7 +66,7 @@ const RegisterForm = () => {
       }, 2000);
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        toast.error("Tên người dùng hoặc email đã tồn tại!");
+        toast.error("Tên đăng nhập hoặc email đã tồn tại!");
       } else if (error.response && error.response.data) {
         toast.error(error.response.data.error || "Đăng ký không thành công!");
       } else {
@@ -83,7 +83,7 @@ const RegisterForm = () => {
         style={{ width: "100%" }}
       >
         <img
-          src={logo}
+          src={newlogo2}
           height={80}
           alt="logo"
           style={{ objectFit: "contain" }}
@@ -98,14 +98,14 @@ const RegisterForm = () => {
       </div>
       <div className="input_container">
         <label className="input_label" htmlFor="username">
-          Tên người dùng
+          Tên đăng nhập
         </label>
         <input
           type="text"
           id="username"
           value={formData.username}
           onChange={handleChange}
-          placeholder="Tên người dùng của bạn"
+          placeholder="Tên đăng nhập của bạn"
           className="input_field"
           required
         />

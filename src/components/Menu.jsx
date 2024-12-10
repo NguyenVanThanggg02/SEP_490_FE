@@ -115,6 +115,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/posted");
   };
+  const handleMessage = () => {
+    handleClose();
+    navigate("/chat");
+  };
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -192,6 +196,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
               Quản Lí Bài Đăng
+            </MenuItem>
+            <MenuItem onClick={handleMessage}>
+              <ChatDots style={{ fontSize: "20px", marginRight: "10px" }} />
+              Tin nhắn
             </MenuItem>
             <MenuItem onClick={handleMannaOrder}>
               <ListAltIcon style={{ fontSize: "20px", marginRight: "10px" }} />

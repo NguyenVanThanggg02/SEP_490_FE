@@ -1,7 +1,7 @@
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import CloseIcon from '@mui/icons-material/Close';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
@@ -13,112 +13,112 @@ import {
   Switch,
   TextField,
   Typography,
-} from '@mui/material';
-import { Image } from 'antd'; // Import các component từ Antd
-import axios from 'axios';
-import React, { useContext, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import Loading from '../../components/Loading';
-import { SpaceContext } from '../../Context/SpaceContext ';
+} from "@mui/material";
+import { Image } from "antd"; // Import các component từ Antd
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import Loading from "../../components/Loading";
+import { SpaceContext } from "../../Context/SpaceContext ";
 
-import Checkbox from '@mui/material/Checkbox';
+import Checkbox from "@mui/material/Checkbox";
 
 export const availableSlots = [
   {
-    startTime: '00:00',
-    endTime: '01:00',
+    startTime: "00:00",
+    endTime: "01:00",
   },
   {
-    startTime: '01:00',
-    endTime: '02:00',
+    startTime: "01:00",
+    endTime: "02:00",
   },
   {
-    startTime: '02:00',
-    endTime: '03:00',
+    startTime: "02:00",
+    endTime: "03:00",
   },
   {
-    startTime: '03:00',
-    endTime: '04:00',
+    startTime: "03:00",
+    endTime: "04:00",
   },
   {
-    startTime: '04:00',
-    endTime: '05:00',
+    startTime: "04:00",
+    endTime: "05:00",
   },
   {
-    startTime: '05:00',
-    endTime: '06:00',
+    startTime: "05:00",
+    endTime: "06:00",
   },
   {
-    startTime: '06:00',
-    endTime: '07:00',
+    startTime: "06:00",
+    endTime: "07:00",
   },
   {
-    startTime: '07:00',
-    endTime: '08:00',
+    startTime: "07:00",
+    endTime: "08:00",
   },
   {
-    startTime: '08:00',
-    endTime: '09:00',
+    startTime: "08:00",
+    endTime: "09:00",
   },
   {
-    startTime: '09:00',
-    endTime: '10:00',
+    startTime: "09:00",
+    endTime: "10:00",
   },
   {
-    startTime: '10:00',
-    endTime: '11:00',
+    startTime: "10:00",
+    endTime: "11:00",
   },
   {
-    startTime: '11:00',
-    endTime: '12:00',
+    startTime: "11:00",
+    endTime: "12:00",
   },
   {
-    startTime: '12:00',
-    endTime: '13:00',
+    startTime: "12:00",
+    endTime: "13:00",
   },
   {
-    startTime: '13:00',
-    endTime: '14:00',
+    startTime: "13:00",
+    endTime: "14:00",
   },
   {
-    startTime: '14:00',
-    endTime: '15:00',
+    startTime: "14:00",
+    endTime: "15:00",
   },
   {
-    startTime: '15:00',
-    endTime: '16:00',
+    startTime: "15:00",
+    endTime: "16:00",
   },
   {
-    startTime: '16:00',
-    endTime: '17:00',
+    startTime: "16:00",
+    endTime: "17:00",
   },
   {
-    startTime: '17:00',
-    endTime: '18:00',
+    startTime: "17:00",
+    endTime: "18:00",
   },
   {
-    startTime: '18:00',
-    endTime: '19:00',
+    startTime: "18:00",
+    endTime: "19:00",
   },
   {
-    startTime: '19:00',
-    endTime: '20:00',
+    startTime: "19:00",
+    endTime: "20:00",
   },
   {
-    startTime: '20:00',
-    endTime: '21:00',
+    startTime: "20:00",
+    endTime: "21:00",
   },
   {
-    startTime: '21:00',
-    endTime: '22:00',
+    startTime: "21:00",
+    endTime: "22:00",
   },
   {
-    startTime: '22:00',
-    endTime: '23:00',
+    startTime: "22:00",
+    endTime: "23:00",
   },
   {
-    startTime: '23:00',
-    endTime: '00:00',
+    startTime: "23:00",
+    endTime: "00:00",
   },
 ];
 
@@ -139,24 +139,31 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     priceIncrease,
     setPriceIncrease,
   } = useContext(SpaceContext);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
   const [isLoading, setIsLoading] = useState(false);
   const [imagesPreview, setImagesPreview] = useState([]);
 
   const rulesList = [
-    'Vệ sinh và ngăn nắp',
-    'Cấm mang theo vũ khí, chất cấm',
-    'Bảo quản thiết bị và cơ sở vật chất',
-    'Mọi người vào đều phải được đăng ký trước',
-    'Tuân thủ giờ thuê, không ở quá giờ quy định',
-    'Số lượng người không được vượt quá giới hạn',
-    'Không gây rối, xung đột với nhân viên và người khác',
+    "Vệ sinh và ngăn nắp",
+    "Cấm mang theo vũ khí, chất cấm",
+    "Bảo quản thiết bị và cơ sở vật chất",
+    "Mọi người vào đều phải được đăng ký trước",
+    "Tuân thủ giờ thuê, không ở quá giờ quy định",
+    "Số lượng người không được vượt quá giới hạn",
+    "Không gây rối, xung đột với nhân viên và người khác",
   ];
   const handleCheckboxChange = () => {
     setIsGoldenHour(!isGoldenHour);
   };
-
+  const formatArea = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
+  const formatPrice = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
   const handleToggleRule = (rule, checked) => {
     setSelectedRules((prevSelectedRules) => {
       if (checked) {
@@ -186,81 +193,74 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
-    console.log('{ name, value, type }', { name, value, type });
+    // Loại bỏ dấu chấm trong giá trị nhập
+    const numericValue = value.replace(/\./g, "");
 
+    // Cập nhật state `spaceInfo`
     setSpaceInfo((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: numericValue,
     }));
-    if (value.trim() === '') {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: 'Trường này không được bỏ trống',
-      }));
-    } else if (type === 'number' && parseFloat(value) < 0) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: 'Giá trị không được âm',
-      }));
-    } else if (name === 'area') {
-      if (parseFloat(value) < 1) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: 'Giá trị phải lớn hơn 1',
-        }));
-      }
-    }
-    if (
-      type === 'number' &&
-      name === 'priceIncrease' &&
-      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+
+    // Xử lý kiểm tra lỗi
+    let errorMessage = "";
+
+    if (!value.trim()) {
+      errorMessage = "Trường này không được bỏ trống";
+    } else if (type === "number" && parseFloat(numericValue) < 0) {
+      errorMessage = "Giá trị không được âm";
+    } else if (name === "area" && parseFloat(numericValue) < 1) {
+      errorMessage = "Giá trị phải lớn hơn 1";
+    } else if (
+      type === "number" &&
+      name === "priceIncrease" &&
+      (parseFloat(numericValue) <= 0 || parseFloat(numericValue) > 100)
     ) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
-      }));
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: '',
-      }));
+      errorMessage =
+        "Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn hoặc bằng 100";
     }
+
+    // Cập nhật state `setErrors`
+    setErrors((prev) => ({
+      ...prev,
+      [name]: errorMessage,
+    }));
   };
 
   const handleBlur = (e) => {
     const { name, value, type } = e.target;
 
-    console.log('{ name, value, type }', { name, value, type });
+    console.log("{ name, value, type }", { name, value, type });
 
     // Kiểm tra lại khi rời khỏi input
-    if (value.trim() === '') {
+    if (value.trim() === "") {
       setErrors((prev) => ({
         ...prev,
-        [name]: 'Trường này không được bỏ trống',
+        [name]: "Trường này không được bỏ trống",
       }));
-    } else if (type === 'number' && parseFloat(value) < 0) {
+    } else if (type === "number" && parseFloat(value) < 0) {
       setErrors((prev) => ({
         ...prev,
-        [name]: 'Giá trị không được âm',
+        [name]: "Giá trị không được âm",
       }));
-    } else if (name === 'area' && parseFloat(value) < 1) {
+    } else if (name === "area" && parseFloat(value) < 1) {
       setErrors((prev) => ({
         ...prev,
-        [name]: 'Giá trị phải lớn hơn 1',
+        [name]: "Giá trị phải lớn hơn 1",
       }));
     } else if (
-      type === 'number' &&
-      name === 'priceIncrease' &&
+      type === "number" &&
+      name === "priceIncrease" &&
       (parseFloat(value) <= 0 || parseFloat(value) > 100)
     ) {
       setErrors((prev) => ({
         ...prev,
-        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+        [name]: "Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100",
       }));
     } else {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -274,16 +274,16 @@ const AddSpaceInforSpace = ({ editorRef }) => {
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
-      formData.append('images', files[i]); // Thêm từng file vào formData
+      formData.append("images", files[i]); // Thêm từng file vào formData
     }
 
     try {
       const response = await axios.post(
-        'http://localhost:9999/spaces/uploadImages',
+        "http://localhost:9999/spaces/uploadImages",
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data', // Đặt header để gửi file
+            "Content-Type": "multipart/form-data", // Đặt header để gửi file
           },
         }
       );
@@ -291,10 +291,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
       if (response.status === 200) {
         newImages = response.data.images; // Lưu thông tin ảnh vào mảng từ phản hồi
       } else {
-        console.error('Failed to upload images');
+        console.error("Failed to upload images");
       }
     } catch (error) {
-      console.error('Error uploading images:', error);
+      console.error("Error uploading images:", error);
     }
 
     setIsLoading(false);
@@ -309,12 +309,12 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     try {
       // Gửi request đến server-side để xóa ảnh từ Cloudinary
       const response = await axios.post(
-        'http://localhost:9999/spaces/removeImage',
+        "http://localhost:9999/spaces/removeImage",
         { public_id }
       );
 
       if (response.status === 200) {
-        console.log('Image deleted successfully');
+        console.log("Image deleted successfully");
 
         // Xóa ảnh khỏi danh sách hiển thị
         setImagesPreview((prev) =>
@@ -327,10 +327,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
           ),
         }));
       } else {
-        console.error('Failed to delete image');
+        console.error("Failed to delete image");
       }
     } catch (error) {
-      console.error('Error deleting image:', error);
+      console.error("Error deleting image:", error);
     }
   };
 
@@ -346,29 +346,36 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     useState(false);
 
   const handleChange = (event) => {
-    console.log('308 handleChange =======================>', {
+    console.log("handleChange =======================>", {
       checked: event.target.checked,
       name: event.target.name,
     });
+
+    // Khi checkbox bị bỏ chọn
     if (event.target.checked === false) {
-      const checkOther = Object.keys(stateSpacePriceWay)
-        .filter((item) => item !== event.target.name)
-        .every((key) => {
-          return stateSpacePriceWay[key] === false;
-        });
-      if (checkOther) {
+      const isAllUnchecked = Object.keys(stateSpacePriceWay)
+        .filter((key) => key !== event.target.name)
+        .every((key) => stateSpacePriceWay[key] === false);
+
+      if (isAllUnchecked) {
         setIsShowNotPermissionSpacePrice(true);
-        return;
+        return; // Không tiếp tục
       }
-      const tempName = event.target.name;
-      const tempPrice = {};
-      tempPrice[tempName] = 0;
-      setSpaceInfo({ ...spaceInfo, ...tempPrice });
+
+      // Cập nhật giá trị spaceInfo mà không ghi đè toàn bộ
+      setSpaceInfo((prev) => ({
+        ...prev,
+        [event.target.name]: 0,
+      }));
     }
-    setStateSpacePriceWay({
-      ...stateSpacePriceWay,
+
+    // Cập nhật trạng thái stateSpacePriceWay
+    setStateSpacePriceWay((prevState) => ({
+      ...prevState,
       [event.target.name]: event.target.checked,
-    });
+    }));
+
+    // Ẩn thông báo
     setIsShowNotPermissionSpacePrice(false);
   };
 
@@ -418,13 +425,13 @@ const AddSpaceInforSpace = ({ editorRef }) => {
             <Col md={12} className="pb-5">
               <Typography
                 variant="h6"
-                style={{ fontWeight: 700, fontSize: '20px' }}
+                style={{ fontWeight: 700, fontSize: "20px" }}
               >
-                Đặt tên cho không gian của bạn{' '}
-                <span style={{ color: 'red' }}>*</span>
+                Đặt tên cho không gian của bạn{" "}
+                <span style={{ color: "red" }}>*</span>
               </Typography>
-              <Typography sx={{ fontSize: '14px', padding: '10px 0' }}>
-                {' '}
+              <Typography sx={{ fontSize: "14px", padding: "10px 0" }}>
+                {" "}
                 Tên của không gian sẽ hiển thị trên trang kết quả tìm kiếm và
                 trang chi tiết listing khi khách hàng xem.
               </Typography>
@@ -447,11 +454,11 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     variant="h6"
                     style={{
                       fontWeight: 700,
-                      fontSize: '20px',
-                      paddingBottom: '10px',
+                      fontSize: "20px",
+                      paddingBottom: "10px",
                     }}
                   >
-                    Giá không gian <span style={{ color: 'red' }}>*</span>
+                    Giá không gian <span style={{ color: "red" }}>*</span>
                   </Typography>
                   <Row>
                     <Col md={12} align="center">
@@ -460,13 +467,13 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         align="center"
                         style={{
                           fontWeight: 600,
-                          fontSize: '16px',
+                          fontSize: "16px",
                         }}
                       >
                         Chọn cách thức thuê
                       </Typography>
                       <FormControl component="fieldset" variant="standard">
-                        <FormGroup sx={{ flexDirection: 'row' }}>
+                        <FormGroup sx={{ flexDirection: "row" }}>
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -514,10 +521,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerHour"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour|| ""}
+                          value={formatPrice(spaceInfo.pricePerHour || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -533,14 +540,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                             if (
                               !/[0-9]/.test(e.key) &&
-                              e.key !== 'Backspace' &&
-                              e.key !== 'Delete' &&
-                              e.key !== '.'
+                              e.key !== "Backspace" &&
+                              e.key !== "Delete" &&
+                              e.key !== "."
                             ) {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: "20px" }}
                         />
                       </Col>
                     )}
@@ -549,10 +556,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerDay"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay|| ""}
+                          value={formatPrice(spaceInfo.pricePerDay || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -568,14 +575,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                             if (
                               !/[0-9]/.test(e.key) &&
-                              e.key !== 'Backspace' &&
-                              e.key !== 'Delete' &&
-                              e.key !== '.'
+                              e.key !== "Backspace" &&
+                              e.key !== "Delete" &&
+                              e.key !== "."
                             ) {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: "20px" }}
                         />
                       </Col>
                     )}
@@ -618,10 +625,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerMonth"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth|| ""}
+                          value={formatPrice(spaceInfo.pricePerMonth || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -637,18 +644,17 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                             if (
                               !/[0-9]/.test(e.key) &&
-                              e.key !== 'Backspace' &&
-                              e.key !== 'Delete' &&
-                              e.key !== '.'
+                              e.key !== "Backspace" &&
+                              e.key !== "Delete" &&
+                              e.key !== "."
                             ) {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: "20px" }}
                         />
                       </Col>
                     )}
-
                     {isShowNotPermissionSpacePrice && (
                       <span className="text-danger d-inline-block">
                         Phải chọn ít nhất một cách thức thuê, mặc định là chọn
@@ -678,11 +684,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       }
                       label="Giờ cao điểm"
                     />
-                 
                   </div>
 
                   {isGoldenHour && (
-                    <Row style={{ paddingtop: '10px' }}>
+                    <Row style={{ paddingtop: "10px" }}>
                       <Grid
                         container
                         justifyContent="center"
@@ -703,14 +708,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           return (
                             <Grid item key={index}>
                               <Button
-                                variant={check > -1 ? 'contained' : 'outlined'}
+                                variant={check > -1 ? "contained" : "outlined"}
                                 onClick={() =>
                                   handleTimeSlotSelection(
                                     slot.startTime,
                                     slot.endTime
                                   )
                                 }
-                                style={{ margin: '5px' }}
+                                style={{ margin: "5px" }}
                               >
                                 {slot.startTime} - {slot.endTime}
                               </Button>
@@ -729,7 +734,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             min="0"
                             max="100"
                             required
-                          /> */}{' '}
+                          /> */}{" "}
                         </label>
 
                         <TextField
@@ -740,7 +745,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           required
                           min={0}
                           max={100}
-                          value={priceIncrease|| ""}
+                          value={priceIncrease || ""}
                           onChange={handleInputHourChange}
                           onBlur={handleBlur}
                           error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
@@ -756,18 +761,18 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     variant="h6"
                     style={{
                       fontWeight: 700,
-                      fontSize: '20px',
-                      paddingBottom: '10px',
+                      fontSize: "20px",
+                      paddingBottom: "10px",
                     }}
                   >
-                    Diện tích <span style={{ color: 'red' }}>*</span>
+                    Diện tích <span style={{ color: "red" }}>*</span>
                   </Typography>
                   <TextField
                     name="area"
                     type="number"
                     variant="outlined"
                     required
-                    value={spaceInfo.area}
+                    value={formatArea(spaceInfo.area || "")} // Sử dụng hàm formatArea để định dạng
                     onChange={handleInputChange} // Cập nhật khi người dùng nhập
                     onBlur={handleBlur}
                     InputProps={{
@@ -783,9 +788,9 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
                       if (
                         !/[0-9]/.test(e.key) &&
-                        e.key !== 'Backspace' &&
-                        e.key !== 'Delete' &&
-                        e.key !== '.'
+                        e.key !== "Backspace" &&
+                        e.key !== "Delete" &&
+                        e.key !== "."
                       ) {
                         e.preventDefault();
                       }
@@ -803,8 +808,8 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 variant="h6"
                 style={{
                   fontWeight: 700,
-                  fontSize: '20px',
-                  paddingBottom: '10px',
+                  fontSize: "20px",
+                  paddingBottom: "10px",
                 }}
               >
                 Mô tả
@@ -824,20 +829,20 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 onInit={(editor) => {
                   editor.editing.view.change((writer) => {
                     writer.setStyle(
-                      'height',
-                      '300px',
+                      "height",
+                      "300px",
                       editor.editing.view.document.getRoot()
                     );
                   });
                 }}
                 config={{
                   toolbar: [
-                    'bold',
-                    'italic',
-                    'link',
-                    'bulletedList',
-                    'numberedList',
-                    'blockQuote',
+                    "bold",
+                    "italic",
+                    "link",
+                    "bulletedList",
+                    "numberedList",
+                    "blockQuote",
                   ],
                 }}
               />
@@ -848,11 +853,11 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                   variant="h6"
                   style={{
                     fontWeight: 700,
-                    fontSize: '20px',
-                    paddingBottom: '10px',
+                    fontSize: "20px",
+                    paddingBottom: "10px",
                   }}
                 >
-                  Quy định<span style={{ color: 'red' }}>*</span>
+                  Quy định<span style={{ color: "red" }}>*</span>
                 </Typography>
                 <FormGroup>
                   {rulesList.map((rule) => (
@@ -878,7 +883,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     helperText="Các quy định riêng lẻ có thể tách nhau bằng dấu ';'"
                     FormHelperTextProps={{
                       style: {
-                        fontSize: '14px', // Kích thước chữ helperText
+                        fontSize: "14px", // Kích thước chữ helperText
                       },
                     }}
                   />
@@ -888,23 +893,23 @@ const AddSpaceInforSpace = ({ editorRef }) => {
           </Row>
 
           {/* Thêm ảnh */}
-          <Row style={{ marginBottom: '200px' }}>
-            <Col md={3} style={{ marginBottom: '200px' }}>
+          <Row style={{ marginBottom: "200px" }}>
+            <Col md={3} style={{ marginBottom: "200px" }}>
               {isLoading ? (
                 <Loading />
               ) : (
                 <Box
                   sx={{
-                    border: '2px dashed grey',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    height: '100px',
-                    width: '150px',
-                    cursor: 'pointer',
+                    border: "2px dashed grey",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100px",
+                    width: "150px",
+                    cursor: "pointer",
                   }}
-                  onClick={() => document.getElementById('file').click()} // Kích hoạt input khi nhấn vào Box
+                  onClick={() => document.getElementById("file").click()} // Kích hoạt input khi nhấn vào Box
                 >
                   <input
                     onChange={handleFiles}
@@ -913,7 +918,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     id="file"
                     multiple
                   />
-                  <AddPhotoAlternateIcon sx={{ fontSize: 40, color: 'grey' }} />
+                  <AddPhotoAlternateIcon sx={{ fontSize: 40, color: "grey" }} />
                   <Typography variant="body1" color="grey">
                     Thêm ảnh
                   </Typography>
@@ -931,7 +936,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           src={item.url}
                           alt="preview"
                           height={100}
-                          style={{ objectFit: 'cover' }}
+                          style={{ objectFit: "cover" }}
                           className="relative"
                         />
                         {/* Nút xóa ảnh */}
@@ -940,7 +945,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           onClick={() => handleDeleteImage(item.public_id)}
                           className="closeicon"
                         >
-                          <CloseIcon sx={{ fontSize: '20px' }} />
+                          <CloseIcon sx={{ fontSize: "20px" }} />
                         </span>
                       </div>
                     </Col>
