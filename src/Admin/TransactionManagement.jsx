@@ -41,7 +41,7 @@ import { formatNumberToVND } from '../utils/numberFormatter';
 export const TransactionManagement = () => {
   const typeOfTransactions = [
     'Tất cả',
-    'Nạp tiền',
+    // 'Nạp tiền',
     'Trừ tiền',
     'Cộng tiền',
     'Hoàn tiền',
@@ -238,19 +238,21 @@ export const TransactionManagement = () => {
             </LocalizationProvider>
             <FormControl fullWidth>
               <InputLabel id="type-of-transact-select-label">
-                Loại giao dịch
+                Giao dịch
               </InputLabel>
               <Select
                 labelId="type-of-transact-select-label"
                 id="type-of-transact-select"
                 name="transactId"
                 value={typeOfTransaction}
-                label="Loại giao dịch"
+                label="Giao dịch"
                 onChange={onTypeOfTransactionChange}
               >
-                {typeOfTransactions.map((typeOfTransaction, i) => (
-                  <MenuItem key={i} value={typeOfTransaction}>
-                    {typeOfTransaction}
+                {typeOfTransactions.map((transaction, i) => (
+                  <MenuItem key={i} value={transaction}>
+                    {transaction === 'Cộng tiền' ? 'Trừ tiền' :
+                    transaction === 'Trừ tiền' ? 'Cộng tiền' :
+                    transaction}
                   </MenuItem>
                 ))}
               </Select>
@@ -287,7 +289,9 @@ export const TransactionManagement = () => {
             <TableBody>
               {data?.transactionList &&
                 data.transactionList.length > 0 &&
-                data.transactionList.map((transaction, index) => (
+                data.transactionList
+                  .filter((transaction) => transaction.type.trim().toUpperCase() !== "NẠP TIỀN")
+                    .map((transaction, index) => (
                   <TableRow key={transaction.transactionId} hover>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell sx={{ whiteSpace: "pre-wrap" }}>
