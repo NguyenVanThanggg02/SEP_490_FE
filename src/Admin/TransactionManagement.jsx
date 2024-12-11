@@ -41,7 +41,7 @@ import { formatNumberToVND } from '../utils/numberFormatter';
 export const TransactionManagement = () => {
   const typeOfTransactions = [
     'Tất cả',
-    'Nạp tiền',
+    // 'Nạp tiền',
     'Trừ tiền',
     'Cộng tiền',
     'Hoàn tiền',
@@ -166,48 +166,48 @@ export const TransactionManagement = () => {
     <Box>
       <Box
         sx={{
-          mt: '24px',
+          mt: "24px",
           p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          maxHeight: '100%',
-          overflowY: 'auto',
+          display: "flex",
+          flexDirection: "column",
+          maxHeight: "100%",
+          overflowY: "auto",
         }}
       >
         <Stack
           spacing={2}
-          direction={'row'}
-          alignItems={'center'}
+          direction={"row"}
+          alignItems={"center"}
           sx={{
             mb: 2,
           }}
         >
           <Stack
-            direction={'row'}
+            direction={"row"}
             sx={{
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              backgroundColor: "rgba(0, 0, 0, 0.1)",
               borderRadius: 1,
-              width: '300px',
+              width: "50%",
             }}
           >
             <InputBase
               placeholder="Nhập để tìm kiếm..."
               value={searchParams}
               onChange={handleSearchChange}
-              sx={{ marginLeft: 1, flex: 1, height:'55px' }}
+              sx={{ marginLeft: 1, flex: 1, height: "55px" }}
             />
           </Stack>
           <Stack
-            direction={'row'}
+            direction={"row"}
             spacing={2}
-            alignItems={'center'}
-            justifyContent={'space-between'}
+            alignItems={"center"}
+            justifyContent={"space-between"}
           >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Từ ngày"
                 maxDate={timeFilter.endTime}
-                views={['year', 'month', 'day']}
+                views={["year", "month", "day"]}
                 value={timeFilter.startTime}
                 onChange={(newValue) => {
                   if (newValue.isValid()) {
@@ -216,11 +216,12 @@ export const TransactionManagement = () => {
                 }}
                 disableFuture
                 format="DD/MM/YYYY"
+                sx={{ width: "100%" }}
               />
               <DatePicker
                 label="Tới ngày"
                 minDate={timeFilter.startTime}
-                views={['year', 'month', 'day']}
+                views={["year", "month", "day"]}
                 value={timeFilter.endTime}
                 onChange={(newValue) => {
                   if (newValue.isValid()) {
@@ -232,23 +233,26 @@ export const TransactionManagement = () => {
                 }}
                 disableFuture
                 format="DD/MM/YYYY"
+                sx={{ width: "100%" }}
               />
             </LocalizationProvider>
             <FormControl fullWidth>
               <InputLabel id="type-of-transact-select-label">
-                Loại giao dịch
+                Giao dịch
               </InputLabel>
               <Select
                 labelId="type-of-transact-select-label"
                 id="type-of-transact-select"
                 name="transactId"
                 value={typeOfTransaction}
-                label="Loại giao dịch"
+                label="Giao dịch"
                 onChange={onTypeOfTransactionChange}
               >
-                {typeOfTransactions.map((typeOfTransaction, i) => (
-                  <MenuItem key={i} value={typeOfTransaction}>
-                    {typeOfTransaction}
+                {typeOfTransactions.map((transaction, i) => (
+                  <MenuItem key={i} value={transaction}>
+                    {transaction === 'Cộng tiền' ? 'Trừ tiền' :
+                    transaction === 'Trừ tiền' ? 'Cộng tiền' :
+                    transaction}
                   </MenuItem>
                 ))}
               </Select>
@@ -256,14 +260,15 @@ export const TransactionManagement = () => {
           </Stack>
           {/* <IconButton sx={{ padding: 0 }} onClick={fetchHistory}>
             <SearchIcon /> */}
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={fetchHistory}
-              sx={{height:"55px"}}
-            >
-              <SearchIcon />Tìm kiếm
-            </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={fetchHistory}
+            sx={{ height: "55px" }}
+          >
+            <SearchIcon />
+            Tìm kiếm
+          </Button>
           {/* </IconButton> */}
         </Stack>
 
@@ -272,7 +277,7 @@ export const TransactionManagement = () => {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Khách hàng</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Tiêu đề</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Mã giao dịch</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Loại giao dịch</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Số tiền</TableCell>
@@ -284,21 +289,40 @@ export const TransactionManagement = () => {
             <TableBody>
               {data?.transactionList &&
                 data.transactionList.length > 0 &&
-                data.transactionList.map((transaction, index) => (
+                data.transactionList
+                  .filter((transaction) => transaction.type.trim().toUpperCase() !== "NẠP TIỀN")
+                    .map((transaction, index) => (
                   <TableRow key={transaction.transactionId} hover>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell sx={{ whiteSpace: 'pre-wrap' }}>
-                      {transaction.userInfo}
+                    <TableCell sx={{ whiteSpace: "pre-wrap" }}>
+                      {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
+                        ? "TRẢ TIỀN CHO CHỦ"
+                        : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
+                          ? "CÓ BOOKING"
+                          : transaction.type.trim().toUpperCase() === "HOÀN TIỀN"
+                            ? "TRẢ TIỀN CHO GIAO DỊCH HỦY"
+                            : transaction.type.trim().toUpperCase() === "RÚT TIỀN"
+                              ? "GIAO DỊCH RÚT TIỀN"
+                              : transaction.userInfo}
                     </TableCell>
                     <TableCell>{transaction.orderId}</TableCell>
-                    <TableCell>{transaction.type}</TableCell>
+                    <TableCell>
+                      {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
+                        ? "TRỪ TIỀN HỆ THỐNG"
+                        : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
+                          ? "CỘNG TIỀN VÀO HỆ THỐNG"
+                          : transaction.type.trim().toUpperCase() === "HOÀN TIỀN"
+                            ? "TRỪ TIỀN HỆ THỐNG"
+                            : transaction.type.trim().toUpperCase() === "RÚT TIỀN"
+                              ? "TRỪ TIỀN HỆ THỐNG"
+                              : transaction.type}
+                    </TableCell>
                     <TableCell>{formatMoney(transaction.amount)}</TableCell>
                     <TableCell>{transaction.createdAt}</TableCell>
                     <TableCell>{transaction.status}</TableCell>
                     <TableCell>
-                      {' '}
-                      {transaction.status === 'Khởi tạo' &&
-                        transaction.type === 'Rút tiền' && (
+                      {transaction.status === "Khởi tạo" &&
+                        transaction.type === "Rút tiền" && (
                           <Box>
                             <Tooltip title="Đồng ý giao dịch">
                               <IconButton
@@ -339,18 +363,18 @@ export const TransactionManagement = () => {
             <Grid item xs={6}>
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  height: '100%',
-                  mt: '-50px',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  height: "100%",
+                  mt: "-50px",
                 }}
               >
                 <TextField
                   label="Ngân hàng"
                   fullWidth
                   margin="dense"
-                  value={withdrawTransaction?.beneficiaryBankCode || ''}
+                  value={withdrawTransaction?.beneficiaryBankCode || ""}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -359,7 +383,7 @@ export const TransactionManagement = () => {
                   label="Số tài khoản"
                   fullWidth
                   margin="dense"
-                  value={withdrawTransaction?.beneficiaryAccountNumber || ''}
+                  value={withdrawTransaction?.beneficiaryAccountNumber || ""}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -368,7 +392,7 @@ export const TransactionManagement = () => {
                   label="Số tiền"
                   fullWidth
                   margin="dense"
-                  value={formatNumberToVND(withdrawTransaction?.amount || '')}
+                  value={formatNumberToVND(withdrawTransaction?.amount || "")}
                   InputProps={{
                     readOnly: true,
                   }}
@@ -376,12 +400,12 @@ export const TransactionManagement = () => {
               </Box>
             </Grid>
             <Grid item xs={6}>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <img
                   src={
                     withdrawTransaction?.qrUrl
                       ? withdrawTransaction.qrUrl
-                      : '/logo.png'
+                      : "/logo.png"
                   }
                   alt="QR Code"
                   width="500"
@@ -391,7 +415,7 @@ export const TransactionManagement = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
+        <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={handleCloseDialog}
             color="primary"
@@ -412,10 +436,10 @@ export const TransactionManagement = () => {
       </Dialog>
 
       <Dialog open={open2} onClose={handleCloseDialog2} maxWidth="md">
-        <DialogContent sx={{ justifyContent: 'center' }}>
+        <DialogContent sx={{ justifyContent: "center" }}>
           <Typography>Xác nhận từ chối giao dịch</Typography>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
+        <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={handleCloseDialog2}
             color="primary"
