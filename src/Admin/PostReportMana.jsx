@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { Eye, HouseAddFill, Person, PersonLinesFill } from "react-bootstrap-icons";
+import { CheckCircle, Eye, HouseAddFill, Person, PersonLinesFill } from "react-bootstrap-icons";
 import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
-import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete, Tooltip, TableCell, TableRow, TableBody, TableHead, TableContainer, Paper, Table, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
+import { BlockOutlined } from "@mui/icons-material";
 
 const PostReportMana = () => {
-  const [spaces, setSpaces] = useState([]);
+  const [reportPosts, setReportPosts] = useState([]);
   const [visible, setVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
   const [selectedSpaceId, setSelectedSpaceId] = useState(null);
@@ -22,12 +23,16 @@ const PostReportMana = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-
+  const [dialogState, setDialogState] = useState({
+    open: false,
+    type: "",
+    id: "",
+  });
   const uniqueOwners = Array.from(
-    new Set([ "Tất cả", ...spaces.map((space) => space.userId?.fullname || "Không rõ")])
+    new Set([ "Tất cả", ...reportPosts.map((space) => space.userId?.fullname || "Không rõ")])
   );
   
-  const filteredSpaces = spaces
+  const filteredSpaces = reportPosts
   .filter((space) => {
     const createdAt = new Date(space.createdAt);
     const start = startDate ? new Date(startDate) : null; 
@@ -53,12 +58,12 @@ const PostReportMana = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces/all")
+      .get("http://localhost:9999/reports")
       .then((response) => {
         const sortedSpaces = response.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-        setSpaces(sortedSpaces);
+        setReportPosts(sortedSpaces);
       })
       .catch((error) => {
         console.error("Error fetching spaces:", error);
@@ -66,7 +71,7 @@ const PostReportMana = () => {
   }, []);
 
   const handleAccept = (postId) => {
-    const selectedSpace = spaces.find((space) => space._id === postId);
+    const selectedSpace = reportPosts.find((space) => space._id === postId);
 
     if (selectedSpace.censorship === "Chấp nhận") {
       return;
@@ -77,7 +82,7 @@ const PostReportMana = () => {
         censorship: "Chấp nhận",
       })
       .then(() => {
-        setSpaces((prevSpaces) =>
+        setReportPosts((prevSpaces) =>
           prevSpaces.map((space) =>
             space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
           )
@@ -97,7 +102,7 @@ const PostReportMana = () => {
 
       })
       .then(() => {
-        setSpaces((prevSpaces) =>
+        setReportPosts((prevSpaces) =>
           prevSpaces.map((space) =>
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
           )
@@ -126,6 +131,32 @@ const PostReportMana = () => {
     setCurrentPage(event.page + 1);
     setRows(event?.rows);
   };
+
+
+  // Xử lý mở dialog cho báo cáo
+  const handleApproveReport = (reportId) => {
+    // Logic để hiển thị dialog cho báo cáo
+    console.log("Duyệt báo cáo ID:", reportId);
+    setDialogState({
+      open: true,
+      type: "report",
+      id: reportId,
+    });
+  };
+
+  // Xử lý mở dialog cho khiếu nại
+  const handleApproveAppeal = (reportId) => {
+    // Logic để hiển thị dialog cho khiếu nại
+    console.log("Duyệt khiếu nại ID:", reportId);
+    setDialogState({
+      open: true,
+      type: "appeal",
+      id: reportId,
+    });
+  };
+
+
+
   return (
     <Container fluid className="py-4">
       {!showDetail ? (
@@ -232,147 +263,55 @@ const PostReportMana = () => {
               </Grid>
             </Grid>
 
-            <Grid container spacing={4} style={{ marginBottom: "20px" }}>
-              {productsOnPage.map((product) => (
-                <Grid item md={4} key={product._id}>
-                  <Card
-                    sx={{
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      boxShadow: 3,
-                      borderRadius: 2,
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        boxShadow: 6,
-                      },
-                    }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="220"
-                      image={product.images[0]?.url || "placeholder.jpg"}
-                      alt={product.name}
-                      sx={{
-                        objectFit: "cover",
-                        borderTopLeftRadius: "8px",
-                        borderTopRightRadius: "8px",
-                      }}
-                    />
-                    <CardContent sx={{ flex: 1, padding: 2 }}>
-                      <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{ fontWeight: "bold", color: "#333" }}
-                      >
-                        {product.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 1 }}
-                      >
-                        <strong>Chủ không gian: </strong>
-                        {product.userId?.fullname || "Không rõ"}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 1 }}
-                      >
-                        <strong>Ngày đăng: </strong>
-                        {dateFormatterDDMMYYY(product.createdAt || "Không rõ")}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ mt: 1, display: "flex", alignItems: "center" }}
-                      >
-                        <strong>Trạng thái: </strong>
-                        <span
-                          className={
-                            product.censorship === "Chấp nhận"
-                              ? "text-success"
-                              : product.censorship === "Từ chối"
-                                ? "text-danger"
-                                : "text-warning"
-                          }
-                          style={{
-                            marginLeft: "8px",
-                            fontWeight: 600,
-                            color:
-                              product.censorship === "Chấp nhận"
-                                ? "#28a745"
-                                : product.censorship === "Từ chối"
-                                  ? "#dc3545"
-                                  : "#ffc107",
-                          }}
-                        >
-                          {product.censorship}
-                        </span>
-                      </Typography>
-                    </CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: 2,
-                      }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => handleAccept(product._id)}
-                        disabled={product.censorship === "Chấp nhận"}
-                        sx={{
-                          minWidth: 120,
-                          padding: "8px 16px",
-                          fontWeight: 600,
-                          fontSize: "0.875rem",
-                          borderRadius: "8px",
-                          textTransform: "none",
-                        }}
-                      >
-                        Chấp Nhận
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => openRejectDialog(product._id)}
-                        disabled={
-                          product.censorship === "Chấp nhận" ||
-                          product.censorship === "Từ chối"
-                        }
-                        sx={{
-                          minWidth: 120,
-                          padding: "8px 16px",
-                          fontWeight: 600,
-                          fontSize: "0.875rem",
-                          borderRadius: "8px",
-                          textTransform: "none",
-                        }}
-                      >
-                        Từ Chối
-                      </Button>
-                      <IconButton
-                        sx={{
-                          color: "#3399FF",
-                          fontSize: "30px",
-                          cursor: "pointer",
-                          alignSelf: "center",
-                          "&:hover": {
-                            color: "#007bff",
-                          },
-                        }}
-                        onClick={() => handleViewDetail(product._id)}
-                      >
-                        <Eye />
-                      </IconButton>
-                    </Box>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
+            <TableContainer component={Paper}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Tên không gian</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Chủ không gian</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Khách tố cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Lý do báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Số lượt báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Thao tác</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {reportPosts?.length > 0 &&
+                    reportPosts.map((report, index) => (
+                      <TableRow key={report._id} hover>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{report.spaceId.name}</TableCell>
+                        <TableCell>{report.userId?.spaceId?.userId}</TableCell>
+                        <TableCell>{report.userId.fullname}</TableCell>
+                        <TableCell>
+                          {report.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
+                          {report.customReason && `; ${report.customReason}`}
+                        </TableCell>
+                        <TableCell>{report.spaceId.reportCount}</TableCell>
+                        <TableCell>
+                          <Tooltip title="Duyệt báo cáo">
+                            <IconButton
+                              color="primary"
+                              onClick={() => handleApproveReport(report._id)}
+                            >
+                              <CheckCircle />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Duyệt khiếu nại">
+                            <IconButton
+                              color="secondary"
+                              onClick={() => handleApproveAppeal(report._id)}
+                            >
+                              <BlockOutlined />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Row>
           {visible && (
             <CommunityStandards
@@ -402,7 +341,43 @@ const PostReportMana = () => {
           />
         )}
       </Row>
+      <Dialog
+        open={dialogState.open}
+        onClose={() => setDialogState({ open: false, type: "", id: "" })}
+      >
+        <DialogTitle>
+          {dialogState.type === "report" ? "Duyệt Báo Cáo" : "Duyệt Khiếu Nại"}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            Bạn có chắc chắn muốn {dialogState.type === "report" ? "duyệt báo cáo" : "duyệt khiếu nại"} này không?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              // Logic xử lý đồng ý
+              console.log("Đồng ý:", dialogState);
+              setDialogState({ open: false, type: "", id: "" });
+            }}
+            color="primary"
+          >
+            Đồng ý
+          </Button>
+          <Button
+            onClick={() => {
+              // Logic xử lý từ chối
+              console.log("Từ chối:", dialogState);
+              setDialogState({ open: false, type: "", id: "" });
+            }}
+            color="secondary"
+          >
+            Từ chối
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
+    
   );
 };
 
