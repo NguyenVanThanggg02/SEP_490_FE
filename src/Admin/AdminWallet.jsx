@@ -137,8 +137,6 @@ export const AdminWallet = () => {
           overflowY: 'auto',
         }}
       >
-        <Typography variant="h4">Quản lý ví admin</Typography>
-
         <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: "center", mt: 2 }}>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -160,7 +158,7 @@ export const AdminWallet = () => {
                   mr: 2, mb: 2,
                   '& .MuiInputBase-root': {
                     fontSize: '0.875rem',
-                    height: '35px',
+                    height: '55px',
                   },
                   '& .MuiOutlinedInput-root': {
                     padding: '0 8px 0 0',
@@ -195,7 +193,7 @@ export const AdminWallet = () => {
                   mr: 2, mb: 2,
                   '& .MuiInputBase-root': {
                     fontSize: '0.875rem',
-                    height: '35px',
+                    height: '55px',
                   },
                   '& .MuiOutlinedInput-root': {
                     padding: '0 8px 0 0',
@@ -225,7 +223,7 @@ export const AdminWallet = () => {
                   sx={{
                     '&.MuiInputBase-root': {
                       fontSize: '0.875rem',
-                      height: '35px',
+                      height: '55px',
                       width: '200px'
                     },
                     '& .MuiInputLabel-root': {
