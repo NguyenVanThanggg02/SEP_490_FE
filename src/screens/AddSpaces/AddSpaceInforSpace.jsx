@@ -879,7 +879,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     onClick={() => document.getElementById('file').click()}
                   >
                     <input onChange={handleFiles} hidden type="file" id="file" multiple />
-                    <AddPhotoAlternateIcon sx={{ fontSize: 70, color: 'primary.main' }} />
+                    <AddPhotoAlternateIcon sx={{ fontSize: 50, color: 'primary.main' }} />
                     <Typography sx={{fontSize:"20px"}}>Thêm ảnh không gian</Typography>
                   </Box>
               )}
