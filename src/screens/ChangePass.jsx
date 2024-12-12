@@ -1,14 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Col,
-  Container,
-  FormControl,
-  InputGroup,
-  Row,
-  Card,
-  Alert,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, Col, Container, FormControl, InputGroup, Row, Card } from "react-bootstrap";
 import { Lock, Unlock } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -19,7 +10,6 @@ const ChangePass = () => {
   const [newPass, setNewPass] = useState("");
   const [reNewPass, setReNewPass] = useState("");
   const [username, setUsername] = useState("");
-
   const nav = useNavigate();
 
   const handleUpdate = async () => {
@@ -49,10 +39,20 @@ const ChangePass = () => {
       toast.error("Vui lòng điền tất cả các trường");
       return;
     }
+    
+    // Kiểm tra mật khẩu mới có ít nhất 8 ký tự
+    if (newPass.length < 8) {
+      toast.error("Mật khẩu mới phải có ít nhất 8 ký tự!");
+      return;
+    }
+  
+    // Kiểm tra mật khẩu mới và xác nhận mật khẩu trùng khớp
     if (newPass !== reNewPass) {
       toast.error("Mật khẩu mới không khớp!");
       return;
     }
+    
+    // Kiểm tra mật khẩu mới phải khác mật khẩu cũ
     if (oldPass === newPass && oldPass === reNewPass) {
       toast.error("Mật khẩu mới phải khác với mật khẩu cũ");
       return;
@@ -86,121 +86,102 @@ const ChangePass = () => {
   
 
   return (
-   
-      <Container
-        fluid
-        className="d-flex align-items-center justify-content-center"
+    
+    <Container
+      fluid
+      className="d-flex align-items-center justify-content-center"
+      style={{
+        height: "100vh",
+        backgroundColor: "#f0f2f5",
+      }}
+    >
+      <Card
         style={{
-          height: "100vh",
-          backgroundColor: "#f0f2f5",
+          width: "640px",
+          maxWidth: "650px",
+          padding: "10px 30px",
+          borderRadius: "20px",
+          boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.15)",
+          border: "none",
         }}
       >
-        <Card
-          style={{
-            width: "640px",
-            maxWidth: "650px",
-            padding: "10px 30px",
-            borderRadius: "20px",
-            boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.15)",
-            border: "none",
-          }}
-        >
-          <Card.Body>
-            <h2
-              className="text-center mb-4"
-              style={{ fontWeight: "600", color: "#333" }}
-            >
-              Thay Đổi Mật Khẩu
-            </h2>
-            <p className="text-center mb-4 text-muted">
-              Để bảo mật tài khoản của bạn, vui lòng không chia sẻ mật khẩu với
-              người khác.
-            </p>
-            <Row>
-              <Col md={12}>
-                <InputGroup
-                  className="mb-3"
-                  style={{ borderRadius: "8px", overflow: "hidden" }}
-                >
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#e9ecef", border: "none" }}
-                  >
-                    <Lock style={{ fontSize: "22px", color: "#6c757d" }} />
-                  </InputGroup.Text>
-                  <FormControl
-                    placeholder="Mật khẩu cũ"
-                    type="password"
-                    value={oldPass}
-                    onChange={(e) => setOldPass(e.target.value)}
-                    style={{
-                      border: "1px solid #ced4da",
-                      height: "45px",
-                    }}
-                  />
-                </InputGroup>
-
-                <InputGroup
-                  className="mb-3"
-                  style={{ borderRadius: "8px", overflow: "hidden" }}
-                >
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#e9ecef", border: "none" }}
-                  >
-                    <Unlock style={{ fontSize: "22px", color: "#6c757d" }} />
-                  </InputGroup.Text>
-                  <FormControl
-                    placeholder="Mật khẩu mới"
-                    type="password"
-                    value={newPass}
-                    onChange={(e) => setNewPass(e.target.value)}
-                    style={{
-                      border: "1px solid #ced4da",
-                      height: "45px",
-                    }}
-                  />
-                </InputGroup>
-
-                <InputGroup
-                  className="mb-4"
-                  style={{ borderRadius: "8px", overflow: "hidden" }}
-                >
-                  <InputGroup.Text
-                    style={{ backgroundColor: "#e9ecef", border: "none" }}
-                  >
-                    <Unlock style={{ fontSize: "22px", color: "#6c757d" }} />
-                  </InputGroup.Text>
-                  <FormControl
-                    placeholder="Nhập lại mật khẩu mới"
-                    type="password"
-                    value={reNewPass}
-                    onChange={(e) => setReNewPass(e.target.value)}
-                    style={{
-                      border: "1px solid #ced4da",
-                      height: "45px",
-                    }}
-                  />
-                </InputGroup>
-
-                <Button
-                  variant="primary"
-                  onClick={handleUpdate}
+        <Card.Body>
+          <h2 className="text-center mb-4" style={{ fontWeight: "600", color: "#333" }}>
+            Thay Đổi Mật Khẩu
+          </h2>
+          <p className="text-center mb-4 text-muted">
+            Để bảo mật tài khoản của bạn, vui lòng không chia sẻ mật khẩu với người khác.
+          </p>
+          <Row>
+            <Col md={12}>
+              <InputGroup className="mb-3" style={{ borderRadius: "8px", overflow: "hidden" }}>
+                <InputGroup.Text style={{ backgroundColor: "#e9ecef", border: "none" }}>
+                  <Lock style={{ fontSize: "22px", color: "#6c757d" }} />
+                </InputGroup.Text>
+                <FormControl
+                  placeholder="Mật khẩu cũ"
+                  type="password"
+                  value={oldPass}
+                  onChange={(e) => setOldPass(e.target.value)}
                   style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "8px",
-                    fontWeight: "bold",
-                    fontSize: "16px",
-                    backgroundColor: "#007bff",
-                    border: "none",
+                    border: "1px solid #ced4da",
+                    height: "45px",
                   }}
-                >
-                  Cập Nhật Mật Khẩu
-                </Button>
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-      </Container>
+                />
+              </InputGroup>
+
+              <InputGroup className="mb-3" style={{ borderRadius: "8px", overflow: "hidden" }}>
+                <InputGroup.Text style={{ backgroundColor: "#e9ecef", border: "none" }}>
+                  <Unlock style={{ fontSize: "22px", color: "#6c757d" }} />
+                </InputGroup.Text>
+                <FormControl
+                  placeholder="Mật khẩu mới"
+                  type="password"
+                  value={newPass}
+                  onChange={(e) => setNewPass(e.target.value)}
+                  style={{
+                    border: "1px solid #ced4da",
+                    height: "45px",
+                  }}
+                />
+              </InputGroup>
+
+              <InputGroup className="mb-4" style={{ borderRadius: "8px", overflow: "hidden" }}>
+                <InputGroup.Text style={{ backgroundColor: "#e9ecef", border: "none" }}>
+                  <Unlock style={{ fontSize: "22px", color: "#6c757d" }} />
+                </InputGroup.Text>
+                <FormControl
+                  placeholder="Nhập lại mật khẩu mới"
+                  type="password"
+                  value={reNewPass}
+                  onChange={(e) => setReNewPass(e.target.value)}
+                  style={{
+                    border: "1px solid #ced4da",
+                    height: "45px",
+                  }}
+                />
+              </InputGroup>
+
+              <Button
+                variant="primary"
+                onClick={handleUpdate}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                  backgroundColor: "#007bff",
+                  border: "none",
+                }}
+              >
+                Cập Nhật Mật Khẩu
+              </Button>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

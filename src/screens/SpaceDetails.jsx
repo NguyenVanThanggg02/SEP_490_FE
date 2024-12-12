@@ -153,7 +153,7 @@ function SpaceDetails({ onSelectChat }) {
       </Typography>
     );
 
-  if (spaceData.censorship !== 'Chấp nhận' && spaceData.userId._id !== userId) {
+  if (spaceData.censorship !== 'Chấp nhận' && spaceData?.userId?._id !== userId) {
     nav('/notfound');
     return null;
   }

@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Card, Button, Form, Spinner, Alert, Modal } from "react-bootstrap";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Card, Form, Modal, Spinner } from 'react-bootstrap';
 import {
-  PlusCircle,
-  PencilSquare,
-  Trash,
   CheckCircle,
-} from "react-bootstrap-icons";
+  PencilSquare,
+  PlusCircle,
+  Trash,
+} from 'react-bootstrap-icons';
+import { toast } from 'react-toastify';
+import ConfirmPassword from './ConfirmPassword';
 
 const BankAccount = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openConfirmPwd, setOpenConfirmPwd] = useState(false);
+
   const [loadingUserData, setLoadingUserData] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({
-    bank: "",
-    accountNumber: "",
+    bank: '',
+    accountNumber: '',
   });
   const [banks, setBanks] = useState([]);
   const [modalType, setModalType] = useState(null); // 'edit' or 'add'
   const [defaultPaymentAccount, setDefaultPaymentAccount] = useState(null);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     fetchUserData();
@@ -38,8 +42,8 @@ const BankAccount = () => {
       setUserData(response.data);
       setDefaultPaymentAccount(response.data?.defaultBankAccount?._id);
     } catch (error) {
-      console.error("Error fetching user data:", error);
-      setError("Không thể tải dữ liệu người dùng.");
+      console.error('Error fetching user data:', error);
+      setError('Không thể tải dữ liệu người dùng.');
     } finally {
       setLoadingUserData(false);
     }
@@ -54,11 +58,11 @@ const BankAccount = () => {
       if (Array.isArray(response.data)) {
         setBankAccounts(response.data);
       } else {
-        setError("Dữ liệu không hợp lệ.");
+        setError('Dữ liệu không hợp lệ.');
       }
     } catch (error) {
-      console.error("Error fetching bank accounts:", error);
-      setError("Không thể tải dữ liệu tài khoản ngân hàng.");
+      console.error('Error fetching bank accounts:', error);
+      setError('Không thể tải dữ liệu tài khoản ngân hàng.');
     } finally {
       setLoading(false);
     }
@@ -69,24 +73,24 @@ const BankAccount = () => {
       const response = await axios.get(`http://localhost:9999/bank`);
       setBanks(response.data);
     } catch (error) {
-      console.error("Error fetching banks:", error);
-      setError("Không thể tải danh sách ngân hàng.");
+      console.error('Error fetching banks:', error);
+      setError('Không thể tải danh sách ngân hàng.');
     }
   };
 
   const handleEditClick = (account) => {
     setEditingId(account._id);
     setEditForm({
-      bank: account.bank?._id || "",
+      bank: account.bank?._id || '',
       accountNumber: account.accountNumber,
     });
-    setModalType("edit");
+    setModalType('edit');
   };
 
   const handleAddClick = () => {
     setEditingId(null);
-    setEditForm({ bank: "", accountNumber: "" });
-    setModalType("add");
+    setEditForm({ bank: '', accountNumber: '' });
+    setModalType('add');
   };
 
   const handleInputChange = (e) => {
@@ -101,32 +105,41 @@ const BankAccount = () => {
           bank: editForm.bank,
           accountNumber: editForm.accountNumber,
         });
-        setSuccess("Cập nhật tài khoản ngân hàng thành công.");
+        setSuccess('Cập nhật tài khoản ngân hàng thành công.');
       } else {
         await axios.post(`http://localhost:9999/bankaccount`, {
           bank: editForm.bank,
           accountNumber: editForm.accountNumber,
           user: userId,
         });
-        setSuccess("Thêm tài khoản ngân hàng thành công.");
+        setSuccess('Thêm tài khoản ngân hàng thành công.');
       }
       fetchBankAccounts();
       setModalType(null);
     } catch (error) {
-      console.error("Error saving bank account:", error);
-      setError("Không thể cập nhật hoặc thêm tài khoản ngân hàng.");
+      console.error('Error saving bank account:', error);
+      toast.error(
+        error?.response?.data?.message ??
+          'Không thể cập nhật hoặc thêm tài khoản ngân hàng.'
+      );
+
+      setError('Không thể cập nhật hoặc thêm tài khoản ngân hàng.');
     }
   };
 
+  const openPwdConfirm = () => {
+    setOpenConfirmPwd(true);
+  };
+
   const handleDelete = async (accountId) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?")) {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?')) {
       try {
         await axios.delete(`http://localhost:9999/bankaccount/${accountId}`);
-        setSuccess("Xóa tài khoản ngân hàng thành công.");
+        setSuccess('Xóa tài khoản ngân hàng thành công.');
         fetchBankAccounts();
       } catch (error) {
-        console.error("Error deleting bank account:", error);
-        setError("Không thể xóa tài khoản ngân hàng.");
+        console.error('Error deleting bank account:', error);
+        setError('Không thể xóa tài khoản ngân hàng.');
       }
     }
   };
@@ -137,11 +150,11 @@ const BankAccount = () => {
         defaultBankAccountId: accountId,
       });
       setDefaultPaymentAccount(accountId);
-      setSuccess("Cập nhật tài khoản thanh toán mặc định thành công.");
+      setSuccess('Cập nhật tài khoản thanh toán mặc định thành công.');
       fetchBankAccounts();
     } catch (error) {
-      console.error("Error updating default payment account:", error);
-      setError("Không thể cập nhật tài khoản thanh toán mặc định.");
+      console.error('Error updating default payment account:', error);
+      setError('Không thể cập nhật tài khoản thanh toán mặc định.');
     }
   };
 
@@ -156,11 +169,11 @@ const BankAccount = () => {
     <div
       className="p-4"
       style={{
-        maxWidth: "600px",
-        margin: "auto",
-        backgroundColor: "#f9f9f9",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        maxWidth: '600px',
+        margin: 'auto',
+        backgroundColor: '#f9f9f9',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
       }}
     >
       <h2 className="text-center mb-4">Danh sách tài khoản ngân hàng</h2>
@@ -177,10 +190,10 @@ const BankAccount = () => {
             {bankAccounts.map((account) => (
               <li key={account._id} className="mb-3">
                 <Card
-                  className={`shadow-sm ${defaultPaymentAccount === account._id ? "border border-primary" : ""}`}
+                  className={`shadow-sm ${defaultPaymentAccount === account._id ? 'border border-primary' : ''}`}
                   style={
                     defaultPaymentAccount === account._id
-                      ? { borderWidth: "2px", borderColor: "#007bff" }
+                      ? { borderWidth: '2px', borderColor: '#007bff' }
                       : {}
                   }
                 >
@@ -191,16 +204,16 @@ const BankAccount = () => {
                           src={account.bank.imageUrl}
                           alt={`${account.bank.bankName} Logo`}
                           style={{
-                            width: "50px",
-                            height: "auto",
-                            marginRight: "10px",
+                            width: '50px',
+                            height: 'auto',
+                            marginRight: '10px',
                           }}
                         />
                       )}
                       <h5 className="mb-0">{account?.bank?.bankName}</h5>
                       {defaultPaymentAccount === account._id ? (
                         <span
-                          style={{ marginLeft: "auto", fontWeight: "bold" }}
+                          style={{ marginLeft: 'auto', fontWeight: 'bold' }}
                         >
                           <CheckCircle className="text-success me-1" /> Tài
                           khoản thanh toán
@@ -211,7 +224,7 @@ const BankAccount = () => {
                           label="Tài khoản thanh toán"
                           checked={defaultPaymentAccount === account._id}
                           onChange={() => handleDefaultChange(account._id)}
-                          style={{ marginLeft: "auto" }}
+                          style={{ marginLeft: 'auto' }}
                         />
                       )}
                     </div>
@@ -240,55 +253,70 @@ const BankAccount = () => {
       <Modal show={!!modalType} onHide={() => setModalType(null)}>
         <Modal.Header closeButton>
           <Modal.Title>
-            {modalType === "edit"
-              ? "Chỉnh sửa tài khoản ngân hàng"
-              : "Thêm tài khoản ngân hàng"}
+            {modalType === 'edit'
+              ? 'Chỉnh sửa tài khoản ngân hàng'
+              : 'Thêm tài khoản ngân hàng'}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {editForm.bank && (
-            <div className="mb-3">
-              <img
-                src={banks.find((bank) => bank._id === editForm.bank)?.imageUrl}
-                alt="Current Bank Logo"
-                style={{ width: "50px", height: "auto", marginRight: "10px" }}
-              />
-            </div>
-          )}
-          <Form.Group>
-            <Form.Label>Ngân hàng</Form.Label>
-            <Form.Control
-              as="select"
-              name="bank"
-              value={editForm.bank}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Chọn ngân hàng</option>
-              {banks.map((bank) => (
-                <option key={bank._id} value={bank._id}>
-                  {bank.bankName}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Số tài khoản</Form.Label>
-            <Form.Control
-              type="text"
-              name="accountNumber"
-              value={editForm.accountNumber}
-              onChange={handleInputChange}
-              required
+          {openConfirmPwd ? (
+            <ConfirmPassword
+              setOpenConfirmPwd={setOpenConfirmPwd}
+              handleSave={handleSave}
             />
-          </Form.Group>
+          ) : (
+            <>
+              {editForm.bank && (
+                <div className="mb-3">
+                  <img
+                    src={
+                      banks.find((bank) => bank._id === editForm.bank)?.imageUrl
+                    }
+                    alt="Current Bank Logo"
+                    style={{
+                      width: '50px',
+                      height: 'auto',
+                      marginRight: '10px',
+                    }}
+                  />
+                </div>
+              )}
+              <Form.Group>
+                <Form.Label>Ngân hàng</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="bank"
+                  value={editForm.bank}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Chọn ngân hàng</option>
+                  {banks.map((bank) => (
+                    <option key={bank._id} value={bank._id}>
+                      {bank.bankName}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Số tài khoản</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="accountNumber"
+                  value={editForm.accountNumber}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Form.Group>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setModalType(null)}>
             Đóng
           </Button>
-          <Button variant="primary" onClick={handleSave}>
-            {modalType === "edit" ? "Cập nhật" : "Thêm"}
+          <Button variant="primary" onClick={openPwdConfirm}>
+            {modalType === 'edit' ? 'Cập nhật' : 'Thêm'}
           </Button>
         </Modal.Footer>
       </Modal>

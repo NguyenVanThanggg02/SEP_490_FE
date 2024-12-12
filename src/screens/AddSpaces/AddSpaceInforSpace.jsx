@@ -9,7 +9,6 @@ import {
   FormControlLabel,
   FormGroup,
   Grid,
-  IconButton,
   InputAdornment,
   Switch,
   TextField,
@@ -435,33 +434,25 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 Đặt tên cho không gian của bạn{' '}
                 <span style={{ color: 'red' }}>*</span>
               </Typography>
-              <Typography sx={{ fontSize: '14px', padding: '10px 0' }}>
+              <Typography sx={{ fontSize: '14px', paddingBottom:"10px" }}>
                 {' '}
                 Tên của không gian sẽ hiển thị trên trang kết quả tìm kiếm và
                 trang chi tiết listing khi khách hàng xem.
               </Typography>
               <TextField
-  name="name"
-  variant="outlined"
-  fullWidth
-  required
-  value={spaceInfo.name}
-  onChange={handleInputChange}
-  onBlur={handleBlur}
-  error={!!errors.name}
-  helperText={errors.name}
-  sx={{
-    '& .MuiOutlinedInput-root': {
-      '&:hover fieldset': {
-        borderColor: 'primary.main',
-      },
-    },
-    '& .MuiInputLabel-root': {
-      color: 'primary.main'
-    },
-    marginBottom: '1rem'
-  }}
-/>
+                name="name"
+                variant="outlined"
+                fullWidth
+                required
+                value={spaceInfo.name}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                error={!!errors.name}
+                helperText={errors.name}
+                sx={{
+                  marginBottom: '1rem'
+                }}
+              />
             </Col>
             <Col md={12}>
               <Row>
@@ -474,37 +465,31 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       paddingBottom: '10px',
                     }}
                   >
-                    Giá không gian <span style={{ color: 'red' }}>*</span>
+                    Chọn cách thức thuê không gian <span style={{ color: 'red' }}>*</span>
                   </Typography>
+                  <Typography sx={{ fontSize: '14px', paddingBottom:"10px" }}>
+                {' '}
+                Chọn cách thức thuê không gian sau đó nhập giá không gian của bạn tương ứng với từng cách thức thuê.
+              </Typography>
                   <Row>
                     <Col md={12} align="center">
-                      <Typography
-                        variant="h6"
-                        align="center"
-                        style={{
-                          fontWeight: 600,
-                          fontSize: '16px',
-                        }}
-                      >
-                        Chọn cách thức thuê
-                      </Typography>
-                      <FormControl component="fieldset" variant="standard">
-                      <FormGroup 
-    sx={{ 
-      flexDirection: 'row',
-      gap: 2,
-      '& .MuiFormControlLabel-root': {
-        marginRight: 4,
-        backgroundColor: 'background.paper',
-        padding: '8px 16px',
-        borderRadius: '8px',
-        boxShadow: 1,
-        '&:hover': {
-          backgroundColor: 'action.hover'
-        }
-      }
-    }}
-  >
+                      <FormControl component="fieldset" variant="standard" className="mb-5">
+                        <FormGroup
+                          sx={{
+                            flexDirection: 'row',
+                            gap: 2,
+                            '& .MuiFormControlLabel-root': {
+                              marginRight: 4,
+                              backgroundColor: 'background.paper',
+                              padding: '8px 16px',
+                              borderRadius: '8px',
+                              boxShadow: 1,
+                              '&:hover': {
+                                backgroundColor: 'action.hover'
+                              }
+                            }
+                          }}
+                        >
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -539,7 +524,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       </FormControl>
                     </Col>
                     {pricePerHour && (
-                      <Col md={6}>
+                      <Col md={12}>
                         <TextField
                           name="pricePerHour"
                           type="number"
@@ -550,10 +535,11 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
                           helperText={errors.pricePerHour}
+                          label="Nhập giá không gian cho thuê theo giờ"
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
-                                / giờ
+                                VND/ giờ
                               </InputAdornment>
                             ),
                           }}
@@ -574,7 +560,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     )}
 
                     {pricePerDay && (
-                      <Col md={6}>
+                      <Col md={12}>
                         <TextField
                           name="pricePerDay"
                           type="number"
@@ -585,10 +571,11 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
                           helperText={errors.pricePerDay}
+                          label="Nhập giá không gian cho thuê theo ngày"
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
-                                / ngày
+                                VND/ ngày
                               </InputAdornment>
                             ),
                           }}
@@ -603,12 +590,12 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: '20px', width: '100%' }}
                         />
                       </Col>
                     )}
                     {pricePerMonth && (
-                      <Col md={6}>
+                      <Col md={12}>
                         <TextField
                           name="pricePerMonth"
                           type="number"
@@ -619,10 +606,11 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
                           helperText={errors.pricePerMonth}
+                          label="Nhập giá không gian cho thuê theo tháng"
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="end">
-                                / tháng
+                                VND/ tháng
                               </InputAdornment>
                             ),
                           }}
@@ -637,7 +625,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: '20px', width: '100%' }}
                         />
                       </Col>
                     )}
@@ -652,7 +640,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 </Col>
 
                 <Col md={12}>
-                  <div class="form-check">
+                  <div class="form-check" style={{paddingLeft: 0}}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -667,13 +655,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                   </div>
 
                   {isGoldenHour && (
-                    <Row style={{ paddingtop: '10px' }}>
+                    <Row>
                       <Grid
                         container
                         justifyContent="center"
                         spacing={1}
                         mt={1}
                         mb={4}
+                        sm={12}
                       >
                         {availableSlots.map((slot, index) => {
                           const check = goldenHourDetails.findIndex(
@@ -704,16 +693,13 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         })}
                       </Grid>
                       <Col md={12}>
-                        <label>
-                          Phần trăm(%) giá tăng lên:
-                        </label>
-
                         <TextField
                           name="priceIncrease"
                           type="number"
                           variant="outlined"
                           fullWidth
                           required
+                          label="Phần trăm(%) giá tăng lên"
                           min={0}
                           max={100}
                           value={priceIncrease|| ""}
@@ -722,6 +708,13 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
                           helperText={errors.priceIncrease}
                           sx={{ mb: 4 }}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                %
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       </Col>
                     </Row>
@@ -749,7 +742,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          / m<sup>2</sup>
+                           m<sup>2</sup>
                         </InputAdornment>
                       ),
                     }}
@@ -775,47 +768,44 @@ const AddSpaceInforSpace = ({ editorRef }) => {
           {/* Mô tả và quy định */}
           <Row className="pb-5">
             <Col md={12} className="pb-5">
-            <Typography
-     variant="h6"
-     sx={{
-       fontWeight: 700,
-       fontSize: '20px',
-       color: 'text.primary',
-       marginBottom: '0.5rem',
-     }}
-   >
-     Mô tả
-   </Typography>
-   <CKEditor
-     editor={ClassicEditor}
-     onInit={(editor) => {
-       editor.editing.view.change((writer) => {
-         writer.setStyle(
-           'height',
-           '300px',
-           editor.editing.view.document.getRoot()
-         );
-       });
-     }}
-     config={{
-       toolbar: [
-         'bold',
-         'italic',
-         'link',
-         'bulletedList',
-         'numberedList',
-         'blockQuote',
-       ],
-     }}
-     sx={{
-       '& .ck-editor__editable': {
-         backgroundColor: 'background.paper',
-         borderRadius: '8px',
-         padding: '1rem',
-         boxShadow: 1,
-       },
-     }}
-   />
+              <Typography
+                variant="h6"
+                style={{
+                  fontWeight: 700,
+                  fontSize: '20px',
+                  paddingBottom: '10px',
+                }}
+              >
+                Mô tả
+              </Typography>
+              <CKEditor
+                ref={editorRef}
+                editor={ClassicEditor}
+                onInit={(editor) => {
+                  editor.editing.view.change((writer) => {
+                    writer.setStyle(
+                      'height',
+                      '300px',
+                      editor.editing.view.document.getRoot()
+                    );
+                  });
+                }}
+                config={{
+                  height: 300,
+                  toolbar: [
+                    'bold',
+                    'italic',
+                    'link',
+                    'bulletedList',
+                    'numberedList',
+                    'blockQuote',
+                  ],
+                }}
+                onReady={(editor) => {
+                  editor.ui.view.editable.element.style.height = '300px';
+                }}
+              
+              />
             </Col>
             <Col md={12}>
               <Row>
@@ -864,65 +854,61 @@ const AddSpaceInforSpace = ({ editorRef }) => {
 
           {/* Thêm ảnh */}
           <Row style={{ marginBottom: '200px' }}>
-            <Col md={3} style={{ marginBottom: '200px' }}>
+            <Col md={12} style={{ marginBottom: '50px' }}>
               {isLoading ? (
                 <Loading />
               ) : (
-                <Box
-                sx={{
-                  border: '2px dashed',
-                  borderColor: 'primary.main',
-                  borderRadius: 2,
-                  p: 3,
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    borderColor: 'secondary.main',
-                    transform: 'translateY(-5px)',
-                  },
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: '150px',
-                  width: '150px',
-                }}
-  onClick={() => document.getElementById('file').click()}
->
-  <input onChange={handleFiles} hidden type="file" id="file" multiple />
-  <AddPhotoAlternateIcon sx={{ fontSize: 40, color: 'primary.main' }} />
-  <Typography>Thêm ảnh</Typography>
-</Box>
+                  <Box
+                    sx={{
+                      border: '2px dashed',
+                      borderColor: 'primary.main',
+                      borderRadius: 2,
+                      p: 3,
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        borderColor: 'secondary.main',
+                        transform: 'translateY(-5px)',
+                      },
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: '100px',
+                      width: '100%',
+                    }}
+                    onClick={() => document.getElementById('file').click()}
+                  >
+                    <input onChange={handleFiles} hidden type="file" id="file" multiple />
+                    <AddPhotoAlternateIcon sx={{ fontSize: 70, color: 'primary.main' }} />
+                    <Typography sx={{fontSize:"20px"}}>Thêm ảnh không gian</Typography>
+                  </Box>
               )}
             </Col>
-            <Col md={9}>
+            <Col md={12}>
               <Row gutter={[16, 16]} type="flex" justify="space-between">
                 <Image.PreviewGroup>
-                <Grid container spacing={2}>
-     {imagesPreview?.map((item, index) => (
-       <Grid item xs={6} md={3} key={index}>
-         <Image
-           src={item.url}
-           alt="preview"
-           height={100}
-           style={{ objectFit: 'cover', borderRadius: '8px' }}
-         />
-         <IconButton
-           onClick={() => handleDeleteImage(item.public_id)}
-           sx={{
-             position: 'absolute',
-             top: 8,
-             right: 8,
-             backgroundColor: 'rgba(255, 255, 255, 0.8)',
-             '&:hover': {
-               backgroundColor: 'rgba(255, 255, 255, 1)',
-             },
-           }}
-         >
-           <CloseIcon sx={{ fontSize: '20px', color: 'error.main' }} />
-         </IconButton>
-       </Grid>
-     ))}
-   </Grid>
+                  {imagesPreview?.map((item, index) => (
+                    <Col md={2} key={index} className="image-item">
+                      <div>
+                        {/* Sử dụng Image của Antd với tính năng preview */}
+                        <Image
+                          src={item.url}
+                          alt="preview"
+                          height={100}
+                          style={{ objectFit: 'cover' }}
+                          className="relative"
+                        />
+                        {/* Nút xóa ảnh */}
+                        <span
+                          title="Xóa"
+                          onClick={() => handleDeleteImage(item.public_id)}
+                          className="closeicon"
+                        >
+                          <CloseIcon sx={{ fontSize: '20px' }} />
+                        </span>
+                      </div>
+                    </Col>
+                  ))}
                 </Image.PreviewGroup>
               </Row>
             </Col>

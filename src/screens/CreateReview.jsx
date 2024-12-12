@@ -19,26 +19,28 @@ export default function CreateReview() {
 
   const onSave = async () => {
     const userId = localStorage.getItem("userId");
-
+  
     const data = {
       rating,
       spaceId,
       text,
       userId,
     };
-
+  
     try {
       setLoading(true);
-      await axios.post("http://localhost:9999/reviews", data);
+      const response = await axios.post("http://localhost:9999/reviews", data);
       toast.success("Đánh giá thành công");
       setTimeout(() => {
         navigate(`/spaces/${spaceId}`);
       }, 2000);
     } catch (err) {
-      console.error(err);
-      toast.error("Đánh giá thất bại");
-    } finally {
       setLoading(false);
+      if (err.response && err.response.data && err.response.data.message) {
+        toast.warning(err.response.data.message);
+      } else {
+        toast.error("Đánh giá thất bại"); 
+      }
     }
   };
 

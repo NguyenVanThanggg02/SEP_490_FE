@@ -236,7 +236,6 @@ const History = () => {
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
                 <MenuItem value="hour">Giờ</MenuItem>
                 <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
                 <MenuItem value="month">Tháng</MenuItem>
               </Select>
             </Grid>
@@ -248,7 +247,6 @@ const History = () => {
                 variant="outlined"
               >
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
                 <MenuItem value="completed">Đã thanh toán</MenuItem>
                 <MenuItem value="canceled">Đã huỷ</MenuItem>
               </Select>
@@ -296,7 +294,7 @@ const History = () => {
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0].url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",
@@ -311,7 +309,7 @@ const History = () => {
                               variant="h6"
                               style={{ color: "#1976d2", fontWeight: "bold" }}
                             >
-                              {item.items[0].spaceId.name}
+                              {item?.items?.[0]?.spaceId?.name}
                             </Typography>
                             <Typography
                               variant="body2"
@@ -322,7 +320,7 @@ const History = () => {
                                 ? "Giờ"
                                 : item.rentalType === "day"
                                   ? "Ngày"
-                                  : item.rentalType === "week"
+                                  : item.rentalType === ""
                                     ? "Tuần"
                                     : item.rentalType === "month"
                                       ? "Tháng"
