@@ -77,20 +77,16 @@ const HomeAdmin = () => {
           </Grid>
         }
         {
-          userData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          userData && <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <StatCard {...userData} />
           </Grid>
         }
         {
-          spaceData && <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
+          spaceData && <Grid size={{ xs: 12, sm: 6, lg: 4 }}>
             <StatCard {...spaceData} />
           </Grid>
         }
-        {
-          spaceCensorship && <Grid size={{ xs: 12, lg: 6 }}>
-            {<ChartApproveStatus {...spaceCensorship} />}
-          </Grid>
-        }
+        
         {
           bookingRentalType &&
           <Grid size={{ xs: 12, lg: 6 }}>
@@ -100,6 +96,11 @@ const HomeAdmin = () => {
         <Grid size={{ xs: 12, lg: 6 }}>
           {transactionData && <TransactionBarChart {...transactionData} handleMonthRangeChange={handleTransactionBarChartMonthRangeChange} />}
         </Grid>
+        {
+          spaceCensorship && <Grid size={{ xs: 12, lg: 6 }}>
+            {<ChartApproveStatus {...spaceCensorship} />}
+          </Grid>
+        }
       </Grid>
     </Box>
   );
