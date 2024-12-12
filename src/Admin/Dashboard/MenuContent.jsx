@@ -25,9 +25,8 @@ const mainListItems = [
   { text: 'Quản lí bài báo cáo', icon: <PostAddIcon />, component: <PostReportMana /> },
   { text: 'Quản lí người dùng', icon: <PeopleAltIcon />, component: <UserManagement /> },
   { text: 'Quản lí giao dịch', icon: <PaymentIcon />, component: <TransactionManagement /> },
-  { text: 'Cài đặt', icon: <GearFill />, component: <ProfileAdmin /> },
   { text: 'Ví admin', icon: <AccountBalanceWalletIcon />, component: <AdminWallet /> },
-
+  { text: 'Cài đặt', icon: <GearFill />, component: <ProfileAdmin /> },
 ];
 
 // eslint-disable-next-line react/prop-types

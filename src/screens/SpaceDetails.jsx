@@ -52,6 +52,7 @@ function SpaceDetails({ onSelectChat }) {
 
   const nav = useNavigate()
   const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
   };
@@ -153,7 +154,7 @@ function SpaceDetails({ onSelectChat }) {
       </Typography>
     );
 
-  if (spaceData.censorship !== 'Chấp nhận' && spaceData?.userId?._id !== userId) {
+  if (spaceData.censorship !== 'Chấp nhận' && spaceData?.userId?._id !== userId && role === 0) {
     nav('/notfound');
     return null;
   }
