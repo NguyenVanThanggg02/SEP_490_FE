@@ -157,6 +157,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setIsGoldenHour(!isGoldenHour);
   };
 
+  const formatArea = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
+  const formatPrice = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
   const handleToggleRule = (rule, checked) => {
     setSelectedRules((prevSelectedRules) => {
       if (checked) {
@@ -185,12 +193,13 @@ const AddSpaceInforSpace = ({ editorRef }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
+    
     console.log('{ name, value, type }', { name, value, type });
 
+    const numericValue = value.replace(/\./g, "");
     setSpaceInfo((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: numericValue,
     }));
     if (value.trim() === '') {
       setErrors((prev) => ({
@@ -209,22 +218,22 @@ const AddSpaceInforSpace = ({ editorRef }) => {
           [name]: 'Giá trị phải lớn hơn 1',
         }));
       }
-    }
+    } 
     if (
       type === 'number' &&
       name === 'priceIncrease' &&
-      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+      (parseFloat(numericValue) <= 0 || parseFloat(numericValue) > 100)
     ) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+    setErrors((prev) => ({
+      ...prev,
+      [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
       }));
     } else {
       setErrors((prev) => ({
         ...prev,
         [name]: '',
-      }));
-    }
+    }));
+  }
   };
 
   const handleBlur = (e) => {
@@ -352,10 +361,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     });
     if (event.target.checked === false) {
       const checkOther = Object.keys(stateSpacePriceWay)
-        .filter((item) => item !== event.target.name)
-        .every((key) => {
-          return stateSpacePriceWay[key] === false;
-        });
+      .filter((item) => item !== event.target.name)
+      .every((key) => {
+        return stateSpacePriceWay[key] === false;
+      });
       if (checkOther) {
         setIsShowNotPermissionSpacePrice(true);
         return;
@@ -452,7 +461,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     }}
                   >
                     Giá không gian <span style={{ color: 'red' }}>*</span>
-                  </Typography>
+                    </Typography>
                   <Row>
                     <Col md={12} align="center">
                       <Typography
@@ -466,8 +475,8 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         Chọn cách thức thuê
                       </Typography>
                       <FormControl component="fieldset" variant="standard">
-                        <FormGroup sx={{ flexDirection: 'row' }}>
-                          <FormControlLabel
+                      <FormGroup sx={{ flexDirection: 'row' }}>
+                      <FormControlLabel
                             control={
                               <Checkbox
                                 checked={pricePerHour}
@@ -514,10 +523,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerHour"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour|| ""}
+                          value={formatPrice(spaceInfo.pricePerHour|| "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -549,10 +558,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerDay"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay|| ""}
+                          value={formatPrice(spaceInfo.pricePerDay || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -618,10 +627,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={6}>
                         <TextField
                           name="pricePerMonth"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth|| ""}
+                          value={formatPrice(spaceInfo.pricePerMonth || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -678,7 +687,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       }
                       label="Giờ cao điểm"
                     />
-                 
+
                   </div>
 
                   {isGoldenHour && (
@@ -761,13 +770,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     }}
                   >
                     Diện tích <span style={{ color: 'red' }}>*</span>
-                  </Typography>
+                    </Typography>
                   <TextField
                     name="area"
                     type="number"
                     variant="outlined"
                     required
                     value={spaceInfo.area}
+                    // value={formatArea(spaceInfo.area || "")} // Sử dụng hàm formatArea để định dạng
                     onChange={handleInputChange} // Cập nhật khi người dùng nhập
                     onBlur={handleBlur}
                     InputProps={{
@@ -941,7 +951,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           className="closeicon"
                         >
                           <CloseIcon sx={{ fontSize: '20px' }} />
-                        </span>
+                          </span>
                       </div>
                     </Col>
                   ))}

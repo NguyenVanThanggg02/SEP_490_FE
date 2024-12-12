@@ -134,6 +134,7 @@ export default function Notification() {
             overflowY: "auto", // Enable vertical scrolling
           },
         }}
+        sx={{marginTop:'7px'}}
       >
         {notifications.length > 0 ? (
           notifications.map((notification, index) => (

@@ -6,6 +6,7 @@ import {
 import {
   Box,
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,6 +17,7 @@ import {
   InputBase,
   InputLabel,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   Stack,
@@ -62,7 +64,12 @@ export const TransactionManagement = () => {
     setTypeOfTransaction(event.target.value);
   };
   const [data, setData] = useState();
-
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalElement: undefined,
+    totalPage: undefined,
+    limit: 10
+  })
   async function fetchHistory() {
     try {
       const response = await axios.get(
@@ -72,17 +79,26 @@ export const TransactionManagement = () => {
             searchParams,
             ...timeFilter,
             typeOfTransaction,
+            page: pagination.page,
+            limit: pagination.limit
           },
         }
       );
       setData(response.data);
+      setPagination(prev => {
+        return {
+          ...prev,
+          totalPage: response.data.pagination.totalPage,
+          totalElement: response.data.pagination.totalElement
+        }
+      })
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
     }
   }
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [pagination.page]);
 
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
@@ -293,7 +309,7 @@ export const TransactionManagement = () => {
                   .filter((transaction) => transaction.type.trim().toUpperCase() !== "NẠP TIỀN")
                     .map((transaction, index) => (
                   <TableRow key={transaction.transactionId} hover>
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{pagination.limit * (pagination.page - 1) + index + 1}</TableCell>
                     <TableCell sx={{ whiteSpace: "pre-wrap" }}>
                       {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
                         ? "TRẢ TIỀN CHO CHỦ"
@@ -354,6 +370,18 @@ export const TransactionManagement = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {
+          pagination.totalPage &&
+          <Container sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
+            <Pagination
+              count={pagination.totalPage} // Total number of pages
+              page={pagination.page} // Current page
+              onChange={(_, newPage) => { setPagination(prev => { return { ...prev, page: newPage } }) }}
+              color="primary"
+              sx={{ justifyContent: "center" }}
+            />
+          </Container>
+        }
       </Box>
 
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
