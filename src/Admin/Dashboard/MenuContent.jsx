@@ -16,6 +16,8 @@ import { TransactionManagement } from '../TransactionManagement';
 import ProfileAdmin from '../profile/ProfileAdmin';
 import { GearFill } from 'react-bootstrap-icons';
 import PostReportMana from '../PostReportMana';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { AdminWallet } from '../AdminWallet';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, component: <HomeAdmin /> },
@@ -24,6 +26,8 @@ const mainListItems = [
   { text: 'Quản lí người dùng', icon: <PeopleAltIcon />, component: <UserManagement /> },
   { text: 'Quản lí giao dịch', icon: <PaymentIcon />, component: <TransactionManagement /> },
   { text: 'Cài đặt', icon: <GearFill />, component: <ProfileAdmin /> },
+  { text: 'Ví admin', icon: <AccountBalanceWalletIcon />, component: <AdminWallet /> },
+
 ];
 
 // eslint-disable-next-line react/prop-types
