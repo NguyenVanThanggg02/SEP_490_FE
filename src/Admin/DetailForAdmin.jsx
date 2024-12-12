@@ -54,16 +54,29 @@ const DetailForAdmin = ({ id, onBack }) => {
       <Button className="btn btn-success m-3" onClick={onBack}>
         Quay lại
       </Button>
-      <Card sx={{ padding: "20px", borderRadius: "10px", boxShadow: 4 }}>
+      <Card
+        sx={{
+          padding: "24px",
+          borderRadius: "12px",
+          boxShadow: 6,
+          backgroundColor: "#f9f9f9",
+        }}
+      >
         <CardContent>
-          <Typography variant="h4" gutterBottom align="center">
+          {/* Tiêu đề */}
+          <Typography
+            variant="h4"
+            gutterBottom
+            align="center"
+            sx={{ fontWeight: "bold", color: "#3f51b5" }}
+          >
             {space.name}
           </Typography>
 
           <Grid container spacing={3}>
-            {/* Image Section */}
+            {/* Phần hình ảnh */}
             <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
+              <Box display="flex" justifyContent="center" mb={2}>
                 <Grid container spacing={2}>
                   <Image.PreviewGroup>
                     {space.images &&
@@ -74,13 +87,12 @@ const DetailForAdmin = ({ id, onBack }) => {
                               src={imgUrl.url}
                               alt={`Space image ${index + 1}`}
                               style={{
-                                borderRadius: "8px",
+                                borderRadius: "12px",
                                 width: "100%",
                                 height: "150px",
                                 objectFit: "cover",
                               }}
                             />
-                            {/* Overlay for the last image if there are more than 3 images */}
                             {index === 2 && remainingImagesCount > 0 && (
                               <Box
                                 position="absolute"
@@ -91,15 +103,15 @@ const DetailForAdmin = ({ id, onBack }) => {
                                 display="flex"
                                 justifyContent="center"
                                 alignItems="center"
-                                bgcolor="rgba(0, 0, 0, 0.5)"
+                                bgcolor="rgba(0, 0, 0, 0.6)"
                                 color="white"
-                                fontSize="24px"
+                                fontSize="20px"
                                 fontWeight="bold"
-                                borderRadius="8px"
+                                borderRadius="12px"
                                 sx={{
                                   cursor: "pointer",
                                   "&:hover": {
-                                    bgcolor: "rgba(0, 0, 0, 0.7)",
+                                    bgcolor: "rgba(0, 0, 0, 0.8)",
                                   },
                                 }}
                                 onClick={handleShowAllImages}
@@ -115,25 +127,32 @@ const DetailForAdmin = ({ id, onBack }) => {
               </Box>
             </Grid>
 
-            {/* Information Section */}
+            {/* Phần thông tin */}
             <Grid item xs={12}>
-              <Grid container spacing={3}>
+              <Grid container spacing={2}>
                 {[
                   { label: "Diện tích", value: space.area },
                   { label: "Giá theo giờ", value: space.pricePerHour },
                   { label: "Giá theo ngày", value: space.pricePerDay },
-                  // { label: "Giá theo tuần", value: space.pricePerWeek },
                   { label: "Giá theo tháng", value: space.pricePerMonth },
                 ].map((info, index) => (
                   <Grid item xs={6} key={index}>
                     <Card
                       variant="outlined"
-                      sx={{ padding: "10px", borderRadius: "8px" }}
+                      sx={{
+                        padding: "12px",
+                        borderRadius: "10px",
+                        boxShadow: 2,
+                        backgroundColor: "#ffffff",
+                      }}
                     >
-                      <Typography variant="subtitle1" color="textSecondary">
+                      <Typography variant="subtitle2" color="textSecondary">
                         {info.label}
                       </Typography>
-                      <Typography variant="h6">
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", color: "#333" }}
+                      >
                         {formatNumberToVND(info.value)}
                       </Typography>
                     </Card>
@@ -142,43 +161,44 @@ const DetailForAdmin = ({ id, onBack }) => {
               </Grid>
             </Grid>
           </Grid>
+
+          {/* Mô tả */}
           <Typography
             variant="h6"
-            className="pb-2"
-            sx={{ fontSize: "20px", fontWeight: "700" }}
-            gutterBottom
+            sx={{ marginTop: "16px", fontWeight: "bold", color: "#3f51b5" }}
           >
             Mô tả
           </Typography>
-          <Typography variant="body1" color="textSecondary" mt={4}>
+          <Typography
+            variant="body1"
+            sx={{ marginTop: "8px", color: "textSecondary" }}
+          >
             {space.description}
           </Typography>
+
+          {/* Tiện nghi */}
           <Typography
             variant="h6"
-            className="pb-2"
-            sx={{ fontSize: "20px", fontWeight: "700" }}
-            gutterBottom
+            sx={{ marginTop: "16px", fontWeight: "bold", color: "#3f51b5" }}
           >
             Tiện nghi
           </Typography>
           <List>
             {space?.appliancesId?.appliances?.length > 0 ? (
               <Grid container>
-                {space.appliancesId.appliances?.map((appliance) => {
+                {space.appliancesId.appliances.map((appliance) => {
                   const IconAppliances = MuiIcons[appliance.iconName];
                   return (
                     <Grid item xs={6} key={appliance._id}>
-                      {" "}
-                      {/* Mỗi item chiếm 50% chiều rộng */}
                       <ListItem>
                         <ListItemIcon>
-                          {IconAppliances ? (
-                            <IconAppliances sx={{ color: "black" }} />
-                          ) : null}
+                          {IconAppliances && (
+                            <IconAppliances sx={{ color: "#3f51b5" }} />
+                          )}
                         </ListItemIcon>
                         <ListItemText
-                          sx={{ color: "black", fontSize: "10px" }}
                           primary={appliance.name}
+                          primaryTypographyProps={{ fontSize: "14px" }}
                         />
                       </ListItem>
                     </Grid>
@@ -189,25 +209,11 @@ const DetailForAdmin = ({ id, onBack }) => {
               <Typography variant="body2">No appliances available</Typography>
             )}
           </List>
+
+          {/* Nội quy */}
           <Typography
             variant="h6"
-            className="pb-2"
-            sx={{ fontSize: "20px", fontWeight: "700" }}
-            gutterBottom
-          >
-            Diện tích
-          </Typography>
-          <div style={{ flexDirection: "row" }}>
-            <Textarea style={{ fontWeight: "bold", fontSize: "25px" }} />
-            <b style={{ fontSize: "18px", marginLeft: "20px" }}>
-              {space.area}m2
-            </b>
-          </div>
-          <Typography
-            variant="h6"
-            className="pb-2"
-            sx={{ fontSize: "20px", fontWeight: "700" }}
-            gutterBottom
+            sx={{ marginTop: "16px", fontWeight: "bold", color: "#3f51b5" }}
           >
             Nội quy
           </Typography>
@@ -221,9 +227,12 @@ const DetailForAdmin = ({ id, onBack }) => {
                     <Grid item xs={6} key={index}>
                       <ListItem>
                         <ListItemIcon>
-                          <BlockIcon /> {/* Icon ví dụ */}
+                          <BlockIcon sx={{ color: "#f44336" }} />
                         </ListItemIcon>
-                        <ListItemText primary={rule} />
+                        <ListItemText
+                          primary={rule}
+                          primaryTypographyProps={{ fontSize: "14px" }}
+                        />
                       </ListItem>
                     </Grid>
                   )
@@ -235,21 +244,16 @@ const DetailForAdmin = ({ id, onBack }) => {
               </ListItem>
             )}
           </List>
+
           <Typography
             variant="h6"
-            className="pb-2"
-            sx={{ fontSize: "20px", fontWeight: "700" }}
-            gutterBottom
+            sx={{ marginTop: "16px", fontWeight: "bold", color: "#3f51b5" }}
           >
             Vị trí không gian: {space?.location || ""}
           </Typography>
 
           <Divider
-            sx={{
-              bgcolor: "gray",
-              margin: "20px auto",
-              width: "100%",
-            }}
+            sx={{ bgcolor: "gray", margin: "16px auto", width: "100%" }}
           />
         </CardContent>
       </Card>

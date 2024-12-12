@@ -1,6 +1,8 @@
 import {
   CheckCircle,
   Search as SearchIcon,
+  Visibility,
+  VisibilityOff,
 } from '@mui/icons-material';
 import {
   Box,
@@ -65,6 +67,7 @@ export const AdminWallet = () => {
     limit: 10
   })
   const { user } = useUser();
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
 
   async function fetchHistory() {
     try {
@@ -124,28 +127,42 @@ export const AdminWallet = () => {
       );
     }
   }
-
+  const handleAmountChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setWithdrawAmount(value ? parseInt(value, 10) : "");
+  };
+  const formatInputMoney = (withdrawAmount) => {
+    if (!withdrawAmount || isNaN(withdrawAmount)) return ""; 
+    return new Intl.NumberFormat("vi-VN").format(withdrawAmount); 
+  };
   return (
     <Box>
       <Box
         sx={{
-          mt: '24px',
+          mt: "24px",
           p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          maxHeight: '100%',
-          overflowY: 'auto',
+          display: "flex",
+          flexDirection: "column",
+          maxHeight: "100%",
+          overflowY: "auto",
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: "center", mt: 2 }}>
-
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mt: 2,
+          }}
+        >
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-
               <DatePicker
                 label="Từ ngày"
                 maxDate={timeFilter.endTime}
-                views={['year', 'month', 'day']}
+                views={["year", "month", "day"]}
                 value={timeFilter.startTime}
                 onChange={(newValue) => {
                   if (newValue.isValid()) {
@@ -155,29 +172,30 @@ export const AdminWallet = () => {
                 disableFuture
                 format="DD/MM/YYYY"
                 sx={{
-                  mr: 2, mb: 2,
-                  '& .MuiInputBase-root': {
-                    fontSize: '0.875rem',
-                    height: '55px',
+                  mr: 2,
+                  mb: 2,
+                  "& .MuiInputBase-root": {
+                    fontSize: "0.875rem",
+                    height: "55px",
                   },
-                  '& .MuiOutlinedInput-root': {
-                    padding: '0 8px 0 0',
+                  "& .MuiOutlinedInput-root": {
+                    padding: "0 8px 0 0",
                   },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
+                  "& .MuiInputLabel-root": {
+                    fontSize: "0.875rem",
                   },
-                  '& .MuiInputBase-input': {
-                    width: "120px"
+                  "& .MuiInputBase-input": {
+                    width: "120px",
                   },
-                  '& .MuiInputAdornment-root': {
-                    marginLeft: "0px"
-                  }
+                  "& .MuiInputAdornment-root": {
+                    marginLeft: "0px",
+                  },
                 }}
               />
               <DatePicker
                 label="Tới ngày"
                 minDate={timeFilter.startTime}
-                views={['year', 'month', 'day']}
+                views={["year", "month", "day"]}
                 value={timeFilter.endTime}
                 onChange={(newValue) => {
                   if (newValue.isValid()) {
@@ -190,23 +208,24 @@ export const AdminWallet = () => {
                 disableFuture
                 format="DD/MM/YYYY"
                 sx={{
-                  mr: 2, mb: 2,
-                  '& .MuiInputBase-root': {
-                    fontSize: '0.875rem',
-                    height: '55px',
+                  mr: 2,
+                  mb: 2,
+                  "& .MuiInputBase-root": {
+                    fontSize: "0.875rem",
+                    height: "55px",
                   },
-                  '& .MuiOutlinedInput-root': {
-                    padding: '0 8px 0 0',
+                  "& .MuiOutlinedInput-root": {
+                    padding: "0 8px 0 0",
                   },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.875rem',
+                  "& .MuiInputLabel-root": {
+                    fontSize: "0.875rem",
                   },
-                  '& .MuiInputBase-input': {
-                    width: "120px"
+                  "& .MuiInputBase-input": {
+                    width: "120px",
                   },
-                  '& .MuiInputAdornment-root': {
-                    marginLeft: "0px"
-                  }
+                  "& .MuiInputAdornment-root": {
+                    marginLeft: "0px",
+                  },
                 }}
               />
               <FormControl sx={{ mr: 2, mb: 2 }}>
@@ -221,13 +240,13 @@ export const AdminWallet = () => {
                   label="Loại giao dịch"
                   onChange={onTypeOfTransactionChange}
                   sx={{
-                    '&.MuiInputBase-root': {
-                      fontSize: '0.875rem',
-                      height: '55px',
-                      width: '200px'
+                    "&.MuiInputBase-root": {
+                      fontSize: "0.875rem",
+                      height: "55px",
+                      width: "200px",
                     },
-                    '& .MuiInputLabel-root': {
-                      fontSize: '0.875rem',
+                    "& .MuiInputLabel-root": {
+                      fontSize: "0.875rem",
                     },
                   }}
                 >
@@ -241,24 +260,34 @@ export const AdminWallet = () => {
             </Box>
           </LocalizationProvider>
           <Stack
-            direction={'row'}
+            direction={"row"}
             spacing={2}
-            alignItems={'center'}
-            justifyContent={'space-between'}>
-            <Typography
-              variant="h5"
-            >
-              <Typography component='span' style={{ color: 'black' }}>Số dư ví: </Typography>
-              <Typography component='span' style={{ color: 'green', fontWeight: 700 }}>{data ? formatMoney(data.availableAmount) : "..."}</Typography>
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Typography variant="h5">
+              <Typography component="span" style={{ color: "black" }}>
+                <span style={{ color: "#1e88e5", fontWeight: "bold" }}>
+                  Số dư:{" "}
+                  {isBalanceVisible
+                    ? formatMoney(data.availableAmount)
+                    : "********"}{" "}
+                </span>
+              </Typography>
+              <IconButton
+                onClick={() => setIsBalanceVisible(!isBalanceVisible)}
+                color="primary"
+              >
+                {isBalanceVisible ? <Visibility /> : <VisibilityOff />}{" "}
+              </IconButton>
             </Typography>
 
             <Tooltip title="Nhận tiền" arrow>
               <IconButton color="secondary" onClick={handleOpenDialog}>
-                <RedeemIcon />
+                <RedeemIcon /> Rút Tiền
               </IconButton>
             </Tooltip>
           </Stack>
-
         </Box>
 
         <TableContainer component={Paper}>
@@ -270,7 +299,9 @@ export const AdminWallet = () => {
                 <TableCell sx={{ fontWeight: 700 }}>Loại giao dịch</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Số tiền</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Ngày giao dịch</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Nội dung giao dịch</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>
+                  Nội dung giao dịch
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -278,7 +309,9 @@ export const AdminWallet = () => {
                 data.transactionList.length > 0 &&
                 data.transactionList.map((transaction, index) => (
                   <TableRow key={transaction.transactionId} hover>
-                    <TableCell>{pagination.limit * (pagination.page - 1) + index + 1}</TableCell>
+                    <TableCell>
+                      {pagination.limit * (pagination.page - 1) + index + 1}
+                    </TableCell>
                     <TableCell>{transaction.orderId}</TableCell>
                     <TableCell>{transaction.type}</TableCell>
                     <TableCell>{formatMoney(transaction.amount)}</TableCell>
@@ -290,18 +323,23 @@ export const AdminWallet = () => {
           </Table>
         </TableContainer>
 
-        {
-          pagination.totalPage &&
-          <Container sx={{ display: 'flex', justifyContent: 'center', mt: 1.5 }}>
+        {pagination.totalPage && (
+          <Container
+            sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}
+          >
             <Pagination
               count={pagination.totalPage} // Total number of pages
               page={pagination.page} // Current page
-              onChange={(_, newPage) => { setPagination(prev => { return { ...prev, page: newPage } }) }}
+              onChange={(_, newPage) => {
+                setPagination((prev) => {
+                  return { ...prev, page: newPage };
+                });
+              }}
               color="primary"
               sx={{ justifyContent: "center" }}
             />
           </Container>
-        }
+        )}
       </Box>
 
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
@@ -309,23 +347,23 @@ export const AdminWallet = () => {
         <DialogContent>
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              height: '100%',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              height: "100%",
             }}
           >
             <TextField
               label="Số tiền"
               fullWidth
               margin="dense"
-              type='number'
-              value={withdrawAmount}
-              onChange={(e) => setWithdrawAmount(e.target.value)}
-            />
+              type="text"
+              value={formatInputMoney(withdrawAmount)}
+              onChange={handleAmountChange}
+              />
           </Box>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
+        <DialogActions sx={{ justifyContent: "center" }}>
           <Button
             onClick={handleCloseDialog}
             color="primary"
