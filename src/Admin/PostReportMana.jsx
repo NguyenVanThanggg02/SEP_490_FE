@@ -6,8 +6,8 @@ import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
 import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete, Tooltip, TableCell, TableRow, TableBody, TableHead, TableContainer, Paper, Table, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
-import { BlockOutlined } from "@mui/icons-material";
+import { BlockOutlined, Preview } from "@mui/icons-material";
+import { Image } from "antd";
 
 const PostReportMana = () => {
   const [reportPosts, setReportPosts] = useState([]);
@@ -19,7 +19,7 @@ const PostReportMana = () => {
   const [first, setFirst] = useState(0);
   // const productsOnPage = spaces.slice(first, first + rows);
   const [, setCurrentPage] = useState(1);
-  const [selectedOwner, setSelectedOwner] = useState(""); 
+  const [selectedOwner, setSelectedOwner] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -28,32 +28,35 @@ const PostReportMana = () => {
     type: "",
     id: "",
   });
+  const [dialogDetailSpace, setDialogDetailSpace] = useState(false);
+  const [selectedSpace, setSelectedSpace] = useState(null);
+
   const uniqueOwners = Array.from(
-    new Set([ "Tất cả", ...reportPosts.map((space) => space.userId?.fullname || "Không rõ")])
+    new Set(["Tất cả", ...reportPosts.map((space) => space.userId?.fullname || "Không rõ")])
   );
-  
+
   const filteredSpaces = reportPosts
-  .filter((space) => {
-    const createdAt = new Date(space.createdAt);
-    const start = startDate ? new Date(startDate) : null; 
-    const end = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)) : null; 
+    .filter((space) => {
+      const createdAt = new Date(space.createdAt);
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(new Date(endDate).setHours(23, 59, 59, 999)) : null;
 
-    return (
-      (!selectedOwner || selectedOwner === "Tất cả" || space.userId?.fullname === selectedOwner) &&
-      (!selectedStatus || space.censorship === selectedStatus) &&
-      (!start || createdAt >= start) && 
-      (!end || createdAt <= end) 
-    );
-  })
-  .sort((a, b) => {
-    if (startDate || endDate) {
-      return new Date(a.createdAt) - new Date(b.createdAt); 
-    }
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  });
+      return (
+        (!selectedOwner || selectedOwner === "Tất cả" || space.userId?.fullname === selectedOwner) &&
+        (!selectedStatus || space.censorship === selectedStatus) &&
+        (!start || createdAt >= start) &&
+        (!end || createdAt <= end)
+      );
+    })
+    .sort((a, b) => {
+      if (startDate || endDate) {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
 
 
-  
+
   const productsOnPage = filteredSpaces.slice(first, first + rows);
 
   useEffect(() => {
@@ -147,14 +150,23 @@ const PostReportMana = () => {
   // Xử lý mở dialog cho khiếu nại
   const handleApproveAppeal = (reportId) => {
     // Logic để hiển thị dialog cho khiếu nại
-    console.log("Duyệt khiếu nại ID:", reportId);
     setDialogState({
       open: true,
       type: "appeal",
       id: reportId,
     });
   };
-
+  const handleShowDetail = async (spaceId) => {
+    try {
+      const response = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
+      setSelectedSpaceId(spaceId); // Lưu ID space
+      setSelectedSpace(response.data); // Lưu thông tin chi tiết của space
+      setDialogDetailSpace(true); // Hiển thị dialog
+    } catch (error) {
+      console.error("Error fetching space details:", error);
+    }
+  };
+  const otherImages = selectedSpace?.images
 
 
   return (
@@ -189,7 +201,7 @@ const PostReportMana = () => {
                       boxShadow: 3,
                       "&:hover": { boxShadow: 6 },
                     }}
-                    disableClearable 
+                    disableClearable
                     renderOption={(props, option) => (
                       <MenuItem {...props} key={option} value={option}>
                         <Typography
@@ -282,14 +294,22 @@ const PostReportMana = () => {
                       <TableRow key={report._id} hover>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{report.spaceId.name}</TableCell>
-                        <TableCell>{report.userId?.spaceId?.userId}</TableCell>
-                        <TableCell>{report.userId.fullname}</TableCell>
+                        <TableCell>{report.spaceId?.userId?.fullname}</TableCell>
+                        <TableCell>{report.userId?.fullname}</TableCell>
                         <TableCell>
                           {report.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
                           {report.customReason && `; ${report.customReason}`}
                         </TableCell>
                         <TableCell>{report.spaceId.reportCount}</TableCell>
                         <TableCell>
+                          <Tooltip title="Xem không gian">
+                            <IconButton
+                              color="secondary"
+                              onClick={() => handleShowDetail(report.spaceId._id)}
+                            >
+                              <Preview />
+                            </IconButton>
+                          </Tooltip>
                           <Tooltip title="Duyệt báo cáo">
                             <IconButton
                               color="primary"
@@ -376,8 +396,105 @@ const PostReportMana = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={dialogDetailSpace}
+        onClose={() => setDialogDetailSpace(false)} // Đóng dialog
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Thông Tin Chi Tiết Không Gian</DialogTitle>
+        <DialogContent>
+          {selectedSpace && (
+            <Box sx={{ marginTop: '30px' }}>
+              <Card>
+                <Row gutter={[16, 16]}>
+                  {selectedSpace?.images?.map((item) => (
+                    <Col span={6} key={item._id}>
+                      <Image.PreviewGroup
+                        preview={{
+                          onChange: (current, prev) => console.log(`current index: ${current}, prev index: ${prev}`),
+                        }}
+                      >
+                        <Image
+                          src={item.url}
+                          alt={`Image ${item._id}`}
+                          style={{
+                            width: '100%',
+                            height: '200px',
+                            borderRadius: '3px',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </Image.PreviewGroup>
+                    </Col>
+                  ))}
+                </Row>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {selectedSpace.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Giá theo giờ:</strong> {selectedSpace.pricePerHour != null ? `${selectedSpace.pricePerHour}` : 'Không có giá theo giờ'} <br />
+                    <strong>Giá theo ngày:</strong> {selectedSpace.pricePerDay != null ? `${selectedSpace.pricePerDay}` : 'Không có giá theo ngày'} <br />
+                    <strong>Giá theo tháng:</strong> {selectedSpace.pricePerMonth != null ? `${selectedSpace.pricePerMonth}` : 'Không có giá theo tháng'}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Mô tả:</strong> {selectedSpace.description || 'Không có mô tả'}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Diện tích:</strong> {selectedSpace.area || 'Không có diện tích'}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Tiện ích:</strong>
+                    {selectedSpace?.appliancesId?.appliances && selectedSpace.appliancesId.appliances.length > 0 ? (
+                      <ul>
+                        {selectedSpace.appliancesId.appliances.map((appliance, index) => (
+                          <li key={index}>
+                            {appliance.name}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'Không có tiện ích'
+                    )}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                  <strong>Quy tắc:</strong>
+                    {selectedSpace.rulesId ? (
+                      <ul>
+                        {[...selectedSpace?.rulesId?.rules, ...selectedSpace?.rulesId?.customeRules].map((rule, index) => (
+                          <li key={index}>{rule}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'Không có quy tắc'
+                    )}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Vị trí:</strong> {selectedSpace.location || 'Không có vị trí'}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary">
+                    <strong>Vị trí chi tiết:</strong> {selectedSpace.detailAddress || 'Không có vị trí chi tiết'}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogDetailSpace(false)} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
-    
+
   );
 };
 

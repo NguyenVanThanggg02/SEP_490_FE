@@ -36,19 +36,21 @@ const Reports = (props) => {
       reasonId: selectedReason,
       spaceId: idSpace,
       customReason: customReason.trim(),
+      statusReport: "Chờ duyệt", 
     };
     axios
       .post("http://localhost:9999/reports", reportData)
       .then((response) => {
-        toast.success("Báo cáo thành công");
+        toast.success("Báo cáo thành công,báo cáo của bạn đang được phê duyệt");
         setSelectedReason([]);
         setCustomReason("");
         document.querySelectorAll('input[name="report"]').forEach(input => input.checked = false);
 
       })
       .catch((error) => {
-        toast.warning(error.response.data.message || "Hãy thử lại");
-        console.error({ error: error.message });
+        toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+      console.error({ error: error.message });
+
       });
   };
 
@@ -95,9 +97,6 @@ const Reports = (props) => {
             <Row className="header">
               <h4>Tại sao bạn báo cáo nhà/phòng cho thuê này?</h4>
             </Row>
-            {/* <Row className="description">
-              <h6>Nội dung này sẽ không được chia sẻ với Chủ nhà.</h6>
-            </Row> */}
             {reasons.map((r, index) => (
               <div className="option" key={index}>
                 <input
