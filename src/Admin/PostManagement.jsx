@@ -83,7 +83,7 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
           )
         );
-        toast.success("Địa điểm đã được chấp nhận")
+        toast.success(`Địa điểm "${selectedSpace.name}" đã được chấp nhận`);
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
@@ -91,12 +91,13 @@ const PostManagement = () => {
   };
 
   const handleReject = (postId, selectedReasons, customReason) => {
+    const selectedSpace = spaces.find((space) => space._id === postId);
     axios
       .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
         reasons: selectedReasons,
         customReason: customReason ? [customReason] : [],
-
+        
       })
       .then(() => {
         setSpaces((prevSpaces) =>
@@ -104,7 +105,7 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
           )
         );
-        toast.success("Địa điểm đã bị từ chối")
+        toast.warning(`Địa điểm "${selectedSpace.name}" đã bị từ chối`);
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
