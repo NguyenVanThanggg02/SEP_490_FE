@@ -8,6 +8,7 @@ import { Paginator } from "primereact/paginator";
 import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete, Tooltip, TableCell, TableRow, TableBody, TableHead, TableContainer, Paper, Table, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { BlockOutlined, Preview } from "@mui/icons-material";
 import { Image } from "antd";
+import { toast } from "react-toastify";
 
 const PostReportMana = () => {
   const [reportPosts, setReportPosts] = useState([]);
@@ -30,6 +31,7 @@ const PostReportMana = () => {
   });
   const [dialogDetailSpace, setDialogDetailSpace] = useState(false);
   const [selectedSpace, setSelectedSpace] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
 
   const uniqueOwners = Array.from(
     new Set(["Tất cả", ...reportPosts.map((space) => space.userId?.fullname || "Không rõ")])
@@ -73,26 +75,45 @@ const PostReportMana = () => {
       });
   }, []);
 
-  const handleAccept = (postId) => {
-    const selectedSpace = reportPosts.find((space) => space._id === postId);
+  const handleShowDetail = async (spaceId, reportId) => {
+    console.log(spaceId);
+    console.log(reportId);
 
-    if (selectedSpace.censorship === "Chấp nhận") {
+    try {
+      const responseSpace = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
+      setSelectedSpaceId(spaceId);
+      setSelectedSpace(responseSpace.data);
+      setDialogDetailSpace(true);
+
+      const responseReport = await axios.get(`http://localhost:9999/reports/getreport/${reportId}`);
+      setSelectedReport(responseReport.data);
+    } catch (error) {
+      console.error("Error fetching space details:", error);
+    }
+  };
+
+  const handleAccept = (reportId) => {
+    const selectedSpaceREPORT = reportPosts.find((report) => report._id === reportId);
+
+    if (selectedSpaceREPORT.statusReport === "Chấp nhận") {
       return;
     }
 
     axios
-      .put(`http://localhost:9999/spaces/update/${postId}`, {
-        censorship: "Chấp nhận",
+      .put(`http://localhost:9999/reports/reportstatus/${reportId}`, {
+        statusReport: "Chấp nhận",
       })
       .then(() => {
         setReportPosts((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
+          prevSpaces.map((report) =>
+            report._id === reportId ? { ...report, statusReport: "Chấp nhận" } : report
           )
         );
+      toast.success("Đã chấp nhận đơn tố cáo")
+      setDialogDetailSpace(false);
       })
       .catch((error) => {
-        console.error("Error updating censorship:", error);
+        console.error("Error updating statusReport:", error);
       });
   };
 
@@ -156,17 +177,6 @@ const PostReportMana = () => {
       id: reportId,
     });
   };
-  const handleShowDetail = async (spaceId) => {
-    try {
-      const response = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
-      setSelectedSpaceId(spaceId); // Lưu ID space
-      setSelectedSpace(response.data); // Lưu thông tin chi tiết của space
-      setDialogDetailSpace(true); // Hiển thị dialog
-    } catch (error) {
-      console.error("Error fetching space details:", error);
-    }
-  };
-  const otherImages = selectedSpace?.images
 
 
   return (
@@ -305,7 +315,7 @@ const PostReportMana = () => {
                           <Tooltip title="Xem không gian">
                             <IconButton
                               color="secondary"
-                              onClick={() => handleShowDetail(report.spaceId._id)}
+                              onClick={() => handleShowDetail(report.spaceId._id, report._id)}
                             >
                               <Preview />
                             </IconButton>
@@ -463,7 +473,7 @@ const PostReportMana = () => {
                   </Typography>
 
                   <Typography variant="body2" color="text.secondary">
-                  <strong>Quy tắc:</strong>
+                    <strong>Quy tắc:</strong>
                     {selectedSpace.rulesId ? (
                       <ul>
                         {[...selectedSpace?.rulesId?.rules, ...selectedSpace?.rulesId?.customeRules].map((rule, index) => (
@@ -488,6 +498,15 @@ const PostReportMana = () => {
           )}
         </DialogContent>
         <DialogActions>
+          <Box style={{ marginRight: "auto" }}>
+            <Button variant="contained" color="success" onClick={() => handleAccept(selectedReport?._id)}>
+              Chấp nhận báo cáo
+            </Button>
+            <Button variant="contained" color="error" className="ms-2" >
+              Từ chối báo cáo
+            </Button>
+          </Box>
+
           <Button onClick={() => setDialogDetailSpace(false)} color="primary">
             Đóng
           </Button>
