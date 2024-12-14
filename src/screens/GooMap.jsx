@@ -177,7 +177,7 @@ export const GooMap = ({
   }, [JSON.stringify(spaceInfo.latLng)]);
 
   return (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', paddingBottom:'10%' }}>
       <ReactMapGL
         {...viewport}
         width="80%"

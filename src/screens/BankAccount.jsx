@@ -128,8 +128,15 @@ const BankAccount = () => {
   };
 
   const openPwdConfirm = () => {
-    setOpenConfirmPwd(true);
+    if (bankAccounts.length === 0) {
+      handleSave();
+    } else {
+      setOpenConfirmPwd(true);
+    }
   };
+  // const openPwdConfirm = () => {
+  //   setOpenConfirmPwd(true);
+  // };
 
   const handleDelete = async (accountId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?')) {
@@ -259,7 +266,8 @@ const BankAccount = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {openConfirmPwd ? (
+        {openConfirmPwd && bankAccounts.length > 0 ? (
+            // {openConfirmPwd ? (
             <ConfirmPassword
               setOpenConfirmPwd={setOpenConfirmPwd}
               handleSave={handleSave}
