@@ -37,7 +37,6 @@
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.13",
     "evergreen-ui": "^7.1.9",
-    "html-to-text": "^9.0.5",
     "joi": "^17.13.3",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
