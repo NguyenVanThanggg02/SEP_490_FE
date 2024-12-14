@@ -198,6 +198,7 @@ const AddFunds = () => {
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 fullWidth
+                label="Lọc theo trạng thái"
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 <MenuItem value="Thành công">Thành công</MenuItem>
@@ -214,6 +215,7 @@ const AddFunds = () => {
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
                 fullWidth
+                label="Lọc theo loại giao dịch"
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 <MenuItem value="Nạp tiền">Nạp tiền</MenuItem>

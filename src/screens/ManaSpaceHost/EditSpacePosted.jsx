@@ -249,33 +249,50 @@ const EditSpacePosted = () => {
             <CardContent>
               <Stack
                 direction="row"
-                justifyContent={'space-between'}
-                alignItems={'center'}
+                justifyContent="space-between"
+                alignItems="center"
+                spacing={2} 
               >
                 <TextField
                   variant="outlined"
                   value={spaceName}
-                  onChange={(e) => setSpaceName(e.target.value)} 
+                  onChange={(e) => setSpaceName(e.target.value)}
                   label="Tên không gian"
                   fullWidth
+                  size="small" 
+                  sx={{ borderRadius: 1 }} 
                 />
-                <IconButton disabled={!!error} onClick={onSave}>
+                <IconButton
+                  disabled={!!error}
+                  onClick={onSave}
+                  sx={{
+                    backgroundColor: !!error ? "grey" : "primary.main", 
+                    color: "white", 
+                    "&:hover": {
+                      backgroundColor: !!error ? "grey" : "primary.dark", 
+                    },
+                    padding: "10px", 
+                    borderRadius: 1, 
+                    height:'40px'
+                  }}
+                >
                   <Save />
+                  Lưu
                 </IconButton>
               </Stack>
               <Divider
                 sx={{
-                  bgcolor: 'gray',
-                  margin: '20px auto',
-                  width: '150%',
-                  transform: 'translateX(-25%)',
+                  bgcolor: "gray",
+                  margin: "20px auto",
+                  width: "150%",
+                  transform: "translateX(-25%)",
                 }}
               />
 
               {/* Accordion với Tabs */}
               <Accordion
-                expanded={expanded === 'panel1'}
-                onChange={handleChangeAccordion('panel1')}
+                expanded={expanded === "panel1"}
+                onChange={handleChangeAccordion("panel1")}
                 sx={{
                   boxShadow: 0, // Tạo hiệu ứng giống card
                 }}
@@ -284,9 +301,9 @@ const EditSpacePosted = () => {
                   expandIcon={<ExpandMoreIcon />}
                   sx={{
                     backgroundColor:
-                      expanded === 'panel1' ? '#e0f7fa' : 'transparent', // Màu xanh nhạt
-                    color: expanded === 'panel1' ? '#1976d2' : 'inherit', // Màu xanh đậm
-                    fontWeight: expanded === 'panel1' ? 'bold' : 'normal', // Làm đậm chữ khi mở
+                      expanded === "panel1" ? "#e0f7fa" : "transparent", // Màu xanh nhạt
+                    color: expanded === "panel1" ? "#1976d2" : "inherit", // Màu xanh đậm
+                    fontWeight: expanded === "panel1" ? "bold" : "normal", // Làm đậm chữ khi mở
                   }}
                 >
                   <Typography>Thông tin cơ bản</Typography>
@@ -294,9 +311,9 @@ const EditSpacePosted = () => {
                 <AccordionDetails>
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <Tabs
@@ -305,15 +322,15 @@ const EditSpacePosted = () => {
                       orientation="vertical"
                       variant="fullWidth"
                       TabIndicatorProps={{ style: { left: 0 } }}
-                      sx={{ borderLeft: 1, borderColor: 'divider' }}
+                      sx={{ borderLeft: 1, borderColor: "divider" }}
                     >
                       <Tab
                         label="Thể loại không gian"
-                        sx={{ textTransform: 'none' }}
+                        sx={{ textTransform: "none" }}
                       />
                       <Tab
                         label="Tiện ích không gian"
-                        sx={{ textTransform: 'none' }}
+                        sx={{ textTransform: "none" }}
                       />
                     </Tabs>
                   </div>
@@ -321,8 +338,8 @@ const EditSpacePosted = () => {
               </Accordion>
 
               <Accordion
-                expanded={expanded === 'panel2'}
-                onChange={handleChangeAccordion('panel2')}
+                expanded={expanded === "panel2"}
+                onChange={handleChangeAccordion("panel2")}
                 sx={{
                   boxShadow: 0, // Tạo hiệu ứng giống card
                 }}
@@ -331,9 +348,9 @@ const EditSpacePosted = () => {
                   expandIcon={<ExpandMoreIcon />}
                   sx={{
                     backgroundColor:
-                      expanded === 'panel2' ? '#e0f7fa' : 'transparent', // Màu xanh nhạt
-                    color: expanded === 'panel2' ? '#1976d2' : 'inherit', // Màu xanh đậm
-                    fontWeight: expanded === 'panel2' ? 'bold' : 'normal', // Làm đậm chữ khi mở
+                      expanded === "panel2" ? "#e0f7fa" : "transparent", // Màu xanh nhạt
+                    color: expanded === "panel2" ? "#1976d2" : "inherit", // Màu xanh đậm
+                    fontWeight: expanded === "panel2" ? "bold" : "normal", // Làm đậm chữ khi mở
                   }}
                 >
                   <Typography>Hình ảnh & Quy định</Typography>
@@ -341,9 +358,9 @@ const EditSpacePosted = () => {
                 <AccordionDetails>
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <Tabs
@@ -352,18 +369,18 @@ const EditSpacePosted = () => {
                       orientation="vertical"
                       variant="fullWidth"
                       TabIndicatorProps={{ style: { left: 0 } }}
-                      sx={{ borderLeft: 1, borderColor: 'divider' }}
+                      sx={{ borderLeft: 1, borderColor: "divider" }}
                     >
-                      <Tab label="Hình ảnh" sx={{ textTransform: 'none' }} />
-                      <Tab label="Quy định" sx={{ textTransform: 'none' }} />
+                      <Tab label="Hình ảnh" sx={{ textTransform: "none" }} />
+                      <Tab label="Quy định" sx={{ textTransform: "none" }} />
                     </Tabs>
                   </div>
                 </AccordionDetails>
               </Accordion>
 
               <Accordion
-                expanded={expanded === 'panel3'}
-                onChange={handleChangeAccordion('panel3')}
+                expanded={expanded === "panel3"}
+                onChange={handleChangeAccordion("panel3")}
                 sx={{
                   boxShadow: 0, // Tạo hiệu ứng giống card
                 }}
@@ -372,9 +389,9 @@ const EditSpacePosted = () => {
                   expandIcon={<ExpandMoreIcon />}
                   sx={{
                     backgroundColor:
-                      expanded === 'panel3' ? '#e0f7fa' : 'transparent', // Màu xanh nhạt
-                    color: expanded === 'panel3' ? '#1976d2' : 'inherit', // Màu xanh đậm
-                    fontWeight: expanded === 'panel3' ? 'bold' : 'normal', // Làm đậm chữ khi mở
+                      expanded === "panel3" ? "#e0f7fa" : "transparent", // Màu xanh nhạt
+                    color: expanded === "panel3" ? "#1976d2" : "inherit", // Màu xanh đậm
+                    fontWeight: expanded === "panel3" ? "bold" : "normal", // Làm đậm chữ khi mở
                   }}
                 >
                   <Typography>Chính sách giá</Typography>
@@ -382,9 +399,9 @@ const EditSpacePosted = () => {
                 <AccordionDetails>
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <Tabs
@@ -393,11 +410,11 @@ const EditSpacePosted = () => {
                       orientation="vertical"
                       variant="fullWidth"
                       TabIndicatorProps={{ style: { left: 0 } }}
-                      sx={{ borderLeft: 1, borderColor: 'divider' }}
+                      sx={{ borderLeft: 1, borderColor: "divider" }}
                     >
                       <Tab
                         label="Giá theo giờ/ ngày/ tháng /năm"
-                        sx={{ textTransform: 'none' }}
+                        sx={{ textTransform: "none" }}
                       />
                     </Tabs>
                   </div>
@@ -405,8 +422,8 @@ const EditSpacePosted = () => {
               </Accordion>
 
               <Accordion
-                expanded={expanded === 'panel4'}
-                onChange={handleChangeAccordion('panel4')}
+                expanded={expanded === "panel4"}
+                onChange={handleChangeAccordion("panel4")}
                 sx={{
                   boxShadow: 0, // Tạo hiệu ứng giống card
                 }}
@@ -415,9 +432,9 @@ const EditSpacePosted = () => {
                   expandIcon={<ExpandMoreIcon />}
                   sx={{
                     backgroundColor:
-                      expanded === 'panel4' ? '#e0f7fa' : 'transparent', // Màu xanh nhạt
-                    color: expanded === 'panel4' ? '#1976d2' : 'inherit', // Màu xanh đậm
-                    fontWeight: expanded === 'panel4' ? 'bold' : 'normal', // Làm đậm chữ khi mở
+                      expanded === "panel4" ? "#e0f7fa" : "transparent", // Màu xanh nhạt
+                    color: expanded === "panel4" ? "#1976d2" : "inherit", // Màu xanh đậm
+                    fontWeight: expanded === "panel4" ? "bold" : "normal", // Làm đậm chữ khi mở
                   }}
                 >
                   <Typography>Thay đổi địa điểm</Typography>
@@ -425,9 +442,9 @@ const EditSpacePosted = () => {
                 <AccordionDetails>
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
                     }}
                   >
                     <Tabs
@@ -436,9 +453,9 @@ const EditSpacePosted = () => {
                       orientation="vertical"
                       variant="fullWidth"
                       TabIndicatorProps={{ style: { left: 0 } }}
-                      sx={{ borderLeft: 1, borderColor: 'divider' }}
+                      sx={{ borderLeft: 1, borderColor: "divider" }}
                     >
-                      <Tab label="Vị trí" sx={{ textTransform: 'none' }} />
+                      <Tab label="Vị trí" sx={{ textTransform: "none" }} />
                     </Tabs>
                   </div>
                 </AccordionDetails>
