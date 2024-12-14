@@ -1,5 +1,4 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -20,8 +19,10 @@ import React, { useContext, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import Loading from '../../components/Loading';
 import { SpaceContext } from '../../Context/SpaceContext ';
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import Checkbox from '@mui/material/Checkbox';
+import { htmlToText } from 'html-to-text';
+import { Constants } from '../../utils/constants';
 
 export const availableSlots = [
   {
@@ -201,6 +202,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
       ...prev,
       [name]: numericValue,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
     if (value.trim() === '') {
       setErrors((prev) => ({
         ...prev,
@@ -354,32 +359,39 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const [isShowNotPermissionSpacePrice, setIsShowNotPermissionSpacePrice] =
     useState(false);
 
-  const handleChange = (event) => {
-    console.log('308 handleChange =======================>', {
-      checked: event.target.checked,
-      name: event.target.name,
-    });
-    if (event.target.checked === false) {
-      const checkOther = Object.keys(stateSpacePriceWay)
-      .filter((item) => item !== event.target.name)
-      .every((key) => {
-        return stateSpacePriceWay[key] === false;
+    const onPricePerChange = (event) => {
+      console.log('onPricePerChange', {
+        checked: event.target.checked,
+        name: event.target.name,
       });
-      if (checkOther) {
-        setIsShowNotPermissionSpacePrice(true);
-        return;
+  
+      // reset the state of checkbox
+      setStateSpacePriceWay({
+        ...stateSpacePriceWay,
+        [event.target.name]: event.target.checked,
+      });
+      // hide the not permission notice
+      setIsShowNotPermissionSpacePrice(false);
+  
+      // check case we uncheck
+      if (event.target.checked === false) {
+        const isOtherAllFalse = Object.keys(stateSpacePriceWay)
+          .filter((item) => item !== event.target.name)
+          .every((key) => {
+            return stateSpacePriceWay[key] === false;
+          });
+        // if other option is not check=> show error that you must check at least one option
+        if (isOtherAllFalse) {
+          setIsShowNotPermissionSpacePrice(true);
+        }
+  
+        // set the value of priceper to 0
+        const tempName = event.target.name;
+        const tempPrice = {};
+        tempPrice[tempName] = 0;
+        setSpaceInfo({ ...spaceInfo, ...tempPrice });
       }
-      const tempName = event.target.name;
-      const tempPrice = {};
-      tempPrice[tempName] = 0;
-      setSpaceInfo({ ...spaceInfo, ...tempPrice });
-    }
-    setStateSpacePriceWay({
-      ...stateSpacePriceWay,
-      [event.target.name]: event.target.checked,
-    });
-    setIsShowNotPermissionSpacePrice(false);
-  };
+    };
 
   const { pricePerHour, pricePerDay, /*pricePerWeek*/ pricePerMonth } =
     stateSpacePriceWay;
@@ -480,7 +492,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerHour}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerHour"
                               />
                             }
@@ -490,7 +502,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerDay}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerDay"
                               />
                             }
@@ -510,7 +522,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerMonth}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerMonth"
                               />
                             }
@@ -816,6 +828,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                   fontSize: '20px',
                   paddingBottom: '10px',
                 }}
+                fullWidth
               >
                 Mô tả
               </Typography>
@@ -823,14 +836,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 ref={editorRef}
                 editor={ClassicEditor}
                 // data={spaceInfo.description}
-                // onChange={(event, editor) => {
-                //   const data = editor.getData();
-                //   const plainText = htmlToText(data); // Convert HTML to plain text
-                //   setSpaceInfo((prev) => ({
-                //     ...prev,
-                //     description: plainText, // Save as plain text
-                //   }));
-                // }}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  const plainText = htmlToText(data); // Convert HTML to plain text
+                  setSpaceInfo((prev) => ({
+                    ...prev,
+                    description: plainText, // Save as plain text
+                  }));
+                }}
                 onInit={(editor) => {
                   editor.editing.view.change((writer) => {
                     writer.setStyle(

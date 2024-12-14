@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles'; // Import styled from MUI
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LoadingButton } from '@mui/lab';
+import { Constants } from '../../utils/constants';
 
 const steps = [
   'Chọn thể loại',
@@ -38,21 +39,71 @@ export default function AddSpaceFlow() {
   const [activeStep, setActiveStep] = useState(0);
   const {
     selectedCategoryId,
+    setSelectedCategoryId,
     selectedApplianceId,
-    spaceInfo,
-    location,
-    selectedAppliances,
     setSelectedApplianceId,
-    customRule,
-    selectedRules,
+    selectedAppliances,
+    setSelectedAppliances, 
+    location,
+    setLocation,
+    spaceInfo,
     setSpaceInfo,
+    rules,
+    setRules,
+    selectedRules,
+    setSelectedRules,
+    customRule,
+    setCustomRule,
     isGoldenHour,
+    setIsGoldenHour,
     goldenHourDetails,
+    setGoldenHourDetails,
+    priceIncrease,
+    setPriceIncrease,
   } = useContext(SpaceContext);
   const userId = localStorage.getItem('userId');
   const navigate = useNavigate();
   const editorRef = useRef();
   const [isLoading, setIsLoading] = useState(false)
+
+  const isHaveAtLeastOnePricePer =
+    spaceInfo.pricePerHour ||
+    spaceInfo.pricePerDay ||
+    spaceInfo.pricePerWeek ||
+    spaceInfo.pricePerMonth;
+
+  const canSave =
+    spaceInfo.name &&
+    isHaveAtLeastOnePricePer &&
+    spaceInfo.area > 0 &&
+    selectedRules.length &&
+    location &&
+    spaceInfo.latLng.length;
+
+  const resetAllStates = () => {
+    setSelectedCategoryId(null);
+    setSelectedApplianceId(null);
+    setSelectedAppliances([]);
+    setLocation(null);
+    setSpaceInfo({
+      name: '',
+      description: '',
+      area: '',
+      rulesId: null,
+      pricePerHour: 0,
+      pricePerDay: 0,
+      pricePerWeek: 0,
+      pricePerMonth: 0,
+      images: [],
+      latLng: [],
+    });
+    setIsGoldenHour(false);
+    setGoldenHourDetails([]);
+    setRules([]);
+    setSelectedRules([]);
+    setCustomRule('');
+    setPriceIncrease(0);
+  };
 
   const handleFinish = async () => {
     setIsLoading(true);
@@ -169,9 +220,16 @@ export default function AddSpaceFlow() {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      resetAllStates();
+    };
+  }, []);
+
   const isNextDisabled =
     (activeStep === 0 && !selectedCategoryId) ||
-    (activeStep === 1 && selectedAppliances.length === 0);
+    (activeStep === 1 && selectedAppliances.length === 0) ||
+    (activeStep === 2 && (!location || spaceInfo.latLng.length === 0));
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -216,7 +274,14 @@ export default function AddSpaceFlow() {
           </Button>
           <Box sx={{ flex: '1 1 auto' }} />
           {activeStep === steps.length - 1 ? (
-            <LoadingButton onClick={handleFinish} variant='contained' loading={isLoading}>Hoàn thành</LoadingButton>
+            <LoadingButton
+            disabled={!canSave}
+            onClick={handleFinish}
+            variant="contained"
+            loading={isLoading}
+          >
+            Hoàn thành
+          </LoadingButton>
           ) : (
             <Button
               onClick={handleNext}

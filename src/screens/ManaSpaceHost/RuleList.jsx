@@ -13,6 +13,8 @@ export default function RuleList({
   setSelectedRules,
   customRule,
   setCustomRule,
+  setIsNotChangeData,
+
 }) {
   const rulesList = [
     'Vệ sinh và ngăn nắp',
@@ -27,6 +29,7 @@ export default function RuleList({
   console.log(selectedRules);
 
   const handleToggleRule = (rule, checked) => {
+    setIsNotChangeData(false);
     setSelectedRules((prevSelectedRules) => {
       if (checked) {
         // Nếu switch được bật, thêm rule vào mảng
@@ -40,6 +43,7 @@ export default function RuleList({
 
   // Hàm xử lý khi nhập vào custom rule
   const handleCustomRuleChange = (event) => {
+    setIsNotChangeData(false);
     setCustomRule(event.target.value);
   };
   return (

@@ -22,17 +22,21 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { SpaceContext } from '../../Context/SpaceContext ';
+import { Constants } from '../../utils/constants';
+
 import Appliances from './Appliances';
 import CategoriesPosted from './CategoriesPosted';
 import EditLocation from './EditLocation';
 import PreviewImage from './PreviewImage';
 import Price from './Price';
 import RuleList from './RuleList';
+import Description from './Description';
 
 const panels = {
   panel1: {
     0: CategoriesPosted,
     1: Appliances,
+    2: Description,
   },
   panel2: {
     0: PreviewImage,
@@ -51,7 +55,7 @@ const EditSpacePosted = () => {
   const navigate = useNavigate(); // Hook to navigate after successful registration
 
   const { spaceId } = locationWeb.state;
-
+  const [isNotChangeData, setIsNotChangeData] = useState(true);
   const [expanded, setExpanded] = useState('panel1');
   const [selectedTab, setSelectedTab] = useState(0);
   const [error, setError] = useState('');
@@ -91,6 +95,29 @@ const EditSpacePosted = () => {
     setSelectedTab(newValue);
   };
 
+  const isHaveAtLeastOnePricePer =
+  spaceInfo.pricePerHour ||
+  spaceInfo.pricePerDay ||
+  spaceInfo.pricePerWeek ||
+  spaceInfo.pricePerMonth;
+
+  const canSave =
+    spaceInfo.name &&
+    isHaveAtLeastOnePricePer &&
+    spaceInfo.area > 0 &&
+    selectedRules.length &&
+    location &&
+    spaceInfo.latLng.length;
+  console.log(
+    'canSave',
+    spaceInfo,
+    selectedRules,
+    location,
+    canSave,
+    loading,
+    isNotChangeData
+  );
+
   // Nội dung từng tab của từng Accordion
   const renderTabContent = () => {
     const Comp = panels?.[expanded]?.[selectedTab];
@@ -121,6 +148,7 @@ const EditSpacePosted = () => {
             setGoldenHourDetails,
             priceIncrease,
             setPriceIncrease,
+            setIsNotChangeData
           }}
         />
       );
@@ -175,6 +203,8 @@ const EditSpacePosted = () => {
         const {
           name,
           rulesId,
+          area,
+          description,
           pricePerHour,
           pricePerDay,
           // pricePerWeek,
@@ -209,8 +239,11 @@ const EditSpacePosted = () => {
         );
         setSpaceInfo({
           name,
+          area,
+          description,
           pricePerHour,
           pricePerDay,
+          description,
           // pricePerWeek,
           pricePerMonth,
           images,
@@ -263,7 +296,7 @@ const EditSpacePosted = () => {
                   sx={{ borderRadius: 1 }} 
                 />
                 <IconButton
-                  disabled={!!error}
+                  disabled={!canSave || loading || isNotChangeData}
                   onClick={onSave}
                   sx={{
                     backgroundColor: !!error ? "grey" : "primary.main", 
@@ -331,6 +364,10 @@ const EditSpacePosted = () => {
                       <Tab
                         label="Tiện ích không gian"
                         sx={{ textTransform: "none" }}
+                      />
+                      <Tab
+                        label="Mô tả không gian & Diện tích"
+                        sx={{ textTransform: 'none' }}
                       />
                     </Tabs>
                   </div>

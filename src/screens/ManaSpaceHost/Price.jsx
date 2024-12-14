@@ -29,6 +29,7 @@ export default function Price({
   setGoldenHourDetails,
   priceIncrease,
   setPriceIncrease,
+  setIsNotChangeData,
 }) {
   const [errors, setErrors] = useState({}); // Để lưu thông báo lỗi cho từng trường
   const [showPricePers, setShowPricePers] = useState({
@@ -39,11 +40,13 @@ export default function Price({
   });
 
   const onIsGoldenHourChange = () => {
+    setIsNotChangeData(false);
     setIsGoldenHour((prev) => !prev);
     setGoldenHourDetails([]);
   };
 
   const onPriceIncreaseChange = (e) => {
+    setIsNotChangeData(false);
     setPriceIncrease(e.target.value);
 
     setGoldenHourDetails((prev) => {
@@ -55,6 +58,7 @@ export default function Price({
   };
 
   const onTimeSlotSelect = (slotStartTime, slotEndTime) => {
+    setIsNotChangeData(false);
     setGoldenHourDetails((prev) => {
       const checked = prev.find(
         ({ startTime, endTime }) =>
@@ -112,6 +116,7 @@ export default function Price({
   };
 
   const onPricePerValChange = (e) => {
+    setIsNotChangeData(false);
     const { name, value, type } = e.target;
     setSpaceInfo((prev) => ({
       ...prev,
