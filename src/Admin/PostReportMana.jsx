@@ -5,8 +5,8 @@ import axios from "axios";
 import CommunityStandards from "./CommunityStandards";
 import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
-import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete, Tooltip, TableCell, TableRow, TableBody, TableHead, TableContainer, Paper, Table, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { BlockOutlined, Preview } from "@mui/icons-material";
+import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete, Tooltip, TableCell, TableRow, TableBody, TableHead, TableContainer, Paper, Table, Dialog, DialogTitle, DialogContent, DialogActions, Divider } from '@mui/material';
+import { BlockOutlined, Preview, Visibility } from "@mui/icons-material";
 import { Image } from "antd";
 import { toast } from "react-toastify";
 
@@ -92,7 +92,7 @@ const PostReportMana = () => {
       console.error("Error fetching space details:", error);
     }
   };
-
+//acp report
   const handleAccept = (reportId) => {
     const selectedSpaceREPORT = reportPosts.find((report) => report._id === reportId);
 
@@ -117,7 +117,7 @@ const PostReportMana = () => {
         console.error("Error updating statusReport:", error);
       });
   };
-
+//rj report
   const handleReject = (reportId) => {
     axios
       .put(`http://localhost:9999/reports/reportsreject/${reportId}`, {
@@ -152,7 +152,6 @@ const PostReportMana = () => {
   // Xử lý mở dialog cho báo cáo
   const handleApproveReport = (reportId) => {
     // Logic để hiển thị dialog cho báo cáo
-    console.log("Duyệt báo cáo ID:", reportId);
     setDialogState({
       open: true,
       type: "report",
@@ -172,6 +171,24 @@ const PostReportMana = () => {
   const handleRejectButtonClick = () => {
     setShowRejectField(true);  // Hiển thị TextField khi nhấn nút
   };
+
+  const handleAcceptComplaint = async () => {
+    try {
+      const { id } = dialogState;
+      
+      // Gọi API để chấp nhận khiếu nại
+      const response = await axios.put(`http://localhost:9999/reports/complaintaccept/${id}`);
+  
+      if (response.status === 200) {
+        toast.success("Khiếu nại đã được chấp nhận!");
+      }
+      setDialogState({ open: false, type: "", id: "" });
+    } catch (error) {
+      toast.error("Đã xảy ra lỗi khi xử lý yêu cầu!");
+      setDialogState({ open: false, type: "", id: "" });
+    }
+  };
+  
 
   return (
     <Container fluid className="py-4">
@@ -283,22 +300,22 @@ const PostReportMana = () => {
               <Table stickyHeader>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Tên không gian</TableCell>
-                    <TableCell sx={{ fontWeight: 700,width: '150px' }}>Chủ không gian</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Khách tố cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Lý do báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Kiến nghị báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700,width: '80px'  }}>Lượt báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Trạng thái báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700  }}>Thao tác</TableCell>
+                    <TableCell sx={{ fontWeight: 700,padding: 0 }}>STT</TableCell>
+                    <TableCell sx={{ fontWeight: 700,padding: 0,textAlign:"center",width: '230px' }}>Tên không gian</TableCell>
+                    <TableCell sx={{ fontWeight: 700,width: '155px',padding: 0,textAlign:"center" }}>Chủ không gian</TableCell>
+                    <TableCell sx={{ fontWeight: 700,padding: 0,textAlign:"center",width: '155px' }}>Khách tố cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700,padding: 0,textAlign:"center",width: '380px' }}>Lý do báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700,padding: 0,textAlign:"center",width: '380px' }}>Khiếu nại báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700,width: '80px' ,padding: 0,textAlign:"center" }}>Lượt báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700,width: '110px' ,padding: 0,textAlign:"center" }}>Trạng thái báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700 ,padding: 0,textAlign:"center" }}>Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {productsOnPage?.length > 0 &&
                     productsOnPage.map((report, index) => (
                       <TableRow key={report._id} hover>
-                        <TableCell>{index + 1}</TableCell>
+                        <TableCell sx={{textAlign:"center",padding:"16px 10px"}}>{index + 1}</TableCell>
                         <TableCell>{report.spaceId.name}</TableCell>
                         <TableCell>{report.spaceId?.userId?.fullname}</TableCell>
                         <TableCell>{report.userId?.fullname}</TableCell>
@@ -306,34 +323,53 @@ const PostReportMana = () => {
                           {report.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
                           {report.customReason && `; ${report.customReason}`}
                         </TableCell>
-                        <TableCell>Để lí do kiến nghịnghị</TableCell>
-                        <TableCell>{report.spaceId.reportCount}</TableCell>
+                        <TableCell>
+                          <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                            {/* Dòng hiển thị kiến nghị */}
+                            <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                              {report?.complaint} {/* Thay bằng dữ liệu kiến nghị */}
+                            </Typography>
+
+                            {/* Đường kẻ dọc */}
+                            <Divider orientation="vertical" flexItem sx={{ backgroundColor: "black", mx: 1 }} />
+
+                            {/* Dòng chứa các nút */}
+                            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                              <Tooltip title="Chấp nhận KN">
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => handleApproveReport(report._id)}
+                                  size="small"
+                                  style={{ padding: 4 }}
+                                >
+                                  <CheckCircle />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Từ chối KN">
+                                <IconButton
+                                  color="secondary"
+                                  onClick={() => handleApproveAppeal(report._id)}
+                                  size="small"
+                                  style={{ padding: 4 }}
+                                >
+                                  <BlockOutlined fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </Box>
+                        </TableCell>
+
+                        <TableCell sx={{textAlign:"center",padding:"16px 10px"}}>{report.spaceId.reportCount}</TableCell>
                         <TableCell sx={{ color: report.statusReport === 'Từ chối' ? 'error.main' : report.statusReport === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
                           {report.statusReport}
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{margin:"0 auto"}}>
                           <Tooltip title="Xem không gian">
                             <IconButton
                               color="secondary"
                               onClick={() => handleShowDetail(report.spaceId._id, report._id)}
                             >
-                              <Preview />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Duyệt báo cáo">
-                            <IconButton
-                              color="primary"
-                              onClick={() => handleApproveReport(report._id)}
-                            >
-                              <CheckCircle />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Duyệt khiếu nại">
-                            <IconButton
-                              color="secondary"
-                              onClick={() => handleApproveAppeal(report._id)}
-                            >
-                              <BlockOutlined />
+                              <Visibility />
                             </IconButton>
                           </Tooltip>
                         </TableCell>
@@ -368,20 +404,16 @@ const PostReportMana = () => {
         onClose={() => setDialogState({ open: false, type: "", id: "" })}
       >
         <DialogTitle>
-          {dialogState.type === "report" ? "Duyệt Báo Cáo" : "Duyệt Khiếu Nại"}
+          {dialogState.type === "report" ? "Chấp nhận khiếu nại" : "Từ chối khiếu nại"}
         </DialogTitle>
         <DialogContent>
           <Typography>
-            Bạn có chắc chắn muốn {dialogState.type === "report" ? "duyệt báo cáo" : "duyệt khiếu nại"} này không?
+            Bạn có chắc chắn muốn {dialogState.type === "report" ? "Chấp nhận khiếu nại " : "Từ chối khiếu nại "} này không?
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
-              // Logic xử lý đồng ý
-              console.log("Đồng ý:", dialogState);
-              setDialogState({ open: false, type: "", id: "" });
-            }}
+            onClick={handleAcceptComplaint}
             color="primary"
           >
             Đồng ý
