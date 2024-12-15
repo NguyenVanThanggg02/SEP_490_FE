@@ -1,15 +1,21 @@
 import * as MuiIcons from '@mui/icons-material';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
+import { Constants } from '../../utils/constants';
 
 const CategoriesPosted = ({
+  spaceInfo,
   selectedCategoryId,
   setSelectedCategoryId,
   setSelectedAppliances,
+  setIsNotChangeData,
+  isChangeAppliancesOfInitialCate,
+  setIsChangeAppliancesOfInitialCate,
 }) => {
+  const initialSpaceInfoRef = useRef(spaceInfo);
   const location = useLocation();
   const { spaceId } = location.state;
 
@@ -29,9 +35,30 @@ const CategoriesPosted = ({
   }, []);
 
   const handleCategoryClick = (cateid) => {
+    setIsNotChangeData(false);
     setSelectedCategoryId(cateid); // Chọn category mới
-    setSelectedAppliances([]); // Xóa appliances đã chọn khi chọn category mới
-  };
+    // neu cate nay la cate ban dau,
+    console.log(
+      'cateid',
+      cateid,
+      initialSpaceInfoRef.current,
+      isChangeAppliancesOfInitialCate
+    );
+    if (cateid === initialSpaceInfoRef.current.appliancesId.categoryId) {
+      // user chua tung update appliance cua cate ban dau=> set lai aplliances nhu luc ban dau
+      if (!isChangeAppliancesOfInitialCate) {
+        setSelectedAppliances(
+          initialSpaceInfoRef.current.appliancesId.appliances
+        );
+        return;
+        // da thay doi app cua inital ban dau
+      } else {
+        setIsChangeAppliancesOfInitialCate(true);
+      }
+    } else {
+      setSelectedAppliances([]); // Xóa appliances đã chọn khi chọn category mới
+    }
+  }
   return (
     <Row>
       <Col md={12}>

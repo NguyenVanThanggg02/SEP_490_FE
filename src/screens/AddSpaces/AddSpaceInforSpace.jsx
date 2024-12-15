@@ -1,5 +1,4 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CloseIcon from '@mui/icons-material/Close';
 import {
@@ -20,8 +19,10 @@ import React, { useContext, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import Loading from '../../components/Loading';
 import { SpaceContext } from '../../Context/SpaceContext ';
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import Checkbox from '@mui/material/Checkbox';
+import { htmlToText } from 'html-to-text';
+import { Constants } from '../../utils/constants';
 
 export const availableSlots = [
   {
@@ -157,6 +158,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
     setIsGoldenHour(!isGoldenHour);
   };
 
+  const formatArea = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
+  const formatPrice = (value) => {
+    if (!value) return "";
+    return new Intl.NumberFormat("vi-VN").format(value);
+  };
   const handleToggleRule = (rule, checked) => {
     setSelectedRules((prevSelectedRules) => {
       if (checked) {
@@ -185,12 +194,17 @@ const AddSpaceInforSpace = ({ editorRef }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
+    
     console.log('{ name, value, type }', { name, value, type });
 
+    const numericValue = value.replace(/\./g, "");
     setSpaceInfo((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: numericValue,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
     }));
     if (value.trim() === '') {
       setErrors((prev) => ({
@@ -209,22 +223,22 @@ const AddSpaceInforSpace = ({ editorRef }) => {
           [name]: 'Giá trị phải lớn hơn 1',
         }));
       }
-    }
+    } 
     if (
       type === 'number' &&
       name === 'priceIncrease' &&
-      (parseFloat(value) <= 0 || parseFloat(value) > 100)
+      (parseFloat(numericValue) <= 0 || parseFloat(numericValue) > 100)
     ) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
+    setErrors((prev) => ({
+      ...prev,
+      [name]: 'Giá trị là phần trăm nên phải lớn hơn 0 và nhỏ hơn bằng 100',
       }));
     } else {
       setErrors((prev) => ({
         ...prev,
         [name]: '',
-      }));
-    }
+    }));
+  }
   };
 
   const handleBlur = (e) => {
@@ -345,32 +359,39 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   const [isShowNotPermissionSpacePrice, setIsShowNotPermissionSpacePrice] =
     useState(false);
 
-  const handleChange = (event) => {
-    console.log('308 handleChange =======================>', {
-      checked: event.target.checked,
-      name: event.target.name,
-    });
-    if (event.target.checked === false) {
-      const checkOther = Object.keys(stateSpacePriceWay)
-        .filter((item) => item !== event.target.name)
-        .every((key) => {
-          return stateSpacePriceWay[key] === false;
-        });
-      if (checkOther) {
-        setIsShowNotPermissionSpacePrice(true);
-        return;
+    const onPricePerChange = (event) => {
+      console.log('onPricePerChange', {
+        checked: event.target.checked,
+        name: event.target.name,
+      });
+  
+      // reset the state of checkbox
+      setStateSpacePriceWay({
+        ...stateSpacePriceWay,
+        [event.target.name]: event.target.checked,
+      });
+      // hide the not permission notice
+      setIsShowNotPermissionSpacePrice(false);
+  
+      // check case we uncheck
+      if (event.target.checked === false) {
+        const isOtherAllFalse = Object.keys(stateSpacePriceWay)
+          .filter((item) => item !== event.target.name)
+          .every((key) => {
+            return stateSpacePriceWay[key] === false;
+          });
+        // if other option is not check=> show error that you must check at least one option
+        if (isOtherAllFalse) {
+          setIsShowNotPermissionSpacePrice(true);
+        }
+  
+        // set the value of priceper to 0
+        const tempName = event.target.name;
+        const tempPrice = {};
+        tempPrice[tempName] = 0;
+        setSpaceInfo({ ...spaceInfo, ...tempPrice });
       }
-      const tempName = event.target.name;
-      const tempPrice = {};
-      tempPrice[tempName] = 0;
-      setSpaceInfo({ ...spaceInfo, ...tempPrice });
-    }
-    setStateSpacePriceWay({
-      ...stateSpacePriceWay,
-      [event.target.name]: event.target.checked,
-    });
-    setIsShowNotPermissionSpacePrice(false);
-  };
+    };
 
   const { pricePerHour, pricePerDay, /*pricePerWeek*/ pricePerMonth } =
     stateSpacePriceWay;
@@ -494,7 +515,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerHour}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerHour"
                               />
                             }
@@ -504,7 +525,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerDay}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerDay"
                               />
                             }
@@ -514,7 +535,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             control={
                               <Checkbox
                                 checked={pricePerMonth}
-                                onChange={handleChange}
+                                onChange={onPricePerChange}
                                 name="pricePerMonth"
                               />
                             }
@@ -527,10 +548,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={12}>
                         <TextField
                           name="pricePerHour"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour|| ""}
+                          value={formatPrice(spaceInfo.pricePerHour|| "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -563,10 +584,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={12}>
                         <TextField
                           name="pricePerDay"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay|| ""}
+                          value={formatPrice(spaceInfo.pricePerDay || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -598,10 +619,10 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={12}>
                         <TextField
                           name="pricePerMonth"
-                          type="number"
+                          type="text"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth|| ""}
+                          value={formatPrice(spaceInfo.pricePerMonth || "")} // Sử dụng hàm formatPrice để định dạng
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -651,7 +672,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       }
                       label="Giờ cao điểm"
                     />
-                 
+
                   </div>
 
                   {isGoldenHour && (
@@ -730,13 +751,14 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                     }}
                   >
                     Diện tích <span style={{ color: 'red' }}>*</span>
-                  </Typography>
+                    </Typography>
                   <TextField
                     name="area"
                     type="number"
                     variant="outlined"
                     required
                     value={spaceInfo.area}
+                    // value={formatArea(spaceInfo.area || "")} // Sử dụng hàm formatArea để định dạng
                     onChange={handleInputChange} // Cập nhật khi người dùng nhập
                     onBlur={handleBlur}
                     InputProps={{
@@ -775,12 +797,22 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                   fontSize: '20px',
                   paddingBottom: '10px',
                 }}
+                fullWidth
               >
                 Mô tả
               </Typography>
               <CKEditor
                 ref={editorRef}
                 editor={ClassicEditor}
+                // data={spaceInfo.description}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  const plainText = htmlToText(data); // Convert HTML to plain text
+                  setSpaceInfo((prev) => ({
+                    ...prev,
+                    description: plainText, // Save as plain text
+                  }));
+                }}
                 onInit={(editor) => {
                   editor.editing.view.change((writer) => {
                     writer.setStyle(
@@ -905,7 +937,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           className="closeicon"
                         >
                           <CloseIcon sx={{ fontSize: '20px' }} />
-                        </span>
+                          </span>
                       </div>
                     </Col>
                   ))}

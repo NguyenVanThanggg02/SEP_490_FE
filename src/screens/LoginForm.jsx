@@ -46,10 +46,10 @@ const LoginForm = ({ setIsLoggedIn }) => {
       if (role === 1) {
         nav("/admin");
       } else {
-        if (firstLogin === true) {
-          nav("/userneed");
-          return;
-        }
+        // if (firstLogin === true) {
+        //   nav("/userneed");
+        //   return;
+        // }
         nav("/");
       }
     } catch (error) {

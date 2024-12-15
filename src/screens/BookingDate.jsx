@@ -342,8 +342,7 @@ const BookingForm = () => {
 
   const checkMonth = (selectedMonthObjs) => {
     // this space dont have any booking
-    if (!spaceData?.bookings?.length) return selectedMonthObjs;
-
+    if (!spaceData?.bookings?.length) return { availableSelectedMonthObjs: selectedMonthObjs };
     // have some bookings
     let takenSelectedMonthObjs = [];
     let availableSelectedMonthObjs = [];
@@ -594,8 +593,10 @@ const BookingForm = () => {
 
   const handleMonth = (selectedIObjs) => {
     const selectedMonthObjs = selectedIObjs.map((selectedIObj) => {
+      const currentMonth = dayjs().month() + 1;
+      if (selectedIObj.month.number === currentMonth) return null;
       return { month: selectedIObj.month.number, year: selectedIObj.year };
-    });
+    }).filter(s => s !==null);
 
     if (selectedMonthObjs.length) {
       // check available, taken date, slotsInDatePart
@@ -603,7 +604,7 @@ const BookingForm = () => {
       const { takenSelectedMonthObjs, availableSelectedMonthObjs } = ret;
 
       // notice when user choose some date taken
-      if (takenSelectedMonthObjs?.length) {
+      if (takenSelectedMonthObjs && takenSelectedMonthObjs.length) {
         const noticeString = takenSelectedMonthObjs
           .map((takenSelectedMonthObj) => {
             return `${takenSelectedMonthObj.year}-${takenSelectedMonthObj.month}`;
@@ -750,7 +751,7 @@ const BookingForm = () => {
                     }}
 
                   >
-                    24 giờ
+                    5 giờ
                   </Typography>{" "}
                   trước thời gian bắt đầu sử dụng.
                 </Typography>

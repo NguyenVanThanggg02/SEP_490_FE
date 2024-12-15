@@ -2,10 +2,13 @@ import {
   BlockOutlined,
   CheckCircle,
   Search as SearchIcon,
+  Visibility,
+  VisibilityOff,
 } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -16,6 +19,7 @@ import {
   InputBase,
   InputLabel,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   Stack,
@@ -62,7 +66,12 @@ export const TransactionManagement = () => {
     setTypeOfTransaction(event.target.value);
   };
   const [data, setData] = useState();
-
+  const [pagination, setPagination] = useState({
+    page: 1,
+    totalElement: undefined,
+    totalPage: undefined,
+    limit: 10
+  })
   async function fetchHistory() {
     try {
       const response = await axios.get(
@@ -72,21 +81,32 @@ export const TransactionManagement = () => {
             searchParams,
             ...timeFilter,
             typeOfTransaction,
+            page: pagination.page,
+            limit: pagination.limit
           },
         }
       );
       setData(response.data);
+      setPagination(prev => {
+        return {
+          ...prev,
+          totalPage: response.data.pagination.totalPage,
+          totalElement: response.data.pagination.totalElement
+        }
+      })
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
     }
   }
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [pagination.page]);
 
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
+  const [system, setsystem] = useState([]);
   const handleOpenDialog = () => {
     setOpen(true);
   };
@@ -162,6 +182,31 @@ export const TransactionManagement = () => {
     }
   }
 
+  useEffect(() => {
+    fetchSystem();
+  }, []);
+
+  const fetchSystem = () => {
+    axios
+      .get(`http://localhost:9999/system`)
+      .then((response) => {
+        console.log(response.data);
+
+        const systemData = response.data.find(
+          (item) => item.code === "system_account_balance"
+        );
+        if (systemData) {
+          setsystem(systemData.value);
+          console.log(systemData.value);
+        } else {
+          console.log("Không tìm thấy thông tin số dư");
+        }
+      })
+      .catch((error) => {
+        console.error("Có lỗi xảy ra:", error);
+      });
+  };
+
   return (
     <Box>
       <Box
@@ -174,6 +219,21 @@ export const TransactionManagement = () => {
           overflowY: "auto",
         }}
       >
+        <Box display="flex" alignItems="center" gap={1}>
+          <Typography variant="h6">
+            {system !== undefined && (
+              <span style={{ color: "#1e88e5", fontWeight: "bold" }}>
+                Số dư: {isBalanceVisible ? formatMoney(system) : "********"}{" "}
+              </span>
+            )}
+          </Typography>
+          <IconButton
+            onClick={() => setIsBalanceVisible(!isBalanceVisible)}
+            color="primary"
+          >
+            {isBalanceVisible ? <Visibility /> : <VisibilityOff />}{" "}
+          </IconButton>
+        </Box>
         <Stack
           spacing={2}
           direction={"row"}
@@ -290,70 +350,96 @@ export const TransactionManagement = () => {
               {data?.transactionList &&
                 data.transactionList.length > 0 &&
                 data.transactionList
-                  .filter((transaction) => transaction.type.trim().toUpperCase() !== "NẠP TIỀN")
-                    .map((transaction, index) => (
-                  <TableRow key={transaction.transactionId} hover>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell sx={{ whiteSpace: "pre-wrap" }}>
-                      {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
-                        ? "TRẢ TIỀN CHO CHỦ"
-                        : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
-                          ? "CÓ BOOKING"
-                          : transaction.type.trim().toUpperCase() === "HOÀN TIỀN"
-                            ? "TRẢ TIỀN CHO GIAO DỊCH HỦY"
-                            : transaction.type.trim().toUpperCase() === "RÚT TIỀN"
-                              ? "GIAO DỊCH RÚT TIỀN"
-                              : transaction.userInfo}
-                    </TableCell>
-                    <TableCell>{transaction.orderId}</TableCell>
-                    <TableCell>
-                      {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
-                        ? "TRỪ TIỀN HỆ THỐNG"
-                        : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
-                          ? "CỘNG TIỀN VÀO HỆ THỐNG"
-                          : transaction.type.trim().toUpperCase() === "HOÀN TIỀN"
-                            ? "TRỪ TIỀN HỆ THỐNG"
-                            : transaction.type.trim().toUpperCase() === "RÚT TIỀN"
+                  .filter(
+                    (transaction) =>
+                      transaction.type.trim().toUpperCase() !== "NẠP TIỀN"
+                  )
+                  .map((transaction, index) => (
+                    <TableRow key={transaction.transactionId} hover>
+                      <TableCell>
+                        {pagination.limit * (pagination.page - 1) + index + 1}
+                      </TableCell>
+                      <TableCell sx={{ whiteSpace: "pre-wrap" }}>
+                        {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
+                          ? "TRẢ TIỀN CHO CHỦ"
+                          : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
+                            ? "CÓ BOOKING"
+                            : transaction.type.trim().toUpperCase() ===
+                                "HOÀN TIỀN"
+                              ? "TRẢ TIỀN CHO GIAO DỊCH HỦY"
+                              : transaction.type.trim().toUpperCase() ===
+                                  "RÚT TIỀN"
+                                ? "GIAO DỊCH RÚT TIỀN"
+                                : transaction.userInfo}
+                      </TableCell>
+                      <TableCell>{transaction.orderId}</TableCell>
+                      <TableCell>
+                        {transaction.type.trim().toUpperCase() === "CỘNG TIỀN"
+                          ? "TRỪ TIỀN HỆ THỐNG"
+                          : transaction.type.trim().toUpperCase() === "TRỪ TIỀN"
+                            ? "CỘNG TIỀN VÀO HỆ THỐNG"
+                            : transaction.type.trim().toUpperCase() ===
+                                "HOÀN TIỀN"
                               ? "TRỪ TIỀN HỆ THỐNG"
-                              : transaction.type}
-                    </TableCell>
-                    <TableCell>{formatMoney(transaction.amount)}</TableCell>
-                    <TableCell>{transaction.createdAt}</TableCell>
-                    <TableCell>{transaction.status}</TableCell>
-                    <TableCell>
-                      {transaction.status === "Khởi tạo" &&
-                        transaction.type === "Rút tiền" && (
-                          <Box>
-                            <Tooltip title="Đồng ý giao dịch">
-                              <IconButton
-                                color="primary"
-                                onClick={() => {
-                                  handleClickApproveButton(
-                                    transaction.transactionId
-                                  );
-                                }}
-                              >
-                                <CheckCircle />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Từ chối giao dịch">
-                              <IconButton
-                                color="secondary"
-                                onClick={() => {
-                                  handleOpenDialog2(transaction);
-                                }}
-                              >
-                                <BlockOutlined />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                              : transaction.type.trim().toUpperCase() ===
+                                  "RÚT TIỀN"
+                                ? "TRỪ TIỀN HỆ THỐNG"
+                                : transaction.type}
+                      </TableCell>
+                      <TableCell>{formatMoney(transaction.amount)}</TableCell>
+                      <TableCell>{transaction.createdAt}</TableCell>
+                      <TableCell>{transaction.status}</TableCell>
+                      <TableCell>
+                        {transaction.status === "Khởi tạo" &&
+                          transaction.type === "Rút tiền" && (
+                            <Box>
+                              <Tooltip title="Đồng ý giao dịch">
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => {
+                                    handleClickApproveButton(
+                                      transaction.transactionId
+                                    );
+                                  }}
+                                >
+                                  <CheckCircle />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Từ chối giao dịch">
+                                <IconButton
+                                  color="secondary"
+                                  onClick={() => {
+                                    handleOpenDialog2(transaction);
+                                  }}
+                                >
+                                  <BlockOutlined />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {pagination.totalPage && (
+          <Container
+            sx={{ display: "flex", justifyContent: "center", mt: 1.5 }}
+          >
+            <Pagination
+              count={pagination.totalPage} // Total number of pages
+              page={pagination.page} // Current page
+              onChange={(_, newPage) => {
+                setPagination((prev) => {
+                  return { ...prev, page: newPage };
+                });
+              }}
+              color="primary"
+              sx={{ justifyContent: "center" }}
+            />
+          </Container>
+        )}
       </Box>
 
       <Dialog open={open} onClose={handleCloseDialog} maxWidth="lg" fullWidth>

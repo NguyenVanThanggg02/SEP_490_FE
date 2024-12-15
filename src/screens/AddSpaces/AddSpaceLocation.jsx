@@ -20,7 +20,11 @@ const AddSpaceLocation = () => {
           <Row>
             <Typography
               variant="h6"
-              style={{ fontWeight: 700, fontSize: '20px' }}
+              style={{
+                fontWeight: 700,
+                fontSize: "20px",
+                marginBottom: "10px",
+              }}
             >
               Chọn địa chỉ <span style={{ color: 'red' }}>*</span>
             </Typography>
@@ -31,18 +35,32 @@ const AddSpaceLocation = () => {
             <TextField
               className="mt-2"
               label="Mô tả địa chỉ chi tiết của bạn"
-              value={spaceInfo.detailAddress ||''}
-              onChange={(e) => 
+              value={spaceInfo.detailAddress || ""}
+              onChange={(e) =>
                 setSpaceInfo((prev) => ({
                   ...prev,
                   detailAddress: e.target.value,
                 }))
               }
               fullWidth
-              sx={{marginLeft:'10px',width:'716px', height:'39px', marginBottom:'20px'}}
+              sx={{
+                width: "100%",
+                marginTop: "10px",
+                marginBottom: "20px",
+                borderRadius: "8px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                },
+                "& .MuiInputLabel-root": {
+                  fontSize: "14px",
+                },
+                "& .MuiFormHelperText-root": {
+                  fontSize: "12px",
+                },
+              }}
               FormHelperTextProps={{
                 style: {
-                  fontSize: "13px", 
+                  fontSize: "13px",
                 },
               }}
             />

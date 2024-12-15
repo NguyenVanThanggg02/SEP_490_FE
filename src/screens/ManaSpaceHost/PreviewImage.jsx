@@ -5,8 +5,9 @@ import { Image } from 'antd'; // Import các component từ Antd
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { Constants } from '../../utils/constants';
 
-export default function PreviewImage({ spaceInfo, setSpaceInfo }) {
+export default function PreviewImage({ spaceInfo, setSpaceInfo,setIsNotChangeData }) {
   const [imagesPreview, setImagesPreview] = useState([]);
   const [error, setError] = useState(''); // Để lưu thông báo lỗi cho từng trường
   const [isLoading, setIsLoading] = useState(false);
@@ -47,6 +48,9 @@ export default function PreviewImage({ spaceInfo, setSpaceInfo }) {
 
     setIsLoading(false);
     setImagesPreview((prev) => [...prev, ...newImages]);
+    if (newImages.length) {
+      setIsNotChangeData(false);
+    }
     setSpaceInfo((prevSpaceInfo) => ({
       ...prevSpaceInfo,
       images: [...prevSpaceInfo.images, ...newImages],

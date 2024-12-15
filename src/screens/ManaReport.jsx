@@ -134,10 +134,10 @@ const ManaReport = () => {
                                 <TableCell sx={{ fontWeight: 700, width: '180px' }}>Người tố cáo</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Lý do tố cáo</TableCell>
                                 <TableCell sx={{ fontWeight: 700, width: '80px' }}>Lượt tố cáo thành công</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Trạng thái không gian</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Nội dung đã khiếu nại</TableCell>
+                                <TableCell sx={{ fontWeight: 700 }}>Lí do từ chối khiếu nại</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Trạng thái báo cáo</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Trạng thái khiếu nại</TableCell>
-                                <TableCell sx={{ fontWeight: 700 }}>Nội dung đã khiếu nại</TableCell>
                                 <TableCell sx={{ fontWeight: 700 }}>Thao tác</TableCell>
                             </TableRow>
                         </TableHead>
@@ -159,17 +159,17 @@ const ManaReport = () => {
                                         {lpost.customReason && `; ${lpost.customReason}`}
                                     </TableCell>
                                     <TableCell>{lpost?.spaceId?.reportCount}</TableCell>
-                                    <TableCell sx={{ color: lpost?.spaceId?.censorship === 'Chấp nhận' ? 'green' : 'red' }}>
-                                        {lpost?.spaceId?.censorship}
+                                    <TableCell>
+                                        {lpost.complaint}
+                                    </TableCell>
+                                    <TableCell >
+                                        {lpost?.reportRejectionComplaint}
                                     </TableCell>
                                     <TableCell sx={{ color: lpost.statusReport === 'Từ chối' ? 'error.main' : lpost.statusReport === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
                                         {lpost.statusReport}
                                     </TableCell>
                                     <TableCell sx={{ color: lpost.statusComplaint === 'Từ chối' ? 'error.main' : lpost.statusComplaint === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
                                         {lpost.statusComplaint}
-                                    </TableCell>
-                                    <TableCell>
-                                        {lpost.complaint}
                                     </TableCell>
                                     <TableCell>
                                         <div style={{ display: "flex", gap: "8px" }}>

@@ -4,11 +4,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
 import '../../style/AddSpace.css'; // Import CSS file
+import { Constants } from '../../utils/constants';
 
 export const Appliances = ({
   selectedCategoryId: categoryId,
   selectedAppliances,
   setSelectedAppliances,
+  setIsNotChangeData,
 }) => {
   console.log('Appliances', selectedAppliances);
   const [appliances, setAppliances] = useState({});
@@ -25,6 +27,7 @@ export const Appliances = ({
   }, [categoryId]);
 
   const handleApplianceClick = (appliance) => {
+    setIsNotChangeData(false);
     const isSelected = selectedAppliances.some(
       (item) =>
         item.name === appliance.name && item.iconName === appliance.iconName
@@ -75,6 +78,7 @@ export const Appliances = ({
                       boxShadow: 'none',
                       height: '100%',
                       paddingBottom: '10px',
+                      backgroundColor: isSelected ? '#e0f7fa' : '#fff',
                       width: '100%',
                     }}
                     onClick={() => handleApplianceClick(appliance)}

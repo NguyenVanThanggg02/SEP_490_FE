@@ -47,17 +47,27 @@ const AddFunds = () => {
   const [showFeeWarning, setShowFeeWarning] = useState(false);
   const [filterStatus, setFilterStatus] = useState('');
   const [filterType, setFilterType] = useState('');
-  
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value.replace(/\D/g, "");
+    setAmount(value ? parseInt(value, 10) : "");
+  };
+
+  const formatInputMoney = (amount) => {
+    if (!amount || isNaN(amount)) return ""; // Trả về chuỗi rỗng nếu không hợp lệ
+    return new Intl.NumberFormat("vi-VN").format(amount); // Định dạng với dấu chấm
+  };
+
   const fetchHistory = async () => {
     if (!user) return;
     try {
       const response = await axios.get('http://localhost:9999/transaction/list', {
-        params: {
-          userId: user.id,
-          page: pagination.page,
-          limit: pagination.limit,
-        },
-      });
+          params: {
+            userId: user.id,
+            page: pagination.page,
+            limit: pagination.limit,
+          },
+        });
       setData(response.data);
       setPagination((prev) => ({
         ...prev,
@@ -97,9 +107,9 @@ const AddFunds = () => {
     }
 
     if (transactionType === "Rút tiền") {
-      setShowFeeWarning(true); 
+      setShowFeeWarning(true);
     } else {
-      performTransaction(); 
+      performTransaction();
     }
   };
 
@@ -107,7 +117,7 @@ const AddFunds = () => {
     setLoading(true);
     if (transactionType === "Nạp tiền") {
       try {
-        const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
+          const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
         const { payUrl } = response.data;
         if (payUrl) {
           window.location.href = payUrl;
@@ -146,7 +156,7 @@ const AddFunds = () => {
       !filterType || transaction.type === filterType;
     return matchesStatus && matchesType;
   });
-  
+
   return (
     <Container maxWidth="lg">
       <Typography
@@ -179,7 +189,7 @@ const AddFunds = () => {
           marginBottom={3}
         >
           <Box display="flex" gap={2} sx={{marginTop:'25px'}}>
-            <FormControl fullWidth sx={{ width: "400px" }}>
+          <FormControl fullWidth sx={{ width: "400px" }}>
               <InputLabel id="filter-status-label">
                 Lọc theo trạng thái
               </InputLabel>
@@ -188,6 +198,7 @@ const AddFunds = () => {
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 fullWidth
+                label="Lọc theo trạng thái"
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 <MenuItem value="Thành công">Thành công</MenuItem>
@@ -204,6 +215,7 @@ const AddFunds = () => {
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
                 fullWidth
+                label="Lọc theo loại giao dịch"
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 <MenuItem value="Nạp tiền">Nạp tiền</MenuItem>
@@ -237,62 +249,62 @@ const AddFunds = () => {
         </Box>
       </Box>
       <Grid container spacing={3}>
-  {filteredTransactions?.map((transaction) => (
-    <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
-      <Card
-        elevation={3}
-        sx={{
-          borderLeft: `4px solid ${
-            transaction.status === "Thành công" ? "#4caf50" : "#f44336"
-          }`,
-          height: "145px",
-        }}
-      >
-        <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {transaction.type === "Nạp tiền" || transaction.type === "Cộng tiền" ? (
-            <ArrowDownward sx={{ color: "#4caf50" }} />
-          ) : (
-            <ArrowUpward sx={{ color: "#f44336" }} />
-          )}
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              {transaction.type}{" "}
-              <span style={{ margin: "0 5px" }}>
-                  {transaction.type === "Cộng tiền" || transaction.type === 'Hoàn tiền' ? "+" : "-"}
-              </span>
-              <span style={{ color: "#ff9800" }}>
-                {formatMoney(transaction.amount)}
-              </span>
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Ngày: {transaction.createdAt}
-            </Typography>
-            <Typography
-              variant="body2"
-              fontWeight="bold"
-              color={
-                transaction.status === "Thành công"
-                  ? "#4caf50"
-                  : "#f44336"
-              }
+        {filteredTransactions?.filter((t)=>t.type!=="Tăng số dư ví admin")?.map((transaction) => (
+          <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
+            <Card
+              elevation={3}
+              sx={{
+                borderLeft: `4px solid ${
+                  transaction.status === "Thành công" ? "#4caf50" : "#f44336"
+                }`,
+                height: "145px",
+              }}
             >
-              Trạng thái: {transaction.status}
-            </Typography>
-            {transaction.reasonRejected && (
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                color="#CC33FF"
-              >
-                Lý do: {transaction.reasonRejected}
-              </Typography>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
-    </Grid>
-  ))}
-</Grid>
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                {transaction.type === "Nạp tiền" || transaction.type === "Cộng tiền" || transaction.type === "Hoàn tiền" ? (
+                  <ArrowDownward sx={{ color: "#4caf50" }} />
+                ) : (
+                  <ArrowUpward sx={{ color: "#f44336" }} />
+                )}
+                <Box>
+                  <Typography variant="h6" gutterBottom>
+                    {transaction.type}{" "}
+                    <span style={{ margin: "0 5px" }}>
+                    {transaction.type === "Cộng tiền" || transaction.type === 'Hoàn tiền' || transaction.type === 'Nạp tiền' ? "+" : "-"}
+                    </span>
+                    <span style={{ color: "#ff9800" }}>
+                      {formatMoney(transaction.amount)}
+                    </span>
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Ngày: {transaction.createdAt}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    fontWeight="bold"
+                    color={
+                      transaction.status === "Thành công"
+                        ? "#4caf50"
+                        : "#f44336"
+                    }
+                  >
+                    Trạng thái: {transaction.status}
+                  </Typography>
+                  {transaction.reasonRejected && (
+                    <Typography
+                      variant="body2"
+                      fontWeight="bold"
+                      color="#CC33FF"
+                    >
+                      Lý do: {transaction.reasonRejected}
+                    </Typography>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
       {pagination.totalPage && (
         <Box display="flex" justifyContent="center" mt={4}>
           <Pagination
@@ -369,22 +381,22 @@ const AddFunds = () => {
           </Select>
           <TextField
             label="Số tiền"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            type="text"
+            value={formatInputMoney(amount)}
+            onChange={handleAmountChange}
             fullWidth
             margin="dense"
             sx={{ marginBottom: "16px" }}
           />
           {transactionType === "Rút tiền" && bankAccounts.length > 0 && (
             <>
-            <TextField
+              <TextField
                 label="Thực nhận (chiết khấu 5%)"
-                type="number"
+                type="text"
                 InputProps={{
                   readOnly: true,
                 }}
-                value={Math.floor(amount ? amount * 95 / 100 : 0)}
+                value={amount ? formatMoney(Math.floor(amount * 0.95)) : 0}
                 fullWidth
                 margin="normal"
               />

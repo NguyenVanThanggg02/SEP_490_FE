@@ -343,9 +343,9 @@ const PostReportMana = () => {
                     productsOnPage.map((report, index) => (
                       <TableRow key={report._id} hover>
                         <TableCell sx={{textAlign:"center",padding:"16px 10px"}}>{index + 1}</TableCell>
-                        <TableCell>{report.spaceId.name}</TableCell>
-                        <TableCell>{report.spaceId?.userId?.fullname}</TableCell>
-                        <TableCell>{report.userId?.fullname}</TableCell>
+                        <TableCell>{report?.spaceId?.name}</TableCell>
+                        <TableCell>{report?.spaceId?.userId?.fullname}</TableCell>
+                        <TableCell>{report?.userId?.fullname}</TableCell>
                         <TableCell>
                           {report.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
                           {report.customReason && `; ${report.customReason}`}
@@ -388,9 +388,9 @@ const PostReportMana = () => {
                           </Box>
                         </TableCell>
 
-                        <TableCell sx={{textAlign:"center",padding:"16px 10px"}}>{report.spaceId.reportCount}</TableCell>
+                        <TableCell sx={{textAlign:"center",padding:"16px 10px"}}>{report?.spaceId?.reportCount}</TableCell>
                         <TableCell sx={{ color: report.statusReport === 'Từ chối' ? 'error.main' : report.statusReport === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
-                          {report.statusReport}
+                          {report?.statusReport}
                         </TableCell>
                         <TableCell sx={{margin:"0 auto"}}>
                           <Tooltip title="Xem không gian">
