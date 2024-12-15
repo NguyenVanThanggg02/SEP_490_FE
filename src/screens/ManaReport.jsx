@@ -194,6 +194,38 @@ const ManaReport = () => {
                     onPageChange={onPageChange}
                 />
             </Row>
+            <Dialog
+                open={dialogComplaint}
+                onClose={() => setDialogComplaint(false)}
+            >
+                <DialogTitle>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Nhập lí do khiếu nại
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        size="small"
+                        placeholder="Nhập lý do khiếu nại"
+                        value={complaint}
+                        onChange={(e) => setComplaint(e.target.value)}
+                        multiline
+                        rows={3}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDialogComplaint(false)} color="secondary">
+                        Hủy
+                    </Button>
+                    <Button
+                        color="primary"
+                        onClick={updateComplaint}
+                    >
+                        Gửi khiếu nại
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
