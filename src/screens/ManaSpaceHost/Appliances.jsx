@@ -78,6 +78,7 @@ export const Appliances = ({
                       boxShadow: 'none',
                       height: '100%',
                       paddingBottom: '10px',
+                      backgroundColor: isSelected ? '#e0f7fa' : '#fff',
                       width: '100%',
                     }}
                     onClick={() => handleApplianceClick(appliance)}
