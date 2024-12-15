@@ -31,6 +31,9 @@ const PostReportMana = () => {
   });
   const [dialogDetailSpace, setDialogDetailSpace] = useState(false);
   const [selectedSpace, setSelectedSpace] = useState(null);
+  const [selectedReport, setSelectedReport] = useState(null);
+  const [rejectReason, setRejectReason] = useState(""); // Lưu lý do từ chối
+  const [showRejectField, setShowRejectField] = useState(false);
   const uniqueOwners = Array.from(
     new Set([ "Tất cả", ...reportPosts.map((space) => space.userId?.fullname || "Không rõ")])
   );
@@ -95,35 +98,28 @@ const PostReportMana = () => {
       });
   };
 
-  const handleReject = (postId, selectedReasons, customReason) => {
+  const handleReject = (reportId) => {
     axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
-        censorship: "Từ chối",
-        reasons: selectedReasons,
-        customReason: customReason ? [customReason] : [],
+      .put(`http://localhost:9999/spaces/update-censorship/${reportId}`, {
+        reportRejectionReason: rejectReason,
 
       })
       .then(() => {
-        setReportPosts((prevSpaces) =>
-          prevSpaces.map((space) =>
-            space._id === postId ? { ...space, censorship: "Từ chối" } : space
+        setReportPosts((prevReports) =>
+          prevReports.map((report) =>
+            report._id === reportId
+              ? { ...report, statusReport: "Từ chối", reportRejectionReason: rejectReason }
+              : report
           )
         );
+        setRejectReason("");
+        setShowRejectField(false);
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
       });
   };
 
-  const openRejectDialog = (postId) => {
-    setCurrentPostId(postId);
-    setVisible(true);
-  };
-
-  const handleViewDetail = (postId) => {
-    setSelectedSpaceId(postId);
-    setShowDetail(true);
-  };
 
   const handleBackToList = () => {
     setShowDetail(false);
@@ -143,6 +139,7 @@ const PostReportMana = () => {
       id: reportId,
     });
   };
+  
   // Xử lý mở dialog cho khiếu nại
   const handleApproveAppeal = (reportId) => {
     // Logic để hiển thị dialog cho khiếu nại
@@ -152,6 +149,9 @@ const PostReportMana = () => {
       type: "appeal",
       id: reportId,
     });
+  };
+  const handleRejectButtonClick = () => {
+    setShowRejectField(true);  // Hiển thị TextField khi nhấn nút
   };
 
   const handleShowDetail = async (spaceId) => {
@@ -277,16 +277,18 @@ const PostReportMana = () => {
                   <TableRow>
                     <TableCell sx={{ fontWeight: 700 }}>STT</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Tên không gian</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Chủ không gian</TableCell>
+                    <TableCell sx={{ fontWeight: 700,width: '150px' }}>Chủ không gian</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Khách tố cáo</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Lý do báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Số lượt báo cáo</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Thao tác</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Kiến nghị báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700,width: '80px'  }}>Lượt báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>Trạng thái báo cáo</TableCell>
+                    <TableCell sx={{ fontWeight: 700  }}>Thao tác</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {reportPosts?.length > 0 &&
-                    reportPosts.map((report, index) => (
+                  {productsOnPage?.length > 0 &&
+                    productsOnPage.map((report, index) => (
                       <TableRow key={report._id} hover>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{report.spaceId.name}</TableCell>
@@ -296,7 +298,11 @@ const PostReportMana = () => {
                           {report.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
                           {report.customReason && `; ${report.customReason}`}
                         </TableCell>
+                        <TableCell>Để lí do kiến nghịnghị</TableCell>
                         <TableCell>{report.spaceId.reportCount}</TableCell>
+                        <TableCell sx={{ color: report.statusReport === 'Từ chối' ? 'error.main' : report.statusReport === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
+                          {report.statusReport}
+                        </TableCell>
                         <TableCell>
                         <Tooltip title="Xem không gian">
                             <IconButton
@@ -329,14 +335,6 @@ const PostReportMana = () => {
               </Table>
             </TableContainer>
           </Row>
-          {visible && (
-            <CommunityStandards
-              visible={visible}
-              setVisible={setVisible}
-              handleReject={handleReject}
-              postId={currentPostId}
-            />
-          )}
         </>
       ) : (
         <DetailForAdmin id={selectedSpaceId} onBack={handleBackToList} />
@@ -478,6 +476,36 @@ const PostReportMana = () => {
           )}
         </DialogContent>
         <DialogActions>
+          <Box style={{ marginRight: "auto" }}>
+            <Button variant="contained" color="success" onClick={() => handleAccept(selectedReport?._id)}>
+              Chấp nhận báo cáo
+            </Button>
+            <Button variant="contained" color="error" className="ms-2" onClick={handleRejectButtonClick}>
+              Từ chối báo cáo
+            </Button>
+            {showRejectField && (
+              <Box sx={{ mt: 2 }}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="Nhập lý do từ chối"
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                />
+              </Box>
+            )}
+            {showRejectField && rejectReason && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleReject(selectedReport?._id)}
+                style={{ marginLeft: '10px' }}
+              >
+                Xác nhận
+              </Button>
+            )}
+          </Box>
+
           <Button onClick={() => setDialogDetailSpace(false)} color="primary">
             Đóng
           </Button>
