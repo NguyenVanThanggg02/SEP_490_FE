@@ -112,7 +112,7 @@ const Compare = () => {
     pricePerDay: "Giá theo ngày",
     // pricePerWeek: "Giá theo tuần",
     pricePerMonth: "Giá theo tháng",
-    status: "Trạng thái",
+    // status: "Trạng thái",
     images: "Hình ảnh",
   };
   

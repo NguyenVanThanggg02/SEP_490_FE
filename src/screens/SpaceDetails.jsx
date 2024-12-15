@@ -19,7 +19,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Image } from 'antd';
 
-import { FlagFill, PlusCircle, Textarea } from "react-bootstrap-icons";
+import { FlagFill, ListCheck, PinMapFill, PlusCircle, Textarea } from "react-bootstrap-icons";
 import AddIcon from "@mui/icons-material/Add";
 import SelectSpaceToCompare from "./SelectSpaceToCompare";
 import Similar from "./Similar";
@@ -52,6 +52,7 @@ function SpaceDetails({ onSelectChat }) {
 
   const nav = useNavigate()
   const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
   const handleValueChange = (newValue) => {
     setValueFromChild(newValue);
   };
@@ -153,7 +154,7 @@ function SpaceDetails({ onSelectChat }) {
       </Typography>
     );
 
-  if (spaceData.censorship !== 'Chấp nhận' && spaceData.userId._id !== userId) {
+  if (spaceData.censorship !== 'Chấp nhận' && spaceData?.userId?._id !== userId && role === 0) {
     nav('/notfound');
     return null;
   }
@@ -1019,19 +1020,37 @@ function SpaceDetails({ onSelectChat }) {
                 <Typography
                   variant="h6"
                   className="pb-2"
-                  sx={{ fontSize: "20px", fontWeight: "700" }}
+                  sx={{
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    color: "primary.main",
+                    textTransform: "uppercase",
+                    padding: "8px",
+                  }}
                   gutterBottom
                 >
-                  Vị trí không gian: {spaceData?.location || ""}
+                  <PinMapFill style={{ color: "#f70a8d" }} /> Vị trí không gian:{" "}
+                  {spaceData?.location || ""}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  className="pb-2"
-                  sx={{ fontSize: "20px", fontWeight: "700" }}
-                  gutterBottom
-                >
-                   Mô tả vị trí cụ thể : {spaceData?.detailAddress || ""}
-                </Typography>
+
+                {spaceData.detailAddress && (
+                  <Typography
+                    variant="h6"
+                    className="pb-2"
+                    sx={{
+                      fontSize: "20px",
+                      fontWeight: "700",
+                      padding: "8px",
+
+                      color: "text.secondary",
+                    }}
+                    gutterBottom
+                  >
+                    <ListCheck style={{ color: "#f70a8d" }} /> Mô tả chi tiết:{" "}
+                    {spaceData?.detailAddress || ""}
+                  </Typography>
+                )}
+
                 <MapShopDetail
                   lat={spaceData?.latLng?.[0]}
                   lng={spaceData?.latLng?.[1]}

@@ -144,10 +144,7 @@ const OrderMana = () => {
                       variant="h6"
                       sx={{ fontWeight: "bold", color: "#1976d2" }}
                     >
-                      {orderItem.userId?.fullname || "Không có tên"} -{" "}
-                      {orderItem.userId
-                        ? orderItem.userId.phone
-                        : "Không có SĐT"}
+                      {orderItem.userId?.fullname || "Không có tên"}
                     </Typography>
                     <Typography
                       variant="h6"

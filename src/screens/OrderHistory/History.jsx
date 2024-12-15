@@ -8,6 +8,7 @@ import { Paginator } from "primereact/paginator";
 import { toast } from "react-toastify";
 import { formatMoney } from "../../utils/moneyFormatter";
 import Reports from "../Reports";
+import { Link } from "react-router-dom";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -236,7 +237,6 @@ const History = () => {
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
                 <MenuItem value="hour">Giờ</MenuItem>
                 <MenuItem value="day">Ngày</MenuItem>
-                <MenuItem value="week">Tuần</MenuItem>
                 <MenuItem value="month">Tháng</MenuItem>
               </Select>
             </Grid>
@@ -248,7 +248,6 @@ const History = () => {
                 variant="outlined"
               >
                 <MenuItem value="Tất cả">Tất cả</MenuItem>
-                <MenuItem value="awaiting payment">Chờ thanh toán</MenuItem>
                 <MenuItem value="completed">Đã thanh toán</MenuItem>
                 <MenuItem value="canceled">Đã huỷ</MenuItem>
               </Select>
@@ -293,10 +292,11 @@ const History = () => {
                           flexDirection: "column",
                         }}
                       >
+                        <Link to={`/spaces/${item.spaceId}`} style={{textDecoration:'none'}}>
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
-                              src={item.items[0].spaceId.images[0].url}
+                              src={item?.items?.[0]?.spaceId?.images?.[0].url}
                               alt="Ảnh không gian"
                               style={{
                                 height: "170px",
@@ -311,18 +311,18 @@ const History = () => {
                               variant="h6"
                               style={{ color: "#1976d2", fontWeight: "bold" }}
                             >
-                              {item.items[0].spaceId.name}
+                              {item?.items?.[0]?.spaceId?.name}
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ fontWeight: "bold", fontSize: "15px" }}
+                              style={{ fontWeight: "bold", fontSize: "15px", color:'#898480'}}
                             >
-                              Thuê theo:{" "}
+                              Hình thức thuê: 
                               {item.rentalType === "hour"
                                 ? "Giờ"
                                 : item.rentalType === "day"
                                   ? "Ngày"
-                                  : item.rentalType === "week"
+                                  : item.rentalType === ""
                                     ? "Tuần"
                                     : item.rentalType === "month"
                                       ? "Tháng"
@@ -330,7 +330,7 @@ const History = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ fontWeight: "bold" }}
+                              style={{ fontWeight: "bold", color:'#898480' }}
                             >
                               Giá: {formatNumberToVND(item.totalAmount)} VND
                             </Typography>
@@ -386,6 +386,8 @@ const History = () => {
                             </Typography>
                           </Grid>
                         </Grid>
+                        </Link>
+
                        {/* button đánh giá - hủy lịch */}
                        <Grid
                           container
@@ -490,6 +492,7 @@ const History = () => {
             <Select
               value={selectedReason}
               onChange={(e) => setSelectedReason(e.target.value)}
+              label="Lý do hủy"
             >
               {availableReasons.map((reason, index) => (
                 <MenuItem key={index} value={reason}>

@@ -7,9 +7,8 @@ import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
 import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete } from '@mui/material';
 import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
-import { toast } from "react-toastify";
 
-const PostManagement = () => {
+const PostReportMana = () => {
   const [spaces, setSpaces] = useState([]);
   const [visible, setVisible] = useState(false);
   const [currentPostId, setCurrentPostId] = useState(null);
@@ -83,7 +82,6 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Chấp nhận" } : space
           )
         );
-        toast.success(`Địa điểm "${selectedSpace.name}" đã được chấp nhận`);
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
@@ -91,13 +89,12 @@ const PostManagement = () => {
   };
 
   const handleReject = (postId, selectedReasons, customReason) => {
-    const selectedSpace = spaces.find((space) => space._id === postId);
     axios
       .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
         reasons: selectedReasons,
         customReason: customReason ? [customReason] : [],
-        
+
       })
       .then(() => {
         setSpaces((prevSpaces) =>
@@ -105,7 +102,6 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
           )
         );
-        toast.warning(`Địa điểm "${selectedSpace.name}" đã bị từ chối`);
       })
       .catch((error) => {
         console.error("Error updating censorship:", error);
@@ -410,4 +406,4 @@ const PostManagement = () => {
   );
 };
 
-export default PostManagement;
+export default PostReportMana;

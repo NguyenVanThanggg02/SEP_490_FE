@@ -134,6 +134,7 @@ export default function Notification() {
             overflowY: "auto", // Enable vertical scrolling
           },
         }}
+        sx={{ marginTop: "7px" }}
       >
         {notifications.length > 0 ? (
           notifications.map((notification, index) => (
@@ -182,12 +183,14 @@ export default function Notification() {
             </MenuItem>
           ))
         ) : (
-          <MenuItem>
-            <img
-              src={"/no-records.png"}
-              alt="No records"
-              style={{ width: "60px", height: "60px", marginLeft: "10px" }}
-            />
+          <MenuItem sx={{ justifyContent: "center", padding: "20px" }}>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ textAlign: "center" }}
+            >
+              Không có thông báo nào !!!
+            </Typography>
           </MenuItem>
         )}
       </Menu>

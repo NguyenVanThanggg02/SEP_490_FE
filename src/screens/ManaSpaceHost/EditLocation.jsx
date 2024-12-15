@@ -21,7 +21,7 @@ export const getLatLngFromText = (lngLatString) => {
   return defaultLatLng;
 };
 
-const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
+const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo,  setIsNotChangeData}) => {
   const [textSearch, setTextSearch] = useState('');
   const [locationSuggests, setLocationSuggests] = useState([]);
 
@@ -130,6 +130,7 @@ const EditLocation = ({ location, setLocation, spaceInfo, setSpaceInfo }) => {
           setLocation,
           spaceInfo,
           setSpaceInfo,
+          setIsNotChangeData
         }}
       />
     </Container>

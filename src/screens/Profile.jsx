@@ -236,18 +236,34 @@ const Profile = () => {
                         <Form.Label style={{ fontWeight: 500 }}>
                           {field.label}
                         </Form.Label>
-                        <Form.Control
-                          type={field.label === "Email" ? "email" : "text"}
-                          value={editData[field.field] || ""}
-                          onChange={(e) =>
-                            handleChange(field.field, e.target.value)
-                          }
-                          disabled={
-                            !isEditingUser || field.field === "username"
-                          } 
-                          readOnly={field.field === "username"} 
-                          style={{ borderRadius: "0.25rem" }}
-                        />
+                        {field.field === "gender" ? (
+                          <Form.Select
+                            value={editData.gender || ""}
+                            onChange={(e) =>
+                              handleChange("gender", e.target.value)
+                            }
+                            disabled={!isEditingUser}
+                            style={{ borderRadius: "0.25rem" }}
+                          >
+                            <option value="">Chọn giới tính</option>
+                            <option value="Male">Nam</option>
+                            <option value="Female">Nữ</option>
+                            <option value="">Khác</option>
+                          </Form.Select>
+                        ) : (
+                          <Form.Control
+                            type={field.label === "Email" ? "email" : "text"}
+                            value={editData[field.field] || ""}
+                            onChange={(e) =>
+                              handleChange(field.field, e.target.value)
+                            }
+                            disabled={
+                              !isEditingUser || field.field === "username"
+                            }
+                            readOnly={field.field === "username"}
+                            style={{ borderRadius: "0.25rem" }}
+                          />
+                        )}
                       </Form.Group>
                     ))}
 
