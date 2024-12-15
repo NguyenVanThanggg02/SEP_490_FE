@@ -337,6 +337,41 @@ const PostReportMana = () => {
           />
         )}
       </Row>
+      <Dialog
+        open={dialogState.open}
+        onClose={() => setDialogState({ open: false, type: "", id: "" })}
+      >
+        <DialogTitle>
+          {dialogState.type === "report" ? "Duyệt Báo Cáo" : "Duyệt Khiếu Nại"}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            Bạn có chắc chắn muốn {dialogState.type === "report" ? "duyệt báo cáo" : "duyệt khiếu nại"} này không?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              // Logic xử lý đồng ý
+              console.log("Đồng ý:", dialogState);
+              setDialogState({ open: false, type: "", id: "" });
+            }}
+            color="primary"
+          >
+            Đồng ý
+          </Button>
+          <Button
+            onClick={() => {
+              // Logic xử lý từ chối
+              console.log("Từ chối:", dialogState);
+              setDialogState({ open: false, type: "", id: "" });
+            }}
+            color="secondary"
+          >
+            Từ chối
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
