@@ -8,13 +8,16 @@ import "react-toastify/dist/ReactToastify.css";
 
 const RegisterForm = () => {
   const navigate = useNavigate(); // Hook to navigate after successful registration
-
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
+    gmail: "", // Corrected field name for email
+    fullname: "",
+    phone: "",
     password: "",
     confirmPassword: "",
   });
+  const [errors, setErrors] = useState({}); // State to manage field errors
+  const [isSubmitting, setIsSubmitting] = useState(false); // Manage submit button state
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -22,28 +25,64 @@ const RegisterForm = () => {
       ...prevData,
       [id]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: "", // Clear error when user modifies input
+    }));
+  };
+
+  const validateForm = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10,11}$/;
+    const newErrors = {};
+
+    if (!formData.fullname.trim()) {
+      newErrors.fullname = "Họ và tên không được để trống!";
+    }
+    if (!formData.username.trim()) {
+      newErrors.username = "Tên đăng nhập không được để trống!";
+    }
+    if (!emailRegex.test(formData.gmail)) {
+      // Corrected field name for email validation
+      newErrors.gmail = "Email không hợp lệ!";
+    }
+    if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Số điện thoại phải có 10-11 chữ số!";
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = "Địa chỉ không được để trống!";
+    }
+    if (formData.password.length < 6) {
+      newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự!";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Mật khẩu không khớp!";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { username, email, password, confirmPassword } = formData;
+    if (isSubmitting) return; // Prevent multiple submissions
+    if (!validateForm()) {
+      toast.error("Vui lòng kiểm tra lại thông tin đăng ký!");
+      return;
+    }
 
-    if (password !== confirmPassword) {
-      toast.error("Mật khẩu không khớp!");
-      return;
-    }
-    if (password.length < 8) {
-      toast.error("Mật khẩu phải có ít nhất 8 ký tự!");
-      return;
-    }
-    // Tạo đối tượng FormData
-    const formDataToSend = new FormData();
-    formDataToSend.append("username", username);
-    formDataToSend.append("gmail", email);
-    formDataToSend.append("password", password);
+    const { username, gmail, password, fullname, phone } = formData;
+    const formDataToSend = {
+      username,
+      gmail, // Corrected field name for email
+      password,
+      fullname,
+      phone,
+    };
 
     try {
+      setIsSubmitting(true);
       const res = await axios.post(
         "http://localhost:9999/users/register",
         formDataToSend,
@@ -55,23 +94,28 @@ const RegisterForm = () => {
       );
 
       const { accessToken } = res.data;
-      localStorage.setItem("accessToken", accessToken);
+      try {
+        localStorage.setItem("accessToken", accessToken);
+      } catch (e) {
+        console.error("Không thể lưu accessToken vào localStorage:", e);
+      }
 
       toast.success(
         "Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập..."
       );
-
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
-      if (error.response && error.response.status === 409) {
-        toast.error("Tên đăng nhập hoặc email đã tồn tại!");
-      } else if (error.response && error.response.data) {
-        toast.error(error.response.data.error || "Đăng ký không thành công!");
+      if (!error.response) {
+        toast.error(
+          "Không thể kết nối tới server. Vui lòng kiểm tra lại kết nối!"
+        );
       } else {
-        toast.error("Đã xảy ra lỗi không xác định!");
+        const errorMessage =
+          error.response?.data?.message || "Đăng ký không thành công!";
+        toast.error(errorMessage);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -96,71 +140,84 @@ const RegisterForm = () => {
           thưởng thức trải nghiệm.
         </span>
       </div>
-      <div className="input_container">
-        <label className="input_label" htmlFor="username">
-          Tên đăng nhập
-        </label>
-        <input
-          type="text"
-          id="username"
-          value={formData.username}
-          onChange={handleChange}
-          placeholder="Tên đăng nhập của bạn"
-          className="input_field"
-          required
-        />
-      </div>
-      <div className="input_container">
-        <label className="input_label" htmlFor="email">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="name@mail.com"
-          className="input_field"
-          required
-        />
-      </div>
-      <div className="input_container">
-        <label className="input_label" htmlFor="password">
-          Mật khẩu
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Mật khẩu"
-          className="input_field"
-          required
-        />
-      </div>
-      <div className="input_container">
-        <label className="input_label" htmlFor="confirmPassword">
-          Xác nhận mật khẩu
-        </label>
-        <input
-          type="password"
-          id="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Xác nhận mật khẩu"
-          className="input_field"
-          required
-        />
-      </div>
-      <button title="Đăng ký" type="submit" className="sign-in_btn">
-        <span>Đăng ký</span>
-      </button>
-      <div>
-        <div>
-          <Link to="/login" className="text-danger text-opacity-75"  style={{textDecoration:'none'}}>
-            Tôi đã có tài khoản ...
-          </Link>
+
+      {/* Form Inputs */}
+      {[
+        {
+          label: "Họ và tên",
+          id: "fullname",
+          type: "text",
+          placeholder: "Nguyễn Văn A",
+        },
+        {
+          label: "Tên đăng nhập",
+          id: "username",
+          type: "text",
+          placeholder: "Tên đăng nhập của bạn",
+        },
+        {
+          label: "Email",
+          id: "gmail", // Corrected id for email input
+          type: "email",
+          placeholder: "name@mail.com",
+        },
+        {
+          label: "Số điện thoại",
+          id: "phone",
+          type: "tel",
+          placeholder: "0123456789",
+        },
+
+        {
+          label: "Mật khẩu",
+          id: "password",
+          type: "password",
+          placeholder: "Mật khẩu",
+        },
+        {
+          label: "Xác nhận mật khẩu",
+          id: "confirmPassword",
+          type: "password",
+          placeholder: "Xác nhận mật khẩu",
+        },
+      ].map((field) => (
+        <div className="input_container" key={field.id}>
+          <label className="input_label" htmlFor={field.id}>
+            {field.label}
+          </label>
+          <input
+            type={field.type}
+            id={field.id}
+            value={formData[field.id]}
+            onChange={handleChange}
+            placeholder={field.placeholder}
+            className={`input_field ${errors[field.id] ? "input_error" : ""}`}
+          />
+          {errors[field.id] && (
+            <span className="error_text">{errors[field.id]}</span>
+          )}
         </div>
+      ))}
+
+      {/* Submit Button */}
+      <button
+        title="Đăng ký"
+        type="submit"
+        className="sign-in_btn"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Đang xử lý..." : "Đăng ký"}
+      </button>
+
+      {/* Link to Login */}
+      <div>
+        <Link
+          to="/login"
+          className="text-danger text-opacity-75"
+          style={{ textDecoration: "none" }}
+        >
+          Tôi đã có tài khoản ...
+        </Link>
       </div>
     </form>
   );
