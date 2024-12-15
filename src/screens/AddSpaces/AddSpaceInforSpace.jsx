@@ -408,7 +408,18 @@ const AddSpaceInforSpace = ({ editorRef }) => {
   return (
     <Container fluid>
       <Row className="pb-5">
-        <Typography variant="h4" fontWeight={700} className="text-center">
+        <Typography
+          variant="h4"
+          fontWeight={700}
+          className="text-center"
+          sx={{
+            color: 'primary.main',
+            marginBottom: '2rem',
+            animation: 'fadeIn 0.5s ease-in',
+            '&:hover': { transform: 'scale(1.02)' },
+            transition: 'all 0.3s ease'
+          }}
+        >
           Nhập thông tin chi tiết không gian của bạn
         </Typography>
       </Row>
@@ -434,10 +445,21 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                 fullWidth
                 required
                 value={spaceInfo.name}
-                onChange={handleInputChange} // Cập nhật khi người dùng nhập
+                onChange={handleInputChange}
                 onBlur={handleBlur}
-                error={!!errors.name} // Hiển thị lỗi nếu có
+                error={!!errors.name}
                 helperText={errors.name}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: 'primary.main'
+                  },
+                  marginBottom: '1rem'
+                }}
               />
             </Col>
             <Col md={12}>
@@ -466,7 +488,22 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         Chọn cách thức thuê
                       </Typography>
                       <FormControl component="fieldset" variant="standard">
-                        <FormGroup sx={{ flexDirection: 'row' }}>
+                        <FormGroup
+                          sx={{
+                            flexDirection: 'row',
+                            gap: 2,
+                            '& .MuiFormControlLabel-root': {
+                              marginRight: 4,
+                              backgroundColor: 'background.paper',
+                              padding: '8px 16px',
+                              borderRadius: '8px',
+                              boxShadow: 1,
+                              '&:hover': {
+                                backgroundColor: 'action.hover'
+                              }
+                            }
+                          }}
+                        >
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -487,16 +524,6 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                             }
                             label="Ngày"
                           />
-                          {/* <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={pricePerWeek}
-                                onChange={handleChange}
-                                name="pricePerWeek"
-                              />
-                            }
-                            label="Tuần"
-                          /> */}
                           <FormControlLabel
                             control={
                               <Checkbox
@@ -517,7 +544,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerHour|| ""}
+                          value={spaceInfo.pricePerHour || ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerHour} // Hiển thị lỗi nếu có
@@ -540,7 +567,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                               e.preventDefault();
                             }
                           }}
-                          sx={{ marginBottom: '20px' }}
+                          sx={{ marginBottom: '20px', width: '100%' }}
                         />
                       </Col>
                     )}
@@ -552,7 +579,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerDay|| ""}
+                          value={spaceInfo.pricePerDay || ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerDay} // Hiển thị lỗi nếu có
@@ -579,41 +606,6 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                         />
                       </Col>
                     )}
-
-                    {/* {pricePerWeek && (
-                      <Col md={6}>
-                        <TextField
-                          name="pricePerWeek"
-                          type="number"
-                          variant="outlined"
-                          required
-                          value={spaceInfo.pricePerWeek|| ""}
-                          onChange={handleInputChange} // Cập nhật khi người dùng nhập
-                          onBlur={handleBlur}
-                          error={!!errors.pricePerWeek} // Hiển thị lỗi nếu có
-                          helperText={errors.pricePerWeek}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                / tuần
-                              </InputAdornment>
-                            ),
-                          }}
-                          onKeyDown={(e) => {
-                            // Chỉ cho phép nhập số, dấu chấm, backspace, và delete
-                            if (
-                              !/[0-9]/.test(e.key) &&
-                              e.key !== 'Backspace' &&
-                              e.key !== 'Delete' &&
-                              e.key !== '.'
-                            ) {
-                              e.preventDefault();
-                            }
-                          }}
-                        />
-                      </Col>
-                    )} */}
-
                     {pricePerMonth && (
                       <Col md={6}>
                         <TextField
@@ -621,7 +613,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           type="number"
                           variant="outlined"
                           required
-                          value={spaceInfo.pricePerMonth|| ""}
+                          value={spaceInfo.pricePerMonth || ""}
                           onChange={handleInputChange} // Cập nhật khi người dùng nhập
                           onBlur={handleBlur}
                           error={!!errors.pricePerMonth} // Hiển thị lỗi nếu có
@@ -660,14 +652,6 @@ const AddSpaceInforSpace = ({ editorRef }) => {
 
                 <Col md={12}>
                   <div class="form-check">
-                    {/* <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      checked={isGoldenHour}
-                      onChange={handleCheckboxChange}
-                      style={{ cursor: 'pointer' }}
-                    /> */}
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -678,7 +662,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       }
                       label="Giờ cao điểm"
                     />
-                 
+
                   </div>
 
                   {isGoldenHour && (
@@ -721,15 +705,6 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                       <Col md={12}>
                         <label>
                           Phần trăm(%) giá tăng lên:
-                          {/* <input
-                            type="number"
-                            name="priceIncrease"
-                            value={priceIncrease}
-                            onChange={handleInputHourChange}
-                            min="0"
-                            max="100"
-                            required
-                          /> */}{' '}
                         </label>
 
                         <TextField
@@ -740,7 +715,7 @@ const AddSpaceInforSpace = ({ editorRef }) => {
                           required
                           min={0}
                           max={100}
-                          value={priceIncrease|| ""}
+                          value={priceIncrease || ""}
                           onChange={handleInputHourChange}
                           onBlur={handleBlur}
                           error={!!errors.priceIncrease} // Hiển thị lỗi nếu có
