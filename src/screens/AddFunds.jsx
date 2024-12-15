@@ -261,7 +261,7 @@ const AddFunds = () => {
               }}
             >
               <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                {transaction.type === "Nạp tiền" || transaction.type === "Cộng tiền" ? (
+                {transaction.type === "Nạp tiền" || transaction.type === "Cộng tiền" || transaction.type === "Hoàn tiền" ? (
                   <ArrowDownward sx={{ color: "#4caf50" }} />
                 ) : (
                   <ArrowUpward sx={{ color: "#f44336" }} />
@@ -270,7 +270,7 @@ const AddFunds = () => {
                   <Typography variant="h6" gutterBottom>
                     {transaction.type}{" "}
                     <span style={{ margin: "0 5px" }}>
-                    {transaction.type === "Cộng tiền" || transaction.type === 'Hoàn tiền' ? "+" : "-"}
+                    {transaction.type === "Cộng tiền" || transaction.type === 'Hoàn tiền' || transaction.type === 'Nạp tiền' ? "+" : "-"}
                     </span>
                     <span style={{ color: "#ff9800" }}>
                       {formatMoney(transaction.amount)}
