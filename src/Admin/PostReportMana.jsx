@@ -27,6 +27,7 @@ const PostReportMana = () => {
     open: false,
     type: "",
     id: "",
+    rejectionComplaint: "",
   });
   const [dialogDetailSpace, setDialogDetailSpace] = useState(false);
   const [selectedSpace, setSelectedSpace] = useState(null);
@@ -129,24 +130,23 @@ const PostReportMana = () => {
     setRows(event?.rows);
   };
 
-  const handleApproveReport = (reportId) => {
+  const handleApproveComplaint = (reportId) => {
     // Logic để hiển thị dialog cho báo cáo
-    console.log("Duyệt báo cáo ID:", reportId);
     setDialogState({
       open: true,
-      type: "report",
+      type: "approve",
       id: reportId,
     });
   };
   
   // Xử lý mở dialog cho khiếu nại
-  const handleApproveAppeal = (reportId) => {
+  const handleRejectComplaint = (reportId) => {
     // Logic để hiển thị dialog cho khiếu nại
-    console.log("Duyệt khiếu nại ID:", reportId);
     setDialogState({
       open: true,
-      type: "appeal",
+      type: "reject",
       id: reportId,
+      rejectionReason: "",
     });
   };
   const handleRejectButtonClick = () => {
@@ -154,22 +154,43 @@ const PostReportMana = () => {
   };
 
   const handleAcceptComplaint = async () => {
-    try {
-      const { id } = dialogState;
-      
-      // Gọi API để chấp nhận khiếu nại
-      const response = await axios.put(`http://localhost:9999/reports/complaintaccept/${id}`);
-  
-      if (response.status === 200) {
-        toast.success("Khiếu nại đã được chấp nhận!");
+    if (dialogState.type === "reject") {
+      // Kiểm tra xem lý do từ chối có trống không
+      if (!dialogState.rejectionReason.trim()) {
+        toast.warning("Lý do từ chối không được để trống");
+        return;
       }
-      setDialogState({ open: false, type: "", id: "" });
-    } catch (error) {
-      toast.error("Đã xảy ra lỗi khi xử lý yêu cầu!");
-      setDialogState({ open: false, type: "", id: "" });
+      try {
+        // Gửi yêu cầu từ chối đến API sử dụng axios
+        const response = await axios.put(`http://localhost:9999/reports/reportsrejectcomplaint/${dialogState.id}`, {
+          reportRejectionComplaint: dialogState.rejectionReason, // Gửi lý do từ chối
+        });
+        if (response.status === 200) {
+          // Đóng dialog và reset trạng thái
+          toast.success("Từ chối khiếu nại thành công"); // Hiển thị thông báo từ API
+          setDialogState({ open: false, type: "", id: "", rejectionReason: "" });
+        } else {
+          toast.error(response.data.message); // Nếu có lỗi từ API
+        }
+      } catch (error) {
+        console.error("Error rejecting complaint:", error);
+        toast.error("Đã xảy ra lỗi khi từ chối khiếu nại");
+      }
+    } else if (dialogState.type === "approve") {
+      try {
+        const { id } = dialogState;
+        // Gọi API để chấp nhận khiếu nại
+        const response = await axios.put(`http://localhost:9999/reports/complaintaccept/${id}`);
+        if (response.status === 200) {
+          toast.success("Khiếu nại đã được chấp nhận!");
+        }
+        setDialogState({ open: false, type: "", id: "" });
+      } catch (error) {
+        toast.error("Đã xảy ra lỗi khi xử lý yêu cầu!");
+        setDialogState({ open: false, type: "", id: "" });
+      }
     }
   };
-
   const handleShowDetail = async (spaceId) => {
     try {
       const response = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
@@ -327,9 +348,10 @@ const PostReportMana = () => {
                               <Tooltip title="Chấp nhận KN">
                                 <IconButton
                                   color="primary"
-                                  onClick={() => handleApproveReport(report._id)}
+                                  onClick={() => handleApproveComplaint(report._id)}
                                   size="small"
                                   style={{ padding: 4 }}
+                                  disabled={report.statusReport === "Từ chối"}
                                 >
                                   <CheckCircle />
                                 </IconButton>
@@ -337,9 +359,10 @@ const PostReportMana = () => {
                               <Tooltip title="Từ chối KN">
                                 <IconButton
                                   color="secondary"
-                                  onClick={() => handleApproveAppeal(report._id)}
+                                  onClick={() => handleRejectComplaint(report._id)}
                                   size="small"
                                   style={{ padding: 4 }}
+                                  disabled={report.statusReport === "Từ chối"}
                                 >
                                   <BlockOutlined fontSize="small" />
                                 </IconButton>
@@ -389,15 +412,26 @@ const PostReportMana = () => {
       </Row>
       <Dialog
         open={dialogState.open}
-        onClose={() => setDialogState({ open: false, type: "", id: "" })}
+        lose={() => setDialogState({ open: false, type: "", id: "", rejectionReason: "" })}
       >
         <DialogTitle>
-        {dialogState.type === "report" ? "Chấp nhận khiếu nại" : "Từ chối khiếu nại"}
+        {dialogState.type === "approve" ? "Chấp nhận khiếu nại" : "Từ chối khiếu nại"}
                 </DialogTitle>
         <DialogContent>
           <Typography>
-          Bạn có chắc chắn muốn {dialogState.type === "report" ? "Chấp nhận khiếu nại " : "Từ chối khiếu nại "} này không?
+          Bạn có chắc chắn muốn {dialogState.type === "approve" ? "Chấp nhận khiếu nại " : "Từ chối khiếu nại "} này không?
           </Typography>
+          {dialogState.type === "reject" && (
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              label="Lý do từ chối"
+              variant="outlined"
+              value={dialogState.rejectionReason}
+              onChange={(e) => setDialogState({ ...dialogState, rejectionReason: e.target.value })}
+              style={{ marginTop: 16 }}
+            />)}
         </DialogContent>
         <DialogActions>
           <Button
@@ -407,14 +441,10 @@ const PostReportMana = () => {
             Đồng ý
           </Button>
           <Button
-            onClick={() => {
-              // Logic xử lý từ chối
-              console.log("Từ chối:", dialogState);
-              setDialogState({ open: false, type: "", id: "" });
-            }}
+            onClick={() => setDialogState({ open: false, type: "", id: "", rejectionReason: "" })}
             color="secondary"
           >
-            Từ chối
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>
@@ -505,10 +535,12 @@ const PostReportMana = () => {
         </DialogContent>
         <DialogActions>
           <Box style={{ marginRight: "auto" }}>
-            <Button variant="contained" color="success" onClick={() => handleAccept(selectedReport?._id)}>
+          <Button variant="contained" color="success" onClick={() => handleAccept(selectedReport?._id)} 
+          disabled={selectedReport?.statusReport === "Từ chối"||selectedReport?.statusReport === "Chấp nhận"}>
               Chấp nhận báo cáo
             </Button>
-            <Button variant="contained" color="error" className="ms-2" onClick={handleRejectButtonClick}>
+            <Button variant="contained" color="error" className="ms-2" onClick={handleRejectButtonClick} 
+            disabled={selectedReport?.statusReport === "Từ chối"||selectedReport?.statusReport === "Chấp nhận"}>
               Từ chối báo cáo
             </Button>
             {showRejectField && (
