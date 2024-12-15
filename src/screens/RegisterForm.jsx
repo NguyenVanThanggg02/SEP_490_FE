@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../style/login.css";
+import "../style/register.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import newlogo2 from "../assets/images/newlogo_2.png";
@@ -7,17 +7,18 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const RegisterForm = () => {
-  const navigate = useNavigate(); // Hook to navigate after successful registration
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     gmail: "", // Corrected field name for email
     fullname: "",
     phone: "",
+    address: "",
     password: "",
     confirmPassword: "",
   });
-  const [errors, setErrors] = useState({}); // State to manage field errors
-  const [isSubmitting, setIsSubmitting] = useState(false); // Manage submit button state
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -27,7 +28,7 @@ const RegisterForm = () => {
     }));
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [id]: "", // Clear error when user modifies input
+      [id]: "",
     }));
   };
 
@@ -35,7 +36,6 @@ const RegisterForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10,11}$/;
     const newErrors = {};
-
     if (!formData.fullname.trim()) {
       newErrors.fullname = "Họ và tên không được để trống!";
     }
@@ -43,7 +43,6 @@ const RegisterForm = () => {
       newErrors.username = "Tên đăng nhập không được để trống!";
     }
     if (!emailRegex.test(formData.gmail)) {
-      // Corrected field name for email validation
       newErrors.gmail = "Email không hợp lệ!";
     }
     if (!phoneRegex.test(formData.phone)) {
@@ -58,29 +57,26 @@ const RegisterForm = () => {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu không khớp!";
     }
-
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Return true if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
     if (!validateForm()) {
       toast.error("Vui lòng kiểm tra lại thông tin đăng ký!");
       return;
     }
-
-    const { username, gmail, password, fullname, phone } = formData;
+    const { username, gmail, password, fullname, phone, address } = formData;
     const formDataToSend = {
       username,
-      gmail, // Corrected field name for email
+      gmail,
       password,
       fullname,
       phone,
+      address,
     };
-
     try {
       setIsSubmitting(true);
       const res = await axios.post(
@@ -92,14 +88,12 @@ const RegisterForm = () => {
           },
         }
       );
-
       const { accessToken } = res.data;
       try {
         localStorage.setItem("accessToken", accessToken);
       } catch (e) {
         console.error("Không thể lưu accessToken vào localStorage:", e);
       }
-
       toast.success(
         "Đăng ký thành công! Đang chuyển hướng đến trang đăng nhập..."
       );
@@ -120,7 +114,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <form className="form_container" onSubmit={handleRegister}>
+    <form className="form_containers" onSubmit={handleRegister}>
       <ToastContainer />
       <div
         className="logo_container d-flex justify-content-center"
@@ -141,65 +135,71 @@ const RegisterForm = () => {
         </span>
       </div>
 
-      {/* Form Inputs */}
-      {[
-        {
-          label: "Họ và tên",
-          id: "fullname",
-          type: "text",
-          placeholder: "Nguyễn Văn A",
-        },
-        {
-          label: "Tên đăng nhập",
-          id: "username",
-          type: "text",
-          placeholder: "Tên đăng nhập của bạn",
-        },
-        {
-          label: "Email",
-          id: "gmail", // Corrected id for email input
-          type: "email",
-          placeholder: "name@mail.com",
-        },
-        {
-          label: "Số điện thoại",
-          id: "phone",
-          type: "tel",
-          placeholder: "0123456789",
-        },
+      {/* Nhóm các trường nhập */}
+      <div className="input_groups">
+        {[
+          {
+            label: "Họ và tên",
+            id: "fullname",
+            type: "text",
+            placeholder: "Nguyễn Văn A",
+          },
+          {
+            label: "Tên đăng nhập",
+            id: "username",
+            type: "text",
+            placeholder: "Tên đăng nhập của bạn",
+          },
+          {
+            label: "Email",
+            id: "gmail",
+            type: "email",
+            placeholder: "name@mail.com",
+          },
+          {
+            label: "Số điện thoại",
+            id: "phone",
+            type: "tel",
+            placeholder: "0123456789",
+          },
+          {
+            label: "Địa chỉ",
+            id: "address",
+            type: "text",
+            placeholder: "Địa chỉ của bạn",
+          },
+          {
+            label: "Mật khẩu",
+            id: "password",
+            type: "password",
+            placeholder: "Mật khẩu",
+          },
+          {
+            label: "Xác nhận mật khẩu",
+            id: "confirmPassword",
+            type: "password",
+            placeholder: "Xác nhận mật khẩu",
+          },
+        ].map((field) => (
+          <div className="input_containers" key={field.id}>
+            <label className="input_label" htmlFor={field.id}>
+              {field.label}
+            </label>
+            <input
+              type={field.type}
+              id={field.id}
+              value={formData[field.id]}
+              onChange={handleChange}
+              placeholder={field.placeholder}
+              className={`input_field ${errors[field.id] ? "input_error" : ""}`}
+            />
+            {errors[field.id] && (
+              <span className="error_text">{errors[field.id]}</span>
+            )}
+          </div>
+        ))}
+      </div>
 
-        {
-          label: "Mật khẩu",
-          id: "password",
-          type: "password",
-          placeholder: "Mật khẩu",
-        },
-        {
-          label: "Xác nhận mật khẩu",
-          id: "confirmPassword",
-          type: "password",
-          placeholder: "Xác nhận mật khẩu",
-        },
-      ].map((field) => (
-        <div className="input_container" key={field.id}>
-          <label className="input_label" htmlFor={field.id}>
-            {field.label}
-          </label>
-          <input
-            type={field.type}
-            id={field.id}
-            value={formData[field.id]}
-            onChange={handleChange}
-            placeholder={field.placeholder}
-            className={`input_field ${errors[field.id] ? "input_error" : ""}`}
-          />
-          {errors[field.id] && (
-            <span className="error_text">{errors[field.id]}</span>
-          )}
-        </div>
-      ))}
-
-      {/* Submit Button */}
       <button
         title="Đăng ký"
         type="submit"
@@ -209,7 +209,6 @@ const RegisterForm = () => {
         {isSubmitting ? "Đang xử lý..." : "Đăng ký"}
       </button>
 
-      {/* Link to Login */}
       <div>
         <Link
           to="/login"
