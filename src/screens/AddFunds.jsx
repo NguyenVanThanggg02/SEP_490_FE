@@ -249,7 +249,9 @@ const AddFunds = () => {
         </Box>
       </Box>
       <Grid container spacing={3}>
-        {filteredTransactions?.map((transaction) => (
+      {filteredTransactions
+          ?.filter((transaction) => transaction.type !== "Tăng số dư ví admin")  
+          ?.map((transaction) => (
           <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
             <Card
               elevation={3}
