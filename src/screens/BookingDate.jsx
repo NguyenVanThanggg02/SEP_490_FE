@@ -603,7 +603,7 @@ const BookingForm = () => {
       const { takenSelectedMonthObjs, availableSelectedMonthObjs } = ret;
 
       // notice when user choose some date taken
-      if (takenSelectedMonthObjs.length) {
+      if (takenSelectedMonthObjs?.length) {
         const noticeString = takenSelectedMonthObjs
           .map((takenSelectedMonthObj) => {
             return `${takenSelectedMonthObj.year}-${takenSelectedMonthObj.month}`;

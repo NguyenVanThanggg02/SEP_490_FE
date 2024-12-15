@@ -179,7 +179,9 @@ const ManaReport = () => {
                                                 </Button>
                                             </Link>
                                             <Button size="small" variant="contained" color="info" sx={{ textTransform: "none" }} 
-                                            onClick={()=>openComplaintDialog(lpost._id)}>
+                                            onClick={()=>openComplaintDialog(lpost._id)}
+                                            disabled={lpost.statusReport === "Từ chối"}
+                                            >
                                                 Khiếu nại
                                             </Button>
                                         </div>
