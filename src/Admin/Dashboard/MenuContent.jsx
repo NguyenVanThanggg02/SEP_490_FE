@@ -14,10 +14,11 @@ import PostManagement from '../PostManagement';
 import UserManagement from '../UserManagement ';
 import { TransactionManagement } from '../TransactionManagement';
 import ProfileAdmin from '../profile/ProfileAdmin';
-import { GearFill } from 'react-bootstrap-icons';
+import { GearFill, House, HouseFill } from 'react-bootstrap-icons';
 import PostReportMana from '../PostReportMana';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { AdminWallet } from '../AdminWallet';
+import { useNavigate } from 'react-router-dom';
 
 const mainListItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, component: <HomeAdmin /> },
@@ -27,18 +28,23 @@ const mainListItems = [
   { text: 'Quản lí giao dịch', icon: <PaymentIcon />, component: <TransactionManagement /> },
   { text: 'Ví admin', icon: <AccountBalanceWalletIcon />, component: <AdminWallet /> },
   { text: 'Cài đặt', icon: <GearFill />, component: <ProfileAdmin /> },
+  { text: 'Trang chủ', icon: <HouseFill />},
 ];
 
 // eslint-disable-next-line react/prop-types
 export default function MenuContent({ setMainContent }) {
 
   const [selected, setSelected] = React.useState(0);
-
+  const nav = useNavigate()
+  
   const handleSelected = (i) => {
-    setSelected(i)
-    setMainContent(mainListItems[i])
-  }
-
+    setSelected(i);
+    if (i === 7) { 
+      nav('/'); 
+    } else {
+      setMainContent(mainListItems[i]);
+    }
+  };
 
   React.useEffect(() => {
     const hash = window.location.hash;

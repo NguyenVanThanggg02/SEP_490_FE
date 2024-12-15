@@ -8,6 +8,7 @@ import { Paginator } from "primereact/paginator";
 import { toast } from "react-toastify";
 import { formatMoney } from "../../utils/moneyFormatter";
 import Reports from "../Reports";
+import { Link } from "react-router-dom";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -291,6 +292,7 @@ const History = () => {
                           flexDirection: "column",
                         }}
                       >
+                        <Link to={`/spaces/${item.spaceId}`} style={{textDecoration:'none'}}>
                         <Grid container spacing={2} alignItems="center">
                           <Grid item md={4}>
                             <img
@@ -313,9 +315,9 @@ const History = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ fontWeight: "bold", fontSize: "15px" }}
+                              style={{ fontWeight: "bold", fontSize: "15px", color:'#898480'}}
                             >
-                              Thuê theo:{" "}
+                              Hình thức thuê: 
                               {item.rentalType === "hour"
                                 ? "Giờ"
                                 : item.rentalType === "day"
@@ -328,7 +330,7 @@ const History = () => {
                             </Typography>
                             <Typography
                               variant="body2"
-                              style={{ fontWeight: "bold" }}
+                              style={{ fontWeight: "bold", color:'#898480' }}
                             >
                               Giá: {formatNumberToVND(item.totalAmount)} VND
                             </Typography>
@@ -384,6 +386,8 @@ const History = () => {
                             </Typography>
                           </Grid>
                         </Grid>
+                        </Link>
+
                        {/* button đánh giá - hủy lịch */}
                        <Grid
                           container
@@ -488,6 +492,7 @@ const History = () => {
             <Select
               value={selectedReason}
               onChange={(e) => setSelectedReason(e.target.value)}
+              label="Lý do hủy"
             >
               {availableReasons.map((reason, index) => (
                 <MenuItem key={index} value={reason}>

@@ -14,6 +14,7 @@ import {
   Clipboard2Check,
   Heart,
   List,
+  PersonGear,
   PersonVcard,
   Wallet,
 } from "react-bootstrap-icons";
@@ -32,6 +33,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     address: "",
   });
   const role = localStorage.getItem("role");
+  
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -93,6 +95,9 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const handleHistory = () => {
     navigate("/history");
   };
+  const handleAdmin = () => {
+    navigate("/admin");
+  };
 
   const handleLogin = () => {
     handleClose();
@@ -133,7 +138,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-      <Notification />
+        <Notification />
         <Tooltip
           title="Cài đặt tài khoản"
           style={{ height: "61px", marginTop: "-10px" }}
@@ -192,15 +197,11 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               Quản Lí Bài Đăng
             </MenuItem>
             <MenuItem onClick={handleMessage}>
-              <Chat
-                style={{ fontSize: "20px", marginRight: "10px" }}
-              />
+              <Chat style={{ fontSize: "20px", marginRight: "10px" }} />
               Tin nhắn
             </MenuItem>
             <MenuItem onClick={handleMannaOrder}>
-              <ListAltIcon
-                style={{ fontSize: "20px", marginRight: "10px" }}
-              />
+              <ListAltIcon style={{ fontSize: "20px", marginRight: "10px" }} />
               Quản Lí Đơn
             </MenuItem>
             <MenuItem onClick={handleStatistic}>
@@ -211,7 +212,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
             </MenuItem>
             <MenuItem onClick={handleAddFunds}>
               <Wallet style={{ fontSize: "20px", marginRight: "10px" }} />
-              Ví 
+              Ví
             </MenuItem>
             <MenuItem onClick={handleHistory}>
               <Clipboard2Check
@@ -219,6 +220,14 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
               />
               Lịch sử đặt
             </MenuItem>
+            {role == 1 && (
+              <MenuItem onClick={handleAdmin}>
+                <PersonGear
+                  style={{ fontSize: "20px", marginRight: "10px" }}
+                />
+                Trang quản trị viên
+              </MenuItem>
+            )}
             <MenuItem onClick={handleLogout}>
               <BoxArrowInRight
                 style={{ fontSize: "20px", marginRight: "10px" }}

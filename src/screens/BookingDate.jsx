@@ -751,7 +751,7 @@ const BookingForm = () => {
                     }}
 
                   >
-                    24 giờ
+                    5 giờ
                   </Typography>{" "}
                   trước thời gian bắt đầu sử dụng.
                 </Typography>
