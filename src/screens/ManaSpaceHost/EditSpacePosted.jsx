@@ -56,6 +56,8 @@ const EditSpacePosted = () => {
 
   const { spaceId } = locationWeb.state;
   const [isNotChangeData, setIsNotChangeData] = useState(true);
+  const [isChangeAppliancesOfInitialCate, setIsChangeAppliancesOfInitialCate] =
+    useState(false);
   const [expanded, setExpanded] = useState('panel1');
   const [selectedTab, setSelectedTab] = useState(0);
   const [error, setError] = useState('');
@@ -111,6 +113,7 @@ const EditSpacePosted = () => {
   console.log(
     'canSave',
     spaceInfo,
+    selectedAppliances,
     selectedRules,
     location,
     canSave,
@@ -148,7 +151,9 @@ const EditSpacePosted = () => {
             setGoldenHourDetails,
             priceIncrease,
             setPriceIncrease,
-            setIsNotChangeData
+            setIsNotChangeData,
+            isChangeAppliancesOfInitialCate,
+            setIsChangeAppliancesOfInitialCate,
           }}
         />
       );
