@@ -10,10 +10,9 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
-    gmail: "", // Corrected field name for email
+    gmail: "",
     fullname: "",
     phone: "",
-    address: "",
     password: "",
     confirmPassword: "",
   });
@@ -48,9 +47,6 @@ const RegisterForm = () => {
     if (!phoneRegex.test(formData.phone)) {
       newErrors.phone = "Số điện thoại phải có 10-11 chữ số!";
     }
-    if (!formData.address.trim()) {
-      newErrors.address = "Địa chỉ không được để trống!";
-    }
     if (formData.password.length < 6) {
       newErrors.password = "Mật khẩu phải có ít nhất 6 ký tự!";
     }
@@ -68,14 +64,13 @@ const RegisterForm = () => {
       toast.error("Vui lòng kiểm tra lại thông tin đăng ký!");
       return;
     }
-    const { username, gmail, password, fullname, phone, address } = formData;
+    const { username, gmail, password, fullname, phone } = formData;
     const formDataToSend = {
       username,
       gmail,
       password,
       fullname,
       phone,
-      address,
     };
     try {
       setIsSubmitting(true);
@@ -162,12 +157,7 @@ const RegisterForm = () => {
             type: "tel",
             placeholder: "0123456789",
           },
-          {
-            label: "Địa chỉ",
-            id: "address",
-            type: "text",
-            placeholder: "Địa chỉ của bạn",
-          },
+
           {
             label: "Mật khẩu",
             id: "password",
