@@ -4,11 +4,13 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
+import { Constants } from '../../utils/constants';
 
 const CategoriesPosted = ({
   selectedCategoryId,
   setSelectedCategoryId,
   setSelectedAppliances,
+  setIsNotChangeData
 }) => {
   const location = useLocation();
   const { spaceId } = location.state;
@@ -29,6 +31,7 @@ const CategoriesPosted = ({
   }, []);
 
   const handleCategoryClick = (cateid) => {
+    setIsNotChangeData(false);
     setSelectedCategoryId(cateid); // Chọn category mới
     setSelectedAppliances([]); // Xóa appliances đã chọn khi chọn category mới
   };

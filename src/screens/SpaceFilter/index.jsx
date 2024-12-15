@@ -52,8 +52,12 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                 },
             });
             console.log('get filter space', response);
+    
             if (response.data?.data && response.data?.data?.length > 0) {
-                setListSpace(response.data.data);
+                const sortedData = response.data.data.sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+                setListSpace(sortedData);
             } else {
                 setListSpace([]);
             }
@@ -63,6 +67,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
             setLoading(false);
         }
     };
+    
     const onFilterReset = () => {
         setFilter(filterDefault);
         loadInitData();
@@ -161,6 +166,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                                             value={name}
                                             onChange={onFilterChange}
                                             name={'applianceNames'}
+                                            checked={filter.applianceNames.includes(name)}
                                         />
                                     }
                                     label={name}
