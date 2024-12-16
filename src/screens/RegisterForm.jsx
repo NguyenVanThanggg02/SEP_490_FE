@@ -29,7 +29,7 @@ const RegisterForm = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { username, gmail, fullname, password, confirmPassword } = formData;
+    const { username, email, fullname, password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp!");
@@ -42,7 +42,7 @@ const RegisterForm = () => {
     // Tạo đối tượng FormData
     const formDataToSend = new FormData();
     formDataToSend.append("username", username);
-    formDataToSend.append("gmail", gmail);
+    formDataToSend.append("gmail", email);
     formDataToSend.append("fullname", fullname);
     formDataToSend.append("password", password);
 
@@ -112,12 +112,12 @@ const RegisterForm = () => {
           className="input_field"
           required
         />
-        <label className="input_label" htmlFor="username">
+        <label className="input_label" htmlFor="fullname">
           Họ và Tên
         </label>
         <input
           type="text"
-          id="username"
+          id="fullname"
           value={formData.fullname}
           onChange={handleChange}
           placeholder="Họ và tên của bạn"
