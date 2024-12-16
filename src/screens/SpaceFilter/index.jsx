@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Select as SearchSelect } from 'antd';
+import { Constants } from "../../utils/constants";
 
 export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadInitData, filterDefault }) => {
 
@@ -41,7 +42,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
     // get appliances
     useEffect(() => {
         axios
-            .get('http://localhost:9999/appliances')
+            .get(`${Constants.apiHost}/appliances`)
             .then((response) => setAppliances(response?.data))
             .catch((error) => console.error('Error fetching appliances:', error));
     }, []);
@@ -49,7 +50,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
     // get categories
     useEffect(() => {
         axios
-            .get('http://localhost:9999/categories')
+            .get(`${Constants.apiHost}/categories`)
             .then((response) => setCategories(response?.data))
             .catch((error) => console.error('Error fetching brands:', error));
     }, []);
@@ -65,7 +66,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
         e.preventDefault();
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:9999/spaces/filter', {
+            const response = await axios.get(`${Constants.apiHost}/spaces/filter`, {
                 params: { ...filter },
                 paramsSerializer: {
                     indexes: null, // by default: false

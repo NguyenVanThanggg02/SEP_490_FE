@@ -3,6 +3,7 @@ import "../style/Compare.css";
 import { useLocation } from 'react-router-dom';
 import { priceFormatter } from '../utils/numberFormatter';
 import axios from 'axios';
+import { Constants } from '../utils/constants';
 
 const Compare = () => {
   const location = useLocation();
@@ -16,8 +17,8 @@ const Compare = () => {
 
   const fetchData = async (isDifference) => {
     const endpoint = isDifference
-      ? `http://localhost:9999/spaces/compare-spaces-differences?id1=${id}&id2=${valueFromChild}`
-      : `http://localhost:9999/spaces/compare-spaces?id1=${id}&id2=${valueFromChild}`;
+      ? `${Constants.apiHost}/spaces/compare-spaces-differences?id1=${id}&id2=${valueFromChild}`
+      : `${Constants.apiHost}/spaces/compare-spaces?id1=${id}&id2=${valueFromChild}`;
 
     try {
       const response = await fetch(endpoint);

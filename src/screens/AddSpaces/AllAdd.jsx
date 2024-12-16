@@ -129,7 +129,7 @@ export default function AddSpaceFlow() {
     };
     try {
       const response = await axios.post(
-        'http://localhost:9999/spaces',
+        `${Constants.apiHost}/spaces`,
         spaceData
       );
       toast.success('Thêm không gian thành công!');
@@ -157,7 +157,7 @@ export default function AddSpaceFlow() {
       console.log('Custom rules array:', customRulesArray); // Kiểm tra sau
 
       const response = await axios.post(
-        'http://localhost:9999/rules/addRule',
+        `${Constants.apiHost}/rules/addRule`,
         data
       );
 
@@ -182,7 +182,7 @@ export default function AddSpaceFlow() {
 
     try {
       const response = await axios.post(
-        'http://localhost:9999/appliances',
+        `${Constants.apiHost}/appliances`,
         appliancesToAdd
       );
       if (response.data.success) {

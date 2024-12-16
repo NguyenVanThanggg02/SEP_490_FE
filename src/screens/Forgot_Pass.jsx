@@ -4,6 +4,7 @@ import "../style/reset-forgotPass.css";
 import axios from "axios";
 import {  Container } from "react-bootstrap";
 import { toast } from "react-toastify";
+import { Constants } from "../utils/constants";
 
 const Forgot_Pass = () => {
   const [gmail, setGmail] = useState("");
@@ -12,7 +13,7 @@ const Forgot_Pass = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:9999/users/forgot-password", { gmail })
+      .post(`${Constants.apiHost}/users/forgot-password`, { gmail })
       .then((res) => {
         if (res.data.Status === "Thành công") {
           setGmail("");

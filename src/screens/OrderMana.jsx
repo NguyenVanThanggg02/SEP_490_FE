@@ -18,6 +18,7 @@ import { toast } from 'react-toastify';
 import { formatNumberToVND } from '../utils/numberFormatter';
 import { Paginator } from 'primereact/paginator';
 import { Row } from 'react-bootstrap';
+import { Constants } from '../utils/constants';
 
 const OrderMana = () => {
   const userId = localStorage.getItem('userId');
@@ -39,7 +40,7 @@ const OrderMana = () => {
   useEffect(() => {
     const fetchOrderData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/bookings/spaces/${userId}`);
+        const response = await axios.get(`${Constants.apiHost}/bookings/spaces/${userId}`);
         const sortedOrders = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sắp xếp giảm dần
         setOrder(sortedOrders);
       } catch (error) {
@@ -57,7 +58,7 @@ const OrderMana = () => {
 
   const updateBookingStatus = async (id, status, reasonOwnerRejected = '') => {
     try {
-      await axios.put(`http://localhost:9999/bookings/updatestatus/${id}`, {
+      await axios.put(`${Constants.apiHost}/bookings/updatestatus/${id}`, {
         ownerApprovalStatus: status,
         reasonOwnerRejected: reasonOwnerRejected,
       });

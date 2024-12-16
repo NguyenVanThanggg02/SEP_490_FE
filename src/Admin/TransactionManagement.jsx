@@ -41,6 +41,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { formatMoney } from '../utils/moneyFormatter';
 import { formatNumberToVND } from '../utils/numberFormatter';
+import { Constants } from '../utils/constants';
 
 export const TransactionManagement = () => {
   const typeOfTransactions = [
@@ -75,7 +76,7 @@ export const TransactionManagement = () => {
   async function fetchHistory() {
     try {
       const response = await axios.get(
-        'http://localhost:9999/transaction/admin/list',
+        `${Constants.apiHost}/transaction/admin/list`,
         {
           params: {
             searchParams,
@@ -126,7 +127,7 @@ export const TransactionManagement = () => {
     try {
       setWithDrawTransaction(undefined);
       const response = await axios.post(
-        'http://localhost:9999/transaction/admin/confirm',
+        `${Constants.apiHost}/transaction/admin/confirm`,
         {
           transactionId,
           result: 'Đồng ý - Khởi tạo',
@@ -146,7 +147,7 @@ export const TransactionManagement = () => {
   async function approveTransaction() {
     try {
       const response = await axios.post(
-        'http://localhost:9999/transaction/admin/confirm',
+        `${Constants.apiHost}/transaction/admin/confirm`,
         {
           transactionId: withdrawTransaction.transactionId,
           result: 'Đồng ý - Xác nhận',
@@ -165,7 +166,7 @@ export const TransactionManagement = () => {
   async function rejectTransaction() {
     try {
       const response = await axios.post(
-        'http://localhost:9999/transaction/admin/confirm',
+        `${Constants.apiHost}/transaction/admin/confirm`,
         {
           transactionId: selectedTransaction.transactionId,
           result: 'Từ chối - Xác nhận',
@@ -188,7 +189,7 @@ export const TransactionManagement = () => {
 
   const fetchSystem = () => {
     axios
-      .get(`http://localhost:9999/system`)
+      .get(`${Constants.apiHost}/system`)
       .then((response) => {
         console.log(response.data);
 

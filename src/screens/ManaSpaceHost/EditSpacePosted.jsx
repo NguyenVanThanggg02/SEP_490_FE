@@ -181,7 +181,7 @@ const EditSpacePosted = () => {
         },
       };
       const res = await axios.post(
-        `http://localhost:9999/spaces/update/${spaceId}`,
+        `${Constants.apiHost}/spaces/update/${spaceId}`,
         updatedSpace
       );
 
@@ -202,7 +202,7 @@ const EditSpacePosted = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:9999/spaces/${spaceId}`
+          `${Constants.apiHost}/spaces/${spaceId}`
         );
 
         const {

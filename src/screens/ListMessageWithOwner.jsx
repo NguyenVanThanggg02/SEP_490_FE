@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
+import { Constants } from "../utils/constants";
 
 const ListMessageWithOwner = () => {
   const location = useLocation();
@@ -12,7 +13,7 @@ const ListMessageWithOwner = () => {
 
   const fetchSpaceById = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:9999/spaces/${id}`);
+      const response = await axios.get(`${Constants.apiHost}/spaces/${id}`);
       setSpace(response.data);
     } catch (err) {
       setError(err);

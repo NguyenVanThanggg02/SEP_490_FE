@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import { Paginator } from 'primereact/paginator';
 import { priceFormatter } from '../../utils/numberFormatter';
+import { Constants } from '../../utils/constants';
 
 const SpacePosted = () => {
     const [listPosted, setlistPosted] = useState([]);
@@ -29,7 +30,7 @@ const SpacePosted = () => {
         const fetchSpaces = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:9999/spaces/for/${userId}`
+                    `${Constants.apiHost}/spaces/for/${userId}`
                 );
                 if (response.status === 200) {
                   const sortedSpaces = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -94,7 +95,7 @@ const SpacePosted = () => {
     const handleConfirmDelete = () => {
         if (selectedSpace) {
             axios
-                .delete(`http://localhost:9999/spaces/delete/${selectedSpace._id}`)
+                .delete(`${Constants.apiHost}/spaces/delete/${selectedSpace._id}`)
                 .then(() => {
                     setlistPosted(listPosted.filter((product) => product._id !== selectedSpace._id));
                 })

@@ -31,6 +31,7 @@ import { MapShopDetail } from "../components/MapShopDetail";
 import Reviews from './Reviews';
 import { userChats } from "../Api/ChatRequests";
 import { toast } from "react-toastify";
+import { Constants } from "../utils/constants";
 function SpaceDetails({ onSelectChat }) {
   const { id } = useParams();
   const [spaceData, setSpaceData] = useState({});
@@ -70,7 +71,7 @@ function SpaceDetails({ onSelectChat }) {
   useEffect(() => {
     const fetchSpaceData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/spaces/${id}`);
+        const response = await axios.get(`${Constants.apiHost}/spaces/${id}`);
         setSpaceData(response.data);
         setCategory(response.data.categoriesId._id);
 
@@ -112,7 +113,7 @@ function SpaceDetails({ onSelectChat }) {
   useEffect(() => {
     const fetchSpaceDataToCompare = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/spaces/${valueFromChild}`);
+        const response = await axios.get(`${Constants.apiHost}/spaces/${valueFromChild}`);
         setCompare(response.data);
       } catch (err) {
         setError(err);
@@ -127,7 +128,7 @@ function SpaceDetails({ onSelectChat }) {
   const changeFavorite = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:9999/spaces/${id}/favorite`
+        `${Constants.apiHost}/spaces/${id}/favorite`
       );
       setSpaceData((prevSpace) => ({
         ...prevSpace,
@@ -201,14 +202,14 @@ function SpaceDetails({ onSelectChat }) {
       if (chatData) {
         // Cập nhật chat hiện tại với ID sản phẩm
         const updateChatResponse = await axios.put(
-          `http://localhost:9999/chat/${chatData._id}`,
+          `${Constants.apiHost}/chat/${chatData._id}`,
           { spacesId: id } // Sử dụng id từ useParams
         );
         console.log("Chat updated with product ID:", updateChatResponse.data);
       } else {
         // Tạo một chat mới
         const createChatResponse = await axios.post(
-          "http://localhost:9999/chat",
+          `${Constants.apiHost}/chat`,
           {
             senderId: userId,
             receiverId: spaceData.userId._id,

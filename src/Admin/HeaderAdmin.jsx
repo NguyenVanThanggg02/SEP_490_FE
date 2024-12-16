@@ -8,6 +8,7 @@ import { Col, Row } from "react-bootstrap";
 import NewLogo from "../assets/images/newlogo.png";
 import MenuAdmin from "./MenuAdmin";
 import Notification from '../components/Notification';
+import { Constants } from "../utils/constants";
 
 const HeaderAdmin = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,7 +32,7 @@ const HeaderAdmin = () => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `http://localhost:9999/users/${userId}`,
+        `${Constants.apiHost}/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

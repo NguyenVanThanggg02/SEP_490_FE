@@ -3,6 +3,7 @@ import "../style/reset-forgotPass.css";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Constants } from "../utils/constants";
 
 const ResetPass = () => {
   const [password, setPassword] = useState();
@@ -22,7 +23,7 @@ const ResetPass = () => {
     }
 
     axios
-      .post(`http://localhost:9999/users/reset-password/${id}/${token}`, {
+      .post(`${Constants.apiHost}/users/reset-password/${id}/${token}`, {
         password,
       })
       .then((res) => {

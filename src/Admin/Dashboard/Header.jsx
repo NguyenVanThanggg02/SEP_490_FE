@@ -7,6 +7,7 @@ import Notification from '../../components/Notification';
 import { Avatar, Box, IconButton, Menu, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Constants } from '../../utils/constants';
 
 export default function Header({ mainContent }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -17,7 +18,7 @@ export default function Header({ mainContent }) {
 
   const fetchUserData = () => {
     axios
-      .get(`http://localhost:9999/users/${userId}`)
+      .get(`${Constants.apiHost}/users/${userId}`)
       .then((response) => {
         setUserData(response.data);
       })

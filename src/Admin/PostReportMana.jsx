@@ -9,6 +9,8 @@ import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton
 import { BlockOutlined, Preview, Visibility } from "@mui/icons-material";
 import { Image } from "antd";
 import { toast } from "react-toastify";
+import { Constants } from '../utils/constants';
+
 
 const PostReportMana = () => {
   const [reportPosts, setReportPosts] = useState([]);
@@ -65,7 +67,7 @@ const PostReportMana = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/reports")
+      .get(`${Constants.apiHost}/reports`)
       .then((response) => {
         const sortedSpaces = response.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -80,12 +82,12 @@ const PostReportMana = () => {
   const handleShowDetail = async (spaceId, reportId) => {
 
     try {
-      const responseSpace = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
+      const responseSpace = await axios.get(`${Constants.apiHost}/spaces/${spaceId}`);
       setSelectedSpaceId(spaceId);
       setSelectedSpace(responseSpace.data);
       setDialogDetailSpace(true);
 
-      const responseReport = await axios.get(`http://localhost:9999/reports/getreport/${reportId}`);
+      const responseReport = await axios.get(`${Constants.apiHost}/reports/getreport/${reportId}`);
       setSelectedReport(responseReport.data);
     } catch (error) {
       console.error("Error fetching space details:", error);
@@ -100,7 +102,7 @@ const PostReportMana = () => {
     }
 
     axios
-      .put(`http://localhost:9999/reports/reportstatus/${reportId}`, {
+      .put(`${Constants.apiHost}/reports/reportstatus/${reportId}`, {
         statusReport: "Chấp nhận",
       })
       .then(() => {
@@ -119,7 +121,7 @@ const PostReportMana = () => {
 //rj report
   const handleReject = (reportId) => {
     axios
-      .put(`http://localhost:9999/reports/reportsreject/${reportId}`, {
+      .put(`${Constants.apiHost}/reports/reportsreject/${reportId}`, {
         reportRejectionReason: rejectReason,
       })
       .then(() => {
@@ -185,7 +187,7 @@ const PostReportMana = () => {
 
       try {
         // Gửi yêu cầu từ chối đến API sử dụng axios
-        const response = await axios.put(`http://localhost:9999/reports/reportsrejectcomplaint/${dialogState.id}`, {
+        const response = await axios.put(`${Constants.apiHost}/reports/reportsrejectcomplaint/${dialogState.id}`, {
           reportRejectionComplaint: dialogState.rejectionReason, // Gửi lý do từ chối
         });
 
@@ -203,7 +205,7 @@ const PostReportMana = () => {
         const { id } = dialogState;
 
         // Gọi API để chấp nhận khiếu nại
-        const response = await axios.put(`http://localhost:9999/reports/complaintaccept/${id}`);
+        const response = await axios.put(`${Constants.apiHost}/reports/complaintaccept/${id}`);
 
         if (response.status === 200) {
           toast.success("Khiếu nại đã được chấp nhận!");

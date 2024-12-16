@@ -17,7 +17,7 @@ export const Appliances = ({
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9999/appliances/${categoryId}`)
+      .get(`${Constants.apiHost}/appliances/${categoryId}`)
       .then((res) => {
         setAppliances(res.data);
       })

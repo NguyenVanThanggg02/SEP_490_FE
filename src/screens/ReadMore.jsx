@@ -5,6 +5,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";  
 import "react-toastify/dist/ReactToastify.css";
+import { Constants } from "../utils/constants";
 
 const ReadMore = ({ visible, setVisible }) => {
   const [reasons, setReasons] = useState([]);
@@ -14,7 +15,7 @@ const ReadMore = ({ visible, setVisible }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/reasons")
+      .get(`${Constants.apiHost}/reasons`)
       .then((res) => {
         setReasons(res.data);
       })
@@ -34,7 +35,7 @@ const ReadMore = ({ visible, setVisible }) => {
       spaceId: id,
     };
     axios
-      .post("http://localhost:9999/reports", reportData)
+      .post(`${Constants.apiHost}/reports`, reportData)
       .then((response) => {
         toast.success("Báo cáo thành công");
         setSelectedReason(null)

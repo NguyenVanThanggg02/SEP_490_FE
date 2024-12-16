@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import StickyHeadTable from '../components/StickyHeaderTable';
 import { formatNumberToVND } from '../utils/numberFormatter';
+import { Constants } from '../utils/constants';
 
 const getTotalPlusTrans = (plusTransId) => {
   return plusTransId.reduce((acc, currVal) => {
@@ -323,7 +324,7 @@ export default function Statistics() {
         if (filter.month && filter.year) {
           setLoading(true);
           const res = await axios.get(
-            `http://localhost:9999/spaces/statistic/${userId}`
+            `${Constants.apiHost}/spaces/statistic/${userId}`
           );
 
           console.log('res after filter', res);

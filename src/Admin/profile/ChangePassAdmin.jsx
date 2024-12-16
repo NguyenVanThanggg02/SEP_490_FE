@@ -4,6 +4,7 @@ import { LockOutlined, LockOpenOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Constants } from "../../utils/constants";
 
 const ChangePassAdmin = () => {
   const [oldPass, setOldPass] = useState("");
@@ -24,7 +25,7 @@ const ChangePassAdmin = () => {
     const id = payload.user.id;
 
     try {
-      const response = await axios.get(`http://localhost:9999/users/${id}`);
+      const response = await axios.get(`${Constants.apiHost}/users/${id}`);
       setUsername(response.data.username);
     } catch (error) {
       console.error(error);
@@ -47,7 +48,7 @@ const ChangePassAdmin = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9999/users/changepass/${username}`,
+        `${Constants.apiHost}/users/changepass/${username}`,
         { oldPassword: oldPass, newPassword: newPass }
       );
       if (response.data.status) {
