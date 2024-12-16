@@ -1,16 +1,36 @@
 /* eslint-disable react/prop-types */
 
 import React, { useEffect, useState } from "react"
-import { Button, Checkbox, Drawer, FormControl, FormControlLabel, FormGroup, FormLabel, IconButton, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField, Typography, useMediaQuery } from "@mui/material";
+import {
+    Button,
+    Checkbox,
+    Drawer,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    FormLabel,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select, Stack,
+    TextField,
+    useMediaQuery
+} from "@mui/material";
 import axios from "axios";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { Select as SearchSelect } from 'antd';
 import { Constants } from "../../utils/constants";
 
 export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadInitData, filterDefault }) => {
 
     const [categories, setCategories] = useState([]);
     const [appliances, setAppliances] = useState([]);
-
+    const [isDrawerOpen, setDrawerOpen] = useState(false);
+    const isMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
+    const [provinces, setProvinces] = useState([]);
+    const [provinceSearch, setProvinceSearch] = useState('');
+    const [provinceSuggests, setProvinceSuggests] = useState([]);
     const applianceNames = [
         ...new Set(
             appliances.flatMap((item) =>
@@ -107,12 +127,40 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
         });
     };
 
-    const [isDrawerOpen, setDrawerOpen] = useState(false);
-    const isMd = useMediaQuery((theme) => theme.breakpoints.up('md'));
+    const onProvinceSearchChange = (e) => {
+        const input = e.target.value;
+        setProvinceSearch(input);
+    };
+
+    const onSetProvince = (value) => {
+        setProvinceSearch(value);
+        setFilter((prev) => ({ ...prev, province: value }));
+    };
+
 
     const toggleDrawer = (open) => {
         setDrawerOpen(open);
     };
+
+    useEffect(() => {
+        const fetchprovinces = async () => {
+            try {
+                const response = await axios.get(
+                    'https://esgoo.net/api-tinhthanh/1/0.htm'
+                );
+                // https://provinces.open-api.vn/api/
+                const formattedProvinces = response.data.data.map((province) => ({
+                    value: province.name,
+                    label: province.name,
+                }));
+                setProvinces(formattedProvinces);
+                setProvinceSuggests(formattedProvinces);
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+            }
+        };
+        fetchprovinces();
+    }, []);
     return (
         <React.Fragment>
             {isMd &&
@@ -304,6 +352,41 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                             ))}
                         </Select>
                     </FormControl>
+                    <div className="filter-section" style={{ border: 'none' }}>
+                        <div
+                            className="filter-section-title"
+                            style={{ marginRight: '10px', color: 'gray' }}
+                        >
+                            Tỉnh thành:
+                        </div>
+
+                        <SearchSelect
+                            size="medium"
+                            style={{ marginBottom: 50, width: '100%' }}
+                            onInputKeyDown={onProvinceSearchChange}
+                            showSearch
+                            placeholder="Nhập tỉnh thành"
+                            filterOption={(input, option) =>
+                                (option?.label ?? '')
+                                    .toLowerCase()
+                                    .includes(input.toLowerCase())
+                            }
+                            options={provinceSuggests}
+                            onChange={(e) => onSetProvince(e)}
+                            value={provinceSearch}
+                        >
+                            {provinceSuggests.map((item, index) => {
+                                return (
+                                    <SearchSelect.Option
+                                        value={item.value}
+                                        key={index + '__' + item.label}
+                                    >
+                                        {item.label}
+                                    </SearchSelect.Option>
+                                );
+                            })}
+                        </SearchSelect>
+                    </div>
                 </Stack>}
 
             {!isMd && (
@@ -500,6 +583,40 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                                 ))}
                             </Select>
                         </FormControl>
+                        <div className="filter-section" style={{ border: 'none' }}>
+                            <div
+                                className="filter-section-title"
+                                style={{ marginRight: '10px', color: 'gray' }}
+                            >
+                                Tỉnh thành:
+                            </div>
+                            <SearchSelect
+                                size="medium"
+                                style={{ marginBottom: 50, width: '100%' }}
+                                onInputKeyDown={onProvinceSearchChange}
+                                showSearch
+                                placeholder="Nhập tỉnh thành"
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '')
+                                        .toLowerCase()
+                                        .includes(input.toLowerCase())
+                                }
+                                options={provinceSuggests}
+                                onChange={(e) => onSetProvince(e)}
+                                value={provinceSearch}
+                            >
+                                {provinceSuggests.map((item, index) => {
+                                    return (
+                                        <SearchSelect.Option
+                                            value={item.value}
+                                            key={index + '__' + item.label}
+                                        >
+                                            {item.label}
+                                        </SearchSelect.Option>
+                                    );
+                                })}
+                            </SearchSelect>
+                        </div>
                     </Stack>
                 </Drawer>
             }

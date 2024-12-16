@@ -37,11 +37,12 @@ const Reports = (props) => {
       reasonId: selectedReason,
       spaceId: idSpace,
       customReason: customReason.trim(),
+      statusReport: "Chờ duyệt", 
     };
     axios
       .post(`${Constants.apiHost}/reports`, reportData)
       .then((response) => {
-        toast.success("Báo cáo thành công");
+        toast.success("Báo cáo thành công,báo cáo của bạn đang được phê duyệt");
         setSelectedReason([]);
         setCustomReason("");
         document.querySelectorAll('input[name="report"]').forEach(input => input.checked = false);

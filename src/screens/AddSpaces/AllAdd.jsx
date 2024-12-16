@@ -106,6 +106,10 @@ export default function AddSpaceFlow() {
   };
 
   const handleFinish = async () => {
+    if (isFinishDisabled()) {
+      toast.error('Vui lòng hoàn thành tất cả các trường bắt buộc!');
+      return;
+    }
     setIsLoading(true);
     try {
       const ruleId = await addRules();
@@ -231,6 +235,17 @@ export default function AddSpaceFlow() {
     (activeStep === 1 && selectedAppliances.length === 0) ||
     (activeStep === 2 && (!location || spaceInfo.latLng.length === 0));
 
+    const isFinishDisabled = () => {
+      // Kiểm tra các điều kiện để nút "Hoàn thành" được kích hoạt
+      const hasValidName = spaceInfo.name && spaceInfo.name.trim() !== ''; // Tên không gian
+      const hasValidPrice = spaceInfo.pricePerHour || spaceInfo.pricePerDay || spaceInfo.pricePerMonth; // Ít nhất một loại giá
+      const hasValidArea = spaceInfo.area && spaceInfo.area > 0; // Diện tích phải > 0
+      const hasValidRules = selectedRules.length > 0 || (customRule && customRule.trim() !== ''); // Quy định phải được chọn hoặc nhập
+      const hasImages = spaceInfo.images && spaceInfo.images.length > 0; // Kiểm tra ảnh đã được thêm
+    
+      return !(hasValidName && hasValidPrice && hasValidArea && hasValidRules && hasImages);
+    };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ padding: '20px' }}>{renderStepContent(activeStep)}</Box>
@@ -275,7 +290,7 @@ export default function AddSpaceFlow() {
           <Box sx={{ flex: '1 1 auto' }} />
           {activeStep === steps.length - 1 ? (
             <LoadingButton
-            disabled={!canSave}
+            disabled={!canSave||isFinishDisabled()}
             onClick={handleFinish}
             variant="contained"
             loading={isLoading}

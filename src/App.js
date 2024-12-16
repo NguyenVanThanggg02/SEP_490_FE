@@ -44,6 +44,7 @@ import AddFundsResult from "./screens/AddFundsResult";
 import Statistics from "./screens/Statistics";
 import { Box } from '@mui/material';
 import { AdminLayout } from './Admin/AdminLayout';
+import ManaReport from "./screens/ManaReport";
 
 function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -131,7 +132,7 @@ function Layout() {
           <Route path="/order" element={<OrderMana />} />
           <Route path="/reviews/create/:spaceId" element={<CreateReview />} />
           <Route path="/statistics" element={<Statistics />} />
-
+          <Route path="/report" element={<ManaReport />} />
         </Routes>
         </Box>
         {shouldShowHeader && (

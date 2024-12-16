@@ -260,7 +260,7 @@ export default function Statistics() {
     );
     const flatBookings = haveBookingSpaces.flatMap((space) => space.bookings);
 
-    return flatBookings.reduce((acc, booking) => {
+    const totalAvenueInBooKings=flatBookings.reduce((acc, booking) => {
       if (!booking.plusTransId) return acc;
       const haveSomePlus = booking.plusTransId.reduce((acc, tran) => {
         const tranDate = new Date(tran.createdAt);
@@ -268,9 +268,15 @@ export default function Statistics() {
           tranDate.getMonth() + 1 === filter.month &&
           tranDate.getFullYear() === filter.year
         ) {
-          const datePart = tran.createdAt.split('T')[0];
-          const exist = acc.find((obj) => obj.date === datePart);
-          console.log('exist', tran, exist);
+          const VNtime=new Date(tran.createdAt).toLocaleString('vi-VN')
+          const VNDate=VNtime.split(' ')[1]
+          const VNDatePart=`${VNDate.split('/')[2]}-${VNDate.split('/')[1]}-${VNDate.split('/')[0]}`
+          console.log('time to test',tran.createdAt,VNDatePart, tran.createdAt)
+          const datePart = VNDatePart
+          const exist = acc.find((obj) => {
+            
+              console.log('inside find exist', obj, datePart, tran)
+            return obj.date === datePart});
           if (exist) {
             const other = acc.filter((obj) => obj.date !== datePart);
             return [
@@ -282,10 +288,20 @@ export default function Statistics() {
         }
         return acc;
       }, []);
-      console.log('haveSomePlus', haveSomePlus);
 
       return [...acc, ...haveSomePlus];
     }, []);
+    console.log('totalAvenueInBooKings',totalAvenueInBooKings); 
+
+    return totalAvenueInBooKings.reduce((acc, dateObj) => {
+      const founddateObj=acc.find(currdateObj => currdateObj.date === dateObj.date);
+      if(founddateObj){
+        const otherdateObj=acc.filter(currdateObj => currdateObj.date !== dateObj.date)
+        return [...otherdateObj, {date:dateObj.date,avenue: founddateObj.avenue+dateObj.avenue}];
+      } else {
+        return [...acc,{date:dateObj.date,avenue: dateObj.avenue}]
+      }
+    },[])
   }, [filteredStat, filter]);
 
   const fillOtherDay = useMemo(() => {
@@ -399,17 +415,17 @@ export default function Statistics() {
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
                   {filter.month !== 'all'
-                    ? `Doanh Thu T${filter.month}/${filter.year}:
-                  ${formatNumberToVND(totalStatsInMonth.avenue)} VND`
-                    : `Doanh Thu Năm ${filter.year}:
-                  ${formatNumberToVND(totalStatsInYear.avenue)} VND`}
+                    ? `Doanh thu T${filter.month}/${filter.year}:
+                  ${totalStatsInMonth.avenue}đ`
+                    : `Doanh thu năm ${filter.year}:
+                  ${totalStatsInYear.avenue}đ`}
                 </Typography>
                 <Typography>
                   {filter.month !== 'all'
-                    ? `Tổng Lượt Đặt T${filter.month}/${filter.year}:
-                  ${totalStatsInMonth.numOfBook} Đơn`
-                    : `Tổng Lượt Đặt ${filter.year}:
-                  ${totalStatsInYear.numOfBook} Đơn`}
+                    ? `Doanh thu T${filter.month}/${filter.year}:
+                  ${totalStatsInMonth.numOfBook}đ`
+                    : `Doanh thu năm ${filter.year}:
+                  ${totalStatsInYear.numOfBook}đ`}
                 </Typography>
               </Paper>
             </Stack>

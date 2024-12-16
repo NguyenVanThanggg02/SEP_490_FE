@@ -114,7 +114,10 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     handleClose();
     navigate("/favorites");
   };
-
+  const handleMannaReport = () => {
+    handleClose();
+    navigate("/report");
+  };
   const handleMannaPost = () => {
     handleClose();
     navigate("/posted");
@@ -196,6 +199,12 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
                 style={{ fontSize: "20px", marginRight: "10px" }}
               />
               Quản Lí Bài Đăng
+            </MenuItem>
+            <MenuItem onClick={handleMannaReport}>
+              <Calendar2Check
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Quản Lí Tố Cáo
             </MenuItem>
             <MenuItem onClick={handleMessage}>
               <Chat style={{ fontSize: "20px", marginRight: "10px" }} />
