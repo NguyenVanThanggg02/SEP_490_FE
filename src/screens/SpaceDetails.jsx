@@ -468,15 +468,20 @@ function SpaceDetails({ onSelectChat }) {
                     cursor: "pointer",
                   }}
                 >
-                  <div onClick={changeFavorite} style={{ marginRight: "10px" }}>
-                    {spaceData.favorite ? (
-                      <FavoriteIcon
-                        style={{ color: "#FF385C", fontSize: "40px" }}
-                      />
-                    ) : (
-                      <FavoriteBorderIcon style={{ fontSize: "40px" }} />
-                    )}
-                  </div>
+                  {userId && (
+                    <div
+                      onClick={changeFavorite}
+                      style={{ marginRight: "10px" }}
+                    >
+                      {spaceData.favorite ? (
+                        <FavoriteIcon
+                          style={{ color: "#FF385C", fontSize: "40px" }}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon style={{ fontSize: "40px" }} />
+                      )}
+                    </div>
+                  )}
                   <div
                     onClick={toggleDrawer(true)}
                     style={{ display: "flex", alignItems: "center" }}
@@ -693,7 +698,13 @@ function SpaceDetails({ onSelectChat }) {
             <Row>
               <Col item xs={12} md={8}>
                 <Typography variant="h5">
-                  {spaceData.location}
+                  <Typography
+                    variant="h6"
+                    sx={{ fontSize: "20px", fontWeight: "700" }}
+                  >
+                    Thể loại: {spaceData?.categoriesId?.name}
+                  </Typography>
+
                   <Row item md={12}>
                     <Divider
                       sx={{
@@ -779,27 +790,37 @@ function SpaceDetails({ onSelectChat }) {
                   sx={{ fontSize: "20px", fontWeight: "700" }}
                   gutterBottom
                 >
-                  Thông tin cơ bản
+                  Chính sách hoàn tiền và lưu ý khi đặt không gian
                 </Typography>
+
                 <Row>
-                  <Col md={6}>
+                  <Col md={12}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", fontSize: "14px" }}
+                    >
+                      Quý khách sẽ được hoàn lại toàn bộ số tiền đã thanh toán
+                      trong các trường hợp sau đây:
+                    </Typography>
                     <div style={{ display: "flex" }}>
                       <MuiIcons.AccessTime sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
-                        >
-                          Giờ checkin/out tiêu chuẩn
-                        </Typography>
-
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "5px", fontSize: "14px" }}
-                        >
-                          Check in sau 14:00 và check-out trước 12:00 ngày hôm
-                          sau
+                        <Typography variant="subtitle1">
+                          <strong>Đặt theo slot:</strong> Nếu quý khách hủy đặt
+                          phòng ít nhất{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#005005",
+                            }}
+                          >
+                            5 giờ
+                          </Typography>{" "}
+                          trước thời gian bắt đầu sử dụng.
                         </Typography>
                       </div>
                     </div>
@@ -807,20 +828,22 @@ function SpaceDetails({ onSelectChat }) {
                     <div style={{ display: "flex", margin: "25px 0" }}>
                       <MuiIcons.AlarmOn sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
-                        >
-                          Cho phép đặt theo giờ
-                        </Typography>
-
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "5px", fontSize: "14px" }}
-                        >
-                          Không gian cho phép đặt theo giờ cho khách hàng có nhu
-                          cầu sử dụng trong thời gian ngắn
+                        <Typography variant="body1">
+                          <strong>Đặt theo ngày:</strong> Nếu quý khách hủy đặt
+                          phòng ít nhất{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#005005",
+                            }}
+                          >
+                            24 giờ
+                          </Typography>{" "}
+                          trước ngày bắt đầu sử dụng.
                         </Typography>
                       </div>
                     </div>
@@ -828,59 +851,152 @@ function SpaceDetails({ onSelectChat }) {
                     <div style={{ display: "flex" }}>
                       <MuiIcons.EventAvailable sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
-                        >
-                          Khung giờ hỗ trợ checkin
-                        </Typography>
-
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "5px", fontSize: "14px" }}
-                        >
-                          Hỗ trợ tất cả khung giờ
+                        <Typography variant="body1">
+                          <strong>Đặt theo tháng:</strong> Nếu quý khách hủy đặt
+                          phòng ít nhất{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#005005",
+                            }}
+                          >
+                            7 ngày
+                          </Typography>{" "}
+                          trước ngày bắt đầu sử dụng.
                         </Typography>
                       </div>
                     </div>
-                  </Col>
-                  <Col md={6}>
+                    <Typography
+                      variant="h6"
+                      color="secondary"
+                      gutterBottom
+                    ></Typography>
+                    <Typography sx={{ fontWeight: "bold", fontSize: "14px" }}>
+                      Trong một số trường hợp đặc biệt, quý khách vẫn có thể
+                      được hoàn lại một phần tiền đã thanh toán như sau:
+                    </Typography>
                     <div style={{ display: "flex" }}>
                       <MuiIcons.EditCalendar sx={{ fontSize: "30px" }} />
                       <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
-                        >
-                          Giờ checkin/out theo ngày
+                        <Typography variant="body1">
+                          <strong>Đặt theo tháng:</strong>
+                          <br />- Nếu quý khách hủy từ{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#FF6F00",
+                            }}
+                          >
+                            1-7 ngày
+                          </Typography>{" "}
+                          trước ngày bắt đầu sử dụng, chúng tôi sẽ hoàn lại{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="primary"
+                            fontWeight="bold"
+                          >
+                            80%
+                          </Typography>{" "}
+                          số tiền đã thanh toán.
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "5px", fontSize: "14px" }}
-                        >
-                          Nhận phòng 9:00<br></br>
-                          Trả phòng trước 21:00
+                        <Typography variant="body1">
+                          - Nếu quý khách hủy trong{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#FF6F00",
+                            }}
+                          >
+                            tuần đầu tiên
+                          </Typography>{" "}
+                          của thời gian sử dụng, chúng tôi sẽ hoàn lại{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="primary"
+                            fontWeight="bold"
+                          >
+                            60%
+                          </Typography>
+                          .
                         </Typography>
-                      </div>
-                    </div>
-
-                    <div style={{ display: "flex", marginTop: "20px" }}>
-                      <MuiIcons.Key sx={{ fontSize: "30px" }} />
-                      <div style={{ lineHeight: "1.3", marginLeft: "10px" }}>
-                        <Typography
-                          variant="body1"
-                          sx={{ fontWeight: "bold", fontSize: "14px" }}
-                        >
-                          Hình thức checkin
+                        <Typography variant="body1">
+                          - Nếu quý khách hủy trong{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#FF6F00",
+                            }}
+                          >
+                            tuần thứ hai
+                          </Typography>{" "}
+                          của thời gian sử dụng, chúng tôi sẽ hoàn lại{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="primary"
+                            fontWeight="bold"
+                          >
+                            30%
+                          </Typography>
+                          .
                         </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ marginTop: "5px", fontSize: "14px" }}
-                        >
-                          Tự checkin
+                        <Typography variant="body1">
+                          <Typography
+                            variant="body1"
+                            fontWeight="bold"
+                            sx={{
+                              color: "red",
+                              display: "inline",
+                            }}
+                          >
+                            {" "}
+                            <MuiIcons.Warning /> Chú ý :
+                          </Typography>{" "}
+                          Sau{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="secondary"
+                            fontWeight="bold"
+                            sx={{
+                              animation: "blink 0.5s infinite",
+                              color: "#FF6F00",
+                            }}
+                          >
+                            tuần thứ hai
+                          </Typography>{" "}
+                          của thời gian sử dụng, chúng tôi rất tiếc{" "}
+                          <Typography
+                            variant="body1"
+                            component="span"
+                            color="primary"
+                            fontWeight="bold"
+                            sx={{
+                              color: "red",
+                              animation: "blink 0.5s infinite",
+                            }}
+                          >
+                            không thể hoàn lại
+                          </Typography>{" "}
+                          tiền cho quý khách.
                         </Typography>
                       </div>
                     </div>

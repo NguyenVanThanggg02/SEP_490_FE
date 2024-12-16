@@ -32,7 +32,7 @@ export default function Review({ review }) {
             sizes={30}
           />
           <Stack spacing={0.5} justifyContent={'flex-start'}>
-            <Typography>{review.userId.username}</Typography>
+            <Typography>{review?.userId?.fullname}</Typography>
             <Typography sx={{ fontSize: '13px', color: 'gray' }}>
               {format(review.createdAt)}
             </Typography>

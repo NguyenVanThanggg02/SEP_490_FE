@@ -4,6 +4,7 @@ import Conversation from "../components/Conversation";
 import ChatBox from "../components/ChatBox";
 import { userChats } from "../Api/ChatRequests";
 import "../style/chat.css";
+import { Constants } from "../utils/constants";
 
 const Chat = ({ selectedChat }) => {
   const socket = useRef();
@@ -31,7 +32,7 @@ const Chat = ({ selectedChat }) => {
 
   // Connect to Socket.io
   useEffect(() => {
-    socket.current = io("ws://localhost:9999", {
+    socket.current = io((`${Constants.apiHost}`), {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,

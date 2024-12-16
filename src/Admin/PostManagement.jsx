@@ -106,6 +106,7 @@ const PostManagement = () => {
             space._id === postId ? { ...space, censorship: "Từ chối" } : space
           )
         );
+        // alert(`Địa điểm "${selectedSpace.name}" đã bị từ chối`);
         toast.warning(`Địa điểm "${selectedSpace.name}" đã bị từ chối`);
       })
       .catch((error) => {

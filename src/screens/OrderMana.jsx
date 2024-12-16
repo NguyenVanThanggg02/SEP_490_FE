@@ -124,7 +124,7 @@ const OrderMana = () => {
             <Card
               sx={{
                 borderRadius: "16px",
-                height: "335px",
+                height: "345px",
                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
                 transition: "transform 0.2s, box-shadow 0.2s",
                 "&:hover": {
@@ -147,14 +147,19 @@ const OrderMana = () => {
                     >
                       {orderItem.userId?.fullname || "Không có tên"}
                     </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{ fontWeight: "bold", color: "#1976d2" }}
-                    >
-                     SĐT: {orderItem.userId
-                        ? orderItem.userId.phone
-                        : "Không có SĐT"}
-                    </Typography>
+                    {orderItem.userId?.phone ? (
+                      <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                        SĐT: {orderItem.userId.phone}
+                      </Typography>
+                    ) : orderItem.userId?.gmail ? (
+                      <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                        Email: {orderItem.userId.gmail}
+                      </Typography>
+                    ) : (
+                      <Typography variant="h6" sx={{ fontWeight: "bold", color: "#1976d2" }}>
+                        Không có thông tin liên hệ
+                      </Typography>
+                    )}
                     <Typography
                       variant="body2"
                       sx={{
@@ -217,6 +222,12 @@ const OrderMana = () => {
                   <strong>Giá đặt phòng: </strong>
                   {formatNumberToVND(orderItem.totalAmount)} VNĐ
                 </Typography>
+                {orderItem.status ==="canceled" && (
+                <Typography variant="body1">
+                  <strong>Lý do hủy: </strong>
+                  {orderItem?.cancelReason}
+                </Typography>
+                )}
               </CardContent>
               {/* <CardContent sx={{ textAlign: "center" }}>
                 <Button
