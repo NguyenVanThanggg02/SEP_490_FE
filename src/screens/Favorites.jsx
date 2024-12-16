@@ -121,7 +121,16 @@ export const Favorites = () => {
                           fontWeight: "bold",
                         }}
                       >
-                        Giá: {priceFormatter(spaceF.pricePerHour)} VND / Giờ
+                        Giá:{" "}
+                        {spaceF.pricePerHour
+                          ? `${priceFormatter(spaceF.pricePerHour)} VND/Giờ`
+                          : spaceF.pricePerDay
+                            ? `${priceFormatter(spaceF.pricePerDay)} VND/Ngày`
+                            : // : l.pricePerWeek
+                              //   ? `${priceFormatter(l.pricePerWeek)} VND/Tuần`
+                              spaceF.pricePerMonth
+                              ? `${priceFormatter(spaceF.pricePerMonth)} VND/Tháng`
+                              : ""}
                       </Typography>
                       <Typography
                         gutterBottom
