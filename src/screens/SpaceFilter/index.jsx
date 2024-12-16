@@ -352,7 +352,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                             ))}
                         </Select>
                     </FormControl>
-                    <div className="filter-section" style={{ border: 'none' }}>
+                    {/* <div className="filter-section" style={{ border: 'none' }}>
                         <div
                             className="filter-section-title"
                             style={{ marginRight: '10px', color: 'gray' }}
@@ -386,7 +386,7 @@ export const SpaceFilter = ({ filter, setLoading, setListSpace, setFilter, loadI
                                 );
                             })}
                         </SearchSelect>
-                    </div>
+                    </div> */}
                 </Stack>}
 
             {!isMd && (

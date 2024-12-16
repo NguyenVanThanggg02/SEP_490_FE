@@ -401,31 +401,39 @@ export default function Statistics() {
             {/* some stat overall */}
             <Stack direction={'row'} spacing={2} justifyContent={'center'}>
               <Paper sx={{ flex: 1, p: 2 }}>
-                <Typography>Doanh thu tổng: {formatNumberToVND(totalStats.avenue)} VND</Typography>
-                <Typography>Lượt đặt tổng: {formatNumberToVND(totalStats.numOfBook)} Đơn</Typography>
+                <Typography><b>Doanh thu tổng:</b> {formatNumberToVND(totalStats.avenue)} VND</Typography>
+                <Typography><b>Lượt đặt tổng:</b> {formatNumberToVND(totalStats.numOfBook)} Đơn</Typography>
+              </Paper>
+              <Paper sx={{ flex: 2, p: 2 }}>
+                <Typography>
+                  <b>Không gian có doanh thu cao nhất:</b> {bestSpaces.avenue.name}
+                </Typography>
+                <Typography>
+                  <b>Không gian có lượt đặt cao nhất:</b> {bestSpaces.numOfBook.name}
+                </Typography>
               </Paper>
               <Paper sx={{ flex: 1, p: 2 }}>
                 <Typography>
-                  Không gian có doanh thu cao nhất: {bestSpaces.avenue.name} VND
+                  {filter.month !== 'all' ? (
+                    <>
+                      <strong>Doanh thu T{filter.month}/{filter.year}:</strong> {totalStatsInMonth.avenue} VND
+                    </>
+                  ) : (
+                    <>
+                      <strong>Doanh thu năm {filter.year}:</strong> {totalStatsInYear.avenue} VND
+                    </>
+                  )}
                 </Typography>
                 <Typography>
-                  Không gian có lượt đặt cao nhất: {bestSpaces.numOfBook.name}
-                </Typography>
-              </Paper>
-              <Paper sx={{ flex: 1, p: 2 }}>
-                <Typography>
-                  {filter.month !== 'all'
-                    ? `Doanh thu T${filter.month}/${filter.year}:
-                  ${totalStatsInMonth.avenue}đ`
-                    : `Doanh thu năm ${filter.year}:
-                  ${totalStatsInYear.avenue}đ`}
-                </Typography>
-                <Typography>
-                  {filter.month !== 'all'
-                    ? `Doanh thu T${filter.month}/${filter.year}:
-                  ${totalStatsInMonth.numOfBook}đ`
-                    : `Doanh thu năm ${filter.year}:
-                  ${totalStatsInYear.numOfBook}đ`}
+                  {filter.month !== 'all' ? (
+                    <>
+                      <strong>Số đơn T{filter.month}/{filter.year}:</strong> {totalStatsInMonth.numOfBook} đơn
+                    </>
+                  ) : (
+                    <>
+                      <strong>Số đơn năm {filter.year}:</strong> {totalStatsInYear.numOfBook} đơn
+                    </>
+                  )}
                 </Typography>
               </Paper>
             </Stack>

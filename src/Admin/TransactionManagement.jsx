@@ -406,7 +406,7 @@ export const TransactionManagement = () => {
                                   <CheckCircle />
                                 </IconButton>
                               </Tooltip>
-                              <Tooltip title="Từ chối giao dịch">
+                              {/* <Tooltip title="Từ chối giao dịch">
                                 <IconButton
                                   color="secondary"
                                   onClick={() => {
@@ -415,7 +415,7 @@ export const TransactionManagement = () => {
                                 >
                                   <BlockOutlined />
                                 </IconButton>
-                              </Tooltip>
+                              </Tooltip> */}
                             </Box>
                           )}
                       </TableCell>
