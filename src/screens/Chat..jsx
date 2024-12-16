@@ -31,7 +31,8 @@ const Chat = ({ selectedChat }) => {
 
   // Connect to Socket.io
   useEffect(() => {
-    socket.current = io("ws://localhost:9999", {
+    // socket.current = io("ws://localhost:9999", {
+    socket.current = io("wss://spacehub.site/", {
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
