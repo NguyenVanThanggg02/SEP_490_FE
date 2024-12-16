@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import { Paginator } from 'primereact/paginator';
 import { toast } from 'react-toastify';
+import { Constants } from '../utils/constants';
 const ManaReport = () => {
     const [spaceReported, setspaceReported] = useState([]);
     const [complaint, setComplaint] = useState("");
@@ -27,7 +28,7 @@ const ManaReport = () => {
     const userId = localStorage.getItem('userId');
     useEffect(() => {
         axios
-        .get(`http://localhost:9999/reports/${userId}`)
+        .get(`${Constants.apiHost}/reports/${userId}`)
             .then((response) => {
                 const sortedSpaces = response.data.sort(
                     (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -55,7 +56,7 @@ const ManaReport = () => {
           }
         try {
           const response = await axios.put(
-            `http://localhost:9999/reports/complaint/${selectedReportId}`,
+            `${Constants.apiHost}/reports/complaint/${selectedReportId}`,
             { complaint: complaint.trim()}
           );
             toast.success("Gửi đơn khiếu nại thành công!");
