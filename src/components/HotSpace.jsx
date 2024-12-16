@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { priceFormatter } from "../utils/numberFormatter";
+import { Constants } from "../utils/constants";
 
 const HotSpace = () => {
   const [topSpaces, setTopSpaces] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:9999/bookings/top-spaces")
+    fetch(`${Constants.apiHost}/bookings/top-spaces`)
       .then((resp) => resp.json())
       .then((data) => {
         setTopSpaces(data);

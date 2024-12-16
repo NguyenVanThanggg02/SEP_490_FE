@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Carousel } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { priceFormatter } from '../utils/numberFormatter';
+import { Constants } from '../utils/constants';
 
 export default function ProposedSpaces() {
   const isFirstMount = useRef(true);
@@ -10,7 +11,7 @@ export default function ProposedSpaces() {
     if (isFirstMount.current || process.env.NODE_ENV === 'production') {
       const userId = localStorage.getItem('userId');
 
-      fetch(`http://localhost:9999/spaces/proposed/${userId}`)
+      fetch(`${Constants.apiHost}/spaces/proposed/${userId}`)
         .then((resp) => resp.json())
         .then((res) => {
           console.log(res);

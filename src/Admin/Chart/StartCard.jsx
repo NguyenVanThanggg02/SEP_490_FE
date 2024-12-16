@@ -6,6 +6,7 @@ import { Small } from "../Chart/Typography";
 import axios from "axios";
 import TopSpace from "../TopSpace";
 import StatCards2 from "./StatCards2";
+import { Constants } from "../../utils/constants";
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexWrap: "wrap",
@@ -49,7 +50,7 @@ const StatCards = (props) => {
   };
   useEffect(() => {
     axios
-      .get("http://localhost:9999/users")
+      .get(`${Constants.apiHost}/users`)
       .then((response) => setUsers(response.data));
   }, []);
 
@@ -63,7 +64,7 @@ const StatCards = (props) => {
   }
 
   useEffect(() => {
-    fetch("http://localhost:9999/payment/calculate-total-amount-weekly")
+    fetch(`${Constants.apiHost}/payment/calculate-total-amount-weekly`)
       .then((resp) => resp.json())
       .then((data) => {
         setSumWeekSale(data.totalAmount);
@@ -73,7 +74,7 @@ const StatCards = (props) => {
       });
   }, []);
   useEffect(() => {
-    fetch("http://localhost:9999/payment/totalproducts")
+    fetch(`${Constants.apiHost}/payment/totalproducts`)
       .then((resp) => resp.json())
       .then((data) => {
         setTotalProducts(data.totalProducts);
@@ -84,7 +85,7 @@ const StatCards = (props) => {
   }, []);
   useEffect(() => {
     axios
-      .get("http://localhost:9999/payment")
+      .get(`${Constants.apiHost}/payment`)
       .then((response) => {
         setListOrder(response.data);
       })

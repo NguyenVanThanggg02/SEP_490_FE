@@ -1,6 +1,7 @@
 import axios from "axios";
+import { Constants } from "../utils/constants";
 
-const API = axios.create({ baseURL: "http://localhost:9999" });
+const API = axios.create({ baseURL: `${Constants.apiHost}` });
 
 export const getMessages = (id) => API.get(`/message/${id}`);
 

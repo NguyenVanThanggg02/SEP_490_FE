@@ -4,6 +4,7 @@ import { Lock, Unlock } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { Constants } from "../utils/constants";
 
 const ChangePass = () => {
   const [oldPass, setOldPass] = useState("");
@@ -26,7 +27,7 @@ const ChangePass = () => {
       const id = payload.user.id;
   
       // Lấy username
-      const response = await axios.get(`http://localhost:9999/users/${id}`);
+      const response = await axios.get(`${Constants.apiHost}/users/${id}`);
       setUsername(response.data.username);
     } catch (error) {
       console.error(error);
@@ -60,7 +61,7 @@ const ChangePass = () => {
   
     // Gọi API thay đổi mật khẩu
     try {
-      const response = await axios.put(`http://localhost:9999/users/changepass/${username}`, {
+      const response = await axios.put(`${Constants.apiHost}/users/changepass/${username}`, {
         oldPassword: oldPass,
         newPassword: newPass,
       });

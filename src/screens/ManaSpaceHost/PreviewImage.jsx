@@ -27,7 +27,7 @@ export default function PreviewImage({ spaceInfo, setSpaceInfo,setIsNotChangeDat
 
     try {
       const response = await axios.post(
-        'http://localhost:9999/spaces/uploadImages',
+        `${Constants.apiHost}/spaces/uploadImages`,
         formData,
         {
           headers: {
@@ -61,7 +61,7 @@ export default function PreviewImage({ spaceInfo, setSpaceInfo,setIsNotChangeDat
     try {
       // Gửi request đến server-side để xóa ảnh từ Cloudinary
       const response = await axios.post(
-        'http://localhost:9999/spaces/removeImage',
+        `${Constants.apiHost}/spaces/removeImage`,
         { public_id }
       );
 

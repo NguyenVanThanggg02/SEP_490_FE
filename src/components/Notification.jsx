@@ -14,6 +14,7 @@ import { useSocket } from '../Context/SocketContext';
 import { useUser } from '../hooks/useUser';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Constants } from '../utils/constants';
 
 export default function Notification() {
   const [open, setOpen] = React.useState(false);
@@ -38,7 +39,7 @@ export default function Notification() {
   const getAllNotification = () => {
     if (!user) return;
     axios
-      .get(`http://localhost:9999/notification`, {
+      .get(`${Constants.apiHost}/notification`, {
         params: {
           userId: user.id,
         },
@@ -56,7 +57,7 @@ export default function Notification() {
       .map((notification) => notification._id);
     if (listMark.length === 0) return;
     axios
-      .post(`http://localhost:9999/notification/mark-read`, {
+      .post(`${Constants.apiHost}/notification/mark-read`, {
         userId: user.id,
         notificationList: listMark,
       })

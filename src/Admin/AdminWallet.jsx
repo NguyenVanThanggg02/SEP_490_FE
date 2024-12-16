@@ -72,7 +72,7 @@ export const AdminWallet = () => {
   async function fetchHistory() {
     try {
       const response = await axios.get(
-        'http://localhost:9999/transaction/admin/wallet',
+        `${Constants.apiHost}/transaction/admin/wallet`,
         {
           params: {
             ...timeFilter,

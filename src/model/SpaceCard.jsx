@@ -5,6 +5,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from "axios";
 import { priceFormatter } from "../utils/numberFormatter";
+import { Constants } from "../utils/constants";
 
 
 function SpaceCard({ space }) {
@@ -14,7 +15,7 @@ function SpaceCard({ space }) {
     event.stopPropagation()
 
     try {
-      const response = await axios.put(`http://localhost:9999/spaces/${space._id}/favorite`);
+      const response = await axios.put(`${Constants.apiHost}/spaces/${space._id}/favorite`);
       setFavorite(response.data.favorite);
     } catch (error) {
       console.error("Error change favorite:", error);

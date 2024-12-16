@@ -21,6 +21,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Envelope, PersonVcard, Phone } from "react-bootstrap-icons";
+import { Constants } from "../utils/constants";
 
 function HostProfile() {
   const {id} = useParams();
@@ -33,7 +34,7 @@ function HostProfile() {
   const fetchUserData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:9999/users/${id}`,
+        `${Constants.apiHost}/users/${id}`,
       );
       setProfileOwner(response.data);
     } catch (error) {

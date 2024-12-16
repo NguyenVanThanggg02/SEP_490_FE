@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import StartRating from "./StartRating";
+import { Constants } from "../utils/constants";
 
 export default function CreateReview() {
   const { spaceId } = useParams();
@@ -29,7 +30,7 @@ export default function CreateReview() {
   
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:9999/reviews", data);
+      const response = await axios.post(`${Constants.apiHost}/reviews`, data);
       toast.success("Đánh giá thành công");
       setTimeout(() => {
         navigate(`/spaces/${spaceId}`);
@@ -48,7 +49,7 @@ export default function CreateReview() {
     const fetchSpaceData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:9999/spaces/${spaceId}`);
+        const response = await axios.get(`${Constants.apiHost}/spaces/${spaceId}`);
         setSpaceData(response.data);
       } catch (err) {
         console.error(err);

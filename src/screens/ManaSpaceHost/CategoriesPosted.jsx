@@ -25,7 +25,7 @@ const CategoriesPosted = ({
 
   useEffect(() => {
     axios
-      .get('http://localhost:9999/categories')
+      .get(`${Constants.apiHost}/categories`)
       .then((res) => {
         setCategories(res.data);
       })

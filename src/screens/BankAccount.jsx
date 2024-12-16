@@ -9,6 +9,7 @@ import {
 } from 'react-bootstrap-icons';
 import { toast } from 'react-toastify';
 import ConfirmPassword from './ConfirmPassword';
+import { Constants } from '../utils/constants';
 
 const BankAccount = () => {
   const [bankAccounts, setBankAccounts] = useState([]);
@@ -38,7 +39,7 @@ const BankAccount = () => {
   const fetchUserData = async () => {
     setLoadingUserData(true);
     try {
-      const response = await axios.get(`http://localhost:9999/users/${userId}`);
+      const response = await axios.get(`${Constants.apiHost}/users/${userId}`);
       setUserData(response.data);
       setDefaultPaymentAccount(response.data?.defaultBankAccount?._id);
     } catch (error) {
@@ -53,7 +54,7 @@ const BankAccount = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:9999/bankaccount/${userId}`
+        `${Constants.apiHost}/bankaccount/${userId}`
       );
       if (Array.isArray(response.data)) {
         setBankAccounts(response.data);
@@ -70,7 +71,7 @@ const BankAccount = () => {
 
   const fetchBanks = async () => {
     try {
-      const response = await axios.get(`http://localhost:9999/bank`);
+      const response = await axios.get(`${Constants.apiHost}/bank`);
       setBanks(response.data);
     } catch (error) {
       console.error('Error fetching banks:', error);
@@ -101,13 +102,13 @@ const BankAccount = () => {
   const handleSave = async () => {
     try {
       if (editingId) {
-        await axios.put(`http://localhost:9999/bankaccount/${editingId}`, {
+        await axios.put(`${Constants.apiHost}/bankaccount/${editingId}`, {
           bank: editForm.bank,
           accountNumber: editForm.accountNumber,
         });
         setSuccess('Cập nhật tài khoản ngân hàng thành công.');
       } else {
-        await axios.post(`http://localhost:9999/bankaccount`, {
+        await axios.post(`${Constants.apiHost}/bankaccount`, {
           bank: editForm.bank,
           accountNumber: editForm.accountNumber,
           user: userId,
@@ -141,7 +142,7 @@ const BankAccount = () => {
   const handleDelete = async (accountId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?')) {
       try {
-        await axios.delete(`http://localhost:9999/bankaccount/${accountId}`);
+        await axios.delete(`${Constants.apiHost}/bankaccount/${accountId}`);
         setSuccess('Xóa tài khoản ngân hàng thành công.');
         fetchBankAccounts();
       } catch (error) {
@@ -153,7 +154,7 @@ const BankAccount = () => {
 
   const handleDefaultChange = async (accountId) => {
     try {
-      await axios.put(`http://localhost:9999/users/def/${userId}`, {
+      await axios.put(`${Constants.apiHost}/users/def/${userId}`, {
         defaultBankAccountId: accountId,
       });
       setDefaultPaymentAccount(accountId);

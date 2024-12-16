@@ -8,6 +8,7 @@ import * as MuiIcons from '@mui/icons-material';
 import BlockIcon from "@mui/icons-material/Block";
 import { Textarea } from "react-bootstrap-icons";
 import { MapShopDetail } from "../components/MapShopDetail";
+import { Constants } from '../utils/constants';
 
 const DetailForAdmin = ({ id, onBack }) => {
   const [space, setSpace] = useState({});
@@ -19,7 +20,7 @@ const DetailForAdmin = ({ id, onBack }) => {
   useEffect(() => {
     const fetchSpaceData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9999/spaces/${id}`);
+        const response = await axios.get(`${Constants.apiHost}/spaces/${id}`);
         setSpace(response.data);
       } catch (err) {
         setError(err);

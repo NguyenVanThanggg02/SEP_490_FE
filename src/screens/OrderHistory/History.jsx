@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { formatMoney } from "../../utils/moneyFormatter";
 import Reports from "../Reports";
 import { Link } from "react-router-dom";
+import { Constants } from "../../utils/constants";
 
 const History = () => {
   const [date, setDate] = useState("");
@@ -41,7 +42,7 @@ const History = () => {
     if (!user) return;
     try {
       const response = await axios
-        .post(`http://localhost:9999/bookings/cancel-booking-precheck`, {
+        .post(`${Constants.apiHost}/bookings/cancel-booking-precheck`, {
           userId: user,
           bookingId: bookingId
         });
@@ -74,7 +75,7 @@ const History = () => {
 
   const loadHistory = () => {
     axios
-      .get(`http://localhost:9999/bookings/bookingByUserId/${user}`)
+      .get(`${Constants.apiHost}/bookings/bookingByUserId/${user}`)
       .then((res) => {
         const updatedBookings = res.data.map((booking) => ({
           ...booking,
@@ -118,7 +119,7 @@ const History = () => {
     const reason = selectedReason === 'Khác' ? customReason : selectedReason;
 
     axios
-      .post(`http://localhost:9999/bookings/cancel-booking`, {
+      .post(`${Constants.apiHost}/bookings/cancel-booking`, {
         userId: user,
         bookingId: bookingCheckCancel.bookingId,
         cancelReason: reason,

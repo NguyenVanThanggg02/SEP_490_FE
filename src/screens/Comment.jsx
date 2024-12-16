@@ -10,6 +10,7 @@ import {
   ThreeDotsVertical,
   TrashFill,
 } from "react-bootstrap-icons";
+import { Constants } from "../utils/constants";
 
 const Comment = () => {
   const { id } = useParams();
@@ -39,7 +40,7 @@ const Comment = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/reviews/" + id)
+      .get(`${Constants.apiHost}/reviews/` + id)
       .then((res) => {
         const sortedComments = res.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -56,7 +57,7 @@ const Comment = () => {
     e.preventDefault();
     if (window.confirm("Are you sure you want to delete" + index + "?")) {
       axios
-        .delete("http://localhost:9999/reviews/" + index)
+        .delete(`${Constants.apiHost}/reviews/` + index)
         .then(() => {
           toast.success("Comment deleted successfully");
           setListComments(listComments.filter((t) => t._id !== index));
@@ -69,7 +70,7 @@ const Comment = () => {
   const handleCreate = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:9999/reviews", {
+      .post(`${Constants.apiHost}/reviews`, {
         text: text,
         rating: rating,
         spaceId: id,
@@ -107,14 +108,14 @@ const Comment = () => {
   };
   const handleUpdateComment = (index) => {
     axios
-      .put("http://localhost:9999/reviews/" + index, {
+      .put(`${Constants.apiHost}/reviews/` + index, {
         text: editComment,
       })
       .then((response) => {
         if (response.status === 200) {
           toast.success("Edit comment successfully");
           axios
-            .get("http://localhost:9999/reviews/" + id)
+            .get(`${Constants.apiHost}/reviews/` + id)
             .then((res) => {
               const sortCmt = res.data.sort(
                 (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

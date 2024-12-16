@@ -19,6 +19,7 @@ import { priceFormatter } from '../utils/numberFormatter';
 import { calculateAverageRating } from './Reviews';
 import { SpaceFilter } from './SpaceFilter';
 import { toast } from 'react-toastify';
+import { Constants } from '../utils/constants';
 
 const ListSpace = () => {
   const filterDefault = {
@@ -66,7 +67,7 @@ const ListSpace = () => {
   // get all space and cal route
   const loadInitData = async () => {
     try {
-      const response = await fetch('http://localhost:9999/spaces');
+      const response = await fetch(`${Constants.apiHost}/spaces`);
       const data = await response.json();
 
       if (Array.isArray(data)) {
@@ -111,7 +112,7 @@ const ListSpace = () => {
   const changeFavorite = async (id) => {
     try {
       const response = await axios.put(
-        `http://localhost:9999/spaces/${id}/favorite`
+        `${Constants.apiHost}/spaces/${id}/favorite`
       );
       setSpaceFavos((prevSpace) => ({
         ...prevSpace,

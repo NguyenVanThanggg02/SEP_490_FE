@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { Constants } from "../utils/constants";
 
 const SelectSpaceToCompare = (props) => {
   const { visibleCompare, setVisibleCompare, id, onValueChange,setCategoryId  } = props;
@@ -19,7 +20,7 @@ const SelectSpaceToCompare = (props) => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:9999/spaces/cate/${setCategoryId}`)
+      .get(`${Constants.apiHost}/spaces/cate/${setCategoryId}`)
       .then((response) => {
         const filterItems = filterSapces(response.data);
         setSpaces(filterItems);
