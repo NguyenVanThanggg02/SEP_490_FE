@@ -144,21 +144,21 @@ const ManaReport = () => {
                                     </TableCell>
                                     <TableCell>{lpost?.userId?.fullname}</TableCell>
                                     <TableCell>
-                                        {lpost.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
-                                        {lpost.customReason && `; ${lpost.customReason}`}
+                                        {lpost?.reasonId.map((reason) => reason.text.join(", ")).join("; ")}
+                                        {lpost?.customReason && `; ${lpost.customReason}`}
                                     </TableCell>
                                     <TableCell>{lpost?.spaceId?.reportCount}</TableCell>
                                     <TableCell>
-                                        {lpost.complaint}
+                                        {lpost?.complaint}
                                     </TableCell>
-                                    <TableCell sx={{ color: lpost?.spaceId?.censorship === 'Chấp nhận' ? 'green' : 'red' }}>
+                                    <TableCell>
                                     {lpost?.reportRejectionComplaint}
                                     </TableCell>
                                     <TableCell sx={{ color: lpost.statusReport === 'Từ chối' ? 'error.main' : lpost.statusReport === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
-                                        {lpost.statusReport}
+                                    <b>{lpost.statusReport}</b>
                                     </TableCell>
                                     <TableCell sx={{ color: lpost.statusComplaint === 'Từ chối' ? 'error.main' : lpost.statusComplaint === 'Chấp nhận' ? 'success.main' : 'warning.main' }}>
-                                        {lpost.statusComplaint}
+                                    <b>{lpost.statusComplaint}</b>
                                     </TableCell>
                                     <TableCell>
                                         <div style={{ display: "flex", gap: "8px" }}>
@@ -169,7 +169,7 @@ const ManaReport = () => {
                                             </Link>
                                             <Button size="small" variant="contained" color="info" sx={{ textTransform: "none" }} 
                                             onClick={()=>openComplaintDialog(lpost._id)}
-                                            disabled={lpost.statusReport === "Từ chối"}
+                                            disabled={lpost?.statusReport === "Từ chối"||lpost?.statusComplaint==="Từ chối"||lpost?.statusComplaint==="Chấp nhận"}
                                             >
                                                 Khiếu nại
                                             </Button>
@@ -203,18 +203,21 @@ const ManaReport = () => {
                 <DialogTitle>
                 </DialogTitle>
                 <DialogContent>
-                    <Typography>
-                        Nhập lí do khiếu nại
+                    <Typography sx={{textAlign:"center"}}>
+                        Hãy nhập lí do khiếu nại báo cáo
                     </Typography>
                     <TextField
                         fullWidth
+                        multiline
                         size="small"
-                        placeholder="Nhập lý do khiếu nại"
+                        label="Nhập lý do khiếu nại"
+                        variant="outlined"
                         value={complaint}
                         onChange={(e) => setComplaint(e.target.value)}
-                        multiline
-                        rows={3}
+                        rows={5}
+                        style={{ marginTop: 16,width:"400px" }}
                     />
+                    
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDialogComplaint(false)} color="secondary">
