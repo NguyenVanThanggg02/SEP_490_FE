@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { Box } from 'react-bootstrap-icons';
+import { Constants } from '../../utils/constants';
 
 const ReportManagement = () => {
 
@@ -12,7 +13,7 @@ const ReportManagement = () => {
     useEffect(() => {
         const fetchReport = async () => {
             try {
-                const response = await axios.get('http://localhost:9999/reports');
+                const response = await axios.get(`${Constants.apiHost}/reports`);
                 setReport(response.data.data);
             } catch (error) {
                 console.error('Error fetching report:', error);
