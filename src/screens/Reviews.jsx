@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
@@ -19,6 +19,7 @@ export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [visibleReviews, setVisibleReviews] = useState(6); 
 
   const averageRating = useMemo(() => {
     return calculateAverageRating(reviews);
@@ -43,6 +44,11 @@ export default function Reviews() {
         setLoading(false);
       });
   }, []);
+
+  const handleLoadMore = () => {
+    setVisibleReviews(prev => prev + 4); 
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Something wrong</p>;
   return (
@@ -80,14 +86,21 @@ export default function Reviews() {
       ) : (
         <Container>
           <Row>
-            {reviews.map((review, i) => {
-              return (
-                <Col key={review._id} md={6} sm={6} xs={12} className="mb-4">
-                  <Review key={i} review={review} />
-                </Col>
-              );
-            })}
+            {reviews.slice(0, visibleReviews).map((review) => (
+              <Col key={review._id} md={6} sm={6} xs={12} className="mb-4">
+                <Review review={review} />
+              </Col>
+            ))}
           </Row>
+          {visibleReviews < reviews.length && (
+            <Button 
+              onClick={handleLoadMore}
+              variant="outlined"
+              sx={{ mt: 2 }}
+            >
+              Xem thêm
+            </Button>
+          )}
         </Container>
       )}
     </Stack>

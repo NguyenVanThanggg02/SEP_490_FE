@@ -79,8 +79,14 @@ const Similar = ({ spaceData }) => {
                   </div>
                   <div>
                     <span style={{ fontSize: "15px", fontWeight: "bold" }}>
-                      {" "}
-                      Giá mỗi giờ: {priceFormatter(s.pricePerHour)} VND{" "}
+                      Giá:
+                      {s.pricePerHour
+                        ? `${priceFormatter(s.pricePerHour)} VND/Giờ`
+                        : s.pricePerDay
+                          ? `${priceFormatter(s.pricePerDay)} VND/Ngày`
+                          : s.pricePerMonth
+                            ? `${priceFormatter(s.pricePerMonth)} VND/Tháng`
+                            : ""}
                     </span>
                   </div>
                 </div>

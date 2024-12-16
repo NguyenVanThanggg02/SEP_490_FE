@@ -28,7 +28,7 @@ const HomeAdmin = () => {
       setSpaceData(response.data.space)
       setTransactionData({
         ...response.data.transaction,
-        content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
+        // content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
         subContent: `Doanh thu các tháng - Tổng doanh thu`
       })
       setSpaceCensorship(response.data.spaceCensorship)
