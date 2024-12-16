@@ -3,6 +3,7 @@ import { Col, Container, Image, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { priceFormatter } from "../utils/numberFormatter";
+import { Constants } from "../utils/constants";
 
 const Similar = ({ spaceData }) => {
   const [similarSpace, setSimilarSpace] = useState([]);
@@ -10,7 +11,7 @@ const Similar = ({ spaceData }) => {
   useEffect(() => {
     if (spaceData.categoriesId) {
       axios
-        .get(`http://localhost:9999/spaces/cate/${spaceData.categoriesId._id}`)
+        .get(`${Constants.apiHost}/spaces/cate/${spaceData.categoriesId._id}`)
         .then((response) => {
           const filteredSimilarSpace = response.data
             .filter((p) => p._id !== spaceData._id)

@@ -4,6 +4,7 @@ import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
 import TextField from "@mui/material/TextField";
+import { Constants } from "../../utils/constants";
 
 const CancelBooking = (props) => {
   const { visible, setVisible, booking, updateBookingStatus } = props;
@@ -31,7 +32,7 @@ const CancelBooking = (props) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:9999/bookings/${booking._id}/cancel`,
+        `${Constants.apiHost}/bookings/${booking._id}/cancel`,
         { cancelReason: allReasons }
       );
       toast.success(response.data.message || "Lịch book đã được hủy thành công");

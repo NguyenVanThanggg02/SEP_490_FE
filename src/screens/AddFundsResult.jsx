@@ -3,6 +3,7 @@ import { Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Constants } from "../utils/constants";
 
 const AddFundsResult = () => {
     const location = useLocation();
@@ -30,7 +31,7 @@ const AddFundsResult = () => {
         //     extraData: searchParams.get('extraData'),
         //     signature: searchParams.get('signature'),
         // };
-        axios.post('http://localhost:9999/transaction/confirm', params)
+        axios.post(`${Constants.apiHost}/transaction/confirm`, params)
             .then(() => {
                 navigate("/addfund")
                 window.close();

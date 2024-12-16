@@ -5,6 +5,7 @@ import newlogo2 from "../assets/images/newlogo_2.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Constants } from "../utils/constants";
 
 const LoginForm = ({ setIsLoggedIn }) => {
   const formRef = useRef(null);
@@ -18,7 +19,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
     const password = form.elements["password_field"].value; // Sử dụng id đúng
     const data = { username, password };
     try {
-      const res = await axios.post("http://localhost:9999/users/login", data, {
+      const res = await axios.post(`${Constants.apiHost}/users/login`, data, {
         headers: {
           "Content-Type": "application/json",
         },

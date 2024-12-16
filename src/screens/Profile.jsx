@@ -15,6 +15,7 @@ import {
 import ChangePass from "./ChangePass";
 import BankAccount from "./BankAccount";
 import { CameraFill } from "react-bootstrap-icons";
+import { Constants } from "../utils/constants";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("general");
@@ -44,7 +45,7 @@ const Profile = () => {
 
   const fetchUserData = () => {
     axios
-      .get(`http://localhost:9999/users/${userId}`)
+      .get(`${Constants.apiHost}/users/${userId}`)
       .then((response) => {
         setUserData(response.data);
         setEditData(response.data);
@@ -73,7 +74,7 @@ const Profile = () => {
       formData.append('userId', userId); // Giả sử bạn đã lưu userId trong state
 
       try {
-        const response = await axios.post(`http://localhost:9999/users/upload-image`, formData, {
+        const response = await axios.post(`${Constants.apiHost}/users/upload-image`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -105,7 +106,7 @@ const Profile = () => {
 
   const handleSaveUser = () => {
     axios
-      .put(`http://localhost:9999/users/${userId}`, editData)
+      .put(`${Constants.apiHost}/users/${userId}`, editData)
       .then(() => {
         setSuccess("Cập nhật thông tin người dùng thành công!");
         setError(null);

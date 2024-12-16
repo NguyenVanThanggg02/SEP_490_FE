@@ -4,6 +4,7 @@ import { Block as BlockIcon, Undo as UndoIcon, Person as PersonIcon } from '@mui
 import axios from "axios";
 import { Row } from "react-bootstrap";
 import { Paginator } from "primereact/paginator";
+import { Constants } from "../utils/constants";
 
 const UserManagement = () => {
   const [listUser, setListUser] = useState([]);
@@ -25,7 +26,7 @@ const UserManagement = () => {
       setCurrentUserId(storedUserId);
     }
 
-    fetch("http://localhost:9999/users")
+    fetch(`${Constants.apiHost}/users`)
       .then((resp) => resp.json())
       .then((data) => setListUser(data))
       .catch((err) => console.log(err.message));
@@ -47,7 +48,7 @@ const UserManagement = () => {
     }
 
     axios
-      .put(`http://localhost:9999/users/${userId}`, { isBan: !isBan })
+      .put(`${Constants.apiHost}/users/${userId}`, { isBan: !isBan })
       .then((response) => {
         if (response.status === 200) {
           const updatedUsers = listUser.map((user) =>

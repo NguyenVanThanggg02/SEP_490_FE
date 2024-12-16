@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { priceFormatter } from "../utils/numberFormatter";
 import useGeolocation from "../hooks/useGeolocation";
 import axios from "axios";
+import { Constants } from "../utils/constants";
 
 const NearSpace = () => {
   const [nearSpaces, setNearSpaces] = useState([]);
@@ -10,7 +11,7 @@ const NearSpace = () => {
 
   useEffect(() => {
     if (!location || !location.latitude || !location.longitude) return;
-    axios.get(`http://localhost:9999/bookings/near-spaces`, {
+    axios.get(`${Constants.apiHost}/bookings/near-spaces`, {
       params: {
         lat: location.latitude,
         lng: location.longitude

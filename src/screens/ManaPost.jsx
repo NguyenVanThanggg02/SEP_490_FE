@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import img from "../assets/no-records.png.png";
 import axios from "axios";
 import { Pane, Spinner, toaster } from "evergreen-ui";
+import { Constants } from "../utils/constants";
 
 const ManaPost = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,7 +19,7 @@ const ManaPost = () => {
     const fetchSpaces = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9999/spaces/for/${userId}`
+          `${Constants.apiHost}/spaces/for/${userId}`
         );
         if (response.status === 200) {
           setListSpace(response.data);

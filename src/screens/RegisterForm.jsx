@@ -5,13 +5,15 @@ import axios from "axios";
 import newlogo2 from "../assets/images/newlogo_2.png";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Constants } from "../utils/constants";
 
 const RegisterForm = () => {
   const navigate = useNavigate(); // Hook to navigate after successful registration
 
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
+    gmail: "",
+    fullname: "",
     password: "",
     confirmPassword: "",
   });
@@ -27,7 +29,7 @@ const RegisterForm = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    const { username, email, password, confirmPassword } = formData;
+    const { username, gmail, fullname, password, confirmPassword } = formData;
 
     if (password !== confirmPassword) {
       toast.error("Mật khẩu không khớp!");
@@ -40,12 +42,13 @@ const RegisterForm = () => {
     // Tạo đối tượng FormData
     const formDataToSend = new FormData();
     formDataToSend.append("username", username);
-    formDataToSend.append("gmail", email);
+    formDataToSend.append("gmail", gmail);
+    formDataToSend.append("fullname", fullname);
     formDataToSend.append("password", password);
 
     try {
       const res = await axios.post(
-        "http://localhost:9999/users/register",
+        `${Constants.apiHost}/users/register`,
         formDataToSend,
         {
           headers: {
@@ -80,7 +83,7 @@ const RegisterForm = () => {
       <ToastContainer />
       <div
         className="logo_container d-flex justify-content-center"
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop:'-20px' }}
       >
         <img
           src={newlogo2}
@@ -106,6 +109,18 @@ const RegisterForm = () => {
           value={formData.username}
           onChange={handleChange}
           placeholder="Tên đăng nhập của bạn"
+          className="input_field"
+          required
+        />
+        <label className="input_label" htmlFor="username">
+          Họ và Tên
+        </label>
+        <input
+          type="text"
+          id="username"
+          value={formData.fullname}
+          onChange={handleChange}
+          placeholder="Họ và tên của bạn"
           className="input_field"
           required
         />

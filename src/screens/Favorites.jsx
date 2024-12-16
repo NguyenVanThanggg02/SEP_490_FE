@@ -8,12 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import { priceFormatter } from '../utils/numberFormatter';
 import { StarFill } from 'react-bootstrap-icons';
 import { calculateAverageRating } from './Reviews';
+import { Constants } from '../utils/constants';
 export const Favorites = () => {
   const [spaceFavo, setSpaceFavos] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces/favorite")
+      .get(`${Constants.apiHost}/spaces/favorite`)
       .then((response) => {
         const filterItems = filterSapces(response.data);
         setSpaceFavos(filterItems);
@@ -28,13 +29,13 @@ export const Favorites = () => {
   const changeFavorite = async (spaceId, event) => {
     event.stopPropagation()
     try {
-      const response = await axios.put(`http://localhost:9999/spaces/${spaceId}/favorite`);
+      const response = await axios.put(`${Constants.apiHost}/spaces/${spaceId}/favorite`);
       setSpaceFavos(prevSpaces =>
         prevSpaces.map(space =>
           space._id === spaceId ? { ...space, favorite: response.data.favorite } : space
         )
       );
-      const updatedSpacesResponse = await axios.get("http://localhost:9999/spaces/favorite");
+      const updatedSpacesResponse = await axios.get(`${Constants.apiHost}/spaces/favorite`);
       setSpaceFavos(updatedSpacesResponse.data); 
 
     } catch (error) {

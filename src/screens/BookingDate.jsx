@@ -29,6 +29,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { Constants } from "../utils/constants";
 
 // NOTICE
 
@@ -210,7 +211,7 @@ const BookingForm = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:9999/spaces/with-bookings/${id}`
+        `${Constants.apiHost}/spaces/with-bookings/${id}`
       );
       console.log("response", response);
       setSpaceData(response.data.data);

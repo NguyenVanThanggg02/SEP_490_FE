@@ -7,6 +7,7 @@ import DetailForAdmin from "./DetailForAdmin";
 import { Paginator } from "primereact/paginator";
 import { Grid, Card, CardMedia, CardContent, Button, Typography, Box, IconButton, FormControl, Select, MenuItem, InputLabel, TextField, Autocomplete } from '@mui/material';
 import { dateFormatterDDMMYYY } from "../utils/dateFormatter";
+import { Constants } from "../utils/constants";
 
 const PostReportMana = () => {
   const [spaces, setSpaces] = useState([]);
@@ -53,7 +54,7 @@ const PostReportMana = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces/all")
+      .get(`${Constants.apiHost}/spaces/all`)
       .then((response) => {
         const sortedSpaces = response.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -73,7 +74,7 @@ const PostReportMana = () => {
     }
 
     axios
-      .put(`http://localhost:9999/spaces/update/${postId}`, {
+      .put(`${Constants.apiHost}/spaces/update/${postId}`, {
         censorship: "Chấp nhận",
       })
       .then(() => {
@@ -90,7 +91,7 @@ const PostReportMana = () => {
 
   const handleReject = (postId, selectedReasons, customReason) => {
     axios
-      .put(`http://localhost:9999/spaces/update-censorship/${postId}`, {
+      .put(`${Constants.apiHost}/spaces/update-censorship/${postId}`, {
         censorship: "Từ chối",
         reasons: selectedReasons,
         customReason: customReason ? [customReason] : [],

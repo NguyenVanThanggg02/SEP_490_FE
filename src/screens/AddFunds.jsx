@@ -27,6 +27,7 @@ import { useUser } from '../hooks/useUser';
 import { formatMoney } from '../utils/moneyFormatter';
 import { LoadingButton } from '@mui/lab';
 import { Visibility, VisibilityOff, ArrowUpward, ArrowDownward } from '@mui/icons-material';
+import { Constants } from '../utils/constants';
 
 const AddFunds = () => {
   const [data, setData] = useState();
@@ -61,7 +62,7 @@ const AddFunds = () => {
   const fetchHistory = async () => {
     if (!user) return;
     try {
-      const response = await axios.get('http://localhost:9999/transaction/list', {
+      const response = await axios.get(`${Constants.apiHost}/transaction/list`, {
           params: {
             userId: user.id,
             page: pagination.page,
@@ -83,7 +84,7 @@ const AddFunds = () => {
   async function fetchBankAccounts() {
     if (!user) return
     try {
-      const response = await axios.get(`http://localhost:9999/users/${user.id}`);
+      const response = await axios.get(`${Constants.apiHost}/users/${user.id}`);
       setBankAccounts(response.data.bankAccounts.map(bankAccount => { return { beneficiaryBankCode: bankAccount.bank.bankName, beneficiaryAccountNumber: bankAccount.accountNumber, id: bankAccount._id } }));
     } catch (error) {
       console.log(error)
@@ -117,7 +118,7 @@ const AddFunds = () => {
     setLoading(true);
     if (transactionType === "Nạp tiền") {
       try {
-          const response = await axios.post('http://localhost:9999/transaction/create', { amount, userId: user.id, type: transactionType });
+          const response = await axios.post(`${Constants.apiHost}/transaction/create`, { amount, userId: user.id, type: transactionType });
         const { payUrl } = response.data;
         if (payUrl) {
           window.location.href = payUrl;
@@ -137,7 +138,7 @@ const AddFunds = () => {
         if (bankSelected.length === 0) {
           return;
         }
-        const response = await axios.post('http://localhost:9999/transaction/create',
+        const response = await axios.post(`${Constants.apiHost}/transaction/create`,
           { amount, userId: user.id, type: transactionType, beneficiaryAccountNumber: bankSelected[0].beneficiaryAccountNumber, beneficiaryBankCode: bankSelected[0].beneficiaryBankCode });
         toast.success(response.data?.message)
         fetchHistory()
@@ -249,7 +250,9 @@ const AddFunds = () => {
         </Box>
       </Box>
       <Grid container spacing={3}>
-        {filteredTransactions?.map((transaction) => (
+      {filteredTransactions
+          ?.filter((transaction) => transaction.type !== "Tăng số dư ví admin")  
+          ?.map((transaction) => (
           <Grid item xs={12} sm={6} md={4} key={transaction.transactionId}>
             <Card
               elevation={3}

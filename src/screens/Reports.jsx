@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";  
 import "react-toastify/dist/ReactToastify.css";
 import { DialogContent, TextField } from "@mui/material";
+import { Constants } from "../utils/constants";
 const Reports = (props) => {
   const { visibleReport, setVisibleReport, idSpace } = props;
   const [reasons, setReasons] = useState([]);
@@ -17,7 +18,7 @@ const Reports = (props) => {
   
   useEffect(() => {
     axios
-      .get("http://localhost:9999/reasons")
+      .get(`${Constants.apiHost}/reasons`)
       .then((res) => {
         setReasons(res.data);
       })
@@ -38,7 +39,7 @@ const Reports = (props) => {
       customReason: customReason.trim(),
     };
     axios
-      .post("http://localhost:9999/reports", reportData)
+      .post(`${Constants.apiHost}/reports`, reportData)
       .then((response) => {
         toast.success("Báo cáo thành công");
         setSelectedReason([]);

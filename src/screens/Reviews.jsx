@@ -5,6 +5,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import Review from './Review';
 import StartRating from './StartRating';
+import { Constants } from '../utils/constants';
 
 export const calculateAverageRating = (reviews) => {
   if (!reviews.length) return 0;
@@ -25,7 +26,7 @@ export default function Reviews() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:9999/reviews/' + id)
+      .get(`${Constants.apiHost}/reviews/` + id)
       .then((res) => {
         const sortedReviews = res.data.sort(
           (a, b) => new Date(b.createdAt) - new Date(a.createdAt)

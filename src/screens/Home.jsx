@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SpaceCard from "../model/SpaceCard";
 import { Col, Container, Row } from "react-bootstrap";
 import SliderBanner from "../components/SliderBanner";
+import { Constants } from "../utils/constants";
 
 const Home = () => {
   const [spaces, setSpaces] = useState([]);
@@ -11,7 +12,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:9999/spaces")
+      .get(`${Constants.apiHost}/spaces`)
       .then((response) => {
         const filterItems = filterSapces(response.data);
         setSpaces(filterItems);

@@ -10,6 +10,7 @@ import { formatMoney } from '../utils/moneyFormatter';
 import { ChartApproveStatus } from './Dashboard/ChartApproveStatus';
 import { BookingTypeChart } from './Dashboard/BookingTypeChart';
 import { ProfitChart } from './Dashboard/ProfitChart';
+import { Constants } from '../utils/constants';
 
 const HomeAdmin = () => {
 
@@ -22,7 +23,7 @@ const HomeAdmin = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post('http://localhost:9999/dashboard');
+      const response = await axios.post(`${Constants.apiHost}/dashboard`);
       setUserData(response.data.user)
       setSpaceData(response.data.space)
       setTransactionData({
@@ -43,7 +44,7 @@ const HomeAdmin = () => {
   }, [])
 
   const handleTransactionBarChartMonthRangeChange = async (startMonth, endMonth) => {
-    const response = await axios.post('http://localhost:9999/dashboard', { transactionFilter: { from: startMonth, to: endMonth } });
+    const response = await axios.post(`${Constants.apiHost}/dashboard`, { transactionFilter: { from: startMonth, to: endMonth } });
     setTransactionData({
       ...response.data.transaction,
       content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
@@ -52,11 +53,11 @@ const HomeAdmin = () => {
   }
 
   const handlBookingRentalTypeMonthRangeChange = async (startMonth, endMonth) => {
-    const response = await axios.post('http://localhost:9999/dashboard', { bookingRentalTypeFilter: { from: startMonth, to: endMonth } });
+    const response = await axios.post(`${Constants.apiHost}/dashboard`, { bookingRentalTypeFilter: { from: startMonth, to: endMonth } });
     setBookingRentalType(response.data.bookingRentalType)
   }
   const handleProfitMonthRangeChange = async (startMonth, endMonth) => {
-    const response = await axios.post('http://localhost:9999/dashboard', { profitFilter: { from: startMonth, to: endMonth } });
+    const response = await axios.post(`${Constants.apiHost}/dashboard`, { profitFilter: { from: startMonth, to: endMonth } });
     setProfit(response.data.profit)
   }
   return (

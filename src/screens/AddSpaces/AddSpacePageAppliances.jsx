@@ -5,6 +5,7 @@ import * as MuiIcons from '@mui/icons-material'; // Import all MUI icons
 import axios from 'axios';
 import "../../style/AddSpace.css"; // Import CSS file
 import { SpaceContext } from '../../Context/SpaceContext ';
+import { Constants } from '../../utils/constants';
 
 export const AddSpacePageAppliances = ({ categoryId }) => {
     const [appliances, setAppliances] = useState({});
@@ -13,7 +14,7 @@ export const AddSpacePageAppliances = ({ categoryId }) => {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:9999/appliances/${categoryId}`)
+            .get(`${Constants.apiHost}/appliances/${categoryId}`)
             .then((res) => {
                 setAppliances(res.data);
             })

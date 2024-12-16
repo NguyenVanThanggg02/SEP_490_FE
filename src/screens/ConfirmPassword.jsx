@@ -2,6 +2,7 @@ import { Button, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Constants } from '../utils/constants';
 
 export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
   const [password, setPassword] = useState('');
@@ -14,7 +15,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
   const fetchUserData = () => {
     setIsLoading(true);
     axios
-      .get(`http://localhost:9999/users/${userId}`)
+      .get(`${Constants.apiHost}/users/${userId}`)
       .then((response) => {
         setUserData(response.data);
       })
@@ -34,7 +35,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
     setIsLoading(true);
 
     axios
-      .post('http://localhost:9999/users/confirm-password', {
+      .post(`${Constants.apiHost}/users/confirm-password`, {
         password,
         userId: userData._id,
       })
@@ -56,7 +57,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
     setIsLoading(true);
 
     axios
-      .post('http://localhost:9999/users/confirm-otp', {
+      .post(`${Constants.apiHost}/users/confirm-otp`, {
         otp,
         userId: userData._id,
       })
@@ -77,7 +78,7 @@ export default function ConfirmPassword({ setOpenConfirmPwd, handleSave }) {
     setIsLoading(true);
 
     axios
-      .post('http://localhost:9999/users/resent-otp', {
+      .post(`${Constants.apiHost}/users/resent-otp`, {
         userId: userData._id,
       })
       .then((res) => {

@@ -8,6 +8,7 @@ import axios from "axios";
 import SendIcon from "@mui/icons-material/Send";
 import ListMessageWithOwner from "./ListMessageWithOwner";
 import { priceFormatter } from "../utils/numberFormatter";
+import { Constants } from "../utils/constants";
 
 const Message = () => {
   const [openDrawer, setOpenDrawer] = React.useState(false);
@@ -23,7 +24,7 @@ const Message = () => {
 
   const fetchSpaceById = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:9999/spaces/${id}`);
+      const response = await axios.get(`${Constants.apiHost}/spaces/${id}`);
       setSpace(response.data);
     } catch (err) {
       setError(err);
@@ -47,7 +48,7 @@ const Message = () => {
     };
 
     try {
-      await axios.post(`http://localhost:9999/message`, {
+      await axios.post(`${Constants.apiHost}/message`, {
         userId: localStorage.getItem("userId"),
         receiverId: space.userId,
         messageContent: message,
@@ -65,7 +66,7 @@ const Message = () => {
     if (space.userId) {
       const receiverId = space.userId._id;
       axios
-        .get(`http://localhost:9999/message/${userId}/${receiverId}/${id}`)
+        .get(`${Constants.apiHost}/message/${userId}/${receiverId}/${id}`)
         .then((res) => {
           console.log(res.data);
           setMessageList(res.data.data);

@@ -6,6 +6,7 @@ import * as MuiIcons from "@mui/icons-material";
 import { Button, Pane, Spinner, toaster } from "evergreen-ui";
 import { Tag } from "antd";
 import "../style/UserNeedsForm.css";
+import { Constants } from "../utils/constants";
 const UserNeedsForm = () => {
   const [needs, setNeeds] = useState({
     productPreferences: [],
@@ -30,7 +31,7 @@ const UserNeedsForm = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:9999/categories");
+        const response = await axios.get(`${Constants.apiHost}/categories`);
         if (response.status === 200) {
           setProductOptions(response.data); // Đổ dữ liệu thật từ API
         }
@@ -85,7 +86,7 @@ const UserNeedsForm = () => {
     }
     try {
       const response = await axios.post(
-        `http://localhost:9999/userNeed/${userId}/needs`,
+        `${Constants.apiHost}/userNeed/${userId}/needs`,
         {
           ...needs,
         },

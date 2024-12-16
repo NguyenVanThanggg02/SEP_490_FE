@@ -21,6 +21,7 @@ import {
 import '../style/Menu.css'
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import Notification from './Notification';
+import { Constants } from "../utils/constants";
 const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
@@ -50,7 +51,7 @@ const AccountMenu = ({ setIsLoggedIn, isLoggedIn }) => {
     const accessToken = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(
-        `http://localhost:9999/users/${userId}`,
+        `${Constants.apiHost}/users/${userId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
