@@ -101,7 +101,7 @@ const UserManagement = () => {
                   <Typography variant="body2" color="textSecondary">Email: {user.gmail}</Typography>
                 </Box>
 
-                <Box mt={3} textAlign="center">
+                {/* <Box mt={3} textAlign="center">
                   <Button
                     variant="contained"
                     color={user.isBan ? "success" : "error"}
@@ -112,7 +112,7 @@ const UserManagement = () => {
                   >
                     {user.isBan ? "Unban" : "Ban"}
                   </Button>
-                </Box>
+                </Box> */}
               </CardContent>
 
               <Box 
