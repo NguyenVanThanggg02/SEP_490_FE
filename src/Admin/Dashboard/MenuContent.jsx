@@ -47,14 +47,22 @@ export default function MenuContent({ setMainContent }) {
   };
 
   React.useEffect(() => {
-    const hash = window.location.hash;
-    if (hash === "#manage-spaces") {
-      handleSelected(1);
-    }
-
-    window.history.pushState({}, '', window.location.href.replace(/#manage-spaces/, ''));
-  }, [])
-
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash === "#manage-spaces") {
+        handleSelected(1);
+      } else if (hash === "#manage-spaces-report") {
+        handleSelected(2);
+      }
+      window.history.pushState({}, '', window.location.pathname);
+    };
+    handleHashChange(); 
+    window.addEventListener("hashchange", handleHashChange); 
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
+  
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between', backgroundColor:'#23283a', color:'white' }}>
       <List dense>

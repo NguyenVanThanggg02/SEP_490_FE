@@ -293,104 +293,113 @@ const History = () => {
                           flexDirection: "column",
                         }}
                       >
-                        <Link to={`/spaces/${item.spaceId}`} style={{textDecoration:'none'}}>
-                        <Grid container spacing={2} alignItems="center">
-                          <Grid item md={4}>
-                            <img
-                              src={item?.items?.[0]?.spaceId?.images?.[0].url}
-                              alt="Ảnh không gian"
-                              style={{
-                                height: "170px",
-                                width: "100%",
-                                borderRadius: "8px",
-                                objectFit: "cover",
-                              }}
-                            />
-                          </Grid>
-                          <Grid item md={8}>
-                            <Typography
-                              variant="h6"
-                              style={{ color: "#1976d2", fontWeight: "bold" }}
-                            >
-                              {item?.items?.[0]?.spaceId?.name}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              style={{ fontWeight: "bold", fontSize: "15px", color:'#898480'}}
-                            >
-                              Hình thức thuê: 
-                              {item.rentalType === "hour"
-                                ? "Giờ"
-                                : item.rentalType === "day"
-                                  ? "Ngày"
-                                  : item.rentalType === ""
-                                    ? "Tuần"
-                                    : item.rentalType === "month"
-                                      ? "Tháng"
+                        <Link
+                          to={`/spaces/${item.spaceId}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Grid container spacing={2} alignItems="center">
+                            <Grid item md={4}>
+                              <img
+                                src={item?.items?.[0]?.spaceId?.images?.[0].url}
+                                alt="Ảnh không gian"
+                                style={{
+                                  height: "170px",
+                                  width: "100%",
+                                  borderRadius: "8px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </Grid>
+                            <Grid item md={8}>
+                              <Typography
+                                variant="h6"
+                                style={{ color: "#1976d2", fontWeight: "bold" }}
+                              >
+                                {item?.items?.[0]?.spaceId?.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                style={{
+                                  fontWeight: "bold",
+                                  fontSize: "15px",
+                                  color: "#898480",
+                                }}
+                              >
+                                Hình thức thuê:
+                                {item.rentalType === "hour"
+                                  ? "Giờ"
+                                  : item.rentalType === "day"
+                                    ? "Ngày"
+                                    : item.rentalType === ""
+                                      ? "Tuần"
+                                      : item.rentalType === "month"
+                                        ? "Tháng"
+                                        : "Khác"}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                style={{ fontWeight: "bold", color: "#898480" }}
+                              >
+                                Giá: {formatNumberToVND(item.totalAmount)} VND
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                style={{ color: "gray", fontSize: "15px" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Thời gian đặt:{" "}
+                                </span>
+                                {formatDate(item.startDate)}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                style={{ color: "gray", fontSize: "15px" }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Thời gian trả:{" "}
+                                </span>
+                                {formatDate(item.endDate)}
+                              </Typography>
+                              {item.selectedSlots.map((slot, index) => (
+                                <div key={index}>
+                                  <Typography
+                                    variant="body2"
+                                    style={{ color: "gray", fontSize: "15px" }}
+                                  >
+                                    <span style={{ fontWeight: "bold" }}>
+                                      Thời gian:{" "}
+                                    </span>
+                                    {slot.startTime} - {slot.endTime}
+                                  </Typography>
+                                </div>
+                              ))}
+                              <Typography
+                                variant="body2"
+                                style={{
+                                  color:
+                                    item.status === "Đã hoàn tất"
+                                      ? "green"
+                                      : "red",
+                                  fontSize: "15px",
+                                }}
+                              >
+                                <span style={{ fontWeight: "bold" }}>
+                                  Trạng thái:{" "}
+                                </span>
+                                {item.status === "awaiting payment"
+                                  ? "Chờ thanh toán"
+                                  : item.status === "completed"
+                                    ? "Đã thanh toán"
+                                    : item.status === "canceled"
+                                      ? "Đã huỷ"
                                       : "Khác"}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              style={{ fontWeight: "bold", color:'#898480' }}
-                            >
-                              Giá: {formatNumberToVND(item.totalAmount)} VND
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              style={{ color: "gray", fontSize: "15px" }}
-                            >
-                              <span style={{ fontWeight: "bold" }}>
-                                Thời gian đặt:{" "}
-                              </span>
-                              {formatDate(item.startDate)}
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              style={{ color: "gray", fontSize: "15px" }}
-                            >
-                              <span style={{ fontWeight: "bold" }}>
-                                Thời gian trả:{" "}
-                              </span>
-                              {formatDate(item.endDate)}
-                            </Typography>
-                            {item.selectedSlots.map((slot, index) => (
-                              <div key={index}>
-                                <Typography
-                                  variant="body2"
-                                  style={{ color: "gray", fontSize: "15px" }}
-                                >
-                                  <span style={{ fontWeight: "bold" }}>
-                                    Thời gian:{" "}
-                                  </span>
-                                  {slot.startTime} - {slot.endTime}
-                                </Typography>
-                              </div>
-                            ))}
-                            <Typography
-                              variant="body2"
-                              style={{
-                                color:
-                                  item.status === "Đã hoàn tất"
-                                    ? "green"
-                                    : "red",
-                                fontSize: "15px",
-                              }}
-                            >
-                              <span style={{fontWeight:'bold'}}>Trạng thái: </span>
-                              {item.status === "awaiting payment"
-                                ? "Chờ thanh toán"
-                                : item.status === "completed"
-                                  ? "Đã thanh toán"
-                                  : item.status === "canceled"
-                                    ? "Đã huỷ"
-                                    : "Khác"}
-                            </Typography>
+                              </Typography>
+                            </Grid>
                           </Grid>
-                        </Grid>
                         </Link>
 
-                       {/* button đánh giá - hủy lịch */}
-                       <Grid
+                        {/* button đánh giá - hủy lịch */}
+                        <Grid
                           container
                           spacing={2}
                           style={{
@@ -399,14 +408,14 @@ const History = () => {
                             justifyContent: "flex-end",
                           }}
                         >
-                            <Grid item>
+                          <Grid item>
                             <Button
                               variant="contained"
                               color="secondary"
                               style={{ marginRight: "10px" }}
                               disabled={item.status === "canceled"}
-                              onClick={() => handleButtonClickCheck(item)} 
-                              >
+                              onClick={() => handleButtonClickCheck(item)}
+                            >
                               {(() => {
                                 const now = new Date();
                                 const today = new Date();
@@ -430,7 +439,7 @@ const History = () => {
                               })()}
                             </Button>
                           </Grid>
-                              {/* button báo cáo */}
+                          {/* button báo cáo */}
                           {(() => {
                             const now = new Date();
                             const today = new Date();
@@ -453,8 +462,10 @@ const History = () => {
                                 <Button
                                   variant="contained"
                                   color="error"
-                                  onClick={() => handleReport(item.items[0]?.spaceId?._id)}  
-                                  >
+                                  onClick={() =>
+                                    handleReport(item.items[0]?.spaceId?._id)
+                                  }
+                                >
                                   Báo cáo
                                 </Button>
                               </Grid>
@@ -488,7 +499,7 @@ const History = () => {
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm">
         <DialogContent>
           <Typography>{bookingCheckCancel?.contentDialog}</Typography>
-          <FormControl  fullWidth margin="normal">
+          <FormControl fullWidth margin="normal">
             <InputLabel>Lý do hủy</InputLabel>
             <Select
               value={selectedReason}
@@ -515,16 +526,32 @@ const History = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary" variant="outlined">
+          <Button
+            onClick={handleCloseDialog}
+            color="primary"
+            variant="outlined"
+          >
             Hủy
           </Button>
-          <Button onClick={handleCancelBooking} color="primary" variant="contained">
+          <Button
+            onClick={handleCancelBooking}
+            color="primary"
+            variant="contained"
+            disabled={
+              !selectedReason || (selectedReason === "Khác" && !customReason)
+            }
+          >
             Xác nhận
           </Button>
         </DialogActions>
       </Dialog>
-      {visibleReport && <Reports visibleReport={visibleReport} setVisibleReport={setVisibleReport} idSpace={idSpace} />}
-
+      {visibleReport && (
+        <Reports
+          visibleReport={visibleReport}
+          setVisibleReport={setVisibleReport}
+          idSpace={idSpace}
+        />
+      )}
     </div>
   );
 };
