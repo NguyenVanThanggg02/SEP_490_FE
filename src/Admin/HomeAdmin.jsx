@@ -29,7 +29,7 @@ const HomeAdmin = () => {
       setTransactionData({
         ...response.data.transaction,
         // content: `${formatMoney(response.data.transaction.revenue6Months)} - ${formatMoney(response.data.transaction.revenue)}`,
-        subContent: `Doanh thu các tháng - Tổng doanh thu`
+        // subContent: `Doanh thu các tháng - Tổng doanh thu`
       })
       setSpaceCensorship(response.data.spaceCensorship)
       setBookingRentalType(response.data.bookingRentalType)
